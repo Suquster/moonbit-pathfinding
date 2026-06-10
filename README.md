@@ -208,11 +208,16 @@ CH / JPS / ALT 已有源码和测试，仍需要真实路网基准、论文到�
 | 13 | IDA\*                         | [`src/directed/ida_star.mbt`](./src/directed/ida_star.mbt)                   | ✅ v0.0.1   | [Korf 1985](https://doi.org/10.1016/0004-3702%2885%2990084-0)                                                                |
 | 14 | Yen K-Shortest Paths          | [`src/directed/yen.mbt`](./src/directed/yen.mbt)                             | ✅ v0.0.1   | [Yen 1971](https://doi.org/10.1287/mnsc.17.11.712)                                                                           |
 | 15 | Kuhn-Munkres (Hungarian)      | [`src/undirected/kuhn_munkres.mbt`](./src/undirected/kuhn_munkres.mbt)       | ✅ v0.0.1   | [Kuhn 1955](https://doi.org/10.1002/nav.3800020109)                                                                          |
-| 16 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt`                                                        | 🧪 experimental | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
-| 17 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
-| 18 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt`                                                       | 🧪 experimental | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
+| 16 | Prim MST                      | [`src/undirected/prim.mbt`](./src/undirected/prim.mbt)                       | ✅ v0.0.2   | [Prim 1957](https://doi.org/10.1002/j.1538-7305.1957.tb01515.x)                                                              |
+| 17 | DAG Shortest Path             | [`src/directed/dag_shortest_path.mbt`](./src/directed/dag_shortest_path.mbt) | ✅ v0.0.2   | — (CLRS §24.2; supports negative edges)                                                                                      |
+| 18 | Bridges & Articulation Points | [`src/undirected/bridges.mbt`](./src/undirected/bridges.mbt)                 | ✅ v0.0.2   | [Tarjan 1974](https://doi.org/10.1016/0020-0190%2874%2990003-9)                                                              |
+| 19 | Bidirectional Dijkstra        | [`src/directed/bidirectional_dijkstra.mbt`](./src/directed/bidirectional_dijkstra.mbt) | ✅ v0.0.2 | [Pohl 1971](https://exhibits.stanford.edu/ai/catalog/wv122vt6924)                                                            |
+| 20 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt`                                                        | 🧪 experimental | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
+| 21 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
+| 22 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt`                                                       | 🧪 experimental | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
 
 > ✅ v0.0.1 = 源码 + 单元测试 + PBT 已合入主干
+> ✅ v0.0.2 = 新增算法（Prim / DAG-SP / 桥与割点 / 双向 Dijkstra），源码 + 单元测试已合入主干
 > 🧪 experimental = source + tests exist, but API/performance evidence is not yet frozen
 > 🔥 = **Rust `pathfinding` crate 未实现的独家算法** (对应 R18 前沿算法撒手锏)
 

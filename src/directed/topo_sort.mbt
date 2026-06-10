@@ -22,7 +22,7 @@ pub fn[N : Eq + Hash] topological_sort(
   nodes : Array[N],
   successors : (N) -> Array[N],
 ) -> Result[Array[N], @core.PathError] {
-  let in_degree : Map[N, Int] = Map::new()
+  let in_degree : Map[N, Int] = Map([])
   for n in nodes {
     in_degree[n] = 0
   }

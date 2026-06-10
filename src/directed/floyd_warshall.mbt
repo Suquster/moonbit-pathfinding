@@ -21,7 +21,7 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall(
   nodes : Array[N],
   edges : Array[(N, N, W)],
 ) -> Map[(N, N), W] {
-  let dist : Map[(N, N), W] = Map::new()
+  let dist : Map[(N, N), W] = Map([])
   let zero = @core.Weight::zero()
   let inf = @core.Weight::infinity()
   // Initialize: self-distance is zero, all other pairs are infinity.

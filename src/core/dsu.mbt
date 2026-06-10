@@ -15,8 +15,8 @@ pub struct DSU[N] {
 
 ///|
 /// Create an empty DSU.
-pub fn[N] DSU::new() -> DSU[N] {
-  { parent: Map::new(), rank: Map::new() }
+pub fn[N : Eq + Hash] DSU::new() -> DSU[N] {
+  { parent: Map([]), rank: Map([]) }
 }
 
 ///|

@@ -36,8 +36,8 @@ pub fn[N : Eq + Hash] bfs(
     return Some([start])
   }
   let queue : Array[N] = [start]
-  let parents : Map[N, N] = Map::new()
-  let visited : Map[N, Bool] = Map::new()
+  let parents : Map[N, N] = Map([])
+  let visited : Map[N, Bool] = Map([])
   visited[start] = true
   let mut head = 0
   //

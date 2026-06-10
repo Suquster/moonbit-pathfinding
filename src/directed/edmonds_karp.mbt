@@ -23,7 +23,7 @@ pub fn[N : Eq + Hash] edmonds_karp(
 ) -> Int {
   // Build adjacency: for max flow with residual graph, every edge (u,v) has
   // a reverse edge (v,u) with initial capacity 0.
-  let residual : Map[(N, N), Int] = Map::new()
+  let residual : Map[(N, N), Int] = Map([])
   for k_v in capacity {
     let (edge, cap) = k_v
     residual[edge] = cap
@@ -38,8 +38,8 @@ pub fn[N : Eq + Hash] edmonds_karp(
   let mut total_flow = 0
   while true {
     // BFS to find an augmenting path from source to sink.
-    let parent : Map[N, N] = Map::new()
-    let visited : Map[N, Bool] = Map::new()
+    let parent : Map[N, N] = Map([])
+    let visited : Map[N, Bool] = Map([])
     visited[source] = true
     let queue : Array[N] = [source]
     let mut head = 0

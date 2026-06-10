@@ -86,7 +86,7 @@ fn Maze::neighbors(self : Maze, pos : (Int, Int)) -> Array[(Int, Int)] {
 /// cell is drawn as `'*'`.
 fn Maze::render(self : Maze, path : Array[(Int, Int)]) -> String {
   // Build a quick lookup so each cell knows whether it is on the path.
-  let on_path : Map[(Int, Int), Bool] = Map::new()
+  let on_path : Map[(Int, Int), Bool] = Map([])
   for p in path {
     on_path[p] = true
   }

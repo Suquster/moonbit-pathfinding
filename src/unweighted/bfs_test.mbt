@@ -64,7 +64,7 @@ test "bfs knight's tour: 1,1 to 4,6 in 5 moves (Rust crate example)" {
 /// because it satisfies `Eq + Hash`.
 test "bfs with String node type finds shortest hop chain" {
   // Simple DAG over city names: A -> B -> C -> D, A -> C (shortcut 1 hop).
-  let adj : Map[String, Array[String]] = Map::new()
+  let adj : Map[String, Array[String]] = Map([])
   adj["A"] = ["B", "C"]
   adj["B"] = ["C"]
   adj["C"] = ["D"]

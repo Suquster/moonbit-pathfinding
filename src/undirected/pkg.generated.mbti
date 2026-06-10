@@ -12,6 +12,8 @@ pub fn[N : Eq + Hash, W : @core.Weight] kruskal_mst(Array[N], Array[(N, N, W)]) 
 
 pub fn kuhn_munkres(Array[Array[Double]]) -> Result[(Array[Int], Double), @core.PathError]
 
+pub fn[N : Eq + Hash, W : @core.Weight] prim_mst(Array[N], (N) -> Array[(N, W)]) -> Array[(N, N, W)]
+
 // Errors
 
 // Types and methods

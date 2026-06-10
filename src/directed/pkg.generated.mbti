@@ -12,6 +12,8 @@ pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(Array[N], Array[(N, N, W)],
 
 pub fn[N : Eq + Hash] bidirectional_bfs(N, N, (N) -> Array[N], (N) -> Array[N]) -> Array[N]?
 
+pub fn[N : Eq + Hash, W : @core.Weight] dag_shortest_path(Array[N], N, (N) -> Array[(N, W)], (N) -> Bool) -> Result[(Array[N], W)?, @core.PathError]
+
 pub fn[N : Eq + Hash] dfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W)], (N) -> Bool) -> (Array[N], W)?

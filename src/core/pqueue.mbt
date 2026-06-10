@@ -54,6 +54,17 @@ pub fn[N, W : Compare] PQueue::push(
 }
 
 ///|
+/// Return the minimum-weight entry without removing it, or `None` if empty.
+/// O(1).
+pub fn[N, W] PQueue::peek(self : PQueue[N, W]) -> (W, N)? {
+  if self.heap.length() == 0 {
+    None
+  } else {
+    Some(self.heap[0])
+  }
+}
+
+///|
 /// Remove and return the minimum-weight entry, or `None` if empty. O(log n).
 pub fn[N, W : Compare] PQueue::pop(self : PQueue[N, W]) -> (W, N)? {
   let n = self.heap.length()

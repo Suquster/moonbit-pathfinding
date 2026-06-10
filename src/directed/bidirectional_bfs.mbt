@@ -22,10 +22,10 @@ pub fn[N : Eq + Hash] bidirectional_bfs(
   if start == goal {
     return Some([start])
   }
-  let fwd_parent : Map[N, N] = Map::new()
-  let bwd_parent : Map[N, N] = Map::new()
-  let fwd_visited : Map[N, Bool] = Map::new()
-  let bwd_visited : Map[N, Bool] = Map::new()
+  let fwd_parent : Map[N, N] = Map([])
+  let bwd_parent : Map[N, N] = Map([])
+  let fwd_visited : Map[N, Bool] = Map([])
+  let bwd_visited : Map[N, Bool] = Map([])
   fwd_visited[start] = true
   bwd_visited[goal] = true
   let fwd_queue : Array[N] = [start]

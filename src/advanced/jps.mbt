@@ -276,8 +276,8 @@ pub fn jps(
   if start == goal {
     return Some(([start], 0.0))
   }
-  let g_cost : Map[(Int, Int), Double] = Map::new()
-  let parents : Map[(Int, Int), (Int, Int)] = Map::new()
+  let g_cost : Map[(Int, Int), Double] = Map([])
+  let parents : Map[(Int, Int), (Int, Int)] = Map([])
   let pq : @core.PQueue[(Int, Int), Double] = @core.PQueue::new()
   g_cost[start] = 0.0
   pq.push(octile(start, goal), start)

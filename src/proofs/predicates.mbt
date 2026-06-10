@@ -91,7 +91,7 @@ pub fn[N : Eq + Hash] is_reachable(
   if goal(start) {
     return true
   }
-  let visited : Map[N, Bool] = Map::new()
+  let visited : Map[N, Bool] = Map([])
   visited[start] = true
   let queue : Array[N] = [start]
   let mut head = 0

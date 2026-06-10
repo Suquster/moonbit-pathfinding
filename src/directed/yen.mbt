@@ -21,7 +21,7 @@
 ///
 /// ## Complexity
 /// Time: O(K * V * (E + V log V)).
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] yen_k_shortest(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
   start : N,
   goal : N,
   edges : Array[(N, N, W)],

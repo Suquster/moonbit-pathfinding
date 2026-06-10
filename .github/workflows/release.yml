@@ -1,0 +1,112 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Release workflow · 对应 task 9.3 + requirements.md R10.4 / R11 + design.md §15.2
+#
+# 触发:  push 形如 v*.*.* 的 tag 时
+# 产物:  (1) 发布到 mooncakes.io  (2) 创建 GitHub Release (release notes 来自 CHANGELOG.md)
+#
+# 发布门禁状态:
+#   - tag 发布是硬门禁: `moon check`, `moon test`, release readiness,
+#     credential materialization, and `moon publish` must all succeed.
+#   - mooncakes.io currently stores credentials in ~/.moon/credentials.json after
+#     `moon login`. CI supports either:
+#       * MOONCAKES_CREDENTIALS_JSON: full credentials.json content, or
+#       * MOONCAKES_USERNAME + MOONCAKES_TOKEN: converted into credentials.json.
+# ─────────────────────────────────────────────────────────────────────────────
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+# 显式声明发布工作流所需的最小权限集
+#   contents: write —— 创建 GitHub Release / 上传 artifact
+permissions:
+  contents: write
+
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 1 · publish-to-mooncakes
+  #   checkout → setup MoonBit → release guard → moon check → moon test → moon publish
+  # ───────────────────────────────────────────────────────────────────────────
+  publish:
+    name: Publish ${{ github.ref_name }} to mooncakes.io
+    runs-on: ubuntu-latest
+    timeout-minutes: 15                       # R10.5 · 15 分钟超时兜底
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # 抓取全部历史,确保 CHANGELOG / 版本号推断可靠
+          fetch-depth: 0
+
+      - name: Install MoonBit toolchain
+        uses: hustcer/setup-moonbit@v1
+
+      # ─── 关卡 1: release readiness ─────────────────────────────────────
+      - name: release readiness
+        shell: pwsh
+        run: pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/release_guard.ps1
+
+      # ─── 关卡 2: moon check ─────────────────────────────────────────────
+      - name: moon check
+        run: moon check
+
+      # ─── 关卡 3: moon test (默认 backend,三后端矩阵由 ci.yml 负责) ─────
+      - name: moon test
+        run: moon test
+
+      # ─── 关卡 4: materialize mooncakes credentials ──────────────────────
+      - name: Configure mooncakes credentials
+        shell: pwsh
+        env:
+          MOONCAKES_CREDENTIALS_JSON: ${{ secrets.MOONCAKES_CREDENTIALS_JSON }}
+          MOONCAKES_USERNAME: ${{ secrets.MOONCAKES_USERNAME }}
+          MOONCAKES_TOKEN: ${{ secrets.MOONCAKES_TOKEN }}
+        run: |
+          $moonDir = Join-Path $HOME ".moon"
+          New-Item -ItemType Directory -Force -Path $moonDir | Out-Null
+          $credentialsPath = Join-Path $moonDir "credentials.json"
+          if (-not [string]::IsNullOrWhiteSpace($env:MOONCAKES_CREDENTIALS_JSON)) {
+            [IO.File]::WriteAllText($credentialsPath, $env:MOONCAKES_CREDENTIALS_JSON, [Text.Encoding]::UTF8)
+          } elseif (-not [string]::IsNullOrWhiteSpace($env:MOONCAKES_USERNAME) -and -not [string]::IsNullOrWhiteSpace($env:MOONCAKES_TOKEN)) {
+            $credentials = [ordered]@{
+              username = $env:MOONCAKES_USERNAME
+              token = $env:MOONCAKES_TOKEN
+            } | ConvertTo-Json -Depth 4
+            [IO.File]::WriteAllText($credentialsPath, $credentials + "`n", [Text.Encoding]::UTF8)
+          } else {
+            throw "Missing mooncakes credentials. Set MOONCAKES_CREDENTIALS_JSON or MOONCAKES_USERNAME + MOONCAKES_TOKEN."
+          }
+          Write-Host "mooncakes credentials configured at $credentialsPath"
+
+      # ─── 关卡 5: moon publish ───────────────────────────────────────────
+      - name: moon publish
+        run: |
+          moon package
+          moon publish
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 2 · github-release
+  #   使用 CHANGELOG.md 作为 release body;只有 mooncakes publish 通过后才创建。
+  # ───────────────────────────────────────────────────────────────────────────
+  github-release:
+    name: Create GitHub Release ${{ github.ref_name }}
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # release notes 来自 CHANGELOG.md (Keep a Changelog 格式)
+          # 同时自动生成 PR/commit 列表作为补充
+          body_path: CHANGELOG.md
+          generate_release_notes: true
+          # 预标注 v0.x 为 prerelease,v1+ 自动转正式版
+          prerelease: ${{ startsWith(github.ref_name, 'v0.') }}

@@ -1,0 +1,9 @@
+// Package: tests/fuzz
+//
+// Fuzz + Differential testing infrastructure (tasks.md 40.x / R20).
+// Generates random graphs at scale and cross-validates Dijkstra vs
+// Bellman-Ford on every run. Any mismatch is a counterexample that
+// proves a bug in one of the two algorithms.
+import {
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+}

@@ -1,0 +1,16 @@
+// Package: taoyouce/moonbit-pathfinding/src/proofs
+//
+// Hosts shared mathematical predicates plus per-algorithm `*_proof.mbt`
+// files that form the scaffolding for `moon prove` integration
+// (tasks.md Milestone 4, requirements R8).
+//
+// Import convention:
+//   * `@core` — for `Weight` trait / `PathError` enum referenced in
+//     cost & error-typed predicates.
+import {
+  "taoyouce/moonbit-pathfinding/src/core" @core,
+}
+
+options(
+  "proof-enabled": true,
+)

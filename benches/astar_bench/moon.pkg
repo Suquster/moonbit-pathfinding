@@ -1,0 +1,8 @@
+// Package: benches/astar_bench
+//
+// Smoke guard plus native `moon bench` workload for the `astar` heuristic
+// shortest-path algorithm.
+import {
+  "moonbitlang/core/bench" @bench,
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+}

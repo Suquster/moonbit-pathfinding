@@ -1,0 +1,476 @@
+﻿{
+  "schema": "moonbit-pathfinding.benchmark-smoke.v1",
+  "generated_at": "2026-05-31T17:48:41.1748336+08:00",
+  "generated_by": "scripts/benchmark_smoke.ps1",
+  "moon_version": "moon 0.1.20260427 (48d7def 2026-04-27)\n\nFeature flags enabled: rr_moon_pkg",
+  "git_revision": "uncommitted",
+  "git_status_short": [
+    "?? .githooks/",
+    "?? .github/",
+    "?? .gitignore",
+    "?? AGENTS.md",
+    "?? CHANGELOG.md",
+    "?? CODE_OF_CONDUCT.md",
+    "?? CONTRIBUTING.md",
+    "?? CONTRIBUTING.zh-CN.md",
+    "?? GRAPH_GUIDE.md",
+    "?? GRAPH_GUIDE.zh-CN.md",
+    "?? LICENSE",
+    "?? README.mbt.md",
+    "?? README.md",
+    "?? README.zh-CN.md",
+    "?? benches/",
+    "?? cmd/",
+    "?? docs/",
+    "?? examples/",
+    "?? lib.mbt",
+    "?? moon.mod.json",
+    "?? moon.pkg",
+    "?? pkg.generated.mbti",
+    "?? playground/",
+    "?? scripts/",
+    "?? src/",
+    "?? tests/"
+  ],
+  "target": "wasm-gc",
+  "release": true,
+  "warmup": 1,
+  "iterations": 5,
+  "measurement_scope": "End-to-end moon test package execution timing. Includes harness startup/compilation cache effects; use as reproducible smoke evidence, not microbenchmark-only algorithm time.",
+  "machine": {
+    "computer_name": "陶酉册",
+    "os": "Microsoft Windows 10.0.26200",
+    "architecture": "X64",
+    "processor_count": 16,
+    "pwsh": "7.6.0"
+  },
+  "benchmarks": [
+    {
+      "algorithm": "BFS",
+      "package": "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+      "file": "benches/bfs_bench/bfs_bench.mbt",
+      "scenario": "1k-node sparse directed graph, density 1%, query 0 -> 999",
+      "input": {
+        "nodes": 1000,
+        "density": 0.01,
+        "seed": 42,
+        "edge_kind": "unweighted directed"
+      },
+      "baseline": "Smoke gate only; verifies termination and endpoint invariants, not a published speedup claim.",
+      "stats": {
+        "min_ms": 522.079,
+        "median_ms": 624.144,
+        "mean_ms": 640.74,
+        "max_ms": 788.109
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 522.079,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 590.662,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 788.109,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 624.144,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 678.705,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        }
+      ]
+    },
+    {
+      "algorithm": "Dijkstra",
+      "package": "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+      "file": "benches/dijkstra_bench/dijkstra_bench.mbt",
+      "scenario": "1k-node sparse weighted directed graph, density 1%, query 0 -> 999",
+      "input": {
+        "nodes": 1000,
+        "density": 0.01,
+        "seed": 7,
+        "max_weight": 10,
+        "edge_kind": "non-negative weighted directed"
+      },
+      "baseline": "Smoke gate only; verifies shortest-path output invariants, not a published cross-language comparison.",
+      "stats": {
+        "min_ms": 580.606,
+        "median_ms": 636.03,
+        "mean_ms": 627.059,
+        "max_ms": 663.09
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 636.03,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 663.09,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 616.484,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 580.606,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 639.087,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        }
+      ]
+    },
+    {
+      "algorithm": "A*",
+      "package": "taoyouce/moonbit-pathfinding/benches/astar_bench",
+      "file": "benches/astar_bench/astar_bench.mbt",
+      "scenario": "32x32 open 4-neighbour grid with Manhattan heuristic, query (0,0) -> (31,31)",
+      "input": {
+        "width": 32,
+        "height": 32,
+        "nodes": 1024,
+        "expected_cost": 62,
+        "heuristic": "Manhattan"
+      },
+      "baseline": "Correctness baseline is the Manhattan distance on an open grid.",
+      "stats": {
+        "min_ms": 557.758,
+        "median_ms": 599.78,
+        "mean_ms": 595.297,
+        "max_ms": 614.138
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 608.825,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 595.986,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 614.138,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 557.758,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 599.78,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        }
+      ]
+    },
+    {
+      "algorithm": "Kruskal MST",
+      "package": "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+      "file": "benches/kruskal_bench/kruskal_bench.mbt",
+      "scenario": "1k-node 10k-edge weighted undirected multigraph",
+      "input": {
+        "nodes": 1000,
+        "edges": 10000,
+        "seed": 17,
+        "max_weight": 100,
+        "edge_kind": "weighted undirected multigraph"
+      },
+      "baseline": "Smoke gate only; verifies MSF edge-count and weight-range invariants.",
+      "stats": {
+        "min_ms": 574.714,
+        "median_ms": 585.356,
+        "mean_ms": 603.77,
+        "max_ms": 681.886
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 600.449,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 574.714,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 576.446,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 681.886,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        },
+        {
+          "command": [
+            "moon",
+            "test",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "elapsed_ms": 585.356,
+          "exit_code": 0,
+          "output": [
+            "Total tests: 1, passed: 1, failed: 0."
+          ]
+        }
+      ]
+    }
+  ]
+}

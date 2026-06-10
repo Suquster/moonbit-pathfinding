@@ -1,0 +1,14 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "taoyouce/moonbit-pathfinding/examples/network_routing"
+
+// Values
+
+// Errors
+
+// Types and methods
+type Query
+
+// Type aliases
+
+// Traits
+

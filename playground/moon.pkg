@@ -1,0 +1,18 @@
+// playground/ — WASM Playground bridge package.
+//
+// Hosts MoonBit-side wrappers (solver.mbt) that expose a uniform
+// `solve_xxx(grid, sx, sy, gx, gy)` API for the 4 visualised algorithms.
+// The Tier-3 deliverable (tasks.md 38.x / R16) wires these wrappers into
+// the browser through:
+//   1. `moon build --target wasm-gc -p playground` → solver.wasm
+//   2. `moon build --target js      -p playground` → solver.js
+//   3. pure-JS fallback in app.js (no MoonBit needed at all)
+//
+// The `_test.mbt` next door asserts our wrappers stay byte-identical to
+// the upstream src/ algorithms; the playground can never silently diverge
+// from the formally-verified library underneath it.
+import {
+  "taoyouce/moonbit-pathfinding/src/advanced" @adv,
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+}

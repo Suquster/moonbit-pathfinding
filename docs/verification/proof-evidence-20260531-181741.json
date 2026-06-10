@@ -1,0 +1,70 @@
+﻿{
+  "schema": "moonbit-pathfinding.proof-evidence.v1",
+  "generated_at": "2026-05-31T18:17:41.5913648+08:00",
+  "generated_by": "scripts/proof_evidence.ps1",
+  "moon_version": "moon 0.1.20260427 (48d7def 2026-04-27)\n\nFeature flags enabled: rr_moon_pkg",
+  "package_path": "src\\proofs",
+  "runtime_predicates": {
+    "command": [
+      "moon",
+      "test",
+      "src\\proofs"
+    ],
+    "exit_code": 0,
+    "output": [
+      "Total tests: 35, passed: 35, failed: 0."
+    ]
+  },
+  "moon_prove_help": {
+    "command": [
+      "moon",
+      "prove",
+      "--help"
+    ],
+    "exit_code": 0,
+    "output": [
+      "Prove the current package",
+      "",
+      "Usage: moon.exe prove [OPTIONS] [PATH]",
+      "",
+      "Arguments:",
+      "  [PATH]  The file-system path to the package or file in package to prove",
+      "",
+      "Options:",
+      "      --why3-config <PATH>  Use a user-supplied Why3 configuration file instead of the generated default",
+      "  -h, --help                Print help",
+      "",
+      "Manifest Options:",
+      "      --frozen                     Do not sync dependencies, assuming local dependencies are up-to-date",
+      "  -d, --deny-warn                  Treat all warnings as errors",
+      "      --no-render                  Don't render diagnostics (in raw human-readable format)",
+      "      --output-json                Output diagnostics in JSON format",
+      "      --warn-list <WARN_LIST>      Warn list config",
+      "  -j, --jobs <JOBS>                Set the max number of jobs to run in parallel",
+      "      --render-no-loc <MIN_LEVEL>  Render no-location diagnostics starting from a certain level [default: error] [possible values: info, warn, error]",
+      "",
+      "Common Options:",
+      "      --target-dir <TARGET_DIR>  The target directory. Defaults to `<project-root>/_build`",
+      "  -q, --quiet                    Suppress output",
+      "  -v, --verbose                  Increase verbosity",
+      "      --trace                    Trace the execution of the program",
+      "      --dry-run                  Do not actually run the command"
+    ]
+  },
+  "why3_available": false,
+  "why3_path": "",
+  "why3_version": "",
+  "moon_prove_status": "blocked-missing-why3",
+  "moon_prove": {
+    "command": [
+      "moon",
+      "prove",
+      "src\\proofs"
+    ],
+    "exit_code": -1,
+    "output": [
+      "Error: failed to locate `why3` required by `moon prove`; install Why3 1.7.2 preferably via opam, and ensure `why3` is available on PATH"
+    ]
+  },
+  "interpretation": "Runtime proof predicates passed, and moon prove exists, but static proof discharge is blocked on this machine because Why3 is missing from PATH."
+}

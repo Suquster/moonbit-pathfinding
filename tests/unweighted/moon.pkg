@@ -1,0 +1,12 @@
+// External blackbox tests for the unweighted package.
+//
+// Exercises the `bfs` function strictly through its public API, validating
+// that the exported surface matches what downstream users will see after
+// `moon add taoyouce/moonbit-pathfinding`.
+//
+// NOTE: This test package lives at `tests/unweighted/`, whose default alias
+// `unweighted` collides with `src/unweighted`'s default alias. We therefore
+// import the library package under a distinct alias `@uw` to disambiguate.
+import {
+  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+} for "test"

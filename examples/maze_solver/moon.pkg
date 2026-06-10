@@ -1,0 +1,16 @@
+// Runnable example: maze_solver
+//
+// Demonstrates Requirement 9.3 / 9.4 by solving 2D character mazes
+// with `@uw.bfs` from `src/unweighted`. Run with:
+//   moon run examples/maze_solver
+//
+// Conventions:
+//   '#' = wall, '.' = open cell, 'S' = start, 'G' = goal, '*' = path highlight.
+
+import {
+  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+}
+
+options(
+  "is-main": true,
+)

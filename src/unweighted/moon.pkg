@@ -1,0 +1,14 @@
+// Package: taoyouce/moonbit-pathfinding/src/unweighted
+//
+// Houses unweighted search algorithms. Currently exports:
+//   - `bfs` : shortest path on unweighted graphs via breadth-first search.
+//
+// Future members (see tasks.md Milestone 1 / 5): `dfs`, `iddfs`,
+// `bidirectional_bfs` live in `src/directed/` because they need a directed
+// view, so this package stays focused on pure unweighted BFS for now.
+//
+// External callers consume the `bfs` symbol through:
+//   @taoyouce/moonbit-pathfinding/src/unweighted.bfs
+
+import {
+}

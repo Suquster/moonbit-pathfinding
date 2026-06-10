@@ -1,0 +1,441 @@
+﻿{
+  "schema": "moonbit-pathfinding.benchmark-native.v1",
+  "generated_at": "2026-05-31T18:02:46.5953416+08:00",
+  "generated_by": "scripts/benchmark_native.ps1",
+  "moon_version": "moon 0.1.20260427 (48d7def 2026-04-27)\n\nFeature flags enabled: rr_moon_pkg",
+  "git_revision": "uncommitted",
+  "git_status_short": [
+    "?? .githooks/",
+    "?? .github/",
+    "?? .gitignore",
+    "?? AGENTS.md",
+    "?? CHANGELOG.md",
+    "?? CODE_OF_CONDUCT.md",
+    "?? CONTRIBUTING.md",
+    "?? CONTRIBUTING.zh-CN.md",
+    "?? GRAPH_GUIDE.md",
+    "?? GRAPH_GUIDE.zh-CN.md",
+    "?? LICENSE",
+    "?? README.mbt.md",
+    "?? README.md",
+    "?? README.zh-CN.md",
+    "?? benches/",
+    "?? cmd/",
+    "?? docs/",
+    "?? examples/",
+    "?? lib.mbt",
+    "?? moon.mod.json",
+    "?? moon.pkg",
+    "?? pkg.generated.mbti",
+    "?? playground/",
+    "?? scripts/",
+    "?? src/",
+    "?? tests/"
+  ],
+  "target": "wasm-gc",
+  "release": true,
+  "warmup": 1,
+  "repeats": 3,
+  "measurement_scope": "Native moon bench statistics parsed from @bench.T blocks. Summary medians aggregate moon bench-reported mean time across repeated invocations.",
+  "machine": {
+    "computer_name": "陶酉册",
+    "os": "Microsoft Windows 10.0.26200",
+    "architecture": "X64",
+    "processor_count": 16,
+    "pwsh": "7.6.0"
+  },
+  "benchmarks": [
+    {
+      "algorithm": "BFS",
+      "package": "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+      "file": "benches/bfs_bench/bfs_bench.mbt",
+      "scenario": "1k-node sparse directed graph, density 1%, query 0 -> 999",
+      "summary": {
+        "min_us": 125.47,
+        "median_us": 131.6,
+        "mean_us": 131.833,
+        "max_us": 138.43
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/bfs_bench/bfs_bench.mbt:84 (\"bench: bfs on 1k-node sparse graph (density 1%)\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "bfs_1k_sparse_density_1pct  125.47 µs ±   8.54 µs   115.77 µs … 137.61 µs  in 10 ×    730 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "bfs_1k_sparse_density_1pct",
+            "mean_us": 125.47,
+            "sigma_us": 8.54,
+            "min_us": 115.77,
+            "max_us": 137.61,
+            "outer_count": 10,
+            "inner_runs": 730
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/bfs_bench/bfs_bench.mbt:84 (\"bench: bfs on 1k-node sparse graph (density 1%)\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "bfs_1k_sparse_density_1pct  138.43 µs ±  27.48 µs   107.30 µs … 191.93 µs  in 10 ×    438 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "bfs_1k_sparse_density_1pct",
+            "mean_us": 138.43,
+            "sigma_us": 27.48,
+            "min_us": 107.3,
+            "max_us": 191.93,
+            "outer_count": 10,
+            "inner_runs": 438
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/bfs_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/bfs_bench/bfs_bench.mbt:84 (\"bench: bfs on 1k-node sparse graph (density 1%)\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "bfs_1k_sparse_density_1pct  131.60 µs ±  14.08 µs   115.11 µs … 157.10 µs  in 10 ×    725 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "bfs_1k_sparse_density_1pct",
+            "mean_us": 131.6,
+            "sigma_us": 14.08,
+            "min_us": 115.11,
+            "max_us": 157.1,
+            "outer_count": 10,
+            "inner_runs": 725
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "Dijkstra",
+      "package": "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+      "file": "benches/dijkstra_bench/dijkstra_bench.mbt",
+      "scenario": "1k-node sparse weighted directed graph, density 1%, query 0 -> 999",
+      "summary": {
+        "min_us": 612.49,
+        "median_us": 648.0,
+        "mean_us": 663.73,
+        "max_us": 730.7
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/dijkstra_bench/dijkstra_bench.mbt:77 (\"bench: dijkstra on 1k-node sparse weighted graph (density 1%)\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "dijkstra_1k_sparse_density_1pct  612.49 µs ±  35.90 µs   565.84 µs … 670.48 µs  in 10 ×    162 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "dijkstra_1k_sparse_density_1pct",
+            "mean_us": 612.49,
+            "sigma_us": 35.9,
+            "min_us": 565.84,
+            "max_us": 670.48,
+            "outer_count": 10,
+            "inner_runs": 162
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/dijkstra_bench/dijkstra_bench.mbt:77 (\"bench: dijkstra on 1k-node sparse weighted graph (density 1%)\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "dijkstra_1k_sparse_density_1pct  730.70 µs ± 160.90 µs   586.61 µs …   1.14 ms  in 10 ×    136 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "dijkstra_1k_sparse_density_1pct",
+            "mean_us": 730.7,
+            "sigma_us": 160.9,
+            "min_us": 586.61,
+            "max_us": 1140.0,
+            "outer_count": 10,
+            "inner_runs": 136
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/dijkstra_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/dijkstra_bench/dijkstra_bench.mbt:77 (\"bench: dijkstra on 1k-node sparse weighted graph (density 1%)\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "dijkstra_1k_sparse_density_1pct  648.00 µs ±  38.65 µs   591.35 µs … 709.92 µs  in 10 ×    138 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "dijkstra_1k_sparse_density_1pct",
+            "mean_us": 648.0,
+            "sigma_us": 38.65,
+            "min_us": 591.35,
+            "max_us": 709.92,
+            "outer_count": 10,
+            "inner_runs": 138
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "A*",
+      "package": "taoyouce/moonbit-pathfinding/benches/astar_bench",
+      "file": "benches/astar_bench/astar_bench.mbt",
+      "scenario": "32x32 open 4-neighbour grid with Manhattan heuristic",
+      "summary": {
+        "min_us": 340.45,
+        "median_us": 360.69,
+        "mean_us": 358.54,
+        "max_us": 374.48
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/astar_bench/astar_bench.mbt:50 (\"bench: astar on 32x32 open grid with manhattan heuristic\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "astar_32x32_open_grid_manhattan  374.48 µs ±  49.99 µs   318.33 µs … 484.07 µs  in 10 ×    250 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "astar_32x32_open_grid_manhattan",
+            "mean_us": 374.48,
+            "sigma_us": 49.99,
+            "min_us": 318.33,
+            "max_us": 484.07,
+            "outer_count": 10,
+            "inner_runs": 250
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/astar_bench/astar_bench.mbt:50 (\"bench: astar on 32x32 open grid with manhattan heuristic\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "astar_32x32_open_grid_manhattan  360.69 µs ±  27.06 µs   320.95 µs … 402.58 µs  in 10 ×    204 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "astar_32x32_open_grid_manhattan",
+            "mean_us": 360.69,
+            "sigma_us": 27.06,
+            "min_us": 320.95,
+            "max_us": 402.58,
+            "outer_count": 10,
+            "inner_runs": 204
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/astar_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/astar_bench/astar_bench.mbt:50 (\"bench: astar on 32x32 open grid with manhattan heuristic\") ok",
+            "name                            time (mean ± σ)         range (min … max) ",
+            "astar_32x32_open_grid_manhattan  340.45 µs ±  30.20 µs   291.48 µs … 382.81 µs  in 10 ×    260 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "astar_32x32_open_grid_manhattan",
+            "mean_us": 340.45,
+            "sigma_us": 30.2,
+            "min_us": 291.48,
+            "max_us": 382.81,
+            "outer_count": 10,
+            "inner_runs": 260
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "Kruskal MST",
+      "package": "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+      "file": "benches/kruskal_bench/kruskal_bench.mbt",
+      "scenario": "1k-node 10k-edge weighted undirected multigraph",
+      "summary": {
+        "min_us": 3420.0,
+        "median_us": 3520.0,
+        "mean_us": 3496.667,
+        "max_us": 3550.0
+      },
+      "runs": [
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/kruskal_bench/kruskal_bench.mbt:78 (\"bench: kruskal_mst on 1k-node 10k-edge weighted graph\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "kruskal_1k_nodes_10k_edges    3.52 ms ± 362.96 µs     2.97 ms …   4.04 ms  in 10 ×     27 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "kruskal_1k_nodes_10k_edges",
+            "mean_us": 3520.0,
+            "sigma_us": 362.96,
+            "min_us": 2970.0,
+            "max_us": 4040.0,
+            "outer_count": 10,
+            "inner_runs": 27
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/kruskal_bench/kruskal_bench.mbt:78 (\"bench: kruskal_mst on 1k-node 10k-edge weighted graph\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "kruskal_1k_nodes_10k_edges    3.55 ms ± 187.79 µs     3.39 ms …   3.99 ms  in 10 ×     21 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "kruskal_1k_nodes_10k_edges",
+            "mean_us": 3550.0,
+            "sigma_us": 187.79,
+            "min_us": 3390.0,
+            "max_us": 3990.0,
+            "outer_count": 10,
+            "inner_runs": 21
+          }
+        },
+        {
+          "command": [
+            "moon",
+            "bench",
+            "-p",
+            "taoyouce/moonbit-pathfinding/benches/kruskal_bench",
+            "--target",
+            "wasm-gc",
+            "--no-parallelize",
+            "--release"
+          ],
+          "exit_code": 0,
+          "output": [
+            "[taoyouce/moonbit-pathfinding] bench benches/kruskal_bench/kruskal_bench.mbt:78 (\"bench: kruskal_mst on 1k-node 10k-edge weighted graph\") ok",
+            "name                       time (mean ± σ)         range (min … max) ",
+            "kruskal_1k_nodes_10k_edges    3.42 ms ± 146.70 µs     3.15 ms …   3.63 ms  in 10 ×     30 runs",
+            "Total tests: 1, passed: 1, failed: 0."
+          ],
+          "parsed": {
+            "name": "kruskal_1k_nodes_10k_edges",
+            "mean_us": 3420.0,
+            "sigma_us": 146.7,
+            "min_us": 3150.0,
+            "max_us": 3630.0,
+            "outer_count": 10,
+            "inner_runs": 30
+          }
+        }
+      ]
+    }
+  ]
+}

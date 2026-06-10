@@ -18,7 +18,7 @@ paginate: true
 
 可执行文档 · 运行时 proof predicates · 多后端验收门禁
 
-taoyouce · OSC 2026
+Suquster · OSC 2026
 
 ---
 
@@ -296,8 +296,8 @@ let result = ch_query(graph, source, target)
 
 moonbit-pathfinding 的目标不是“把算法搬到 MoonBit”，而是交付一个评委能验证、开发者能调用、未来能升级证明链路的 MoonBit 图算法库。
 
-**GitHub**: github.com/taoyouce/moonbit-pathfinding
+**GitHub**: github.com/Suquster/moonbit-pathfinding
 
-**mooncakes**: mooncakes.io/docs/taoyouce/moonbit-pathfinding
+**mooncakes**: mooncakes.io/docs/Suquster/moonbit-pathfinding
 
 > 让路径规划既好用，又能被验证。

@@ -19,7 +19,7 @@
 // ("MoonBit 无原生固定长度数组 hash，可以用 String").
 
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
 }
 
 options(

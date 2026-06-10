@@ -4,5 +4,5 @@
 // shortest-path algorithm.
 import {
   "moonbitlang/core/bench" @bench,
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
 }

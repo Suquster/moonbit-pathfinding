@@ -69,7 +69,7 @@ the bug. Prefer the smallest graph / input that still reproduces it.
 请提供能够独立复现问题的最小 MoonBit 代码片段，尽量使用能触发 bug 的最小图/输入。 -->
 
 ```moonbit
-// moon.mod.json deps: "taoyouce/moonbit-pathfinding": "x.y.z"
+// moon.mod.json deps: "Suquster/moonbit-pathfinding": "x.y.z"
 fn main {
   // ...
 }

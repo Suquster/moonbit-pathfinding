@@ -4,5 +4,5 @@
 // spanning tree on a 1k-node / 10k-edge random graph.
 import {
   "moonbitlang/core/bench" @bench,
-  "taoyouce/moonbit-pathfinding/src/undirected" @und,
+  "Suquster/moonbit-pathfinding/src/undirected" @und,
 }

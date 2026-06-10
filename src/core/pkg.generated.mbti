@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "taoyouce/moonbit-pathfinding/src/core"
+package "Suquster/moonbit-pathfinding/src/core"
 
 import {
   "moonbitlang/core/debug",

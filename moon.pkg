@@ -11,8 +11,8 @@
 //   moon test README.mbt.md
 
 import {
-  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
-  "taoyouce/moonbit-pathfinding/src/undirected" @und,
-  "taoyouce/moonbit-pathfinding/src/proofs" @proofs,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/undirected" @und,
+  "Suquster/moonbit-pathfinding/src/proofs" @proofs,
 } for "test"

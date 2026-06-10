@@ -93,5 +93,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project adopts the "successor function" API philosophy from Rust's
   `pathfinding` crate, with independent algorithm implementations.
 
-[Unreleased]: https://github.com/taoyouce/moonbit-pathfinding/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/taoyouce/moonbit-pathfinding/releases/tag/v0.0.1
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/v0.0.1

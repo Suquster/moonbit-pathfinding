@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "taoyouce/moonbit-pathfinding/tests/pbt"
+package "Suquster/moonbit-pathfinding/tests/pbt"
 
 // Values
 pub fn gen_dag(Int, Int, Double) -> (Array[Int], Array[(Int, Int)])

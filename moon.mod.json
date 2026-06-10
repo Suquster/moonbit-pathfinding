@@ -1,9 +1,9 @@
 {
-  "name": "taoyouce/moonbit-pathfinding",
+  "name": "Suquster/moonbit-pathfinding",
   "version": "0.0.1",
   "readme": "README.md",
-  "repository": "https://github.com/taoyouce/moonbit-pathfinding",
-  "homepage": "https://github.com/taoyouce/moonbit-pathfinding#readme",
+  "repository": "https://github.com/Suquster/moonbit-pathfinding",
+  "homepage": "https://github.com/Suquster/moonbit-pathfinding#readme",
   "license": "Apache-2.0",
   "keywords": [
     "pathfinding",

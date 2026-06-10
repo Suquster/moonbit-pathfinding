@@ -5,5 +5,5 @@
 // Bellman-Ford on every run. Any mismatch is a counterexample that
 // proves a bug in one of the two algorithms.
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
 }

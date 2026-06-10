@@ -1,5 +1,5 @@
 param(
-    [string]$PackagePath = "src\proofs",
+    [string]$PackagePath = "src/proofs",
     [string]$OutDir = "docs\verification"
 )
 

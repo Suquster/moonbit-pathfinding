@@ -6,6 +6,12 @@ import {
 }
 
 // Values
+pub fn[N : Eq + Hash] articulation_points(Array[N], (N) -> Array[N]) -> Array[N]
+
+pub fn[N : Eq + Hash] bridges(Array[N], (N) -> Array[N]) -> Array[(N, N)]
+
+pub fn[N : Eq + Hash] bridges_and_articulation_points(Array[N], (N) -> Array[N]) -> (Array[(N, N)], Array[N])
+
 pub fn[N : Eq + Hash] connected_components(Array[N], (N) -> Array[N]) -> Array[Array[N]]
 
 pub fn[N : Eq + Hash, W : @core.Weight] kruskal_mst(Array[N], Array[(N, N, W)]) -> Array[(N, N, W)]

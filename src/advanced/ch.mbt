@@ -4,19 +4,21 @@
 // "Contraction Hierarchies: Faster and Simpler Hierarchical Routing in Road
 // Networks." WEA 2008, LNCS 5038, pp. 319-333.
 //
-// v1.0.0 scope (tasks.md 35.x + R18.1(a)):
+// Scope (tasks.md 35.x + R18.1(a)):
 //   * `CHGraph[N, W]` — preprocessed data structure holding node ordering,
 //     upward / downward edges, and shortcut witnesses.
-//   * `ch_preprocess(nodes, successors)` — naive-but-correct witness-search
-//     implementation: contract nodes in input order, add shortcuts
-//     whenever the "witness Dijkstra" fails to find a faster bypass.
+//   * `ch_preprocess(nodes, successors)` — witness-search implementation
+//     with **edge-difference contraction ordering** (lazy re-evaluation):
+//     at every step the node with the smallest `shortcuts_needed -
+//     incident_edges` estimate is contracted next, which is the standard
+//     heuristic from the CH paper. Shortcuts are added whenever the
+//     "witness Dijkstra" fails to find a faster bypass.
 //   * `ch_query(graph, source, target)` — bidirectional Dijkstra restricted
 //     to upward edges on each side.
 //
-// The CH speedup (literature: 100x-1000x on road networks) depends heavily
-// on the contraction-order heuristic. The v1.0.0 release ships a linear
-// input-order contractor plus the correct query machinery; order tuning
-// (edge-difference ranking, lazy updates) is queued for v1.1.x.
+// A reverse-residual adjacency map is maintained incrementally so finding
+// the incoming edges of a contraction candidate is O(deg) instead of an
+// O(V) scan over all nodes.
 
 ///|
 /// CH preprocessed graph.
@@ -108,9 +110,10 @@ fn[N : Eq + Hash, W : @core.Weight + Compare] ch_witness(
 }
 
 ///|
-/// CH preprocessing: contract nodes in their input order, emitting a
-/// shortcut `u -> v` whenever the witness search does NOT find a
-/// `u ~> v` path of equal-or-smaller cost avoiding the contracted node.
+/// CH preprocessing: contract nodes in edge-difference order (lazy
+/// re-evaluation), emitting a shortcut `u -> v` whenever the witness
+/// search does NOT find a `u ~> v` path of equal-or-smaller cost avoiding
+/// the contracted node.
 ///
 /// Returns a fully populated `CHGraph` ready for `ch_query`.
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
@@ -121,38 +124,71 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
   let up_adj : Map[N, Array[(N, W)]] = Map([])
   let dn_adj : Map[N, Array[(N, W)]] = Map([])
   let shortcut : Map[(N, N), N] = Map([])
-  // Start with everything unordered; we assign levels 0..n-1 in input order
-  // and contract them one by one.
-  for i in 0..<nodes.length() {
-    level[nodes[i]] = i
-  }
   // Residual successor view: starts as the original graph, grows with
-  // each added shortcut.
+  // each added shortcut. `rev_residual` mirrors it for O(deg) incoming-edge
+  // lookups during contraction.
   let residual : Map[N, Array[(N, W)]] = Map([])
+  let rev_residual : Map[N, Array[(N, W)]] = Map([])
   for n in nodes {
     residual[n] = successors(n)
   }
+  for n in nodes {
+    for e in residual.get(n).unwrap_or([]) {
+      let (v, w) = e
+      let lst = rev_residual.get(v).unwrap_or([])
+      lst.push((n, w))
+      rev_residual[v] = lst
+    }
+  }
   let contracted : Map[N, Bool] = Map([])
-  for i in 0..<nodes.length() {
-    let v = nodes[i]
-    // Enumerate (u -> v -> w) pairs on the residual graph.
+  // Edge-difference estimate for contraction ordering: the number of
+  // potential shortcuts (in-degree x out-degree among uncontracted
+  // neighbours) minus the number of incident residual edges. Smaller
+  // values contract first; estimates are re-evaluated lazily on pop.
+  fn edge_difference(v : N) -> Int {
+    let mut in_deg = 0
+    for e in rev_residual.get(v).unwrap_or([]) {
+      if !contracted.get(e.0).unwrap_or(false) && e.0 != v {
+        in_deg += 1
+      }
+    }
+    let mut out_deg = 0
+    for e in residual.get(v).unwrap_or([]) {
+      if !contracted.get(e.0).unwrap_or(false) && e.0 != v {
+        out_deg += 1
+      }
+    }
+    in_deg * out_deg - (in_deg + out_deg)
+  }
+
+  let order : @core.PQueue[N, Int] = @core.PQueue::new()
+  for n in nodes {
+    order.push(edge_difference(n), n)
+  }
+  let mut next_level = 0
+  while !order.is_empty() {
+    let (prio, v) = order.pop().unwrap()
+    if contracted.get(v).unwrap_or(false) {
+      continue
+    }
+    // Lazy re-evaluation: contracting earlier nodes may have changed this
+    // node's edge difference; if it grew, push it back and pick again.
+    let fresh = edge_difference(v)
+    if fresh > prio && !order.is_empty() {
+      order.push(fresh, v)
+      continue
+    }
+    level[v] = next_level
+    next_level += 1
+    // Enumerate (u -> v -> w) pairs on the residual graph via the reverse
+    // adjacency (deduplicating by taking each uncontracted in-neighbour).
     let incoming : Array[(N, W)] = []
-    for u in nodes {
-      if contracted.get(u).unwrap_or(false) {
+    for e in rev_residual.get(v).unwrap_or([]) {
+      let (u, w) = e
+      if contracted.get(u).unwrap_or(false) || u == v {
         continue
       }
-      if u == v {
-        continue
-      }
-      match residual.get(u) {
-        Some(out_edges) =>
-          for e in out_edges {
-            if e.0 == v {
-              incoming.push((u, e.1))
-            }
-          }
-        None => ()
-      }
+      incoming.push((u, w))
     }
     let outgoing = residual.get(v).unwrap_or([])
     for in_pair in incoming {
@@ -181,10 +217,14 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
         }
         if need_shortcut {
           // Append the synthetic edge u -> x with weight via_cost to
-          // residual, and record the middle node for later expansion.
+          // residual (and its mirror in rev_residual), and record the
+          // middle node for later expansion.
           let u_list = residual.get(u).unwrap_or([])
           u_list.push((x, via_cost))
           residual[u] = u_list
+          let x_list = rev_residual.get(x).unwrap_or([])
+          x_list.push((u, via_cost))
+          rev_residual[x] = x_list
           shortcut[(u, x)] = v
         }
       }

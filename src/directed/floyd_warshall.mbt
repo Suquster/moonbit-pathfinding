@@ -21,43 +21,61 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall(
   nodes : Array[N],
   edges : Array[(N, N, W)],
 ) -> Map[(N, N), W] {
-  let dist : Map[(N, N), W] = Map([])
   let zero = @core.Weight::zero()
   let inf = @core.Weight::infinity()
-  // Initialize: self-distance is zero, all other pairs are infinity.
-  for u in nodes {
-    for v in nodes {
-      if u == v {
-        dist[(u, v)] = zero
-      } else {
-        dist[(u, v)] = inf
-      }
-    }
+  let n = nodes.length()
+  if n == 0 {
+    return Map([])
+  }
+  // Work on a dense index-based matrix internally: O(1) array access in the
+  // O(V^3) triple loop instead of hashing tuple keys on every read/write.
+  let index : Map[N, Int] = Map([])
+  for i in 0..<n {
+    index[nodes[i]] = i
+  }
+  let dist : Array[W] = Array::make(n * n, inf)
+  for i in 0..<n {
+    dist[i * n + i] = zero
   }
   // Apply direct edges (take the minimum in case of parallel edges).
   for edge in edges {
     let (u, v, w) = edge
-    match dist.get((u, v)) {
-      Some(existing) => if w < existing { dist[(u, v)] = w }
-      None => dist[(u, v)] = w
+    match (index.get(u), index.get(v)) {
+      (Some(iu), Some(iv)) => {
+        let pos = iu * n + iv
+        if w < dist[pos] {
+          dist[pos] = w
+        }
+      }
+      _ => ()
     }
   }
   // Classic triple loop: k is the allowed intermediate node.
-  for k in nodes {
-    for i in nodes {
-      for j in nodes {
-        let dik = dist.get((i, k)).unwrap()
-        let dkj = dist.get((k, j)).unwrap()
-        let dij = dist.get((i, j)).unwrap()
-        // Skip if either half is infinity (to avoid saturating add overflow).
-        if dik != inf && dkj != inf {
+  for k in 0..<n {
+    for i in 0..<n {
+      let dik = dist[i * n + k]
+      // Skip if the first half is infinity (avoids saturating add overflow
+      // and prunes the whole inner row in one check).
+      if dik == inf {
+        continue
+      }
+      for j in 0..<n {
+        let dkj = dist[k * n + j]
+        if dkj != inf {
           let candidate = @core.Weight::add(dik, dkj)
-          if candidate < dij {
-            dist[(i, j)] = candidate
+          if candidate < dist[i * n + j] {
+            dist[i * n + j] = candidate
           }
         }
       }
     }
   }
-  dist
+  // Export back to the (u, v) keyed map for the public API.
+  let out : Map[(N, N), W] = Map([])
+  for i in 0..<n {
+    for j in 0..<n {
+      out[(nodes[i], nodes[j])] = dist[i * n + j]
+    }
+  }
+  out
 }

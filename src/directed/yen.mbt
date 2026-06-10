@@ -30,44 +30,44 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
   if k <= 0 {
     return Err(InvalidK(k))
   }
-  // Build successor function that respects banned edges.
+  // Prebuild adjacency once: O(E) total instead of O(E) per successor call.
+  let adj : Map[N, Array[(N, W)]] = Map([])
+  let edge_weight : Map[(N, N), W] = Map([])
+  for e in edges {
+    let (a, b, w) = e
+    let lst = adj.get(a).unwrap_or([])
+    lst.push((b, w))
+    adj[a] = lst
+    // Keep the cheapest weight in case of parallel edges.
+    match edge_weight.get((a, b)) {
+      Some(existing) => if w < existing { edge_weight[(a, b)] = w }
+      None => edge_weight[(a, b)] = w
+    }
+  }
+  // Build successor function that respects banned edges/nodes via O(1)
+  // hash lookups.
   fn build_succ(
-    banned_edges : Array[(N, N)],
-    banned_nodes : Array[N],
+    banned_edges : Map[(N, N), Bool],
+    banned_nodes : Map[N, Bool],
   ) -> (N) -> Array[(N, W)] {
     fn(u : N) -> Array[(N, W)] {
       let result : Array[(N, W)] = []
-      for e in edges {
-        let (a, b, w) = e
-        if a != u {
+      for pair in adj.get(u).unwrap_or([]) {
+        let (b, w) = pair
+        if banned_edges.get((u, b)).unwrap_or(false) {
           continue
         }
-        let mut is_banned = false
-        for be in banned_edges {
-          if be.0 == a && be.1 == b {
-            is_banned = true
-            break
-          }
-        }
-        if is_banned {
+        if banned_nodes.get(b).unwrap_or(false) {
           continue
         }
-        for bn in banned_nodes {
-          if bn == b {
-            is_banned = true
-            break
-          }
-        }
-        if !is_banned {
-          result.push((b, w))
-        }
+        result.push((b, w))
       }
       result
     }
   }
 
   // First shortest path (A = [shortest]).
-  let first = dijkstra(start, build_succ([], []), fn(n) { n == goal })
+  let first = dijkstra(start, build_succ(Map([]), Map([])), fn(n) { n == goal })
   match first {
     None => return Ok([])
     Some(p_and_c) => {
@@ -82,7 +82,7 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
           let root_path = prev_path[0:i + 1].iter().collect()
           // Build banned edges: edges used at position i by any accepted
           // path sharing this root prefix.
-          let banned_edges : Array[(N, N)] = []
+          let banned_edges : Map[(N, N), Bool] = Map([])
           for acc in accepted {
             let ap = acc.0
             if ap.length() > i + 1 {
@@ -95,15 +95,15 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
                 j += 1
               }
               if matches {
-                banned_edges.push((ap[i], ap[i + 1]))
+                banned_edges[(ap[i], ap[i + 1])] = true
               }
             }
           }
           // Ban root path nodes (except spur_node) to keep paths loopless.
-          let banned_nodes : Array[N] = []
+          let banned_nodes : Map[N, Bool] = Map([])
           for rn in root_path {
             if rn != spur_node {
-              banned_nodes.push(rn)
+              banned_nodes[rn] = true
             }
           }
           let spur = dijkstra(
@@ -123,21 +123,19 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
                 full.push(spath[si])
                 si += 1
               }
-              // Compute full cost: walk the full path and sum edge weights.
-              let mut total = @core.Weight::zero()
+              // Full cost = root-prefix cost (per-hop O(1) lookups)
+              // + the spur cost returned by Dijkstra.
+              let mut total = scost
               let mut pi = 0
-              while pi < full.length() - 1 {
+              while pi < i {
                 let a = full[pi]
                 let b = full[pi + 1]
-                for e in edges {
-                  if e.0 == a && e.1 == b {
-                    total = @core.Weight::add(total, e.2)
-                    break
-                  }
+                match edge_weight.get((a, b)) {
+                  Some(w) => total = @core.Weight::add(total, w)
+                  None => ()
                 }
                 pi += 1
               }
-              ignore(scost)
               // Deduplicate.
               let mut dup = false
               for c in candidates {

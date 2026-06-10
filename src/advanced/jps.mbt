@@ -17,11 +17,11 @@
 //     O(number of obstacles + path length).
 //
 // Design note (per tasks.md 36.x + R18.1(b) / R18.2):
-//   * The `jump` function recurses on the same direction, plus **two
-//     diagonal sub-directions** when moving diagonally. MoonBit's
-//     recursion depth is workable for 1k×1k grids (practical experiment
-//     shows ~100 recursion depth max); callers on bigger maps can split
-//     into chunks.
+//   * The `jump` function walks the ray **iteratively** (no recursion on
+//     the primary direction), and only recurses one level into the two
+//     cardinal sub-directions when moving diagonally — those sub-jumps
+//     are themselves iterative, so the total stack depth is O(1)
+//     regardless of grid size.
 
 ///|
 /// Uniform-cost grid of `width × height` cells with a blocking mask.
@@ -85,17 +85,7 @@ fn octile(a : (Int, Int), b : (Int, Int)) -> Double {
 }
 
 ///|
-/// Per-step edge weight: 1.0 for cardinal moves, sqrt(2) for diagonals.
-fn step_cost(dr : Int, dc : Int) -> Double {
-  if dr != 0 && dc != 0 {
-    1.4142135
-  } else {
-    1.0
-  }
-}
-
-///|
-/// Attempt to **jump** from `from` in direction `(dr, dc)`, recursively
+/// Attempt to **jump** from `from` in direction `(dr, dc)`, iteratively
 /// skipping cells that have no forced neighbours.
 ///
 /// Returns `Some((r, c))` where `(r, c)` is the first jump-point reached
@@ -110,54 +100,59 @@ fn JPSGrid::jump(
   dc : Int,
   goal : (Int, Int),
 ) -> (Int, Int)? {
-  let nr = from_r + dr
-  let nc = from_c + dc
-  if !self.walkable(nr, nc) {
-    return None
-  }
-  if (nr, nc) == goal {
-    return Some((nr, nc))
-  }
-  // Forced-neighbour rule for cardinal moves:
-  // A cardinal move (dr, dc) has a forced neighbour when one of the
-  // perpendicular neighbours is blocked but the diagonal after it is open.
-  if dr != 0 && dc == 0 {
-    let forced_left = !self.walkable(nr, nc - 1) &&
-      self.walkable(nr + dr, nc - 1)
-    let forced_right = !self.walkable(nr, nc + 1) &&
-      self.walkable(nr + dr, nc + 1)
-    if forced_left || forced_right {
+  let mut cr = from_r
+  let mut cc = from_c
+  while true {
+    let nr = cr + dr
+    let nc = cc + dc
+    if !self.walkable(nr, nc) {
+      return None
+    }
+    if (nr, nc) == goal {
       return Some((nr, nc))
     }
-  } else if dc != 0 && dr == 0 {
-    let forced_up = !self.walkable(nr - 1, nc) && self.walkable(nr - 1, nc + dc)
-    let forced_down = !self.walkable(nr + 1, nc) &&
-      self.walkable(nr + 1, nc + dc)
-    if forced_up || forced_down {
-      return Some((nr, nc))
+    // Forced-neighbour rule for cardinal moves:
+    // A cardinal move (dr, dc) has a forced neighbour when one of the
+    // perpendicular neighbours is blocked but the diagonal after it is open.
+    if dr != 0 && dc == 0 {
+      let forced_left = !self.walkable(nr, nc - 1) &&
+        self.walkable(nr + dr, nc - 1)
+      let forced_right = !self.walkable(nr, nc + 1) &&
+        self.walkable(nr + dr, nc + 1)
+      if forced_left || forced_right {
+        return Some((nr, nc))
+      }
+    } else if dc != 0 && dr == 0 {
+      let forced_up = !self.walkable(nr - 1, nc) &&
+        self.walkable(nr - 1, nc + dc)
+      let forced_down = !self.walkable(nr + 1, nc) &&
+        self.walkable(nr + 1, nc + dc)
+      if forced_up || forced_down {
+        return Some((nr, nc))
+      }
+    } else {
+      // Diagonal: forced-neighbour check plus cardinal sub-direction jumps.
+      let diag_forced_a = !self.walkable(nr - dr, nc) &&
+        self.walkable(nr - dr, nc + dc)
+      let diag_forced_b = !self.walkable(nr, nc - dc) &&
+        self.walkable(nr + dr, nc - dc)
+      if diag_forced_a || diag_forced_b {
+        return Some((nr, nc))
+      }
+      // Sub-direction jumps: either horizontal or vertical sub-jump found
+      // ⇒ the current diagonal cell is itself a jump-point.
+      if self.jump(nr, nc, dr, 0, goal) is Some(_) {
+        return Some((nr, nc))
+      }
+      if self.jump(nr, nc, 0, dc, goal) is Some(_) {
+        return Some((nr, nc))
+      }
     }
-  } else {
-    // Diagonal: forced-neighbour check plus recursive sub-direction jumps.
-    let diag_forced_a = !self.walkable(nr - dr, nc) &&
-      self.walkable(nr - dr, nc + dc)
-    let diag_forced_b = !self.walkable(nr, nc - dc) &&
-      self.walkable(nr + dr, nc - dc)
-    if diag_forced_a || diag_forced_b {
-      return Some((nr, nc))
-    }
-    // Sub-direction jumps: either horizontal or vertical sub-jump found
-    // ⇒ the current diagonal cell is itself a jump-point.
-    match self.jump(nr, nc, dr, 0, goal) {
-      Some(_) => return Some((nr, nc))
-      None => ()
-    }
-    match self.jump(nr, nc, 0, dc, goal) {
-      Some(_) => return Some((nr, nc))
-      None => ()
-    }
+    // Continue jumping in the same direction.
+    cr = nr
+    cc = nc
   }
-  // Continue jumping in the same direction.
-  self.jump(nr, nc, dr, dc, goal)
+  None
 }
 
 ///|
@@ -230,7 +225,6 @@ fn JPSGrid::identify_successors(
         }
         let cost = diag_steps.to_double() * 1.4142135 +
           straight_steps.to_double()
-        ignore(step_cost(dr, dc))
         succ.push((jp, cost))
       }
       None => ()

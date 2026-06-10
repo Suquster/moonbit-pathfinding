@@ -3,6 +3,6 @@
 // Smoke guard plus native `moon bench` workload for the `bfs` unweighted
 // shortest-path algorithm.
 import {
-  "moonbitlang/core/bench" @bench,
+  "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }

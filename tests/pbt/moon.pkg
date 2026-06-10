@@ -10,9 +10,9 @@
 // library packages are imported under short aliases (e.g. `@dir`).
 import {
   "Suquster/moonbit-pathfinding/src/advanced" @adv,
-  "Suquster/moonbit-pathfinding/src/core" @core,
+  "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/directed" @dir,
-  "Suquster/moonbit-pathfinding/src/proofs" @proofs,
+  "Suquster/moonbit-pathfinding/src/proofs",
   "Suquster/moonbit-pathfinding/src/undirected" @und,
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }

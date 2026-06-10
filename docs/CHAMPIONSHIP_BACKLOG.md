@@ -2,7 +2,7 @@
 
 > Search time: 2026-05-31 17:00:00 Asia/Shanghai
 > Freshness: realtime-level official contest information, crawled from the 2026 MoonBit Software Synthesis Challenge page.
-> Scope: `taoyouce/moonbit-pathfinding`
+> Scope: `Suquster/moonbit-pathfinding`
 
 This backlog keeps the project aligned with the official judging model and
 turns every discovered gap into a verifiable task. It is intentionally stricter
@@ -33,7 +33,7 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
 
 ## Current Baseline
 
-- Package: `taoyouce/moonbit-pathfinding` v0.0.1.
+- Package: `Suquster/moonbit-pathfinding` v0.0.1.
 - Toolchain observed locally: `moon 0.1.20260427`.
 - Baseline before first fix: `moon test` reported 147 passed, 0 failed.
 - After first fix: `moon test` reported 150 passed, 0 failed.
@@ -79,7 +79,7 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
 - [x] Make the package publish-ready.
   - Acceptance: license, README, semver, changelog, package metadata, and mooncakes instructions are internally consistent.
   - Evidence: `moon.mod.json` now points mooncakes to `README.md`, includes repository/homepage/license/keywords/description metadata; `.github/workflows/release.yml` no longer masks publish failures and materializes mooncakes credentials from CI secrets; `scripts/release_guard.ps1` checks metadata, README/changelog/license consistency, workflow hard gates, `moon package`, and `moon publish --dry-run`; `docs/release/latest-release-readiness.{json,md}` stores evidence.
-  - Verification: `pwsh -File scripts\release_guard.ps1` exited 0 with `pass-with-warnings`; `moon package` produced `_build\publish\taoyouce-moonbit-pathfinding-0.0.1.zip`; `moon publish --dry-run` is blocked locally by missing mooncakes credentials and recorded as an environment warning rather than a false publish claim.
+  - Verification: `pwsh -File scripts\release_guard.ps1` exited 0 with `pass-with-warnings`; `moon package` produced `_build\publish\Suquster-moonbit-pathfinding-0.0.1.zip`; `moon publish --dry-run` is blocked locally by missing mooncakes credentials and recorded as an environment warning rather than a false publish claim.
 
 ### P1 - Engineering Quality
 

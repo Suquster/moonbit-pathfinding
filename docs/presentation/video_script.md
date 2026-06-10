@@ -28,7 +28,7 @@
 
 ### Hook (0:00-0:10)
 
-> “大家好，我是 taoyouce。今天展示 moonbit-pathfinding：一个 MoonBit 原生路径规划与图算法库。它的核心卖点不是一句口号，而是可执行文档、运行时 proof predicates 和可复现验收命令。”
+> “大家好，我是 Suquster。今天展示 moonbit-pathfinding：一个 MoonBit 原生路径规划与图算法库。它的核心卖点不是一句口号，而是可执行文档、运行时 proof predicates 和可复现验收命令。”
 
 ### 问题陈述 (0:10-0:45)
 

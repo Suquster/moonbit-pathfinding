@@ -9,10 +9,10 @@
 // NOTE: the local default alias of this folder is `pbt`; to avoid collisions,
 // library packages are imported under short aliases (e.g. `@dir`).
 import {
-  "taoyouce/moonbit-pathfinding/src/advanced" @adv,
-  "taoyouce/moonbit-pathfinding/src/core" @core,
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
-  "taoyouce/moonbit-pathfinding/src/proofs" @proofs,
-  "taoyouce/moonbit-pathfinding/src/undirected" @und,
-  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/advanced" @adv,
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/proofs",
+  "Suquster/moonbit-pathfinding/src/undirected" @und,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }

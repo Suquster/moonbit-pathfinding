@@ -17,22 +17,22 @@
 /// algorithms never need them; this keeps the trait implementable by exotic
 /// weight types (e.g. tropical semirings, lexicographic tuples, ...).
 pub(open) trait Weight: Compare + Eq {
-  zero() -> Self
-  infinity() -> Self
-  add(Self, Self) -> Self
+  fn zero() -> Self
+  fn infinity() -> Self
+  fn add(Self, Self) -> Self
 
   /// Saturating subtraction: `sub(a, b)` returns `a - b` when `a >= b`,
   /// and `zero()` otherwise. The "saturating-at-zero" semantics are the
   /// correct choice for the **absolute-difference** use cases in the
   /// library (ALT heuristic, Bellman-Ford potential reweighing), where
   /// a negative result is never desired.
-  sub(Self, Self) -> Self
+  fn sub(Self, Self) -> Self
 }
 
 ///|
 /// Additive identity for `Int` weights: returns `0`, the neutral element of
 /// integer addition (`x + zero() == x`).
-pub impl Weight for Int with zero() {
+pub impl Weight for Int with fn zero() {
   0
 }
 
@@ -40,7 +40,7 @@ pub impl Weight for Int with zero() {
 /// Upper bound for `Int` weights: returns `2^31 - 1` (`Int::max_value`).
 /// Acts as "unreachable" sentinel in algorithms like Floyd-Warshall;
 /// `add` is saturating so this value is absorbing.
-pub impl Weight for Int with infinity() {
+pub impl Weight for Int with fn infinity() {
   // 2^31 - 1, far enough for practical graphs without overflowing on add.
   2147483647
 }
@@ -49,7 +49,7 @@ pub impl Weight for Int with infinity() {
 /// Saturating addition for `Int` weights. If either operand equals
 /// `infinity()` (2^31 - 1), the result is also `infinity()`, preventing
 /// wrap-around when relaxing edges adjacent to unreachable nodes.
-pub impl Weight for Int with add(a, b) {
+pub impl Weight for Int with fn add(a, b) {
   // Saturating addition: if either operand is "infinity", stay at infinity.
   let inf : Int = 2147483647
   if a == inf || b == inf {
@@ -62,7 +62,7 @@ pub impl Weight for Int with add(a, b) {
 ///|
 /// Additive identity for `Double` weights: returns `0.0`.
 /// Satisfies `x + zero() == x` for every finite `Double`.
-pub impl Weight for Double with zero() {
+pub impl Weight for Double with fn zero() {
   0.0
 }
 
@@ -70,14 +70,14 @@ pub impl Weight for Double with zero() {
 /// Upper bound for `Double` weights: returns IEEE-754 positive infinity
 /// (`@double.infinity`). Propagates through addition by IEEE-754 rules,
 /// so no explicit saturation branch is needed.
-pub impl Weight for Double with infinity() {
+pub impl Weight for Double with fn infinity() {
   @double.infinity
 }
 
 ///|
 /// Addition for `Double` weights, delegating to IEEE-754 `+`.
 /// Infinity absorption and NaN propagation follow IEEE-754 semantics.
-pub impl Weight for Double with add(a, b) {
+pub impl Weight for Double with fn add(a, b) {
   a + b
 }
 
@@ -85,7 +85,7 @@ pub impl Weight for Double with add(a, b) {
 /// Saturating subtraction for `Int` weights.
 /// Returns `a - b` when `a >= b`, otherwise `0`. Treats `infinity() - x`
 /// as `infinity()` (absorbing), mirroring the add-side saturation.
-pub impl Weight for Int with sub(a, b) {
+pub impl Weight for Int with fn sub(a, b) {
   let inf : Int = 2147483647
   if a == inf {
     inf
@@ -101,7 +101,7 @@ pub impl Weight for Int with sub(a, b) {
 /// Delegates to IEEE-754 `-`, then clamps any negative outcome to `0.0`
 /// to preserve the "distance-like" non-negative invariant required by
 /// ALT's triangle-inequality heuristic.
-pub impl Weight for Double with sub(a, b) {
+pub impl Weight for Double with fn sub(a, b) {
   let d = a - b
   if d < 0.0 {
     0.0

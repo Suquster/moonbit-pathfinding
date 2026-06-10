@@ -42,11 +42,11 @@ pub struct Landmark[N, W] {
 /// Run single-source Dijkstra on a successor function, returning the map
 /// from every reachable node to its distance from `source`. A helper we
 /// reuse for landmark-table construction.
-fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] dijkstra_from(
+fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra_from(
   source : N,
   successors : (N) -> Array[(N, W)],
 ) -> Map[N, W] {
-  let dist : Map[N, W] = Map::new()
+  let dist : Map[N, W] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   dist[source] = zero
@@ -78,7 +78,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] dijkstra_from(
 /// start from `nodes[0]`, then iteratively pick the node whose minimum
 /// distance to the already-chosen landmark set is largest. Produces a
 /// landmark set that spreads across the graph rather than clustering.
-fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] pick_landmarks(
+fn[N : Eq + Hash, W : @core.Weight + Compare] pick_landmarks(
   nodes : Array[N],
   successors : (N) -> Array[(N, W)],
   k : Int,
@@ -167,7 +167,7 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_preprocess(
   let landmarks = pick_landmarks(nodes, successors, num_landmarks)
   // Build the reverse-edge map once so we can compute dist_to via
   // Dijkstra on the reverse graph.
-  let rev_map : Map[N, Array[(N, W)]] = Map::new()
+  let rev_map : Map[N, Array[(N, W)]] = Map([])
   for n in nodes {
     rev_map[n] = []
   }
@@ -180,8 +180,8 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_preprocess(
     }
   }
   let reverse_succ = fn(n : N) -> Array[(N, W)] { rev_map.get(n).unwrap_or([]) }
-  let dist_from : Map[N, Map[N, W]] = Map::new()
-  let dist_to : Map[N, Map[N, W]] = Map::new()
+  let dist_from : Map[N, Map[N, W]] = Map([])
+  let dist_to : Map[N, Map[N, W]] = Map([])
   for l in landmarks {
     // dist_from[l][n] = dist(l, n) on the original graph
     dist_from[l] = dijkstra_from(l, successors)
@@ -218,7 +218,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_heuristic(
     // Direction 1: triangle using dist_from (l → ·).
     //   h1 = dist_from[l][node] - dist_from[l][target],
     //   admissible when both are finite.
-    let from_table = lm.dist_from.get(l).unwrap_or(Map::new())
+    let from_table = lm.dist_from.get(l).unwrap_or(Map([]))
     match (from_table.get(node), from_table.get(target)) {
       (Some(fn_), Some(ft)) =>
         if fn_ != inf && ft != inf && fn_ >= ft {
@@ -232,7 +232,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_heuristic(
     // Direction 2: triangle using dist_to (· → l).
     //   h2 = dist_to[l][target] - dist_to[l][node],
     //   admissible when both are finite.
-    let to_table = lm.dist_to.get(l).unwrap_or(Map::new())
+    let to_table = lm.dist_to.get(l).unwrap_or(Map([]))
     match (to_table.get(node), to_table.get(target)) {
       (Some(tn), Some(tt)) =>
         if tn != inf && tt != inf && tt >= tn {
@@ -261,8 +261,8 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(
   if start == goal {
     return Some(([start], @core.Weight::zero()))
   }
-  let g_cost : Map[N, W] = Map::new()
-  let parents : Map[N, N] = Map::new()
+  let g_cost : Map[N, W] = Map([])
+  let parents : Map[N, N] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   g_cost[start] = zero

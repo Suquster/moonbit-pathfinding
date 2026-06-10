@@ -12,7 +12,7 @@ test "edmonds_karp textbook 4-node example" {
   // Max flow = 2 + 2 + 1 = 5.
   // Verified by min-cut: S={0} -> cut = cap(0,1) + cap(0,2) = 3 + 2 = 5.
   let nodes = [0, 1, 2, 3]
-  let cap : Map[(Int, Int), Int] = Map::new()
+  let cap : Map[(Int, Int), Int] = Map([])
   cap[(0, 1)] = 3
   cap[(0, 2)] = 2
   cap[(1, 2)] = 1
@@ -25,7 +25,7 @@ test "edmonds_karp textbook 4-node example" {
 ///|
 test "edmonds_karp disconnected graph" {
   let nodes = [0, 1]
-  let cap : Map[(Int, Int), Int] = Map::new()
+  let cap : Map[(Int, Int), Int] = Map([])
   let flow = edmonds_karp(nodes, cap, 0, 1)
   inspect(flow, content="0")
 }
@@ -47,7 +47,7 @@ test "edmonds_karp CLRS 6-node multi-path network" {
   //   capacity  = 12 + 7 + 4 = 23.
   // Therefore max flow = 23.
   let nodes = [0, 1, 2, 3, 4, 5]
-  let cap : Map[(Int, Int), Int] = Map::new()
+  let cap : Map[(Int, Int), Int] = Map([])
   cap[(0, 1)] = 16
   cap[(0, 2)] = 13
   cap[(1, 2)] = 10
@@ -70,7 +70,7 @@ test "edmonds_karp CLRS 6-node multi-path network" {
 test "whitebox: edmonds_karp source equals sink returns zero flow" {
   // 3 个节点带容量;source 和 sink 都是 0。
   let nodes = [0, 1, 2]
-  let cap : Map[(Int, Int), Int] = Map::new()
+  let cap : Map[(Int, Int), Int] = Map([])
   cap[(0, 1)] = 10
   cap[(1, 2)] = 10
   cap[(2, 0)] = 10

@@ -31,6 +31,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- feat(undirected): add Prim's MST `prim_mst` with adjacency-function API
+  (新增 Prim 最小生成树，惰性二叉堆实现，支持非连通图生成森林)
+- feat(directed): add DAG shortest path `dag_shortest_path` via
+  topological-order relaxation, supporting negative edge weights
+  (新增 DAG 最短路，拓扑序松弛，O(V+E)，支持负权边)
+- feat(undirected): add `bridges`, `articulation_points`, and the combined
+  `bridges_and_articulation_points` (iterative Tarjan, single DFS pass)
+  (新增桥与割点检测，迭代式 DFS，深图不爆栈)
+- feat(directed): add `bidirectional_dijkstra` meeting-in-the-middle
+  shortest path (新增双向 Dijkstra，长路径上约 2 倍加速)
+- feat(core): add `PQueue::peek` for O(1) minimum inspection
+  (新增优先队列 peek 方法)
 - release: add `scripts/release_guard.ps1` to audit mooncakes package metadata,
   `moon package` artifact generation, and local `moon publish --dry-run`
   environment status.
@@ -93,5 +105,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project adopts the "successor function" API philosophy from Rust's
   `pathfinding` crate, with independent algorithm implementations.
 
-[Unreleased]: https://github.com/taoyouce/moonbit-pathfinding/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/taoyouce/moonbit-pathfinding/releases/tag/v0.0.1
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/v0.0.1

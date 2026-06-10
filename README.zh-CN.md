@@ -3,9 +3,9 @@
 > 🌐 Language: **简体中文** · [English](./README.md)
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
-[![CI](https://github.com/taoyouce/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/taoyouce/moonbit-pathfinding/actions/workflows/ci.yml)
+[![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-v0.0.1-blue)](./CHANGELOG.md)
-[![mooncakes.io](https://img.shields.io/badge/mooncakes.io-taoyouce%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/taoyouce/moonbit-pathfinding)
+[![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
 [![Playground](https://img.shields.io/badge/Playground-planned-lightgrey)](#playground)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
 [![OSC 2026](https://img.shields.io/badge/OSC_2026-participant-brightgreen)](https://moonbitlang.github.io/OSC2026/)
@@ -46,14 +46,14 @@ MIT OR Apache-2.0 双许可）。核心借鉴：
 在你的 MoonBit 项目根目录执行：
 
 ```powershell
-moon add taoyouce/moonbit-pathfinding
+moon add Suquster/moonbit-pathfinding
 ```
 
 在需要调用算法的包 `moon.pkg` 里声明导入：
 
 ```moonbit
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @directed,
+  "Suquster/moonbit-pathfinding/src/directed" @directed,
 }
 ```
 
@@ -277,4 +277,4 @@ smoke artifact 用于端到端包执行守卫。
 
 ## License · 许可证
 
-Apache License 2.0 © 2026 taoyouce. 详见 [LICENSE](./LICENSE)。
+Apache License 2.0 © 2026 Suquster. 详见 [LICENSE](./LICENSE)。

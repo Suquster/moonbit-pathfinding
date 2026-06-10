@@ -8,7 +8,7 @@ test "topo_sort on DAG returns valid ordering" {
   match result {
     Ok(order) => {
       // 0 must come before 1, 2; 1 and 2 must come before 3.
-      let idx : Map[Int, Int] = Map::new()
+      let idx : Map[Int, Int] = Map([])
       for i in 0..<order.length() {
         idx[order[i]] = i
       }

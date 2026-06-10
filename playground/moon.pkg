@@ -12,7 +12,7 @@
 // the upstream src/ algorithms; the playground can never silently diverge
 // from the formally-verified library underneath it.
 import {
-  "taoyouce/moonbit-pathfinding/src/advanced" @adv,
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
-  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/advanced" @adv,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }

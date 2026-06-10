@@ -26,7 +26,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(
   edges : Array[(N, N, W)],
   start : N,
 ) -> Result[Map[N, W], @core.PathError] {
-  let dist : Map[N, W] = Map::new()
+  let dist : Map[N, W] = Map([])
   dist[start] = @core.Weight::zero()
   // Relax |V| - 1 times.
   let v_count = nodes.length()

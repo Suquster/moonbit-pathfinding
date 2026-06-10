@@ -21,9 +21,9 @@ pub fn[N : Eq + Hash] tarjan_scc(
   nodes : Array[N],
   successors : (N) -> Array[N],
 ) -> Array[Array[N]] {
-  let index_map : Map[N, Int] = Map::new()
-  let lowlink : Map[N, Int] = Map::new()
-  let on_stack : Map[N, Bool] = Map::new()
+  let index_map : Map[N, Int] = Map([])
+  let lowlink : Map[N, Int] = Map([])
+  let on_stack : Map[N, Bool] = Map([])
   let stack : Array[N] = []
   let mut idx = 0
   let sccs : Array[Array[N]] = []

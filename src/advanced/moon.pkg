@@ -1,4 +1,4 @@
-// Package: taoyouce/moonbit-pathfinding/src/advanced
+// Package: Suquster/moonbit-pathfinding/src/advanced
 //
 // Houses frontier algorithms — Rust `pathfinding` crate does NOT ship them
 // (Requirement R18, Milestone 4 · tasks.md 35/36/37):
@@ -9,10 +9,10 @@
 //
 // The `@core` import is used for `Weight`/`PQueue` facilities.
 import {
-  "taoyouce/moonbit-pathfinding/src/core" @core,
+  "Suquster/moonbit-pathfinding/src/core",
 }
 
 // Blackbox tests compare CH/ALT against baseline Dijkstra.
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
 } for "test"

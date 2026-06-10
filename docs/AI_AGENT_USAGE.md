@@ -10,11 +10,11 @@ empty so `README.mbt.md` can run as executable documentation.
 
 | Task | Package | Common alias |
 |------|---------|--------------|
-| BFS on unweighted graphs | `taoyouce/moonbit-pathfinding/src/unweighted` | `@uw` |
-| Dijkstra, A*, Bellman-Ford, DFS, SCC, flow | `taoyouce/moonbit-pathfinding/src/directed` | `@dir` |
-| Kruskal, connected components, matching | `taoyouce/moonbit-pathfinding/src/undirected` | `@und` |
-| CH, JPS, ALT | `taoyouce/moonbit-pathfinding/src/advanced` | `@adv` |
-| Runtime proof predicates | `taoyouce/moonbit-pathfinding/src/proofs` | `@proofs` |
+| BFS on unweighted graphs | `Suquster/moonbit-pathfinding/src/unweighted` | `@uw` |
+| Dijkstra, A*, Bellman-Ford, DFS, SCC, flow | `Suquster/moonbit-pathfinding/src/directed` | `@dir` |
+| Kruskal, connected components, matching | `Suquster/moonbit-pathfinding/src/undirected` | `@und` |
+| CH, JPS, ALT | `Suquster/moonbit-pathfinding/src/advanced` | `@adv` |
+| Runtime proof predicates | `Suquster/moonbit-pathfinding/src/proofs` | `@proofs` |
 
 ## Import Template
 
@@ -22,10 +22,10 @@ In a MoonBit package inside this workspace, declare imports in `moon.pkg`:
 
 ```moonbit
 import {
-  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
-  "taoyouce/moonbit-pathfinding/src/undirected" @und,
-  "taoyouce/moonbit-pathfinding/src/proofs" @proofs,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/undirected" @und,
+  "Suquster/moonbit-pathfinding/src/proofs" @proofs,
 }
 ```
 

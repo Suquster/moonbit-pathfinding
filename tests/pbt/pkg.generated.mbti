@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "taoyouce/moonbit-pathfinding/tests/pbt"
+
+// Values
+pub fn gen_dag(Int, Int, Double) -> (Array[Int], Array[(Int, Int)])
+
+pub fn gen_nonneg_graph(Int, Int, Double, Int) -> (Array[Int], Array[(Int, Int, Int)])
+
+pub fn gen_with_neg_cycle(Int, Int, Int, Int) -> (Array[Int], Array[(Int, Int, Int)])
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

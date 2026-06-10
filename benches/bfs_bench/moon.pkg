@@ -1,0 +1,8 @@
+// Package: benches/bfs_bench
+//
+// Smoke guard plus native `moon bench` workload for the `bfs` unweighted
+// shortest-path algorithm.
+import {
+  "moonbitlang/core/bench" @bench,
+  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+}

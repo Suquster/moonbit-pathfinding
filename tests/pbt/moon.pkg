@@ -1,0 +1,18 @@
+// Package declaration for property-based tests (PBT).
+//
+// This test package hosts:
+//   - `gen.mbt`                         — reusable random-graph generators
+//     (nonneg / DAG / negative-cycle)
+//   - `prop_NN_*.mbt` (created in 27.2+) — the 12 correctness properties
+//     defined in design.md §6.
+//
+// NOTE: the local default alias of this folder is `pbt`; to avoid collisions,
+// library packages are imported under short aliases (e.g. `@dir`).
+import {
+  "taoyouce/moonbit-pathfinding/src/advanced" @adv,
+  "taoyouce/moonbit-pathfinding/src/core" @core,
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "taoyouce/moonbit-pathfinding/src/proofs" @proofs,
+  "taoyouce/moonbit-pathfinding/src/undirected" @und,
+  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+}

@@ -1,0 +1,3 @@
+import {
+  "taoyouce/moonbit-pathfinding/src/core" @core,
+}

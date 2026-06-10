@@ -1,0 +1,22 @@
+// Runnable example: network_routing
+//
+// Fulfils Requirement 9.3 / 9.4 by using `@dir.dijkstra` to compute
+// minimum-latency routes across a 10-node simulated backbone network.
+//
+// The scenario is inspired by NSLB (Network Simulation Lab / 网络模拟实验),
+// a common teaching setup where each router is assigned a capital letter
+// ("Router A" .. "Router J") and links carry a millisecond-scale latency.
+//
+// Run with:
+//   moon run examples/network_routing
+//
+// Node type : Int (router index 0..9, displayed as "Router A".."Router J")
+// Weight    : Double (one-way link latency in milliseconds)
+
+import {
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+}
+
+options(
+  "is-main": true,
+)

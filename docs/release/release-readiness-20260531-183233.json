@@ -1,0 +1,65 @@
+﻿{
+  "schema": "moonbit-pathfinding.release-readiness.v1",
+  "generated_at": "2026-05-31T18:32:33.2176807+08:00",
+  "generated_by": "scripts/release_guard.ps1",
+  "moon_version": "moon 0.1.20260427 (48d7def 2026-04-27)\n\nFeature flags enabled: rr_moon_pkg",
+  "status": "pass-with-warnings",
+  "module": {
+    "name": "taoyouce/moonbit-pathfinding",
+    "version": "0.0.1",
+    "readme": "README.md",
+    "repository": "https://github.com/taoyouce/moonbit-pathfinding",
+    "homepage": "https://github.com/taoyouce/moonbit-pathfinding#readme",
+    "license": "Apache-2.0"
+  },
+  "checks": {
+    "module_name": true,
+    "version_semver": true,
+    "readme_exists": true,
+    "repository_url": true,
+    "homepage_url": true,
+    "license_spdx": true,
+    "keywords": true,
+    "description": true,
+    "license_file": true,
+    "changelog_unreleased": true,
+    "changelog_current_version": true,
+    "readme_badge_version": true,
+    "readme_mbt_exists": true,
+    "release_workflow_no_continue_on_error": true,
+    "release_workflow_no_publish_true": true,
+    "release_workflow_credentials": true,
+    "package_artifact": true
+  },
+  "package_path": "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\taoyouce-moonbit-pathfinding-0.0.1.zip",
+  "package": {
+    "command": [
+      "moon",
+      "package"
+    ],
+    "exit_code": 0,
+    "output": [
+      "Running moon check ...",
+      "Finished. moon: no work to do",
+      "Check passed",
+      "Package to D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\taoyouce-moonbit-pathfinding-0.0.1.zip"
+    ]
+  },
+  "publish_dry_run_status": "blocked-missing-credentials",
+  "publish_dry_run": {
+    "command": [
+      "moon",
+      "publish",
+      "--dry-run"
+    ],
+    "exit_code": -1,
+    "output": [
+      "failed to open credentials file: C:\\Users\\hp\\.moon\\credentials.json, please login first",
+      "Error: `moon publish` failed"
+    ]
+  },
+  "failures": [],
+  "warnings": [
+    "moon publish --dry-run is blocked locally by missing mooncakes credentials; run moon login or configure CI secrets before publishing."
+  ]
+}

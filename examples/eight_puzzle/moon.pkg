@@ -1,0 +1,27 @@
+// Runnable example: eight_puzzle
+//
+// Demonstrates Requirement 9.3 / 9.4 by solving the classic 3x3 sliding-tile
+// puzzle with `@dir.astar` using a Manhattan-distance heuristic.
+//
+// Run with:
+//   moon run examples/eight_puzzle
+//
+// Board convention:
+//   0 marks the blank square; tiles 1..8 are the numbered pieces.
+//   The goal configuration is "123456780":
+//     1 2 3
+//     4 5 6
+//     7 8 _
+//
+// Node type: we encode each 3x3 state as a 9-character `String` (digits
+// '0'..'8'). `String` already satisfies `Eq + Hash` (Requirement 4.5), so no
+// custom wrapper is needed — this matches the design note in tasks.md 17.2
+// ("MoonBit 无原生固定长度数组 hash，可以用 String").
+
+import {
+  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+}
+
+options(
+  "is-main": true,
+)

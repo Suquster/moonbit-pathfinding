@@ -1,0 +1,49 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "taoyouce/moonbit-pathfinding/src/core"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct DSU[N] {
+  // private fields
+}
+pub fn[N : Eq + Hash] DSU::find(Self[N], N) -> N
+pub fn[N : Eq + Hash] DSU::make_set(Self[N], N) -> Unit
+pub fn[N] DSU::new() -> Self[N]
+pub fn[N : Eq + Hash] DSU::same(Self[N], N, N) -> Bool
+pub fn[N : Eq + Hash] DSU::union(Self[N], N, N) -> Bool
+
+pub struct PQueue[N, W] {
+  // private fields
+}
+pub fn[N, W] PQueue::is_empty(Self[N, W]) -> Bool
+pub fn[N, W] PQueue::len(Self[N, W]) -> Int
+pub fn[N, W] PQueue::new() -> Self[N, W]
+pub fn[N, W : Compare] PQueue::pop(Self[N, W]) -> (W, N)?
+pub fn[N, W : Compare] PQueue::push(Self[N, W], W, N) -> Unit
+
+pub(all) enum PathError {
+  NegativeCycle
+  CycleDetected
+  InvalidInput(String)
+  InvalidK(Int)
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+pub(open) trait Weight : Compare + Eq {
+  zero() -> Self
+  infinity() -> Self
+  add(Self, Self) -> Self
+  sub(Self, Self) -> Self
+}
+pub impl Weight for Int
+pub impl Weight for Double
+

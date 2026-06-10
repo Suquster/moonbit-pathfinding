@@ -1,0 +1,50 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "taoyouce/moonbit-pathfinding/src/proofs"
+
+import {
+  "taoyouce/moonbit-pathfinding/src/core",
+}
+
+// Values
+pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) -> Bool
+
+pub fn[N : Eq + Hash] bfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
+
+pub fn[N, W : @core.Weight] check_cost_matches_path((Array[N], W)?, (N, N) -> W?) -> Bool
+
+pub fn[N : Eq] check_edges_valid(Array[N]?, N, (N) -> Array[N]) -> Bool
+
+pub fn[N : Eq, W] check_edges_valid_weighted((Array[N], W)?, N, (N) -> Array[(N, W)]) -> Bool
+
+pub fn[N] check_ends_at_goal(Array[N]?, (N) -> Bool) -> Bool
+
+pub fn[N : Eq + Hash] check_minimality(Array[N]?, N, (N) -> Array[N], (N) -> Bool) -> Bool
+
+pub fn[N, W : @core.Weight] check_non_negativity((Array[N], W)?) -> Bool
+
+pub fn[N : Eq + Hash] check_none_witness(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
+
+pub fn[N : Eq] check_starts_at_start(Array[N]?, N) -> Bool
+
+pub fn[N] check_termination_measure(Array[N], Int) -> Bool
+
+pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(N, W)], (N, N) -> W?) -> Bool
+
+pub fn[W : @core.Weight] is_non_negative(W) -> Bool
+
+pub fn[N : Eq + Hash] is_reachable(N, (N) -> Bool, (N) -> Array[N], Array[N]) -> Bool
+
+pub fn[N : Eq] is_valid_path(Array[N], N, (N) -> Array[N]) -> Bool
+
+pub fn[N, W : @core.Weight] path_cost(Array[N], (N, N) -> W?) -> W?
+
+pub fn[N, W : @core.Weight] require_non_negative_edges(Array[(N, N)], (N, N) -> W?) -> Bool
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

@@ -1,0 +1,83 @@
+﻿{
+  "schema": "moonbit-pathfinding.benchmark-guard.v1",
+  "generated_at": "2026-05-31T17:53:07.7451308+08:00",
+  "generated_by": "scripts/benchmark_guard.ps1",
+  "status": "pass",
+  "baseline_path": "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\benches\\results\\latest-smoke.json",
+  "current_path": "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\benchmark-guard\\20260531-175307\\latest-smoke.json",
+  "target": "wasm-gc",
+  "release": true,
+  "warmup": 1,
+  "iterations": 5,
+  "max_regression_percent": 50.0,
+  "measurement_scope": "Compares median end-to-end smoke timings against a checked-in baseline. Intended as an early regression guard, not a cross-language performance claim.",
+  "comparisons": [
+    {
+      "algorithm": "BFS",
+      "baseline_median_ms": 624.144,
+      "current_median_ms": 637.798,
+      "delta_ms": 13.654,
+      "delta_percent": 2.188,
+      "threshold_percent": 50.0,
+      "status": "pass"
+    },
+    {
+      "algorithm": "Dijkstra",
+      "baseline_median_ms": 636.03,
+      "current_median_ms": 637.221,
+      "delta_ms": 1.191,
+      "delta_percent": 0.187,
+      "threshold_percent": 50.0,
+      "status": "pass"
+    },
+    {
+      "algorithm": "A*",
+      "baseline_median_ms": 599.78,
+      "current_median_ms": 614.885,
+      "delta_ms": 15.105,
+      "delta_percent": 2.518,
+      "threshold_percent": 50.0,
+      "status": "pass"
+    },
+    {
+      "algorithm": "Kruskal MST",
+      "baseline_median_ms": 585.356,
+      "current_median_ms": 600.807,
+      "delta_ms": 15.451,
+      "delta_percent": 2.64,
+      "threshold_percent": 50.0,
+      "status": "pass"
+    }
+  ],
+  "failures": [],
+  "benchmark_output": [
+    "=== BENCH BFS: warmup=1 iterations=5 target=wasm-gc release=True ===",
+    "BFS iter 1/5: 1095.318 ms",
+    "BFS iter 2/5: 611.733 ms",
+    "BFS iter 3/5: 637.798 ms",
+    "BFS iter 4/5: 759.47 ms",
+    "BFS iter 5/5: 612.304 ms",
+    "=== BENCH Dijkstra: warmup=1 iterations=5 target=wasm-gc release=True ===",
+    "Dijkstra iter 1/5: 684.04 ms",
+    "Dijkstra iter 2/5: 649.644 ms",
+    "Dijkstra iter 3/5: 637.221 ms",
+    "Dijkstra iter 4/5: 618.282 ms",
+    "Dijkstra iter 5/5: 613.015 ms",
+    "=== BENCH A*: warmup=1 iterations=5 target=wasm-gc release=True ===",
+    "A* iter 1/5: 773.526 ms",
+    "A* iter 2/5: 569.329 ms",
+    "A* iter 3/5: 652.448 ms",
+    "A* iter 4/5: 568.581 ms",
+    "A* iter 5/5: 614.885 ms",
+    "=== BENCH Kruskal MST: warmup=1 iterations=5 target=wasm-gc release=True ===",
+    "Kruskal MST iter 1/5: 600.807 ms",
+    "Kruskal MST iter 2/5: 617.152 ms",
+    "Kruskal MST iter 3/5: 589.133 ms",
+    "Kruskal MST iter 4/5: 576.66 ms",
+    "Kruskal MST iter 5/5: 790.268 ms",
+    "=== BENCHMARK ARTIFACTS ===",
+    "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\benchmark-guard\\20260531-175307\\smoke-wasm-gc-20260531-175309.json",
+    "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\benchmark-guard\\20260531-175307\\latest-smoke.json",
+    "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\benchmark-guard\\20260531-175307\\latest-smoke.md"
+  ]
+}

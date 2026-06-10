@@ -1,0 +1,47 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "taoyouce/moonbit-pathfinding/src/advanced"
+
+import {
+  "taoyouce/moonbit-pathfinding/src/core",
+}
+
+// Values
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_preprocess(Array[N], (N) -> Array[(N, W)], Int) -> Landmark[N, W]
+
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(Landmark[N, W], N, N, (N) -> Array[(N, W)]) -> (Array[N], W)?
+
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_preprocess(Array[N], (N) -> Array[(N, W)]) -> CHGraph[N, W]
+
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_query(CHGraph[N, W], N, N) -> (Array[N], W)?
+
+pub fn jps(JPSGrid, (Int, Int), (Int, Int)) -> (Array[(Int, Int)], Double)?
+
+// Errors
+
+// Types and methods
+pub struct CHGraph[N, W] {
+  nodes : Array[N]
+  level : Map[N, Int]
+  up_adj : Map[N, Array[(N, W)]]
+  dn_adj : Map[N, Array[(N, W)]]
+  shortcut : Map[(N, N), N]
+}
+
+pub struct JPSGrid {
+  width : Int
+  height : Int
+  blocked : Array[Bool]
+}
+pub fn JPSGrid::new(Int, Int, Array[Bool]) -> Self?
+
+pub struct Landmark[N, W] {
+  nodes : Array[N]
+  landmarks : Array[N]
+  dist_from : Map[N, Map[N, W]]
+  dist_to : Map[N, Map[N, W]]
+}
+
+// Type aliases
+
+// Traits
+

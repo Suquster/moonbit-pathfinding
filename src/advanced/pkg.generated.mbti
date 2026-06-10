@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_preprocess(Array[N], (N) -> Array[(N, W)], Int) -> Landmark[N, W]
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(Array[N], (N) -> Array[(N, W)], Int) -> Landmark[N, W]
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(Landmark[N, W], N, N, (N) -> Array[(N, W)]) -> (Array[N], W)?
 

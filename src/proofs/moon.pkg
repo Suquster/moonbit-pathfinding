@@ -1,4 +1,4 @@
-// Package: taoyouce/moonbit-pathfinding/src/proofs
+// Package: Suquster/moonbit-pathfinding/src/proofs
 //
 // Hosts shared mathematical predicates plus per-algorithm `*_proof.mbt`
 // files that form the scaffolding for `moon prove` integration
@@ -8,7 +8,7 @@
 //   * `@core` — for `Weight` trait / `PathError` enum referenced in
 //     cost & error-typed predicates.
 import {
-  "taoyouce/moonbit-pathfinding/src/core" @core,
+  "Suquster/moonbit-pathfinding/src/core",
 }
 
 options(

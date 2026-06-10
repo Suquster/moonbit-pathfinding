@@ -61,9 +61,9 @@
 
 如您目击或遭受滥用、骚扰或其他不被接受的行为,可通过以下渠道向负责执行的社区领导者举报：
 
-- **项目维护者 GitHub**: [@taoyouce](https://github.com/taoyouce)
+- **项目维护者 GitHub**: [@Suquster](https://github.com/Suquster)
 - **私密联系渠道**: 如需非公开处理，请优先使用维护者 GitHub 主页列出的公开联系方式联系；不要在公开 issue 中披露敏感个人信息。
-- **仓库 Issue**: 对不涉及隐私的信息，可在 <https://github.com/taoyouce/moonbit-pathfinding> 创建标签为 `conduct` 的 issue。
+- **仓库 Issue**: 对不涉及隐私的信息，可在 <https://github.com/Suquster/moonbit-pathfinding> 创建标签为 `conduct` 的 issue。
 
 所有投诉都会经过迅速且公平的审查和调查。
 

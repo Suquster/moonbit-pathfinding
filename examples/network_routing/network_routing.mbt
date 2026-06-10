@@ -76,7 +76,7 @@ fn backbone_edges() -> Array[(Int, Int, Double)] {
 fn build_adjacency(
   edges : Array[(Int, Int, Double)],
 ) -> Map[Int, Array[(Int, Double)]] {
-  let adj : Map[Int, Array[(Int, Double)]] = Map::new()
+  let adj : Map[Int, Array[(Int, Double)]] = Map([])
   for i in 0..<ROUTER_COUNT {
     adj[i] = []
   }

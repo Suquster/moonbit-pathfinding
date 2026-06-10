@@ -22,7 +22,7 @@ test "PBT 6: topological_sort respects edge direction on DAGs" {
     match @dir.topological_sort(nodes, fn(i) { adj[i] }) {
       Ok(order) => {
         // Build index: node -> position in `order`.
-        let idx : Map[Int, Int] = Map::new()
+        let idx : Map[Int, Int] = Map([])
         let mut i = 0
         while i < order.length() {
           idx[order[i]] = i

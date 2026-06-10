@@ -25,13 +25,13 @@
 ///
 /// ## Complexity
 /// Time: O((V + E) log V). Space: O(V).
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] dijkstra(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(
   start : N,
   successors : (N) -> Array[(N, W)],
   goal : (N) -> Bool,
 ) -> (Array[N], W)? {
-  let dist : Map[N, W] = Map::new()
-  let parents : Map[N, N] = Map::new()
+  let dist : Map[N, W] = Map([])
+  let parents : Map[N, N] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   dist[start] = zero

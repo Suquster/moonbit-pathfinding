@@ -58,7 +58,7 @@ const CH_WITNESS_HOPS : Int = 5
 /// `Some(cost)` when a path of at most `CH_WITNESS_HOPS` edges exists.
 /// This runs per shortcut-candidate during preprocessing, which keeps
 /// witness search total cost bounded.
-fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_witness(
+fn[N : Eq + Hash, W : @core.Weight + Compare] ch_witness(
   src : N,
   dst : N,
   via : N,
@@ -66,7 +66,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_witness(
   successors : (N) -> Array[(N, W)],
   contracted : Map[N, Bool],
 ) -> W? {
-  let dist : Map[N, W] = Map::new()
+  let dist : Map[N, W] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   dist[src] = zero
@@ -113,14 +113,14 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_witness(
 /// `u ~> v` path of equal-or-smaller cost avoiding the contracted node.
 ///
 /// Returns a fully populated `CHGraph` ready for `ch_query`.
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_preprocess(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
   nodes : Array[N],
   successors : (N) -> Array[(N, W)],
 ) -> CHGraph[N, W] {
-  let level : Map[N, Int] = Map::new()
-  let up_adj : Map[N, Array[(N, W)]] = Map::new()
-  let dn_adj : Map[N, Array[(N, W)]] = Map::new()
-  let shortcut : Map[(N, N), N] = Map::new()
+  let level : Map[N, Int] = Map([])
+  let up_adj : Map[N, Array[(N, W)]] = Map([])
+  let dn_adj : Map[N, Array[(N, W)]] = Map([])
+  let shortcut : Map[(N, N), N] = Map([])
   // Start with everything unordered; we assign levels 0..n-1 in input order
   // and contract them one by one.
   for i in 0..<nodes.length() {
@@ -128,11 +128,11 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_preprocess(
   }
   // Residual successor view: starts as the original graph, grows with
   // each added shortcut.
-  let residual : Map[N, Array[(N, W)]] = Map::new()
+  let residual : Map[N, Array[(N, W)]] = Map([])
   for n in nodes {
     residual[n] = successors(n)
   }
-  let contracted : Map[N, Bool] = Map::new()
+  let contracted : Map[N, Bool] = Map([])
   for i in 0..<nodes.length() {
     let v = nodes[i]
     // Enumerate (u -> v -> w) pairs on the residual graph.
@@ -295,13 +295,13 @@ fn[N : Eq + Hash, W] expand_chain(
 ///|
 /// Upward Dijkstra on the CH up-hierarchy. Returns distance + parent maps
 /// so `ch_query` can reconstruct CH-level paths before expanding them.
-fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_up_dijkstra(
+fn[N : Eq + Hash, W : @core.Weight + Compare] ch_up_dijkstra(
   graph : CHGraph[N, W],
   source : N,
   use_up : Bool,
 ) -> (Map[N, W], Map[N, N]) {
-  let dist : Map[N, W] = Map::new()
-  let parents : Map[N, N] = Map::new()
+  let dist : Map[N, W] = Map([])
+  let parents : Map[N, N] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   dist[source] = zero
@@ -347,7 +347,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_up_dijkstra(
 ///
 /// Returns `(path, cost)` where `path` lists every **original** node from
 /// `source` to `target` in order, matching the Dijkstra-equivalent output.
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] ch_query(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_query(
   graph : CHGraph[N, W],
   source : N,
   target : N,

@@ -5,11 +5,11 @@
   "moon_version": "moon 0.1.20260427 (48d7def 2026-04-27)\n\nFeature flags enabled: rr_moon_pkg",
   "status": "pass-with-warnings",
   "module": {
-    "name": "taoyouce/moonbit-pathfinding",
+    "name": "Suquster/moonbit-pathfinding",
     "version": "0.0.1",
     "readme": "README.md",
-    "repository": "https://github.com/taoyouce/moonbit-pathfinding",
-    "homepage": "https://github.com/taoyouce/moonbit-pathfinding#readme",
+    "repository": "https://github.com/Suquster/moonbit-pathfinding",
+    "homepage": "https://github.com/Suquster/moonbit-pathfinding#readme",
     "license": "Apache-2.0"
   },
   "checks": {
@@ -31,7 +31,7 @@
     "release_workflow_credentials": true,
     "package_artifact": true
   },
-  "package_path": "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\taoyouce-moonbit-pathfinding-0.0.1.zip",
+  "package_path": "D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\Suquster-moonbit-pathfinding-0.0.1.zip",
   "package": {
     "command": [
       "moon",
@@ -42,7 +42,7 @@
       "Running moon check ...",
       "Finished. moon: no work to do",
       "Check passed",
-      "Package to D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\taoyouce-moonbit-pathfinding-0.0.1.zip"
+      "Package to D:\\my\\STUDY\\university\\U_3\\down\\Competitions\\MoonBit国产基础软件开源大赛\\moonbit-pathfinding\\_build\\publish\\Suquster-moonbit-pathfinding-0.0.1.zip"
     ]
   },
   "publish_dry_run_status": "blocked-missing-credentials",

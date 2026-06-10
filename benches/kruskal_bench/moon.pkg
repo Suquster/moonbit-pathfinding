@@ -3,6 +3,6 @@
 // Smoke guard plus native `moon bench` workload for Kruskal's minimum
 // spanning tree on a 1k-node / 10k-edge random graph.
 import {
-  "moonbitlang/core/bench" @bench,
-  "taoyouce/moonbit-pathfinding/src/undirected" @und,
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/undirected" @und,
 }

@@ -14,7 +14,7 @@
 // Weight    : Double (one-way link latency in milliseconds)
 
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
 }
 
 options(

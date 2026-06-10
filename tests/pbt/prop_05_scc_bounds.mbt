@@ -23,7 +23,7 @@ test "PBT 5: tarjan_scc partitions every input node exactly once" {
     // (a) bound
     assert_true(sccs.length() <= n)
     // (b + c) coverage + disjoint: build a seen map.
-    let seen : Map[Int, Bool] = Map::new()
+    let seen : Map[Int, Bool] = Map([])
     for comp in sccs {
       for node in comp {
         // Disjoint: each node appears in at most one SCC.

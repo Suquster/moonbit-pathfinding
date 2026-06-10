@@ -96,7 +96,7 @@ pub fn[N : Eq + Hash] check_minimality(
         return false
       }
 
-      let visited : Map[N, Bool] = Map::new()
+      let visited : Map[N, Bool] = Map([])
       let queue : Array[(N, Int)] = [(start, 0)]
       visited[start] = true
       let mut head = 0

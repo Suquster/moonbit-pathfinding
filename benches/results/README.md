@@ -1,7 +1,7 @@
 # Benchmark Results
 
 This directory stores reproducible benchmark evidence for
-`taoyouce/moonbit-pathfinding`.
+`Suquster/moonbit-pathfinding`.
 
 Current artifacts have two layers:
 

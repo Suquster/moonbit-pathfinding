@@ -29,8 +29,8 @@ pub fn[N : Eq + Hash] dfs(
   // Stack entries are (node, parent_index_in_path_so_far).
   // We track parents via a Map to reconstruct the path on success.
   let stack : Array[N] = [start]
-  let parents : Map[N, N] = Map::new()
-  let visited : Map[N, Bool] = Map::new()
+  let parents : Map[N, N] = Map([])
+  let visited : Map[N, Bool] = Map([])
   visited[start] = true
   while stack.length() > 0 {
     let cur = stack.pop().unwrap()

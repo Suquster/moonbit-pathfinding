@@ -16,7 +16,7 @@ pub fn[N : Eq + Hash] connected_components(
   nodes : Array[N],
   successors : (N) -> Array[N],
 ) -> Array[Array[N]] {
-  let visited : Map[N, Bool] = Map::new()
+  let visited : Map[N, Bool] = Map([])
   let components : Array[Array[N]] = []
   for start in nodes {
     if visited.contains(start) {

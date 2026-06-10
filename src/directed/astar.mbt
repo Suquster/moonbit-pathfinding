@@ -27,14 +27,14 @@
 ///
 /// ## Complexity
 /// Time: O((V + E) log V) worst case; often much better with a good heuristic.
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] astar(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(
   start : N,
   successors : (N) -> Array[(N, W)],
   heuristic : (N) -> W,
   goal : (N) -> Bool,
 ) -> (Array[N], W)? {
-  let g_cost : Map[N, W] = Map::new()
-  let parents : Map[N, N] = Map::new()
+  let g_cost : Map[N, W] = Map([])
+  let parents : Map[N, N] = Map([])
   let pq : @core.PQueue[N, W] = @core.PQueue::new()
   let zero = @core.Weight::zero()
   g_cost[start] = zero

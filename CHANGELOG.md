@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-06-10
+
 ### Added
 - feat(directed): add `dijkstra_all` returning a full `ShortestPathTree` with
   `path_to` / `distance_to` queries (新增 dijkstra_all 全表单源最短路树)
@@ -77,6 +79,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   downgrading it to a best-effort warning.
 - package: use `README.md` as the mooncakes readme and add a homepage URL in
   `moon.mod.json`.
+- fix(advanced): correct ALT heuristic triangle-inequality directions
+  (admissibility) and add early termination on goal settlement
+  (修复 ALT 启发函数可纳性并增加提前终止)
+- perf: iterative JPS jump / DSU find, CH edge-difference contraction order,
+  Yen adjacency prebuild, dense-array Floyd-Warshall, sparse Edmonds-Karp
+  residuals, IDA* O(1) cycle check
+  (多项算法性能与健壮性优化)
 
 ### Planned for v0.1.0 (Week 1-2)
 - DFS, Dijkstra, A*, Bellman-Ford implementations

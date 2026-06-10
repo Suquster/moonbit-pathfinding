@@ -216,13 +216,14 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_heuristic(
   let mut best = @core.Weight::zero()
   for l in lm.landmarks {
     // Direction 1: triangle using dist_from (l → ·).
-    //   h1 = dist_from[l][node] - dist_from[l][target],
+    //   dist(l, target) <= dist(l, node) + dist(node, target)
+    //   => h1 = dist_from[l][target] - dist_from[l][node] <= dist(node, target),
     //   admissible when both are finite.
     let from_table = lm.dist_from.get(l).unwrap_or(Map([]))
     match (from_table.get(node), from_table.get(target)) {
       (Some(fn_), Some(ft)) =>
-        if fn_ != inf && ft != inf && fn_ >= ft {
-          let diff = @core.Weight::sub(fn_, ft)
+        if fn_ != inf && ft != inf && ft >= fn_ {
+          let diff = @core.Weight::sub(ft, fn_)
           if diff > best {
             best = diff
           }
@@ -230,13 +231,14 @@ fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_heuristic(
       _ => ()
     }
     // Direction 2: triangle using dist_to (· → l).
-    //   h2 = dist_to[l][target] - dist_to[l][node],
+    //   dist(node, l) <= dist(node, target) + dist(target, l)
+    //   => h2 = dist_to[l][node] - dist_to[l][target] <= dist(node, target),
     //   admissible when both are finite.
     let to_table = lm.dist_to.get(l).unwrap_or(Map([]))
     match (to_table.get(node), to_table.get(target)) {
       (Some(tn), Some(tt)) =>
-        if tn != inf && tt != inf && tt >= tn {
-          let diff = @core.Weight::sub(tt, tn)
+        if tn != inf && tt != inf && tn >= tt {
+          let diff = @core.Weight::sub(tn, tt)
           if diff > best {
             best = diff
           }
@@ -272,14 +274,27 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(
     // Skip stale entries: if g_cost[u] has been improved since this push,
     // this pop is outdated. This is the standard "lazy deletion" pattern
     // used by Dijkstra; combined with an admissible heuristic it guarantees
-    // that when we finally process goal, g_cost[goal] is optimal.
+    // that when we pop goal, g_cost[goal] is optimal — so we can stop there
+    // instead of exhausting the whole queue.
     let gu = match g_cost.get(u) {
       Some(g) => g
       None => continue
     }
-    // Recompute expected f to detect staleness.
-    let expected_f = @core.Weight::add(gu, alt_heuristic(lm, u, goal))
-    ignore(expected_f)
+    if u == goal {
+      let path = [goal]
+      let mut node = goal
+      while node != start {
+        match parents.get(node) {
+          Some(p) => {
+            node = p
+            path.push(node)
+          }
+          None => break
+        }
+      }
+      path.rev_in_place()
+      return Some((path, gu))
+    }
     // Expand successors.
     for pair in successors(u) {
       let (v, w) = pair
@@ -296,23 +311,6 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(
       }
     }
   }
-  // After exhausting the priority queue, check if goal was reached.
-  match g_cost.get(goal) {
-    Some(cost) => {
-      let path = [goal]
-      let mut node = goal
-      while node != start {
-        match parents.get(node) {
-          Some(p) => {
-            node = p
-            path.push(node)
-          }
-          None => break
-        }
-      }
-      path.rev_in_place()
-      Some((path, cost))
-    }
-    None => None
-  }
+  // Queue exhausted without popping goal: unreachable.
+  None
 }

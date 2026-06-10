@@ -32,12 +32,23 @@ pub fn[N : Eq + Hash] DSU::make_set(self : DSU[N], x : N) -> Unit {
 /// Find the representative of `x`'s component, applying path compression.
 pub fn[N : Eq + Hash] DSU::find(self : DSU[N], x : N) -> N {
   self.make_set(x)
-  let p = self.parent.get(x).unwrap()
-  if p == x {
-    return x
+  // First pass: walk up to the root iteratively (no recursion, so chains of
+  // any length are safe before compression kicks in).
+  let mut root = x
+  while true {
+    let p = self.parent.get(root).unwrap()
+    if p == root {
+      break
+    }
+    root = p
   }
-  let root = self.find(p)
-  self.parent[x] = root
+  // Second pass: point every node on the walked chain directly at the root.
+  let mut cur = x
+  while cur != root {
+    let p = self.parent.get(cur).unwrap()
+    self.parent[cur] = root
+    cur = p
+  }
   root
 }
 

@@ -24,6 +24,13 @@ You can browse and install extra skills here:
 - Try to keep deprecated blocks in file called `deprecated.mbt` in each
   directory.
 
+## Working rules
+
+- When asked to improve, optimize, or clean up the codebase, do it
+  **comprehensively, not selectively**: audit every module and address every
+  identified weakness (performance, robustness, API completeness, test
+  coverage), rather than cherry-picking only the highest-impact items.
+
 ## Tooling
 
 - `moon fmt` is used to format your code properly.

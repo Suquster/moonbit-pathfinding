@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] astar(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
 
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(Array[N], Array[(N, N, W)], N) -> Result[Map[N, W], @core.PathError]
 
@@ -14,7 +14,7 @@ pub fn[N : Eq + Hash] bidirectional_bfs(N, N, (N) -> Array[N], (N) -> Array[N]) 
 
 pub fn[N : Eq + Hash] dfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] dijkstra(N, (N) -> Array[(N, W)], (N) -> Bool) -> (Array[N], W)?
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W)], (N) -> Bool) -> (Array[N], W)?
 
 pub fn[N : Eq + Hash] edmonds_karp(Array[N], Map[(N, N), Int], N, N) -> Int
 
@@ -26,7 +26,7 @@ pub fn[N : Eq + Hash] tarjan_scc(Array[N], (N) -> Array[N]) -> Array[Array[N]]
 
 pub fn[N : Eq + Hash] topological_sort(Array[N], (N) -> Array[N]) -> Result[Array[N], @core.PathError]
 
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] yen_k_shortest(N, N, Array[(N, N, W)], Int) -> Result[Array[(Array[N], W)], @core.PathError]
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(N, N, Array[(N, N, W)], Int) -> Result[Array[(Array[N], W)], @core.PathError]
 
 // Errors
 

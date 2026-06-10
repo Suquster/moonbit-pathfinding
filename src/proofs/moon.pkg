@@ -8,7 +8,7 @@
 //   * `@core` — for `Weight` trait / `PathError` enum referenced in
 //     cost & error-typed predicates.
 import {
-  "Suquster/moonbit-pathfinding/src/core" @core,
+  "Suquster/moonbit-pathfinding/src/core",
 }
 
 options(

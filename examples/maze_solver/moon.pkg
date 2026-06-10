@@ -8,7 +8,7 @@
 //   '#' = wall, '.' = open cell, 'S' = start, 'G' = goal, '*' = path highlight.
 
 import {
-  "taoyouce/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }
 
 options(

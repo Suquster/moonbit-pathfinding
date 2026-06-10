@@ -285,4 +285,4 @@ MoonBit 独占的**文档即测试**体验。
 
 ## License
 
-Apache-2.0 © 2026 taoyouce. See [LICENSE](./LICENSE).
+Apache-2.0 © 2026 Suquster. See [LICENSE](./LICENSE).

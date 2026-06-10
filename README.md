@@ -4,9 +4,9 @@
 
 <!-- Tier-1 6 badges (per tasks.md 10.1): License / CI / Version / mooncakes.io / Playground / Formally verified -->
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
-[![CI](https://github.com/taoyouce/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/taoyouce/moonbit-pathfinding/actions/workflows/ci.yml)
+[![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-v0.0.1-blue)](./CHANGELOG.md)
-[![mooncakes.io](https://img.shields.io/badge/mooncakes.io-taoyouce%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/taoyouce/moonbit-pathfinding)
+[![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
 [![Playground](https://img.shields.io/badge/Playground-planned-lightgrey)](#playground)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
 
@@ -58,14 +58,14 @@
 在你的 MoonBit 项目根目录执行:
 
 ```powershell
-moon add taoyouce/moonbit-pathfinding
+moon add Suquster/moonbit-pathfinding
 ```
 
 在需要调用算法的包的 `moon.pkg` 里声明导入:
 
 ```moonbit
 import {
-  "taoyouce/moonbit-pathfinding/src/directed" @directed,
+  "Suquster/moonbit-pathfinding/src/directed" @directed,
 }
 ```
 
@@ -228,7 +228,7 @@ browser playground yet. The planned playground acceptance target is:
 - `moon build --target wasm-gc` 产出 ≤ 100 KB 的 `.wasm` 模块
 - 鼠标拖拽起点/终点，并记录实际帧率、输入规模和浏览器环境
 - 逐帧动画展示 BFS / DFS / Dijkstra / A* / JPS 的扩展过程
-- 部署到 GitHub Pages: `https://taoyouce.github.io/moonbit-pathfinding/`
+- 部署到 GitHub Pages: `https://Suquster.github.io/moonbit-pathfinding/`
 
 对应需求: R16 (WASM Playground) · R26 (实时 JPS Playground 杀手锏)。
 
@@ -416,4 +416,4 @@ For code agents and scripted integrations, see
 
 ## License
 
-Apache-2.0 © 2026 taoyouce. See [LICENSE](./LICENSE).
+Apache-2.0 © 2026 Suquster. See [LICENSE](./LICENSE).

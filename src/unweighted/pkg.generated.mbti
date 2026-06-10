@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "taoyouce/moonbit-pathfinding/src/unweighted"
+package "Suquster/moonbit-pathfinding/src/unweighted"
 
 // Values
 pub fn[N : Eq + Hash] bfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?

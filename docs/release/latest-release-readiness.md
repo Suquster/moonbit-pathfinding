@@ -3,9 +3,9 @@
 - Generated at: 2026-05-31T18:40:42.8463821+08:00
 - Script: scripts\release_guard.ps1
 - MoonBit: moon 0.1.20260427 (48d7def 2026-04-27)  Feature flags enabled: rr_moon_pkg
-- Module: taoyouce/moonbit-pathfinding@0.0.1
+- Module: Suquster/moonbit-pathfinding@0.0.1
 - Status: pass-with-warnings
-- Package artifact: D:\my\STUDY\university\U_3\down\Competitions\MoonBit国产基础软件开源大赛\moonbit-pathfinding\_build\publish\taoyouce-moonbit-pathfinding-0.0.1.zip
+- Package artifact: D:\my\STUDY\university\U_3\down\Competitions\MoonBit国产基础软件开源大赛\moonbit-pathfinding\_build\publish\Suquster-moonbit-pathfinding-0.0.1.zip
 - moon publish --dry-run: blocked-missing-credentials
 
 ## Checklist

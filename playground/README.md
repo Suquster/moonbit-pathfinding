@@ -57,7 +57,7 @@ moon build --target js -p playground
 1. 触发: `push` 到 `main` 且 `playground/` 有变更
 2. 构建: `moon build --target wasm-gc -p playground` + 拷贝产物
 3. 部署: 推送到 `gh-pages` 分支根目录
-4. 域名: <https://taoyouce.github.io/moonbit-pathfinding/>
+4. 域名: <https://Suquster.github.io/moonbit-pathfinding/>
 
 ## 答辩演示脚本(7 min 视频 · 第 4 段 · 90 秒)
 

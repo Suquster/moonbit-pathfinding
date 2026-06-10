@@ -1,8 +1,8 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "taoyouce/moonbit-pathfinding/src/directed"
+package "Suquster/moonbit-pathfinding/src/directed"
 
 import {
-  "taoyouce/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/core",
 }
 
 // Values

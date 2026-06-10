@@ -28,7 +28,7 @@ $generatedAt = (Get-Date).ToString("o")
 $benchmarks = @(
     [ordered]@{
         algorithm = "BFS"
-        package = "taoyouce/moonbit-pathfinding/benches/bfs_bench"
+        package = "Suquster/moonbit-pathfinding/benches/bfs_bench"
         file = "benches/bfs_bench/bfs_bench.mbt"
         scenario = "1k-node sparse directed graph, density 1%, query 0 -> 999"
         input = [ordered]@{ nodes = 1000; density = 0.01; seed = 42; edge_kind = "unweighted directed" }
@@ -36,7 +36,7 @@ $benchmarks = @(
     },
     [ordered]@{
         algorithm = "Dijkstra"
-        package = "taoyouce/moonbit-pathfinding/benches/dijkstra_bench"
+        package = "Suquster/moonbit-pathfinding/benches/dijkstra_bench"
         file = "benches/dijkstra_bench/dijkstra_bench.mbt"
         scenario = "1k-node sparse weighted directed graph, density 1%, query 0 -> 999"
         input = [ordered]@{ nodes = 1000; density = 0.01; seed = 7; max_weight = 10; edge_kind = "non-negative weighted directed" }
@@ -44,7 +44,7 @@ $benchmarks = @(
     },
     [ordered]@{
         algorithm = "A*"
-        package = "taoyouce/moonbit-pathfinding/benches/astar_bench"
+        package = "Suquster/moonbit-pathfinding/benches/astar_bench"
         file = "benches/astar_bench/astar_bench.mbt"
         scenario = "32x32 open 4-neighbour grid with Manhattan heuristic, query (0,0) -> (31,31)"
         input = [ordered]@{ width = 32; height = 32; nodes = 1024; expected_cost = 62; heuristic = "Manhattan" }
@@ -52,7 +52,7 @@ $benchmarks = @(
     },
     [ordered]@{
         algorithm = "Kruskal MST"
-        package = "taoyouce/moonbit-pathfinding/benches/kruskal_bench"
+        package = "Suquster/moonbit-pathfinding/benches/kruskal_bench"
         file = "benches/kruskal_bench/kruskal_bench.mbt"
         scenario = "1k-node 10k-edge weighted undirected multigraph"
         input = [ordered]@{ nodes = 1000; edges = 10000; seed = 17; max_weight = 100; edge_kind = "weighted undirected multigraph" }

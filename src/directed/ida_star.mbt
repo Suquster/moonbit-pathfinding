@@ -18,7 +18,7 @@
 ///
 /// ## Returns
 /// `Some((path, cost))` if reachable, `None` otherwise.
-pub fn[N : Eq, W : @core.Weight] ida_star(
+pub fn[N : Eq + Hash, W : @core.Weight] ida_star(
   start : N,
   successors : (N) -> Array[(N, W)],
   heuristic : (N) -> W,
@@ -28,14 +28,22 @@ pub fn[N : Eq, W : @core.Weight] ida_star(
   let inf = @core.Weight::infinity()
   let mut bound = heuristic(start)
   let path : Array[N] = [start]
+  // O(1) membership test for the current path (replaces a linear scan that
+  // made deep searches quadratic in the path length).
+  let on_path : Map[N, Bool] = Map([])
+  on_path[start] = true
   // Search returns either a found path (encoded via early exit), or the
   // smallest f-value that exceeded the bound (used to raise bound next round).
+  // When the goal is found, `found_cost` carries the exact g-value, so no
+  // post-hoc successor rescans are needed to recover the total cost.
+  let mut found_cost : W = zero
   fn search(node : N, g : W, bound : W) -> W? {
     let f = @core.Weight::add(g, heuristic(node))
     if f > bound {
       return Some(f)
     }
     if goal(node) {
+      found_cost = g
       // Signal found via returning `None` only when we already populated `path`.
       return None
     }
@@ -43,47 +51,24 @@ pub fn[N : Eq, W : @core.Weight] ida_star(
     for pair in successors(node) {
       let (next, w) = pair
       // Avoid revisiting nodes on the current path (simple cycle check).
-      let mut on_path = false
-      for p in path {
-        if p == next {
-          on_path = true
-          break
-        }
-      }
-      if on_path {
+      if on_path.get(next).unwrap_or(false) {
         continue
       }
       path.push(next)
+      on_path[next] = true
       match search(next, @core.Weight::add(g, w), bound) {
         None => return None // found!
         Some(t) => if t < min_exceeded { min_exceeded = t }
       }
       ignore(path.pop())
+      on_path[next] = false
     }
     Some(min_exceeded)
   }
 
   while true {
     match search(start, zero, bound) {
-      None => {
-        // Reconstruct cost by walking path.
-        let mut total = zero
-        let mut i = 1
-        let mut prev = path[0]
-        while i < path.length() {
-          let cur = path[i]
-          for pair in successors(prev) {
-            let (nbr, w) = pair
-            if nbr == cur {
-              total = @core.Weight::add(total, w)
-              break
-            }
-          }
-          prev = cur
-          i += 1
-        }
-        return Some((path, total))
-      }
+      None => return Some((path, found_cost))
       Some(t) => if t == inf { return None } else { bound = t }
     }
   }

@@ -187,7 +187,7 @@ The current local guard passes with one environment warning: `moon publish
 
 ## Algorithm Catalog
 
-当前 **v0.0.1** 已落地 **15 种经典图/路径算法** 与 **3 种实验性前沿算法**。
+当前已落地 **30 种经典图/路径算法** 与 **3 种实验性前沿算法**。
 CH / JPS / ALT 已有源码和测试，仍需要真实路网基准、论文到代码追踪和性能调优后
 再升级为稳定 API。
 
@@ -212,12 +212,24 @@ CH / JPS / ALT 已有源码和测试，仍需要真实路网基准、论文到�
 | 17 | DAG Shortest Path             | [`src/directed/dag_shortest_path.mbt`](./src/directed/dag_shortest_path.mbt) | ✅ v0.0.2   | — (CLRS §24.2; supports negative edges)                                                                                      |
 | 18 | Bridges & Articulation Points | [`src/undirected/bridges.mbt`](./src/undirected/bridges.mbt)                 | ✅ v0.0.2   | [Tarjan 1974](https://doi.org/10.1016/0020-0190%2874%2990003-9)                                                              |
 | 19 | Bidirectional Dijkstra        | [`src/directed/bidirectional_dijkstra.mbt`](./src/directed/bidirectional_dijkstra.mbt) | ✅ v0.0.2 | [Pohl 1971](https://exhibits.stanford.edu/ai/catalog/wv122vt6924)                                                            |
-| 20 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt`                                                        | 🧪 experimental | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
-| 21 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
-| 22 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt`                                                       | 🧪 experimental | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
+| 20 | Dijkstra (full SSSP tree)      | [`src/directed/dijkstra_all.mbt`](./src/directed/dijkstra_all.mbt)           | ✅ v0.0.3   | [Dijkstra 1959](https://doi.org/10.1007/BF01386390)                                                                          |
+| 21 | BFS (full SSSP tree)           | [`src/unweighted/bfs_all.mbt`](./src/unweighted/bfs_all.mbt)                 | ✅ v0.0.3   | — (folklore / Moore 1959)                                                                                                    |
+| 22 | Bellman-Ford (path tree)       | [`src/directed/bellman_ford_paths.mbt`](./src/directed/bellman_ford_paths.mbt) | ✅ v0.0.3 | [Bellman 1958](https://doi.org/10.1090/qam/102435)                                                                           |
+| 23 | Floyd-Warshall + paths         | [`src/directed/floyd_warshall_paths.mbt`](./src/directed/floyd_warshall_paths.mbt) | ✅ v0.0.3 | [Floyd 1962](https://doi.org/10.1145/367766.368168)                                                                          |
+| 24 | Johnson (all-pairs, sparse)    | [`src/directed/johnson.mbt`](./src/directed/johnson.mbt)                     | ✅ v0.0.3   | [Johnson 1977](https://doi.org/10.1145/321992.321993)                                                                        |
+| 25 | Dinic (Max-Flow)               | [`src/directed/dinic.mbt`](./src/directed/dinic.mbt)                         | ✅ v0.0.3   | [Dinitz 1970](https://doi.org/10.1007/springerreference_57776)                                                               |
+| 26 | Min s-t Cut                    | [`src/directed/min_cut.mbt`](./src/directed/min_cut.mbt)                     | ✅ v0.0.3   | [Ford & Fulkerson 1956](https://doi.org/10.4153/CJM-1956-045-5)                                                              |
+| 27 | Min-Cost Max-Flow              | [`src/directed/min_cost_flow.mbt`](./src/directed/min_cost_flow.mbt)         | ✅ v0.0.3   | [Edmonds & Karp 1972](https://doi.org/10.1145/321694.321699)                                                                 |
+| 28 | Hopcroft-Karp Matching         | [`src/undirected/hopcroft_karp.mbt`](./src/undirected/hopcroft_karp.mbt)     | ✅ v0.0.3   | [Hopcroft & Karp 1973](https://doi.org/10.1137/0202019)                                                                      |
+| 29 | Eulerian Path (Hierholzer)     | [`src/directed/eulerian.mbt`](./src/directed/eulerian.mbt)                   | ✅ v0.0.3   | — (Hierholzer 1873)                                                                                                          |
+| 30 | SCC Condensation DAG           | [`src/directed/condensation.mbt`](./src/directed/condensation.mbt)           | ✅ v0.0.3   | [Tarjan 1972](https://doi.org/10.1137/0201010)                                                                               |
+| 31 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt`                                                        | 🧪 experimental | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
+| 32 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
+| 33 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt`                                                       | 🧪 experimental | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
 
 > ✅ v0.0.1 = 源码 + 单元测试 + PBT 已合入主干
 > ✅ v0.0.2 = 新增算法（Prim / DAG-SP / 桥与割点 / 双向 Dijkstra），源码 + 单元测试已合入主干
+> ✅ v0.0.3 = 系统性补全：全表单源最短路树（Dijkstra/BFS/Bellman-Ford）、全对最短路（Floyd-Warshall 路径重建 / Johnson）、网络流家族（Dinic / 最小割 / 最小费用最大流）、匹配（Hopcroft-Karp）、欧拉路径、SCC 缩点 DAG
 > 🧪 experimental = source + tests exist, but API/performance evidence is not yet frozen
 > 🔥 = **Rust `pathfinding` crate 未实现的独家算法** (对应 R18 前沿算法撒手锏)
 

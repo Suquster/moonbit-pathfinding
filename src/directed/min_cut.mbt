@@ -1,15 +1,14 @@
-// Edmonds-Karp maximum flow algorithm.
+// Minimum s-t cut via max-flow (max-flow min-cut theorem).
 //
-// Reference: Edmonds, J., & Karp, R. M. (1972). "Theoretical improvements in
-// algorithmic efficiency for network flow problems". JACM, 19(2), 248-264.
+// Runs Edmonds-Karp to saturate the network, then the cut is the set of
+// original edges crossing from the source-reachable side of the final
+// residual graph to the unreachable side.
+//
+// Reference: Ford, L. R., & Fulkerson, D. R. (1956). "Maximal flow through a
+// network". Canadian Journal of Mathematics, 8, 399-404.
 
 ///|
-/// Sentinel for "no bottleneck found yet" — the maximum `Int` value.
-const EK_INT_MAX : Int = 2147483647
-
-///|
-/// Compute the maximum s-t flow in a flow network with integer capacities,
-/// using BFS to find shortest augmenting paths. Runs in O(V * E^2).
+/// Compute the minimum s-t cut of a flow network with integer capacities.
 ///
 /// ## Parameters
 /// - `nodes`: all graph nodes
@@ -18,16 +17,21 @@ const EK_INT_MAX : Int = 2147483647
 /// - `sink`: sink node
 ///
 /// ## Returns
-/// The maximum flow value (integer).
-pub fn[N : Eq + Hash] edmonds_karp(
+/// `(cut_value, cut_edges, source_side)` where `cut_value` equals the
+/// maximum flow, `cut_edges` are the saturated original edges crossing the
+/// cut, and `source_side` is the set of nodes reachable from `source` in the
+/// final residual graph.
+///
+/// ## Complexity
+/// Time: O(V * E^2). Space: O(V + E).
+pub fn[N : Eq + Hash] min_cut(
   nodes : Array[N],
   capacity : Map[(N, N), Int],
   source : N,
   sink : N,
-) -> Int {
-  // Sparse residual graph: only real edges and their reverse edges are
-  // materialized (capacity 0 for the reverse direction), keeping memory
-  // at O(E) instead of O(V^2).
+) -> (Int, Array[(N, N)], Array[N]) {
+  // Rebuild the residual network and saturate it (same procedure as
+  // `edmonds_karp`, but we need the final residual state afterwards).
   let residual : Map[(N, N), Int] = Map([])
   let adj : Map[N, Array[N]] = Map([])
   fn add_neighbor(a : N, b : N) -> Unit {
@@ -55,10 +59,8 @@ pub fn[N : Eq + Hash] edmonds_karp(
     add_neighbor(u, v)
     add_neighbor(v, u)
   }
-  ignore(nodes)
   let mut total_flow = 0
   while true {
-    // BFS to find an augmenting path from source to sink.
     let parent : Map[N, N] = Map([])
     let visited : Map[N, Bool] = Map([])
     visited[source] = true
@@ -87,7 +89,6 @@ pub fn[N : Eq + Hash] edmonds_karp(
     if !found {
       break
     }
-    // Find bottleneck.
     let mut bottleneck = EK_INT_MAX
     let mut v = sink
     while v != source {
@@ -98,7 +99,6 @@ pub fn[N : Eq + Hash] edmonds_karp(
       }
       v = u
     }
-    // Update residual capacities along the path.
     let mut v2 = sink
     while v2 != source {
       let u = parent.get(v2).unwrap()
@@ -108,5 +108,35 @@ pub fn[N : Eq + Hash] edmonds_karp(
     }
     total_flow += bottleneck
   }
-  total_flow
+  // Source side = nodes reachable in the final residual graph.
+  let reachable : Map[N, Bool] = Map([])
+  reachable[source] = true
+  let queue : Array[N] = [source]
+  let mut head = 0
+  while head < queue.length() {
+    let u = queue[head]
+    head += 1
+    for v in adj.get(u).unwrap_or([]) {
+      if !reachable.contains(v) && residual.get((u, v)).unwrap_or(0) > 0 {
+        reachable[v] = true
+        queue.push(v)
+      }
+    }
+  }
+  // Cut edges: original edges from the reachable side to the rest.
+  let cut_edges : Array[(N, N)] = []
+  for k_v in capacity {
+    let (edge, cap) = k_v
+    let (u, v) = edge
+    if cap > 0 && reachable.contains(u) && !reachable.contains(v) {
+      cut_edges.push(edge)
+    }
+  }
+  let source_side : Array[N] = []
+  for node in nodes {
+    if reachable.contains(node) {
+      source_side.push(node)
+    }
+  }
+  (total_flow, cut_edges, source_side)
 }

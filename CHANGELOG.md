@@ -31,6 +31,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- feat(directed): add `dijkstra_all` returning a full `ShortestPathTree` with
+  `path_to` / `distance_to` queries (新增 dijkstra_all 全表单源最短路树)
+- feat(unweighted): add `bfs_all` returning a full `BfsTree` of hop counts
+  with path reconstruction (新增 bfs_all 全表 BFS 树)
+- feat(directed): add `bellman_ford_paths` — Bellman-Ford with parent
+  tracking, returning a `ShortestPathTree` (新增带路径重建的 Bellman-Ford)
+- feat(directed): add `floyd_warshall_paths` — all-pairs distances plus
+  next-hop table for route reconstruction (新增 Floyd-Warshall 路径重建版)
+- feat(directed): add `johnson` all-pairs shortest paths for sparse graphs
+  with negative edges, O(V·E·logV) (新增 Johnson 稀疏图全对最短路)
+- feat(directed): add `dinic` maximum flow, O(V²·E) (新增 Dinic 最大流)
+- feat(directed): add `min_cut` minimum s-t cut extraction via max-flow
+  min-cut theorem (新增最小割：割值、割边集与源侧节点集)
+- feat(directed): add `min_cost_max_flow` via SPFA successive shortest
+  augmenting paths (新增最小费用最大流)
+- feat(undirected): add `hopcroft_karp` maximum bipartite matching,
+  O(E·√V) (新增 Hopcroft-Karp 二分图最大匹配)
+- feat(directed): add `eulerian_path` directed Eulerian path/circuit via
+  Hierholzer's algorithm (新增欧拉路径/回路)
+- feat(directed): add `condensation` SCC condensation DAG built on
+  `tarjan_scc` (新增 SCC 缩点 DAG)
 - feat(undirected): add Prim's MST `prim_mst` with adjacency-function API
   (新增 Prim 最小生成树，惰性二叉堆实现，支持非连通图生成森林)
 - feat(directed): add DAG shortest path `dag_shortest_path` via

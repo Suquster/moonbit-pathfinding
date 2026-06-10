@@ -159,7 +159,7 @@ fn[N : Eq + Hash, W : @core.Weight + Compare] pick_landmarks(
 ///                      dist_from[l][node] - dist_from[l][target] )`,
 /// which is admissible on directed graphs (see
 /// docs/zh/algorithms/alt.md).
-pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_preprocess(
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(
   nodes : Array[N],
   successors : (N) -> Array[(N, W)],
   num_landmarks : Int,

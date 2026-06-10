@@ -4,6 +4,12 @@
 // problem". Naval Research Logistics Quarterly, 2(1-2), 83-97.
 
 ///|
+/// Sentinel "infinite" cost used by the label-update search. Large enough
+/// to dominate any realistic cost sum while staying far from Double
+/// overflow.
+const KM_INF : Double = 1.0e18
+
+///|
 /// Solve the assignment problem: given an n×n cost matrix, find the
 /// permutation that minimizes the sum of costs.
 ///
@@ -38,12 +44,12 @@ pub fn kuhn_munkres(
   for i in 1..<=n {
     p[0] = i
     let mut j0 = 0
-    let minv : Array[Double] = Array::make(n + 1, 1.0e18)
+    let minv : Array[Double] = Array::make(n + 1, KM_INF)
     let used : Array[Bool] = Array::make(n + 1, false)
     while true {
       used[j0] = true
       let i0 = p[j0]
-      let mut delta = 1.0e18
+      let mut delta = KM_INF
       let mut j1 = 0
       for j in 1..<=n {
         if !used[j] {

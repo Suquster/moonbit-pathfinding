@@ -14,6 +14,8 @@ pub fn[N : Eq + Hash] bridges_and_articulation_points(Array[N], (N) -> Array[N])
 
 pub fn[N : Eq + Hash] connected_components(Array[N], (N) -> Array[N]) -> Array[Array[N]]
 
+pub fn[L : Eq + Hash, R : Eq + Hash] hopcroft_karp(Array[L], Array[R], (L) -> Array[R]) -> Array[(L, R)]
+
 pub fn[N : Eq + Hash, W : @core.Weight] kruskal_mst(Array[N], Array[(N, N, W)]) -> Array[(N, N, W)]
 
 pub fn kuhn_munkres(Array[Array[Double]]) -> Result[(Array[Int], Double), @core.PathError]

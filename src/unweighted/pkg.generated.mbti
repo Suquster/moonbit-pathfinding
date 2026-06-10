@@ -4,9 +4,18 @@ package "Suquster/moonbit-pathfinding/src/unweighted"
 // Values
 pub fn[N : Eq + Hash] bfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
+pub fn[N : Eq + Hash] bfs_all(N, (N) -> Array[N]) -> BfsTree[N]
+
 // Errors
 
 // Types and methods
+pub struct BfsTree[N] {
+  source : N
+  dist : Map[N, Int]
+  parent : Map[N, N]
+}
+pub fn[N : Eq + Hash] BfsTree::distance_to(Self[N], N) -> Int?
+pub fn[N : Eq + Hash] BfsTree::path_to(Self[N], N) -> Array[N]?
 
 // Type aliases
 

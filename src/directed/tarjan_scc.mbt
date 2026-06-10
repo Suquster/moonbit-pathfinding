@@ -32,6 +32,9 @@ pub fn[N : Eq + Hash] tarjan_scc(
   fn strong_connect(v : N) -> Unit {
     // Simulated recursion via a manual stack to avoid MoonBit recursion limits.
     let call_stack : Array[(N, Int)] = [(v, 0)]
+    // Cache each frame's successor list so `successors(u)` is called once
+    // per node instead of once per visited edge.
+    let succ_stack : Array[Array[N]] = [successors(v)]
     index_map[v] = idx
     lowlink[v] = idx
     idx += 1
@@ -39,7 +42,7 @@ pub fn[N : Eq + Hash] tarjan_scc(
     on_stack[v] = true
     while call_stack.length() > 0 {
       let (u, i) = call_stack[call_stack.length() - 1]
-      let neighbors = successors(u)
+      let neighbors = succ_stack[succ_stack.length() - 1]
       if i < neighbors.length() {
         call_stack[call_stack.length() - 1] = (u, i + 1)
         let w = neighbors[i]
@@ -50,6 +53,7 @@ pub fn[N : Eq + Hash] tarjan_scc(
           stack.push(w)
           on_stack[w] = true
           call_stack.push((w, 0))
+          succ_stack.push(successors(w))
         } else if on_stack.get(w).unwrap_or(false) {
           let lw = index_map.get(w).unwrap()
           let lu = lowlink.get(u).unwrap()
@@ -74,6 +78,7 @@ pub fn[N : Eq + Hash] tarjan_scc(
           sccs.push(component)
         }
         ignore(call_stack.pop())
+        ignore(succ_stack.pop())
         // Propagate lowlink back to parent.
         if call_stack.length() > 0 {
           let (parent, _) = call_stack[call_stack.length() - 1]

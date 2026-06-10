@@ -10,9 +10,13 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(N, (N) -> Array[(N, W)],
 
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(Array[N], Array[(N, N, W)], N) -> Result[Map[N, W], @core.PathError]
 
+pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_paths(Array[N], Array[(N, N, W)], N) -> Result[ShortestPathTree[N, W], @core.PathError]
+
 pub fn[N : Eq + Hash] bidirectional_bfs(N, N, (N) -> Array[N], (N) -> Array[N]) -> Array[N]?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] bidirectional_dijkstra(N, N, (N) -> Array[(N, W)], (N) -> Array[(N, W)]) -> (Array[N], W)?
+
+pub fn[N : Eq + Hash] condensation(Array[N], (N) -> Array[N]) -> Condensation[N]
 
 pub fn[N : Eq + Hash, W : @core.Weight] dag_shortest_path(Array[N], N, (N) -> Array[(N, W)], (N) -> Bool) -> Result[(Array[N], W)?, @core.PathError]
 
@@ -20,11 +24,25 @@ pub fn[N : Eq + Hash] dfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W)], (N) -> Bool) -> (Array[N], W)?
 
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra_all(N, (N) -> Array[(N, W)]) -> ShortestPathTree[N, W]
+
+pub fn[N : Eq + Hash] dinic(Array[N], Map[(N, N), Int], N, N) -> Int
+
 pub fn[N : Eq + Hash] edmonds_karp(Array[N], Map[(N, N), Int], N, N) -> Int
+
+pub fn[N : Eq + Hash] eulerian_path(Array[N], Array[(N, N)]) -> Array[N]?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall(Array[N], Array[(N, N, W)]) -> Map[(N, N), W]
 
-pub fn[N : Eq, W : @core.Weight] ida_star(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall_paths(Array[N], Array[(N, N, W)]) -> AllPairs[N, W]
+
+pub fn[N : Eq + Hash, W : @core.Weight] ida_star(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
+
+pub fn[N : Eq + Hash] johnson(Array[N], Array[(N, N, Int)]) -> Result[Map[(N, N), Int], @core.PathError]
+
+pub fn[N : Eq + Hash] min_cost_max_flow(Array[N], Array[(N, N, Int, Int)], N, N) -> (Int, Int)
+
+pub fn[N : Eq + Hash] min_cut(Array[N], Map[(N, N), Int], N, N) -> (Int, Array[(N, N)], Array[N])
 
 pub fn[N : Eq + Hash] tarjan_scc(Array[N], (N) -> Array[N]) -> Array[Array[N]]
 
@@ -35,6 +53,26 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(N, N, Array[(N,
 // Errors
 
 // Types and methods
+pub struct AllPairs[N, W] {
+  dist : Map[(N, N), W]
+  next : Map[(N, N), N]
+}
+pub fn[N : Eq + Hash, W] AllPairs::distance(Self[N, W], N, N) -> W?
+pub fn[N : Eq + Hash, W] AllPairs::path(Self[N, W], N, N) -> Array[N]?
+
+pub struct Condensation[N] {
+  components : Array[Array[N]]
+  component_of : Map[N, Int]
+  dag_edges : Array[(Int, Int)]
+}
+
+pub struct ShortestPathTree[N, W] {
+  source : N
+  dist : Map[N, W]
+  parent : Map[N, N]
+}
+pub fn[N : Eq + Hash, W] ShortestPathTree::distance_to(Self[N, W], N) -> W?
+pub fn[N : Eq + Hash, W] ShortestPathTree::path_to(Self[N, W], N) -> Array[N]?
 
 // Type aliases
 

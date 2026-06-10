@@ -25,6 +25,7 @@ pub struct PQueue[N, W] {
 pub fn[N, W] PQueue::is_empty(Self[N, W]) -> Bool
 pub fn[N, W] PQueue::len(Self[N, W]) -> Int
 pub fn[N, W] PQueue::new() -> Self[N, W]
+pub fn[N, W] PQueue::peek(Self[N, W]) -> (W, N)?
 pub fn[N, W : Compare] PQueue::pop(Self[N, W]) -> (W, N)?
 pub fn[N, W : Compare] PQueue::push(Self[N, W], W, N) -> Unit
 

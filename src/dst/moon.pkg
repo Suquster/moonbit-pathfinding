@@ -1,0 +1,37 @@
+// 包：Suquster/moonbit-pathfinding/src/dst
+//
+// 方向八（DST_Framework，Deterministic Simulation Testing）—— 确定性仿真
+// 测试框架。模块边界（design.md §「方向八：DST_Framework」）：
+//   rng（种子驱动确定性伪随机源）→ scheduler（确定性任务选择）→
+//   fault（故障注入）→ replay（种子 + 事件轨迹重放）。
+//
+// 本文件对应任务 13.1：仅建立子包、核心类型（`Rng` / `Sim` / `Task` /
+// `Event` / `FaultKind` / `FaultPolicy` / `Scenario` / `SimStatus` /
+// `SimResult`）与接口桩（`Sim::step` / `Sim::inject_fault` / `run` /
+// `replay`）。其中确定性随机源 `Rng` 作为框架基石已完整实现；确定性调度、
+// 故障注入触发与失败重放的完整逻辑属任务 13.2，本任务不实现。
+//
+// 关于随机源复用（design.md §「需求可追溯映射」R8「复用 infra_pbt 随机源」）：
+//   * `@infra_pbt` 的 `Rng`（xorshift64）虽为 pub 可复用，但该包被定位为
+//     **横切测试期共享约定**（其 moon.pkg 明确「不进入运行时产物，避免引入
+//     运行时耦合」，故在各方向均以 `for "test"` 引入）。
+//   * 而 DST 的 `Rng` 是 **运行时库类型**（`run` / `replay` 在产物中直接依赖
+//     它驱动确定性调度），若运行时 import `@infra_pbt` 将破坏其测试期定位。
+//   * 因此本包遵循 design.md 给出的 DST 自有 `Rng` 签名，在 dst 内**定义等价
+//     的确定性随机源**（同为 xorshift64：仅移位 + 异或，三后端逐位一致），
+//     与 `@infra_pbt` 共享「同种子 → 同序列」的随机源理念但不产生运行时耦合。
+
+// 运行时依赖（design.md §「数据模型 → 发布元数据模型」）：
+//   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
+//     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 13.5）。
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// 属性测试（任务 13.3）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
+// holds_for_all 模板（≥100 迭代）。该依赖仅作用于黑盒测试驱动
+// （`for "test"`），不进入运行时产物，符合 design.md「infra_pbt 为横切
+// 测试期共享约定」的定位；DST 运行时仍使用其自有的确定性随机源（rng.mbt）。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

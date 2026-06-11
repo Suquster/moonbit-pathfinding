@@ -1,0 +1,80 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/actor"
+
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// Values
+pub let actor_name : String
+
+pub let actor_version : String
+
+pub fn release_info() -> @release_meta.DirectionRelease
+
+pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn reset_runtime() -> Unit
+
+pub fn[S, M] spawn(S, (S, M) -> S) -> ActorRef[M]
+
+// Errors
+
+// Types and methods
+type ActorCell[S, M]
+
+pub(all) struct ActorId {
+  value : Int
+} derive(Eq, Show)
+
+pub(all) enum ActorOutcome[S] {
+  Updated(S)
+  Errored(String)
+}
+
+pub(all) struct ActorRef[M] {
+  id : ActorId
+  mailbox : Mailbox[M]
+}
+pub fn[M] ActorRef::pending(Self[M]) -> Int
+pub fn[M] ActorRef::send(Self[M], M) -> Unit
+pub fn[M] ActorRef::stop(Self[M]) -> Unit
+
+type ActorRuntime
+
+pub(all) enum ActorStatus {
+  Running
+  Stopped
+  Failed(String)
+} derive(Eq, Show)
+
+pub(all) struct Mailbox[M] {
+  mut items : Array[M]
+  mut closed : Bool
+}
+pub fn[M] Mailbox::close(Self[M]) -> Unit
+pub fn[M] Mailbox::dequeue(Self[M]) -> M?
+pub fn[M] Mailbox::enqueue(Self[M], M) -> Unit
+pub fn[M] Mailbox::is_closed(Self[M]) -> Bool
+pub fn[M] Mailbox::is_empty(Self[M]) -> Bool
+pub fn[M] Mailbox::length(Self[M]) -> Int
+pub fn[M] Mailbox::new() -> Self[M]
+pub fn[M] Mailbox::peek(Self[M]) -> M?
+
+pub struct Scheduler[S, M] {
+  cells : Array[ActorCell[S, M]]
+  mut next_id : Int
+}
+pub fn[S, M] Scheduler::is_running(Self[S, M], ActorRef[M]) -> Bool
+pub fn[S, M] Scheduler::new() -> Self[S, M]
+pub fn[S, M] Scheduler::pending(Self[S, M], ActorRef[M]) -> Int
+pub fn[S, M] Scheduler::run_until_idle(Self[S, M]) -> Unit
+pub fn[S, M] Scheduler::spawn(Self[S, M], S, (S, M) -> ActorOutcome[S], supervisor? : (ActorId, String) -> Unit) -> ActorRef[M]
+pub fn[S, M] Scheduler::state_of(Self[S, M], ActorRef[M]) -> S?
+pub fn[S, M] Scheduler::status_of(Self[S, M], ActorRef[M]) -> ActorStatus?
+pub fn[S, M] Scheduler::step(Self[S, M]) -> Bool
+
+// Type aliases
+
+// Traits
+

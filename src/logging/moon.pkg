@@ -1,0 +1,49 @@
+// 包：Suquster/moonbit-pathfinding/src/logging
+//
+// 方向七（Logging_Library）—— 对标 Rust `tracing` 的结构化日志与跨度（span）
+// 追踪库。模块边界（design.md §「方向七：Logging_Library」）：
+//   * event   —— 结构化字段事件（Event：时间戳 + 级别 + 键值字段）；
+//   * span    —— span 树（父子关联）与时长记录（Span：id / parent / start / end）；
+//   * context —— 跨异步任务边界的 trace 上下文传播；
+//   * format  —— JSON 等结构化输出（format_json / parse_json_log，往返）。
+//
+// 本文件对应任务 10.1：仅建立子包、核心类型（Level / Value / SpanId /
+// TraceId / Event / Span）与五个高层接口桩（log / enter_span / exit_span /
+// format_json / parse_json_log）。以下完整实现属于任务 10.2，本任务不实现：
+//   * 级别阈值过滤（log 丢弃低于阈值的事件）；
+//   * span 树父子关联与 exit_span 的时长记录；
+//   * 跨异步任务边界的 trace 标识传播；
+//   * format_json / parse_json_log 的完整结构化往返。
+//
+// 关于 moonbitlang/async 依赖的处理（重要）：
+//   design.md（§「需求可追溯映射」R7）声明本方向依赖 `moonbitlang/async`
+//   以承载「跨异步任务边界传播 trace 上下文」（Requirement 7.6）。但在当前
+//   构建环境中，`moonbitlang/async` 尚未登记到本仓库 `moon.mod.json` 的依赖，
+//   且引入该外部依赖存在三后端（wasm-gc / js / native）覆盖不一致的风险，
+//   可能阻塞「三后端 moon test 全绿」这一硬性质量门禁。
+//
+//   因此本骨架任务采取**本地最小抽象占位**策略：以本包内的 `TraceId` 纯数据
+//   类型表示 trace 上下文标识（见 types.mbt），不引入任何 async 运行时耦合，
+//   保证可编译且三后端测试可跑通。待 `moonbitlang/async` 在 `moon.mod.json`
+//   稳定登记后，由任务 10.2 接入真正的「跨异步任务 trace 上下文传播」，
+//   将本地 `TraceId` 占位升级为基于 async 任务局部存储的上下文载体。
+//
+// 依赖约定：
+//   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
+//     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 10.6）。
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+  // @strconv —— 解析 JSON 日志中的数值字段（Int64 / Double），用于
+  // format_json / parse_json_log 的「序列化再解析」往返（Requirement 7.7）。
+  // 属 moonbitlang/core 标准库，三后端（wasm-gc / js / native）行为一致。
+  "moonbitlang/core/strconv",
+}
+
+// 属性测试（task 10.3 Property 16 级别阈值过滤 / Property 17 span 树与 trace
+// 上下文传播不变量；task 10.4 结构化日志往返）复用共享 PBT 包 @infra_pbt 的
+// Gen / Rng / round_trip / holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖
+// 仅作用于黑盒测试驱动（`for "test"`），不进入运行时产物，符合 design.md
+// 「infra_pbt 为横切测试期共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

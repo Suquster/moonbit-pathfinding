@@ -1,0 +1,88 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/dst"
+
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// Values
+pub let dst_name : String
+
+pub let dst_version : String
+
+pub fn release_info() -> @release_meta.DirectionRelease
+
+pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn replay(UInt64, Array[Event]) -> SimResult
+
+pub fn rng_new(UInt64) -> Rng
+
+pub fn run(UInt64, Scenario) -> SimResult
+
+// Errors
+
+// Types and methods
+pub(all) enum Event {
+  Scheduled(step~ : Int, task_id~ : Int)
+  Faulted(step~ : Int, task_id~ : Int, kind~ : FaultKind)
+  Completed(step~ : Int, task_id~ : Int)
+} derive(Eq, Show)
+
+pub(all) enum FaultKind {
+  Crash
+  Delay
+  Drop
+} derive(Eq, Show)
+
+pub(all) struct FaultPolicy {
+  at_step : Int
+  task_id : Int
+  kind : FaultKind
+} derive(Eq, Show)
+pub fn FaultPolicy::new(Int, Int, FaultKind) -> Self
+
+pub struct Rng {
+  seed : UInt64
+  mut state : UInt64
+} derive(Eq, Show)
+pub fn Rng::next(Self) -> UInt64
+pub fn Rng::next_below(Self, Int) -> Int
+
+pub(all) struct Scenario {
+  tasks : Array[Task]
+  faults : Array[FaultPolicy]
+  max_steps : Int
+} derive(Eq, Show)
+pub fn Scenario::new(Array[Task], Array[FaultPolicy], Int) -> Self
+
+pub struct Sim {
+  rng : Rng
+  tasks : Array[Task]
+  trace : Array[Event]
+}
+pub fn Sim::inject_fault(Self, FaultPolicy) -> Self
+pub fn Sim::new(UInt64, Array[Task]) -> Self
+pub fn Sim::step(Self) -> Self
+
+pub(all) struct SimResult {
+  seed : UInt64
+  trace : Array[Event]
+  status : SimStatus
+} derive(Eq, Show)
+
+pub(all) enum SimStatus {
+  Completed
+  Failed(reason~ : String)
+} derive(Eq, Show)
+
+pub(all) struct Task {
+  id : Int
+  name : String
+} derive(Eq, Show)
+pub fn Task::new(Int, String) -> Self
+
+// Type aliases
+
+// Traits
+

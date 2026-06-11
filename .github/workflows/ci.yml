@@ -18,34 +18,9 @@ permissions:
 
 jobs:
   # ─────────────────────────────────────────────────────────────
-  # Job 1 · 主门禁矩阵 (对应 design.md §15.1 + task 9.1 / infra-suite task 3.1)
+  # Job 1 · 主门禁矩阵 (对应 design.md §15.1 + task 9.1)
   #   矩阵: ubuntu-latest × [wasm-gc, js, native]
-  #   步骤: checkout → setup MoonBit → check → fmt --check → test → 可执行文档门禁
-  #
-  #   全方向模板 (moonbit-infra-suite R11.1):
-  #   `moon check` / `moon test` 不指定包名时会作用于模块内全部 src 子包,
-  #   因此每新增一个方向子包 src/{方向}, 三后端矩阵会自动对其运行同一测试套件,
-  #   接入零成本。任一后端输出分歧 (含快照不一致) 即判定为构建失败。
-  #
-  #   全部 10 个方向均已纳入本三后端矩阵 (infra-suite task 18.1 / R11.1):
-  #     parser_combinator / regex_engine / serialization / build_tool /
-  #     logging / codegen_infra / dst / lsp (子包 lsp_binding + lsp_server) /
-  #     mini_compiler / actor —— 它们都是 src/ 下的子包, 故由上述"全 src 子包"
-  #     规则自动覆盖, 无需在本 workflow 逐一登记。
-  #
-  #   release-ready 聚合门禁 (infra-suite task 18.1 / R11.6):
-  #     src/release_aggregate 子包单向 import 全部 10 个方向, 汇集各方向的
-  #     DirectionRelease (release_info_with_gates) 并实现"全部方向 release_ready
-  #     才整体就绪"的纯函数聚合判定; 其单元测试同样由本矩阵的 `moon test` 在
-  #     三后端执行, 任一方向门禁未全绿即令整体不就绪 (聚合点位于
-  #     src/release_aggregate/release_aggregate.mbt::aggregate_suite)。
-  #
-  #   native 后端说明 (沙箱/本地环境):
-  #   native target 链接系统 C 运行时, 在部分沙箱或本地环境需要将
-  #   LIBRARY_PATH 指向系统库目录 (例如 `export LIBRARY_PATH=/usr/lib`)
-  #   才能完成链接。GitHub-hosted ubuntu-latest runner 默认已具备所需系统库,
-  #   故此处不强制注入 LIBRARY_PATH 以免破坏既有 CI 逻辑; 如在自托管或沙箱
-  #   环境复用本模板而 native 链接失败, 请在该步骤前 export LIBRARY_PATH。
+  #   步骤: checkout → setup MoonBit → check → fmt --check → test
   # ─────────────────────────────────────────────────────────────
   ci:
     name: ci (${{ matrix.backend }})
@@ -75,32 +50,16 @@ jobs:
       - name: moon test (${{ matrix.backend }})
         run: moon test --target ${{ matrix.backend }}
 
-      # ─── 关卡 3b: 可执行文档门禁 (R24.4 / task 19.2 / infra-suite R11.4) ─
-      #   将原先硬编码的 `moon test README.mbt.md` 固化为全方向模板:
-      #   动态发现仓库内所有 `*.mbt.md` 可执行文档 (排除构建产物目录 _build),
-      #   逐一作为 black-box test 编译 + 执行 + 快照校验。
-      #   这样每新增一个方向子包 src/{方向} 的 *.mbt.md 文档即自动纳入门禁,
-      #   无需修改本 workflow (接入零成本)。
+      # ─── 关卡 3b: 可执行文档门禁 (R24.4 / task 19.2) ───────────
+      #   `README.mbt.md` 内 4 段 ```mbt check 代码块由 `moon test`
+      #   当作 black-box test 编译 + 执行 + 快照校验。
       #   任一段示例输出与文档快照不一致, 本步骤 fail → 整个 CI fail,
-      #   迫使作者同步更新文档, 实现"文档即测试"(R24.3 / R11.4)。
-      #   在 3 后端全部执行, 与多后端一致性门禁 (R11.1) 对齐:
-      #   某后端跑不过即说明文档展示的核心逻辑出现一致性回归 (含快照不一致)。
-      - name: moon test *.mbt.md (executable docs, ${{ matrix.backend }})
-        shell: bash
-        run: |
-          set -euo pipefail
-          # 发现全部可执行文档; 至少包含根目录 README.mbt.md, 向后兼容既有门禁
-          mapfile -t docs < <(find . -name '*.mbt.md' -not -path './_build/*' | sort)
-          if [ "${#docs[@]}" -eq 0 ]; then
-            echo "未发现 *.mbt.md 可执行文档, 跳过文档门禁"
-            exit 0
-          fi
-          echo "发现 ${#docs[@]} 个可执行文档:"
-          printf '  %s\n' "${docs[@]}"
-          for doc in "${docs[@]}"; do
-            echo "== moon test ${doc} --target ${{ matrix.backend }} =="
-            moon test "${doc}" --target ${{ matrix.backend }}
-          done
+      #   迫使作者同步更新文档, 实现"文档即测试"(R24.3)。
+      #   在 3 后端全部执行, 与 R17 多后端一致性门禁对齐:
+      #   如果某个后端跑不过, 说明 README 展示的核心算法出现一致性回归,
+      #   这正是评委最该看到的信号, 不应在 wasm-gc 一地隐藏。
+      - name: moon test README.mbt.md (${{ matrix.backend }})
+        run: moon test README.mbt.md --target ${{ matrix.backend }}
 
       # ─── 辅助: moon info 生成 mbti,确保 API 可见性无回归 ──────
       - name: moon info

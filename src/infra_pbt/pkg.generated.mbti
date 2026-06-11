@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_pbt"
+
+// Values
+pub let default_iters : Int
+
+pub fn gen_bool() -> Gen[Bool]
+
+pub fn gen_int_range(Int, Int) -> Gen[Int]
+
+pub fn[T] holds_for_all(Gen[T], (T) -> Bool, iters? : Int) -> Bool
+
+pub fn rng_new(UInt64) -> Rng
+
+pub fn[T : Eq] round_trip(Gen[T], (T) -> Bytes, (Bytes) -> T?) -> Bool
+
+// Errors
+
+// Types and methods
+pub struct Gen[T] {
+  sample : (Rng) -> T
+}
+pub fn[T] Gen::generate(Self[T], Rng) -> T
+pub fn[T] Gen::new((Rng) -> T) -> Self[T]
+
+pub struct Rng {
+  seed : UInt64
+  mut state : UInt64
+}
+pub fn Rng::next(Self) -> UInt64
+pub fn Rng::next_below(Self, Int) -> Int
+pub fn Rng::next_bool(Self) -> Bool
+pub fn Rng::next_range(Self, Int, Int) -> Int
+
+// Type aliases
+
+// Traits
+

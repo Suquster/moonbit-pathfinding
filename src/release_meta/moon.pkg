@@ -1,0 +1,13 @@
+// 包：Suquster/moonbit-pathfinding/src/release_meta
+//
+// 共享的「发布元数据模型」与 release-ready 聚合门禁。
+// 对应 design.md §「数据模型 → 发布元数据模型」与 requirements R11.5 / R11.6：
+//   * `DirectionRelease`：每个方向作为独立发布单元的元数据（包名 / SemVer /
+//     changelog 路径 / 是否发布就绪）；
+//   * 聚合判定纯函数：方向的「测试 / 证明谓词 / 可执行文档」三项门禁全绿，
+//     才允许该方向进入 release-ready（R11.6）。
+//
+// 设计定位（与 infra_pbt、proofs 平级的横切共享包）：
+//   * 本包只承载「纯数据模型 + 纯函数」，不依赖任何方向子包，也不进入运行时
+//     产物，避免引入耦合；
+//   * 各方向独立 SemVer 与 changelog 结构的约定见 release_meta.mbt 顶部说明。

@@ -123,3 +123,65 @@ test "all_edges_non_negative false when any weight negative" {
   }
   inspect(all_edges_non_negative(edges, ew), content="false")
 }
+
+// --- 通用方向无关谓词测试 ---
+
+///|
+test "round_trip_eq holds for identity encode/decode" {
+  let r = round_trip_eq(42, fn(x) { x }, fn(y) { Some(y) })
+  inspect(r, content="true")
+}
+
+///|
+test "round_trip_eq fails when decode loses information" {
+  // encode 丢弃符号，decode 无法还原负数 → 往返破坏
+  let r = round_trip_eq(-3, fn(x) { if x < 0 { -x } else { x } }, fn(y) {
+    Some(y)
+  })
+  inspect(r, content="false")
+}
+
+///|
+test "round_trip_eq fails when decode returns None" {
+  let r = round_trip_eq(7, fn(x) { x }, fn(_y) -> Int? { None })
+  inspect(r, content="false")
+}
+
+///|
+test "is_idempotent true for clamp-to-zero" {
+  let clamp = fn(x : Int) -> Int { if x < 0 { 0 } else { x } }
+  inspect(is_idempotent(-5, clamp), content="true")
+}
+
+///|
+test "is_idempotent false for increment" {
+  inspect(is_idempotent(1, fn(x) { x + 1 }), content="false")
+}
+
+///|
+test "preserves true when transform keeps invariant" {
+  let r = preserves(5, fn(x) { x + 1 }, fn(x) { x >= 0 })
+  inspect(r, content="true")
+}
+
+///|
+test "preserves vacuously true when precondition fails" {
+  // x = -1 不满足 inv，前提不成立 → 平凡为真
+  let r = preserves(-1, fn(x) { x - 1 }, fn(x) { x >= 0 })
+  inspect(r, content="true")
+}
+
+///|
+test "seq_eq true for identical sequences" {
+  inspect(seq_eq([1, 2, 3], [1, 2, 3]), content="true")
+}
+
+///|
+test "seq_eq false for differing length" {
+  inspect(seq_eq([1, 2], [1, 2, 3]), content="false")
+}
+
+///|
+test "seq_eq false for differing element" {
+  inspect(seq_eq([1, 2, 3], [1, 9, 3]), content="false")
+}

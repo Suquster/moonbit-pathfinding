@@ -1,0 +1,61 @@
+// 包：Suquster/moonbit-pathfinding/src/mini_compiler
+//
+// 方向一（Mini_Compiler）—— 小语言编译器 / 解释器。
+// 模块边界（design.md §「方向一：Mini_Compiler」）：
+//   lexer → parser（构建于 @parser_combinator）→ typer（类型检查）→
+//   evaluator（树遍历解释器）→ backend（可选，编译到 wasm/js）。
+//
+// 本文件对应任务 15.1：建立子包、核心类型（`Token` / `Ast` / `TypedAst` /
+// `Diagnostic` / `Value`）与流水线桩（`lex` / `parse` / `check` / `eval` /
+// `print_ast` / `compile`）。其中 `lex` 完整实现且词法错误返回含行列位置的
+// 诊断（R1.3）；`print_ast` 给出最小可用打印器以支撑往返；`parse` 构建于
+// @parser_combinator；`check` / `eval` 为最小桩，完整树遍历解释器与类型检查
+// 属于任务 15.2。
+//
+// ===========================================================================
+// 目标语言（target language）文法声明（R1.1）
+// ===========================================================================
+//
+// 所选目标语言为「极简整数算术 + let 绑定 + 变量的表达式语言」（MiniLet），
+// 便于后续在任务 15.2 ~ 15.6 上落地求值、类型检查与「打印再解析」往返性质。
+//
+// 词法（lexical grammar）：
+//   INT     ::= DIGIT+                         // 非负整数字面量
+//   IDENT   ::= ALPHA (ALPHA | DIGIT | '_')*   // 标识符；关键字 let/in 除外
+//   DIGIT   ::= '0' ..= '9'
+//   ALPHA   ::= 'a' ..= 'z' | 'A' ..= 'Z'
+//   关键字  ::= "let" | "in"
+//   符号    ::= '+' | '-' | '*' | '/' | '(' | ')' | '='
+//   空白    ::= ' ' | '\t' | '\r' | '\n'        // 仅作分隔，不产生词法单元
+//
+// 语法（context-free grammar，产生式规则，优先级自低到高）：
+//   expr    ::= "let" IDENT "=" expr "in" expr     // let 绑定（右结合，作用域最外）
+//             | add
+//   add     ::= mul (("+" | "-") mul)*             // 加减，左结合
+//   mul     ::= atom (("*" | "/") atom)*           // 乘除，左结合，优先级高于加减
+//   atom    ::= INT                                // 整数字面量
+//             | IDENT                              // 变量引用
+//             | "(" expr ")"                       // 括号分组
+//
+// 语义（informative，完整实现见任务 15.2）：整数二元运算遵循通常算术语义；
+// `let x = e1 in e2` 在 `e2` 的作用域内将 `x` 绑定到 `e1` 的求值结果。
+//
+// ===========================================================================
+// 依赖约定（design.md §「需求可追溯映射」R1 复用 R4 地基）：
+//   * @parser_combinator —— 解析器组合子公共地基；`parse` 复用其不可变游标
+//     `Input`（peek / advance / pos）与位置模型，天然支持括号回溯与含行列的
+//     语法诊断。以别名 @pc 引用。
+//   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
+//     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5）。
+import {
+  "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// 属性测试（task 15.3 Property 1：Mini_Compiler AST 往返）复用共享 PBT 包
+// @infra_pbt 的 Gen / Rng / holds_for_all / round_trip 模板（每条属性 ≥100 次
+// 迭代）。该依赖仅作用于黑盒测试驱动（`for "test"`），不进入运行时产物，符合
+// design.md「infra_pbt 为横切测试期共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

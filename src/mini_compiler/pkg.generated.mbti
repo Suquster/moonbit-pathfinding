@@ -1,0 +1,97 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/mini_compiler"
+
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// Values
+pub fn check(Ast) -> Result[TypedAst, Diagnostic]
+
+pub fn compile(TypedAst, Backend) -> Bytes
+
+pub fn eval(TypedAst) -> Value
+
+pub fn lex(String) -> Result[Array[Token], Diagnostic]
+
+pub let mini_compiler_name : String
+
+pub let mini_compiler_version : String
+
+pub fn parse(Array[Token]) -> Result[Ast, Diagnostic]
+
+pub fn print_ast(Ast) -> String
+
+pub fn release_info() -> @release_meta.DirectionRelease
+
+pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+// Errors
+
+// Types and methods
+pub(all) enum Ast {
+  Int(Int)
+  Var(String)
+  Bin(BinOp, Ast, Ast)
+  Let(String, Ast, Ast)
+} derive(Eq)
+
+pub(all) enum Backend {
+  Wasm
+  Js
+} derive(Eq)
+
+pub(all) enum BinOp {
+  Add
+  Sub
+  Mul
+  Div
+} derive(Eq)
+
+pub(all) enum DiagKind {
+  LexError
+  SyntaxError
+  TypeError
+} derive(Eq)
+
+pub(all) struct Diagnostic {
+  kind : DiagKind
+  line : Int
+  col : Int
+  msg : String
+} derive(Eq)
+pub fn Diagnostic::new(DiagKind, Int, Int, String) -> Self
+
+pub(all) enum Token {
+  IntLit(Int)
+  Ident(String)
+  KwLet
+  KwIn
+  Plus
+  Minus
+  Star
+  Slash
+  LParen
+  RParen
+  Assign
+} derive(Eq)
+
+pub(all) enum Type {
+  IntT
+} derive(Eq)
+
+pub(all) enum TypedAst {
+  TInt(Int)
+  TVar(String, Type)
+  TBin(BinOp, TypedAst, TypedAst, Type)
+  TLet(String, TypedAst, TypedAst, Type)
+} derive(Eq)
+
+pub(all) enum Value {
+  IntV(Int)
+} derive(Eq)
+
+// Type aliases
+
+// Traits
+

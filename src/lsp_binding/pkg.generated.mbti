@@ -1,0 +1,67 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/lsp_binding"
+
+// Values
+pub fn decode_message(Bytes) -> Result[JsonRpcMessage, RpcError]
+
+pub fn dispatch(JsonRpcMessage, Router) -> JsonRpcMessage?
+
+pub fn encode_message(JsonRpcMessage) -> Bytes
+
+pub fn error_response(Id, Int, String) -> JsonRpcMessage
+
+pub let internal_error_code : Int
+
+pub let invalid_params_code : Int
+
+pub let invalid_request_code : Int
+
+pub let method_not_found_code : Int
+
+pub let parse_error_code : Int
+
+// Errors
+
+// Types and methods
+pub(all) enum Id {
+  IdNum(Int)
+  IdStr(String)
+  IdNull
+} derive(Eq, Show)
+
+type JParser
+
+pub(all) enum Json {
+  JNull
+  JBool(Bool)
+  JNum(String)
+  JStr(String)
+  JArr(Array[Json])
+  JObj(Array[(String, Json)])
+} derive(Eq, Show)
+
+pub(all) enum JsonRpcMessage {
+  Request(id~ : Id, method~ : String, params~ : Json)
+  Response(id~ : Id, result~ : Json?, error~ : RpcError?)
+  Notification(method~ : String, params~ : Json)
+} derive(Eq, Show)
+
+pub struct Router {
+  handlers : Map[String, (JsonRpcMessage) -> JsonRpcMessage?]
+}
+pub fn Router::lookup(Self, String) -> ((JsonRpcMessage) -> JsonRpcMessage?)?
+pub fn Router::new() -> Self
+pub fn Router::register(Self, String, (JsonRpcMessage) -> JsonRpcMessage?) -> Unit
+
+pub(all) struct RpcError {
+  code : Int
+  message : String
+  data : Json?
+} derive(Eq, Show)
+pub fn RpcError::new(Int, String) -> Self
+pub fn RpcError::with_data(Int, String, Json) -> Self
+
+// Type aliases
+
+// Traits
+

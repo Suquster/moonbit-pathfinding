@@ -10,6 +10,8 @@ pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) 
 
 pub fn[N : Eq + Hash] bfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
 
+pub fn build_order_respects_deps(Array[Int], Array[(Int, Int)]) -> Bool
+
 pub fn[N, W : @core.Weight] check_cost_matches_path((Array[N], W)?, (N, N) -> W?) -> Bool
 
 pub fn[N : Eq] check_edges_valid(Array[N]?, N, (N) -> Array[N]) -> Bool
@@ -28,7 +30,23 @@ pub fn[N : Eq] check_starts_at_start(Array[N]?, N) -> Bool
 
 pub fn[N] check_termination_measure(Array[N], Int) -> Bool
 
+pub fn decode_failure_no_partial(Bool, Bool) -> Bool
+
+pub fn deterministic_replay(Array[Int], Array[Int]) -> Bool
+
 pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(N, W)], (N, N) -> W?) -> Bool
+
+pub fn error_isolation(Array[Int], Int, Array[Int]) -> Bool
+
+pub fn fail_does_not_consume(Bool, Int, Int) -> Bool
+
+pub fn fifo_order_preserved(Array[Int], Array[Int]) -> Bool
+
+pub fn illegal_message_keeps_alive(Bool, Bool, Bool) -> Bool
+
+pub fn interference_distinct(Array[(Int, Int)]) -> Bool
+
+pub fn[T : Eq] is_idempotent(T, (T) -> T) -> Bool
 
 pub fn[W : @core.Weight] is_non_negative(W) -> Bool
 
@@ -36,9 +54,25 @@ pub fn[N : Eq + Hash] is_reachable(N, (N) -> Bool, (N) -> Array[N], Array[N]) ->
 
 pub fn[N : Eq] is_valid_path(Array[N], N, (N) -> Array[N]) -> Bool
 
+pub fn level_threshold_filter(Int, Int, Bool) -> Bool
+
+pub fn nfa_dfa_consistent(Bool, Bool) -> Bool
+
 pub fn[N, W : @core.Weight] path_cost(Array[N], (N, N) -> W?) -> W?
 
+pub fn[T] preserves(T, (T) -> T, (T) -> Bool) -> Bool
+
 pub fn[N, W : @core.Weight] require_non_negative_edges(Array[(N, N)], (N, N) -> W?) -> Bool
+
+pub fn[T : Eq, S] round_trip_eq(T, (T) -> S, (S) -> T?) -> Bool
+
+pub fn scope_binding_consistent(Array[String], Array[String]) -> Bool
+
+pub fn[T : Eq] seq_eq(Array[T], Array[T]) -> Bool
+
+pub fn ssa_single_assignment(Array[Int]) -> Bool
+
+pub fn ssa_single_assignment_counts(Array[Int]) -> Bool
 
 // Errors
 

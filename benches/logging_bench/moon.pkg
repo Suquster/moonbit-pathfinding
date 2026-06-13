@@ -1,0 +1,15 @@
+// Package: benches/logging_bench
+//
+// Logging_Library 旗舰深化（方向七 R9）的原生 `moon bench` 工作负载与冒烟/回归
+// guard。覆盖四类高频负载：高频 `log`、格式化（JSON 与 logfmt）、采样判定
+// （sample_trace / sample_stream）、span 进入/退出。回归 guard 以内联基线对
+// 确定性输出（采样保留条数、字节级渲染、计数守恒）精确比较，偏离即失败。
+//
+// 运行（native 前先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon test  -p Suquster/moonbit-pathfinding/benches/logging_bench --target wasm-gc
+//   moon bench -p Suquster/moonbit-pathfinding/benches/logging_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/logging" @log,
+  "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+}

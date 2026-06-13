@@ -1,0 +1,51 @@
+// 包：Suquster/moonbit-pathfinding/src/release_aggregate
+//
+// 全方向 release-ready 聚合门禁（任务 18.1 / Requirement 11.6）。
+//
+// 定位（依赖方向说明）：
+//   * `release_meta` 是不依赖任何方向子包的横切叶子包，仅承载纯数据模型
+//     （`DirectionRelease` / `QualityGates`）与纯函数（聚合判定）；
+//   * 各方向（`src/{方向}`）向下依赖 `import @release_meta`，并在各自
+//     `release.mbt` 中登记自己的 `DirectionRelease`（`release_info` /
+//     `release_info_with_gates`）；
+//   * 因此「汇集全部 10 个方向」的聚合点**不能**放在 `release_meta` 内
+//     （否则 release_meta → 各方向 → release_meta 形成循环依赖），而必须是
+//     一个**更上层的新包**，单向 `import` 全部 10 个方向。本包即承担该角色。
+//
+// 依赖关系（全部单向向下，无环）：
+//   release_aggregate ─┬─> parser_combinator ─┐
+//                      ├─> regex_engine       │
+//                      ├─> serialization      │
+//                      ├─> build_tool         ├─> release_meta
+//                      ├─> logging            │
+//                      ├─> codegen_infra      │
+//                      ├─> dst                │
+//                      ├─> lsp_server         │
+//                      ├─> mini_compiler      │
+//                      └─> actor            ──┘
+//   release_aggregate ───────────────────────> release_meta（直接复用模型类型）
+//
+// 注意：方向五（LSP）由 lsp_binding + lsp_server 两个子包构成单一发布单元，
+// 其 `DirectionRelease`（名称 "lsp"）在入口子包 `lsp_server` 登记，故本包只
+// 依赖 `lsp_server` 即可覆盖方向五，不重复依赖 lsp_binding。
+import {
+  "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/parser_combinator",
+  "Suquster/moonbit-pathfinding/src/regex_engine",
+  "Suquster/moonbit-pathfinding/src/serialization",
+  "Suquster/moonbit-pathfinding/src/build_tool",
+  "Suquster/moonbit-pathfinding/src/logging",
+  "Suquster/moonbit-pathfinding/src/codegen_infra",
+  "Suquster/moonbit-pathfinding/src/dst",
+  "Suquster/moonbit-pathfinding/src/lsp_server",
+  "Suquster/moonbit-pathfinding/src/mini_compiler",
+  "Suquster/moonbit-pathfinding/src/actor",
+}
+
+// 任务 18.2（Property 24 三后端差分一致性黄金快照）复用共享 PBT 包
+// @infra_pbt 的种子驱动随机源 Rng 与 holds_for_all 不变量模板，驱动一组
+// 跨方向的确定性输入并对聚合输出做黄金快照。该依赖仅作用于黑盒测试驱动
+// （`for "test"`），不进入运行时产物，符合 infra_pbt「横切测试期共享约定」定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

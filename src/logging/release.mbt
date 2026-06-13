@@ -15,8 +15,14 @@
 //   DirectionRelease，从而保持方向自包含、release_meta 零反向耦合。
 
 ///|
-/// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let logging_version : String = "0.1.0"
+/// 本方向的独立 SemVer 版本号。
+///
+/// 自骨架首版 `0.1.0` 推进至 `0.2.0`（次版本）：本次旗舰深化以**严格向后兼容**
+/// 的方式新增大量能力（嵌套取值与嵌套 JSON 往返、多 formatter/sink、采样限流、
+/// 过滤路由、OTel span 语义、W3C traceparent、脱敏、指标派生、端到端 demo），
+/// 既有公开类型/函数签名与语义冻结、`Value` 仅加性追加 `VMap`/`VList`，故按
+/// 0.x 约定以次版本推进（Requirement 12.6 / 13.6）。
+pub let logging_version : String = "0.2.0"
 
 ///|
 /// 本方向的包名（与子包目录名一致），用于推导 changelog 路径与发布身份。

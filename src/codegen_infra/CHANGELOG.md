@@ -17,6 +17,65 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-12
+
+旗舰深化（业界顶尖档位）：在 `0.1.0` 骨架之上做**严格向后兼容**的增量深化，
+对标 LLVM / GCC / Cranelift / regalloc2 的寄存器分配 / SSA / 指令选择模型。
+既有公开类型与六个既有函数（`allocate_coloring` / `allocate_linear_scan` /
+`interference_components` / `build_ssa` / `run_passes` / `select`）签名、字段、
+变体与运行时行为一律冻结；`Pass` 枚举不扩容；全部新能力以新增 `.mbt` 文件旁路
+扩展。17 条正确性属性（Property 1–17）各 ≥100 迭代，三后端（wasm-gc / js /
+native）一致、零回归。
+
+### Added
+- 活跃性分析（`liveness.mbt`）：`analyze_liveness`（后向数据流不动点）、
+  `build_interference_from_liveness`、`build_intervals_from_liveness`，使干涉图
+  与活跃区间来自真实活跃性（Appel 经典后向数据流；P6 活跃性不动点）。
+- 支配树与支配边界（`dominator.mbt`）：`build_dom_tree`（Lengauer-Tarjan
+  1979）、`dominance_frontier`（Cytron et al. 1991）、`DomTree::dominates`，
+  不可达块排除（P7 支配树正确、P8 支配边界正确）。
+- 最小 SSA 构造（`ssa_min.mbt`）：`build_ssa_minimal`（Cytron 迭代支配边界 φ
+  放置 + 支配树前序重命名），最小文法上与冻结 `build_ssa` 逐字段一致
+  （P9 φ 仅在支配边界、P10 φ 实参数=前驱数、P11 单赋值不变量）。
+- SSA 析构（`out_of_ssa.mbt`）：`destruct_ssa`（φ→边上并行复制）、
+  `sequentialize_parallel_copy`（破环序列化，Sreedhar / Boissinot）
+  （P12 out-of-SSA 与 SSA 语义等价，以参考解释器为 oracle）。
+- 稀疏条件常量传播（`sccp.mbt`）：`LatticeValue` 格 + `sccp`（Wegman-Zadeck
+  1991，格值 × 边可达性工作表迭代）（P13 SCCP 保持语义）。
+- 全局值编号（`gvn.mbt`）：`gvn`（支配性约束值编号合并）、`dce_strong`、
+  `copy_prop_strong`（P14 GVN 保持语义）。
+- pass 框架（`pipeline.mbt`）：`OptPass` 枚举 + `run_pipeline` / `run_to_fixpoint`
+  不动点驱动（旁路超集，既有 `run_passes` 冻结）（P15 保持 SSA 不变量）。
+- Chaitin-Briggs 乐观着色（`coloring.mbt`）：`allocate_coloring_briggs`
+  （simplify / potential-spill / select 三阶段 + 实际溢出回退）、`SpillCost` /
+  `spill_cost` 溢出代价启发式（Chaitin 1982 / Briggs 1994）
+  （P1 着色尊重干涉、P2 k 充足无溢出）。
+- 寄存器合并（`coalescing.mbt`）：`MoveSet`、`CoalesceStrategy`、
+  `can_coalesce_george` / `can_coalesce_briggs` / `coalesce`（George-Appel /
+  Briggs 保守判据）（P3 保守合并安全）。
+- 线性扫描一致性桥（`consistency.mbt`）：`interference_from_intervals`、
+  `allocation_has_spill`（P4 线性扫描尊重重叠、P5 与图着色无溢出一致）。
+- BURS 指令选择（`burs.mbt`）：`CostRule`、`select_burs`（自底向上 DP 代价最优
+  tiling）、`tiling_cost`、`max_munch`（Appel / BURS）（P16 覆盖完整、
+  P17 代价最优，以穷举 tiling 为 oracle）。
+- 参考解释器（`evaluate.mbt`）：`EvalResult`、`evaluate`，作为语义保持类属性
+  （P12 / P13 / P14）的 oracle。
+- 端到端示例（`demo.mbt`）：`demo_program` / `demo_pipeline` / `PipelineStages`，
+  贯穿活跃性 → 最小 SSA → SCCP/GVN/DCE → 图着色 / 线性扫描 → BURS 全链路。
+- 性能基准（`benches/codegen_bench/`）：支配树 / SSA / 图着色 / 线性扫描 / SCCP
+  五类规模化工作负载 + 平滑回归守卫。
+- 可执行文档：`README.mbt.md` 扩充全链路示例、paper-to-code 追溯与
+  LLVM / GCC / Cranelift / regalloc2 对标及实现边界声明。
+
+### Changed
+- `release.mbt`：`codegen_infra_version` 自 `0.1.0` 推进至 `0.2.0`
+  （`release_info` / `release_info_with_gates` 语义不变）。
+
+### Compatibility
+- 严格向后兼容：既有公开 API 签名 / 行为冻结，`Pass` 枚举不扩容，新能力旁路
+  新增；连通分量分解仍复用 `@directed.tarjan_scc`。新增 API 枚举 `OptPass` /
+  `CoalesceStrategy` / `LatticeValue` 以 `pub(all)` 暴露以便调用方构造与匹配。
+
 ## [0.1.0] - 2026-06-11
 
 骨架首版（breadth-first 第一版）：达成「可编译 + 跑通三后端（wasm-gc / js /
@@ -55,5 +114,6 @@ native）+ 寄存器分配干涉不变量与 SSA 单赋值不变量属性测试 
   `0.1.0`，changelog 路径 `src/codegen_infra/CHANGELOG.md`）
   （新增方向发布元数据登记）。
 
-[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/codegen_infra-v0.1.0...HEAD
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/codegen_infra-v0.2.0...HEAD
+[0.2.0]: https://github.com/Suquster/moonbit-pathfinding/compare/codegen_infra-v0.1.0...codegen_infra-v0.2.0
 [0.1.0]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/codegen_infra-v0.1.0

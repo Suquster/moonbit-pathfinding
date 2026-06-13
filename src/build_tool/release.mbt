@@ -15,8 +15,16 @@
 //   DirectionRelease，从而保持方向自包含、release_meta 零反向耦合。
 
 ///|
-/// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let build_tool_version : String = "0.1.0"
+/// 本方向的独立 SemVer 版本号。
+///
+/// `0.2.0`（自骨架首版 `0.1.0` 起的**次版本**推进）：旗舰深化新增完整规则文法
+/// （`parse_rules_full` / `RuleSet` / `GrammarError`）、内容寻址缓存与持久化
+/// （`cache_key` / `ActionCache` / `serialize_cache`）、脏传播与最小重建集
+/// （`minimal_rebuild_set` / `rebuild_schedule`）、关键路径调度
+/// （`critical_path_length`）、动态依赖（`add_dynamic_deps`）与 provenance 溯源
+/// （`record_provenance`）。全部为**向后兼容的新增**（既有 `0.1.0` 契约冻结），
+/// 故按 SemVer 取次版本号推进而非主版本。
+pub let build_tool_version : String = "0.2.0"
 
 ///|
 /// 本方向的包名（与子包目录名一致），用于推导 changelog 路径与发布身份。

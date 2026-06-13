@@ -220,3 +220,80 @@ test "topo_order returns a cycle with node sequence on cyclic graph" {
     Err(cyc) => assert_eq(cyc.nodes.length(), 2)
   }
 }
+
+
+// ─────────────────── 既有 API 向后兼容回归（任务 11.5） ───────────────────
+//
+// 校验旗舰深化后既有公开契约（parse_rules / detect_cycle / topo_order /
+// is_dirty / schedule 与 ParseError 形态）与 0.1.0 逐字段一致（R13.1/R13.2/R13.5）。
+
+///|
+/// 回归：parse_rules 节点序列与依赖边逐字段稳定（去重保序、边方向不变）。
+test "compat: parse_rules nodes and edges are field-stable" {
+  match parse_rules("app: a.o b.o\na.o: common.h\n") {
+    Ok(g) => {
+      assert_eq(g.nodes.length(), 4)
+      assert_true(g.nodes[0] == Target::new("app"))
+      assert_true(g.nodes[1] == Target::new("a.o"))
+      assert_true(g.nodes[2] == Target::new("b.o"))
+      assert_true(g.nodes[3] == Target::new("common.h"))
+      assert_eq(g.edges.length(), 3)
+      let (d0, t0) = g.edges[0]
+      assert_true(d0 == Target::new("a.o"))
+      assert_true(t0 == Target::new("app"))
+    }
+    Err(_) => fail("合法规则不应解析失败")
+  }
+}
+
+///|
+/// 回归：ParseError 形态不变（仅 message + line，Eq 仍成立）。
+test "compat: ParseError shape is unchanged" {
+  let e = ParseError::new("boom", 7)
+  assert_eq(e.line, 7)
+  assert_eq(e.message, "boom")
+  assert_true(e == ParseError::new("boom", 7))
+}
+
+///|
+/// 回归：完整文法在最小文法子集上的图投影与 parse_rules 逐字段一致（R2.4）。
+test "compat: full grammar projects to the same graph on minimal text" {
+  let src = "app: a.o b.o\na.o: common.h\nb.o: common.h\n"
+  match (parse_rules(src), parse_rules_full(src)) {
+    (Ok(g), Ok(rs)) => {
+      let g2 = rs.to_graph()
+      assert_eq(g2.nodes.length(), g.nodes.length())
+      assert_eq(g2.edges.length(), g.edges.length())
+      for i in 0..<g.nodes.length() {
+        assert_true(g2.nodes[i] == g.nodes[i])
+      }
+    }
+    _ => fail("最小文法对两解析器均应成功")
+  }
+}
+
+///|
+/// 回归：schedule / detect_cycle / topo_order / is_dirty 行为冻结。
+test "compat: schedule detect_cycle topo_order is_dirty behavior frozen" {
+  let a = Target::new("a")
+  let b = Target::new("b")
+  let g = BuildGraph::new([a, b], [(a, b)])
+  // schedule：a→b 两批，各一元素。
+  let batches = schedule(g, 0)
+  assert_eq(batches.length(), 2)
+  assert_true(batches[0][0] == a)
+  assert_true(batches[1][0] == b)
+  // detect_cycle：无环返回 None。
+  assert_true(detect_cycle(g) is None)
+  // topo_order：[a, b]。
+  match topo_order(g) {
+    Ok(order) => {
+      assert_eq(order.length(), 2)
+      assert_true(order[0] == a)
+      assert_true(order[1] == b)
+    }
+    Err(_) => fail("无环图不应报告环")
+  }
+  // is_dirty：无指纹保守判脏。
+  assert_true(is_dirty(Target::new("z"), BuildCache::new()))
+}

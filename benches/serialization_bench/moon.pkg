@@ -1,0 +1,24 @@
+// Package: benches/serialization_bench
+//
+// Serialization_Framework 旗舰深化性能基准与回归 guard（design.md §4.10，R7）。
+// 覆盖四类工作负载并对 encode_typed / decode_typed / encode_canonical / JSON 计时：
+//   * varint 密集——大量小整型 packed repeated；
+//   * 大 repeated——长 int64 序列（packed 与非 packed 对比）；
+//   * 嵌套深度——深层链式嵌套消息；
+//   * 字符串密集——大量字符串 repeated。
+//
+// 同时提供确定性回归 guard（往返正确性 + packed 紧凑度 + 确定编码字节基线，超声明
+// 容差给出可审计失败报告，R7.3）。
+//
+// 运行命令（文档化，R7.4）：
+//   moon test  -p Suquster/moonbit-pathfinding/benches/serialization_bench --target wasm-gc
+//   moon test  -p Suquster/moonbit-pathfinding/benches/serialization_bench --target js
+//   moon bench -p Suquster/moonbit-pathfinding/benches/serialization_bench --target native
+// native 运行前须先：export LIBRARY_PATH=/usr/lib64:/usr/lib
+//
+// 基准 JSON/Markdown 工件（含机器标识 / 后端 / 输入规模 / 计时统计，R7.2）由
+// scripts/benchmark_*.ps1 驱动本包 `moon test` 产出，写入 benches/results/。
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/serialization" @ser,
+}

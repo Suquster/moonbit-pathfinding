@@ -176,6 +176,270 @@ test "README · parse_proto 解析模式并 gen_moonbit 生成类型" {
 
 ---
 
+## 示例 5 · 模式驱动的类型化编解码 —— encode_typed / decode_typed（旗舰 R1）
+
+在 wire 粒度通用编解码之上，按 `ProtoSchema` 把字段号映射为命名字段并按声明类型
+解释取值：sint 用 zigzag、定长 float/double 用位级 reinterpret、repeated 聚合、proto3
+标量默认值省略。下例解析一个含 `sint32` 与 `repeated string` 的模式，构造类型化消息
+并往返自洽。
+
+```mbt check
+///|
+test "README · 模式驱动的类型化编解码往返" {
+  let src =
+    #|syntax = "proto3";
+    #|message Point {
+    #|  sint32 x = 1;
+    #|  sint32 y = 2;
+    #|  repeated string tags = 3;
+    #|}
+  let schema = match parse_proto_full(src) {
+    Ok(s) => s
+    Err(e) => {
+      fail("解析失败：\{e}")
+      ProtoSchema::empty()
+    }
+  }
+  let msg = TypedMessage::new()
+    .set(1, TInt(-7L)) // sint32 负值经 zigzag 紧凑编码
+    .set(2, TInt(42L))
+    .set(3, TList([TStringV("a"), TStringV("b")]))
+  let bytes = match encode_typed(schema, "Point", msg) {
+    Ok(b) => b
+    Err(e) => {
+      fail("编码失败：\{e}")
+      b""
+    }
+  }
+  match decode_typed(schema, "Point", bytes) {
+    Ok(out) => assert_true(out == msg)
+    Err(e) => fail("解码失败：\{e}")
+  }
+}
+```
+
+---
+
+## 示例 6 · 确定性/规范化编码 —— encode_canonical（旗舰 R2）
+
+确定性编码按字段号升序输出、数值标量 repeated 一律 packed、每字段至多一次，对同一
+消息内容产出唯一字节序列，从而**幂等**。下例乱序设置字段，校验规范编码的幂等性。
+
+```mbt check
+///|
+test "README · 确定性编码幂等" {
+  let src =
+    #|syntax = "proto3";
+    #|message Rec { int32 a = 1; int32 b = 2; int32 c = 3; }
+  let schema = match parse_proto_full(src) {
+    Ok(s) => s
+    Err(e) => {
+      fail("解析失败：\{e}")
+      ProtoSchema::empty()
+    }
+  }
+  // 乱序设置；规范编码按字段号升序输出。
+  let msg = TypedMessage::new()
+    .set(3, TInt(30L))
+    .set(1, TInt(10L))
+    .set(2, TInt(20L))
+  let b1 = match encode_canonical(schema, "Rec", msg) {
+    Ok(b) => b
+    Err(e) => {
+      fail("规范编码失败：\{e}")
+      b""
+    }
+  }
+  // 幂等：解码再规范编码逐字节相等。
+  let b2 = match decode_typed(schema, "Rec", b1) {
+    Ok(m2) =>
+      match encode_canonical(schema, "Rec", m2) {
+        Ok(b) => b
+        Err(e) => {
+          fail("规范编码失败：\{e}")
+          b""
+        }
+      }
+    Err(e) => {
+      fail("解码失败：\{e}")
+      b""
+    }
+  }
+  assert_true(b1 == b2)
+}
+```
+
+---
+
+## 示例 7 · proto3 JSON 映射 —— encode_json / decode_json（旗舰 R5）
+
+消息与 proto3 JSON 文本互转，与二进制 wire 表示语义等价：字段名采用 camelCase、
+64 位整数表示为**字符串**（规避 IEEE-754 53 位精度损失）、`bytes` 采用 base64。
+
+```mbt check
+///|
+test "README · proto3 JSON 映射与二进制等价" {
+  let src =
+    #|syntax = "proto3";
+    #|message User { int64 user_id = 1; string name = 2; bytes avatar = 3; }
+  let schema = match parse_proto_full(src) {
+    Ok(s) => s
+    Err(e) => {
+      fail("解析失败：\{e}")
+      ProtoSchema::empty()
+    }
+  }
+  // 2^53 + 1：超出 Double 精度，故 64 位整数必须以字符串承载。
+  let msg = TypedMessage::new()
+    .set(1, TInt(9007199254740993L))
+    .set(2, TStringV("Ada"))
+    .set(3, TBytesV(b"\x01\x02\x03"))
+  let json = match encode_json(schema, "User", msg) {
+    Ok(s) => s
+    Err(e) => {
+      fail("JSON 编码失败：\{e}")
+      ""
+    }
+  }
+  assert_true(json.contains("userId")) // camelCase
+  assert_true(json.contains("\"9007199254740993\"")) // 64 位为字符串
+  match decode_json(schema, "User", json) {
+    Ok(out) => assert_true(out == msg) // 与二进制往返语义等价
+    Err(e) => fail("JSON 解码失败：\{e}")
+  }
+}
+```
+
+---
+
+## 示例 8 · 模式校验与完整代码生成 —— validate_schema / gen_moonbit_full（旗舰 R4/R6）
+
+`validate_schema` 校验字段号范围/唯一性、保留冲突、类型引用解析、proto3 枚举首值；
+`gen_moonbit_full` 由模式产出带字段的 `pub struct` 与委托共享类型化模型的编解码函数。
+
+```mbt check
+///|
+test "README · 模式校验与代码生成" {
+  let src =
+    #|syntax = "proto3";
+    #|message Pt { int32 x = 1; repeated string tags = 2; }
+  let schema = match parse_proto_full(src) {
+    Ok(s) => s
+    Err(e) => {
+      fail("解析失败：\{e}")
+      ProtoSchema::empty()
+    }
+  }
+  match validate_schema(schema) {
+    Ok(_) => assert_true(true)
+    Err(errs) => fail("合法模式不应报错：\{errs}")
+  }
+  let code = gen_moonbit_full(schema)
+  assert_true(code.contains("pub struct Pt"))
+  assert_true(code.contains("tags : Array[String]")) // repeated → Array
+  assert_true(code.contains("Pt_encode")) // 委托编解码函数
+}
+```
+
+---
+
+## 示例 9 · 端到端实战 demo —— 六类构造 + 二进制/JSON 一致（旗舰 R9）
+
+贯穿文档与基准的实战 `.proto`（UserProfile）覆盖标量 / repeated / 嵌套消息 / enum /
+oneof / map 六类构造。下例串起 `parse_proto_full` → `validate_schema` →
+`encode_typed`/`decode_typed` → JSON 往返，并断言二进制往返与 JSON 往返结果一致。
+
+```mbt check
+///|
+test "README · 端到端实战 demo" {
+  let schema = match parse_proto_full(demo_proto()) {
+    Ok(s) => s
+    Err(e) => {
+      fail("demo 解析失败：\{e}")
+      ProtoSchema::empty()
+    }
+  }
+  match validate_schema(schema) {
+    Ok(_) => assert_true(true)
+    Err(errs) => fail("demo 校验失败：\{errs}")
+  }
+  let msg = demo_message()
+  let bin = match encode_typed(schema, demo_message_name, msg) {
+    Ok(b) =>
+      match decode_typed(schema, demo_message_name, b) {
+        Ok(o) => o
+        Err(e) => {
+          fail("二进制解码失败：\{e}")
+          TypedMessage::new()
+        }
+      }
+    Err(e) => {
+      fail("二进制编码失败：\{e}")
+      TypedMessage::new()
+    }
+  }
+  let jsn = match encode_json(schema, demo_message_name, msg) {
+    Ok(s) =>
+      match decode_json(schema, demo_message_name, s) {
+        Ok(o) => o
+        Err(e) => {
+          fail("JSON 解码失败：\{e}")
+          TypedMessage::new()
+        }
+      }
+    Err(e) => {
+      fail("JSON 编码失败：\{e}")
+      TypedMessage::new()
+    }
+  }
+  assert_true(bin == msg)
+  assert_true(bin == jsn) // 二进制与 JSON 两条路径所得消息一致
+}
+```
+
+---
+
+## paper-to-code 可追溯（旗舰 R8）
+
+| 算法 / 规范 | 来源 | 本库落点 |
+|---|---|---|
+| wire format + varint base-128 | Protocol Buffers《Encoding》规范 | `wire.mbt`（`encode`/`decode`），`typed.mbt` |
+| zigzag（sint32/sint64） | Protocol Buffers 编码规范 | `zigzag.mbt`（`(n<<1)^(n>>k)`，算术右移扩散符号位） |
+| 定长 I32/I64（IEEE-754） | IEEE-754 + protobuf fixed/float/double | `zigzag.mbt`（位级 reinterpret）+ `wire.mbt` 定长读写 |
+| packed repeated | protobuf（proto3 数值标量默认 packed） | `typed.mbt` 打包 + `canonical.mbt` 确定性 packed |
+| 确定性序列化 | protobuf deterministic serialization | `canonical.mbt`（升序 + packed + 每字段一次） |
+| proto3 JSON 映射 | Protocol Buffers《ProtoJSON》规范 | `json.mbt`（camelCase / 64 位为字符串 / base64） |
+| proto3 文法 | protobuf 语言规范（proto3） | `proto_grammar.mbt`（构建于 `@parser_combinator`） |
+| base64 | RFC 4648 | `json.mbt`（`base64_encode`/`base64_decode`） |
+
+**zigzag 紧凑性**：小幅负值 `-1 → 1`、`1 → 2`，避免负数恒占 10 字节 varint。
+**位级浮点**：float/double 一律经 `*_to_bits`/`bits_to_*` 做位级搬运（不做数值运算），
+保证 `wasm-gc`/`js`/`native` 三后端逐位一致，规避 js 后端「数字底层皆 double」的精度漂移。
+
+## 与主流序列化方案对标（旗舰 R8.4）
+
+| 维度 | 本库 | Protocol Buffers | Cap'n Proto | FlatBuffers | MessagePack |
+|---|---|---|---|---|---|
+| 模式依赖 | 是 | 是 | 是 | 是 | 否（自描述） |
+| 零拷贝读取 | 否 | 否 | 是 | 是 | 否 |
+| 编码紧凑度 | 高（varint+packed+默认省略） | 高 | 中 | 中 | 高 |
+| 确定性编码 | 是（规范化 + 幂等） | 可选 | N/A | N/A | 否 |
+| 文本互转 | 是（proto3 JSON） | 是 | 是 | 是 | 部分 |
+| 未知字段保留 | 是 | 是 | 否 | 否 | N/A |
+
+**核心取舍**：与 Protocol Buffers 同侧——以「需要 schema、非零拷贝」换取最紧凑的
+varint/packed 编码、确定性序列化与稳健的模式演进（未知字段保留）。零拷贝读取
+（Cap'n Proto / FlatBuffers 的核心卖点）不在本库目标内。
+
+## 实现边界声明（旗舰 R8.5，显式而非隐式留白）
+
+- **不支持 proto2 group（wire 3/4）**：已废弃，与既有 `WireType` 一致只支持 0/1/2/5。
+- **不支持 extensions 与自定义 well-known types**（如 `Any`/`Timestamp` 的特殊 JSON 形态）：超出 proto3 核心范围。
+- **不支持 import 跨文件解析**：`parse_proto_full` 跳过 `import` 语句（单文件模式），跨文件符号解析留待上层。
+- **枚举 JSON 采用数值表示**：满足语义等价且无歧义（R5.1 列举的核心规则为 camelCase / 64 位为字符串 / bytes base64）。
+
+---
+
 ## 验证方式
 
 ```bash
@@ -194,10 +458,10 @@ moon test src/serialization/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 4, passed: 4, failed: 0.
+Total tests: 9, passed: 9, failed: 0.
 ```
 
-（示例 1~4 的 4 段可执行测试全部通过。）一旦修改编解码实现使其输出与本文档的
+（示例 1~9 的 9 段可执行测试全部通过。）一旦修改编解码实现使其输出与本文档的
 `assert_*` 断言或字节快照不符，`moon test` 会立即报错并提示同步更新文档——这正是
 MoonBit 独占的**文档即测试**体验。
 

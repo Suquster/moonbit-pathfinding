@@ -7,21 +7,21 @@
 //   * 依质量门禁评估时 release_ready 与聚合判定一致。
 
 ///|
-/// 登记的发布元数据身份字段正确，版本为骨架首版 0.1.0。
-test "logging release_info registers identity at 0.1.0" {
+/// 登记的发布元数据身份字段正确，版本为旗舰深化版 0.2.0。
+test "logging release_info registers identity at 0.2.0" {
   let info = release_info()
   assert_eq(info.name, "logging")
-  assert_eq(info.version, "0.1.0")
+  assert_eq(info.version, "0.2.0")
   assert_eq(info.changelog_path, "src/logging/CHANGELOG.md")
 }
 
 ///|
-/// 登记的版本号是合法 SemVer，且恰为 0.1.0。
-test "logging version is a well-formed 0.1.0 semver" {
+/// 登记的版本号是合法 SemVer，且恰为 0.2.0。
+test "logging version is a well-formed 0.2.0 semver" {
   assert_true(@release_meta.is_valid_semver(logging_version))
   assert_eq(
     @release_meta.parse_semver(logging_version),
-    Some({ major: 0, minor: 1, patch: 0 }),
+    Some({ major: 0, minor: 2, patch: 0 }),
   )
 }
 
@@ -44,7 +44,7 @@ test "logging release_info_with_gates matches aggregate gate" {
   })
   assert_true(ready.release_ready)
   assert_eq(ready.name, "logging")
-  assert_eq(ready.version, "0.1.0")
+  assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: false,

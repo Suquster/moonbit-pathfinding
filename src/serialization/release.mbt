@@ -15,8 +15,13 @@
 //   DirectionRelease，从而保持方向自包含、release_meta 零反向耦合。
 
 ///|
-/// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let serialization_version : String = "0.1.0"
+/// 本方向的独立 SemVer 版本号。
+///
+/// 自骨架首版 `0.1.0` 起，本次旗舰深化按 SemVer 做**次版本**推进至 `0.2.0`：
+/// 全部新增能力（类型化编解码、确定性编码、JSON 映射、模式校验、完整文法解析、
+/// 完整代码生成）均以**旁路新增** API 提供，既有 `0.1.0` 公开契约严格冻结、向后
+/// 兼容，故为 minor 而非 major。
+pub let serialization_version : String = "0.2.0"
 
 ///|
 /// 本方向的包名（与子包目录名一致），用于推导 changelog 路径与发布身份。

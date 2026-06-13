@@ -15,8 +15,8 @@
 //   DirectionRelease，从而保持方向自包含、release_meta 零反向耦合。
 
 ///|
-/// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let codegen_infra_version : String = "0.1.0"
+/// 本方向的独立 SemVer 版本号（旗舰深化次版本推进）。
+pub let codegen_infra_version : String = "0.2.0"
 
 ///|
 /// 本方向的包名（与子包目录名一致），用于推导 changelog 路径与发布身份。

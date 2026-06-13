@@ -351,12 +351,44 @@ fn sort_entries(entries : Array[(String, Value)]) -> Unit {
 
 ///|
 /// 将一个结构化字段取值渲染为 JSON 片段。
+///
+/// 标量臂（`VStr` / `VInt` / `VBool` / `VFloat`）逐字保留既有渲染语义，确保
+/// 仅含标量字段事件的输出与 `0.1.0` 逐字节一致（Requirement 1.5 / 12.4）。
+/// 旗舰深化加性追加两条嵌套臂（Requirement 1.3）：
+///   * `VMap(m)`  —— 渲染为 JSON 对象 `{...}`，成员**按键名升序稳定排序**后
+///     以 `"key":value` 递归渲染（保证三后端逐字节一致与往返稳定）；
+///   * `VList(xs)` —— 渲染为 JSON 数组 `[...]`，元素**按原序**递归渲染。
 fn value_to_json(v : Value) -> String {
   match v {
     VStr(s) => "\"" + json_escape(s) + "\""
     VInt(i) => i.to_string()
     VBool(b) => if b { "true" } else { "false" }
     VFloat(f) => f.to_string()
+    VMap(m) => {
+      // 成员按键名升序稳定排序（与顶层 fields 同一规则），保证确定性输出。
+      let entries : Array[(String, Value)] = []
+      m.each(fn(k, vv) { entries.push((k, vv)) })
+      sort_entries(entries)
+      let mut body = ""
+      for i = 0; i < entries.length(); i = i + 1 {
+        if i > 0 {
+          body = body + ","
+        }
+        let (k, vv) = entries[i]
+        body = body + "\"" + json_escape(k) + "\":" + value_to_json(vv)
+      }
+      "{" + body + "}"
+    }
+    VList(xs) => {
+      let mut body = ""
+      for i = 0; i < xs.length(); i = i + 1 {
+        if i > 0 {
+          body = body + ","
+        }
+        body = body + value_to_json(xs[i])
+      }
+      "[" + body + "]"
+    }
   }
 }
 
@@ -411,11 +443,15 @@ fn hex4(n : Int) -> String {
 
 ///|
 /// 解析阶段的中间 JSON 取值表示（仅覆盖本库结构化日志所需的子集）。
+///
+/// 旗舰深化加性追加 `JArr`（JSON 数组），并使 `JObj` 在字段取值域内可还原为
+/// 嵌套 `VMap`（Requirement 1.4）。
 enum JVal {
   JStr(String)
   JNum(String)
   JBool(Bool)
   JObj(Array[(String, JVal)])
+  JArr(Array[JVal])
 }
 
 ///|
@@ -509,7 +545,10 @@ fn build_fields(fpairs : Array[(String, JVal)]) -> Map[String, Value]? {
 }
 
 ///|
-/// 将中间 JSON 取值转换为结构化字段取值；嵌套对象不在字段取值域内，返回 None。
+/// 将中间 JSON 取值转换为结构化字段取值。
+///
+/// 标量臂逐字保留既有语义（Requirement 1.5）；旗舰深化加性追加（Requirement
+/// 1.4）：`JObj` 还原为嵌套 `VMap`、`JArr` 还原为嵌套 `VList`，递归处理任意层级。
 fn jval_to_value(v : JVal) -> Value? {
   match v {
     JStr(s) => Some(VStr(s))
@@ -527,7 +566,29 @@ fn jval_to_value(v : JVal) -> Value? {
           None => None
         }
       }
-    JObj(_) => None
+    JObj(pairs) => {
+      // 嵌套对象 → VMap（Requirement 1.4），递归还原成员取值。
+      let m : Map[String, Value] = Map::new()
+      for i = 0; i < pairs.length(); i = i + 1 {
+        let (k, jv) = pairs[i]
+        match jval_to_value(jv) {
+          Some(value) => m[k] = value
+          None => return None
+        }
+      }
+      Some(VMap(m))
+    }
+    JArr(items) => {
+      // 嵌套数组 → VList（Requirement 1.4），按原序递归还原元素取值。
+      let xs : Array[Value] = []
+      for i = 0; i < items.length(); i = i + 1 {
+        match jval_to_value(items[i]) {
+          Some(value) => xs.push(value)
+          None => return None
+        }
+      }
+      Some(VList(xs))
+    }
   }
 }
 
@@ -586,11 +647,12 @@ fn JsonReader::peek(self : JsonReader) -> Char? {
 }
 
 ///|
-/// 解析一个 JSON 取值（对象 / 字符串 / 数值 / 布尔）。
+/// 解析一个 JSON 取值（对象 / 数组 / 字符串 / 数值 / 布尔）。
 fn parse_value(r : JsonReader) -> JVal? {
   r.skip_ws()
   match r.peek() {
     Some('{') => parse_object(r)
+    Some('[') => parse_array(r)
     Some('"') =>
       match parse_string(r) {
         Some(s) => Some(JStr(s))
@@ -606,6 +668,39 @@ fn parse_value(r : JsonReader) -> JVal? {
       }
     None => None
   }
+}
+
+///|
+/// 解析一个 JSON 数组，返回有序元素数组（Requirement 1.4）。消费起止方括号。
+fn parse_array(r : JsonReader) -> JVal? {
+  // 已确认当前为 '['。
+  r.pos = r.pos + 1
+  let items : Array[JVal] = []
+  r.skip_ws()
+  if r.peek() == Some(']') {
+    r.pos = r.pos + 1
+    return Some(JArr(items))
+  }
+  while true {
+    let value = match parse_value(r) {
+      Some(v) => v
+      None => return None
+    }
+    items.push(value)
+    r.skip_ws()
+    match r.peek() {
+      Some(',') => {
+        r.pos = r.pos + 1
+        continue
+      }
+      Some(']') => {
+        r.pos = r.pos + 1
+        break
+      }
+      _ => return None
+    }
+  }
+  Some(JArr(items))
 }
 
 ///|

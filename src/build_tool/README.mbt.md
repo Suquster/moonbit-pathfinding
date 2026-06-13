@@ -187,6 +187,211 @@ test "README · detect_cycle 报告依赖环并拒绝拓扑排序" {
 
 ---
 
+## 示例 5 · 完整规则文法 —— 变量 / recipe / 模式规则 / phony
+
+`parse_rules_full(src)` 在 `@parser_combinator` 之上解析完整规则文法（旁路新增，
+**不改**既有 `parse_rules` 最小文法语义）：变量定义与 `$(name)` 展开、缩进 recipe
+原文、模式规则 `%` 词干回填、`.PHONY` 标记（满足 **R1**）。下例解析一段含变量、
+recipe、模式规则与 phony 的规则集，并实例化模式规则。
+
+```mbt check
+///|
+test "README · parse_rules_full 解析完整文法" {
+  let src =
+    #|CC = gcc
+    #|.PHONY: clean
+    #|app: main.o
+    #|	$(CC) -o app main.o
+    #|%.o: %.c
+    #|	$(CC) -c $*.c
+    #|
+  match parse_rules_full(src) {
+    Ok(rs) => {
+      // 变量定义入表
+      assert_true(rs.variables.get("CC") == Some("gcc"))
+      // phony 标记
+      assert_true(rs.is_phony("clean"))
+      // recipe 中的 $(CC) 在解析期展开
+      match rs.recipe_of("app") {
+        Some(r) => assert_true(r.lines[0] == "gcc -o app main.o")
+        None => fail("app 应有 recipe")
+      }
+      // 模式规则 %.o: %.c 按词干 stem 回填（foo.o → 依赖 foo.c）
+      match rs.match_pattern("foo.o") {
+        Some(rule) => {
+          assert_true(rule.target == "foo.o")
+          assert_true(rule.deps[0] == "foo.c")
+          assert_true(rule.recipe.lines[0] == "gcc -c foo.c")
+        }
+        None => fail("应匹配模式 %.o")
+      }
+    }
+    Err(_) => fail("合法规则不应解析失败")
+  }
+}
+```
+
+语法错误由旁路 `GrammarError`（携带行 / 列 / 偏移）承载，并可经 `to_legacy()`
+投影回既有 `ParseError`，既满足列号诊断又不破坏既有契约（**R2.3**）。
+
+---
+
+## 示例 6 · 内容寻址增量缓存 —— 命中即跳过
+
+缓存键由目标、输入内容哈希与动作指纹经**长度前缀单射编码**复合（满足 **R3**）：
+相同输入产相同键、任一分量改变即产不同键。命中跳过重建，内容哈希变化（即便
+时间戳未变）仍判键变化而重建（对标 Bazel / Ninja 的内容寻址优于纯时间戳）。
+
+```mbt check
+///|
+test "README · 内容寻址缓存命中即跳过重建" {
+  let recipe : Recipe = { lines: ["gcc -c x.c"] }
+  let afp = action_fingerprint(recipe)
+  let h_src = content_hash("int main() {}")
+  let cache = ActionCache::new()
+  // 首次：未命中 → 需重建
+  assert_true(needs_rebuild_by_key(cache, "x.o", [h_src], afp))
+  // 登记动作结果后：命中 → 跳过
+  cache.record(cache_key("x.o", [h_src], afp), content_hash("<x.o>"))
+  assert_false(needs_rebuild_by_key(cache, "x.o", [h_src], afp))
+  // 输入内容变化 → 缓存键变化 → 再次需重建
+  let h_src2 = content_hash("int main() { return 1; }")
+  assert_true(needs_rebuild_by_key(cache, "x.o", [h_src2], afp))
+}
+```
+
+`serialize_cache` / `deserialize_cache` 以键升序的确定性行式文本持久化 `BuildCache`，
+满足往返一致（**R4**），使增量优势可跨构建会话保留。
+
+---
+
+## 示例 7 · 最小重建集 —— 单源变更只重建受影响目标
+
+`minimal_rebuild_set(g, dirty)` 沿依赖边前向传播脏输入，得到**既充分又最小**的
+重建集（满足 **R5/R6**）。下例对端到端 demo 工程仅改动一个源文件，重建集只含其
+传递下游，相对全量目标数显著缩减。
+
+```mbt check
+///|
+test "README · 最小重建集只含单源传递下游" {
+  let g = demo_graph()
+  // 仅 util_a.c 变化 → 下游 util_a.o → libutil.a → app
+  let set = minimal_rebuild_set(g, [Target::new("util_a.c")])
+  assert_eq(set.length(), 4)
+  // 相对 10 个全量目标显著缩减
+  assert_true(set.length() < g.nodes.length())
+}
+```
+
+---
+
+## 示例 8 · 关键路径调度 —— 不限并行下的最小层数
+
+`critical_path_length(g)` 在拓扑序上做最长路径 DP，等于不限并行度（`jobs <= 0`）
+下完成构建所需的批次层数（满足 **R7.4**）：`critical_path_length(g) ==
+len(schedule(g, 0))`。
+
+```mbt check
+///|
+test "README · 关键路径长度等于不限并行批次层数" {
+  let g = demo_graph()
+  // 最长链：源 → *.o → 库 → app（4 个节点）
+  assert_eq(critical_path_length(g), 4)
+  assert_eq(critical_path_length(g), schedule(g, 0).length())
+}
+```
+
+---
+
+## 示例 9 · provenance 溯源 —— 可复现记录
+
+`record_provenance` 产出含目标、输入哈希（规范升序）、动作指纹与输出哈希的溯源
+记录（满足 **R9**）：相同输入与动作恒得相同记录（输入哈希乱序经规范化后仍一致），
+任一分量变异记录可区分。
+
+```mbt check
+///|
+test "README · 溯源记录可复现且差异可区分" {
+  let recipe : Recipe = { lines: ["gcc -c x.c -o x.o"] }
+  let p1 = record_provenance("x.o", ["h_src", "h_hdr"], recipe)
+  // 输入哈希乱序 → 规范升序后记录一致
+  let p2 = record_provenance("x.o", ["h_hdr", "h_src"], recipe)
+  assert_true(p1 == p2)
+  // 任一输入变化 → 记录不同
+  assert_true(p1 != record_provenance("x.o", ["h_src2", "h_hdr"], recipe))
+}
+```
+
+---
+
+## 示例 10 · 端到端实战 —— 多模块工程依赖图
+
+`demo_rules()` 是一份贯穿文档与基准的多模块 C / MoonBit 工程规则集（满足 **R10**）。
+下例串联 `parse_rules` → `detect_cycle`（无环）→ `schedule`（拓扑分层）→
+`minimal_rebuild_set`（增量）的端到端流程。
+
+```mbt check
+///|
+test "README · 端到端 demo 解析-环检测-调度-增量" {
+  match parse_rules(demo_rules()) {
+    Ok(g) => {
+      // 10 个目标：app / 两个库 / 三个 .o / 三个源 / 共享头
+      assert_eq(g.nodes.length(), 10)
+      // 工程图无依赖环
+      assert_true(detect_cycle(g) is None)
+      // 调度为 4 层：源 → .o → 库 → app
+      assert_eq(schedule(g, 0).length(), 4)
+      // 单源变更增量：仅 4 个目标重建
+      assert_eq(minimal_rebuild_set(g, [Target::new("core_a.c")]).length(), 4)
+    }
+    Err(_) => fail("demo 规则不应解析失败")
+  }
+}
+```
+
+---
+
+## paper-to-code 可追溯与开源对标
+
+| 算法 / 规范 | 来源 | 本库落点 |
+|---|---|---|
+| rebuilder / scheduler 两维分解 | Mokhov, Mitchell, Peyton Jones《Build Systems à la Carte》 | rebuilder ↔ `rebuild.mbt`（脏传播 / 最小重建集 / 缓存命中）；scheduler ↔ `scheduler.mbt` + 既有 `schedule` |
+| 拓扑序（Kahn 逐层剥离入度 0） | Kahn 1962 | 既有 `topo_order` / `schedule` 复用 `@directed.topological_sort` |
+| 强连通分量（环检测） | Tarjan 1972 | 既有 `detect_cycle` 复用 `@directed.tarjan_scc` |
+| DAG 最长路径（关键路径） | 拓扑序动态规划 | `critical_path_length`（topo 序 `longest[v]` DP） |
+| 内容寻址缓存 | Bazel / Nix / Ninja | `content_hash` / `cache_key`（长度前缀单射键）/ `ActionCache` |
+| 可复现构建（输入 + 动作 → 输出确定） | Bazel / Nix | `derive_output_hash` / `record_provenance` |
+
+与主流构建系统的取舍对比（内容经改写以符合许可约定）：本库与 Bazel / Buck2 同侧
+——以**内容寻址缓存 + 确定性调度 + 可复现溯源**换取最强增量正确性与可审计性，
+而非 GNU Make 的「时间戳 + 递归」简易模型；同时保留 Make 风格的可读规则文法（变量 /
+模式规则 / phony），在表达力与形式化可验证性间取平衡。Ninja 以显式 DAG + 关键路径
+并行为主、规则文法极简；Bazel / Buck2 以 Starlark 描述、内容寻址 + 远程执行。
+
+参考：
+[Build Systems à la Carte](https://www.microsoft.com/en-us/research/publication/build-systems-la-carte/)
+· [Ninja manual](https://ninja-build.org/manual.html)
+· [Bazel](https://bazel.build/)。
+
+## 实现边界声明（R12.4，显式而非隐式留白）
+
+本方向是构建系统的**图与缓存模型层**，停留在「依赖图、调度、增量缓存、溯源记录」
+抽象层：
+
+- **不**执行真实文件系统读写：输入指纹（mtime + 内容哈希）由调用方经
+  `BuildCache::observe` 注入，本库不扫描磁盘。
+- **不**派生构建进程、**不**调用编译器：recipe 以不透明字符串及其指纹建模；
+  「输出」以 `derive_output_hash` 的确定性函数建模，不真正执行命令。
+- **include 不做跨文件 FS 解析**：`parse_rules_full_with_includes` 由调用方注入
+  include 名 → 源文本的 `resolve` 函数（单进程模型）。
+- **可复现性是模型层假设**：建模为「输出哈希 = f(输入哈希, 动作指纹)」，对应
+  Bazel / Nix 的可复现内核，但不验证真实工具链的可复现性。
+
+该边界使核心算法可被属性测试穷尽校验，且 `wasm-gc` / `js` / `native` 三后端逐位
+一致。
+
+---
+
 ## 验证方式
 
 ```bash
@@ -205,10 +410,10 @@ moon test src/build_tool/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 4, passed: 4, failed: 0.
+Total tests: 11, passed: 11, failed: 0.
 ```
 
-（示例 1~4 的 4 段可执行测试全部通过。）一旦修改实现使其输出与本文档的
+（示例 1~10 的 11 段可执行测试全部通过。）一旦修改实现使其输出与本文档的
 `assert_*` 断言不符，`moon test` 会立即报错并以最小化差异提示同步更新文档——这正是
 MoonBit 独占的**文档即测试**体验。
 

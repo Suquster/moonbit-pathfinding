@@ -143,6 +143,231 @@ test "README · 非法表达式返回含位置的解析错误" {
 
 ---
 
+## 旗舰深化能力（捕获 · 惰性 · 断言 · 标志 · 搜索 · demo）
+
+> 以下示例使用旗舰深化新增的高层 API，与既有 `parse_regex`/`find` **并行存在、
+> 严格向后兼容**（既有签名与语义冻结，新能力旁路扩展）。核心入口：
+>
+> * `parse_pattern(pattern, flags~) -> Result[Ast, ParseError]` —— 支持捕获 / 命名 /
+>   非捕获组、惰性后缀、`\b`/`\B`、前瞻、预定义类 `\d\w\s`、标志的新解析器；
+> * `Pattern::compile(pattern, flags~, kind~) -> Result[Pattern, ParseError]` —— 编译
+>   句柄，宿主 `is_match`/`find`/`captures`/`find_all`/`replace`/`replace_all`/`split`；
+> * `MatchKind`（`LeftmostLongest` 默认 / `LeftmostFirst`）、`Flags`（`i`/`m`/`s`）、
+>   `Captures`（`group`/`name`/`group_count`）。
+
+---
+
+## 示例 5 · 捕获组 —— 编号 / 命名 / 非捕获
+
+`Pattern::captures` 返回整体匹配（第 0 组）与各捕获组区间。捕获组按左括号源
+顺序从 1 编号；`(?:...)` 非捕获组**不占编号**；`(?<name>...)` 既分配编号又登记
+名称，可经 `Captures::name` 检索（**R1.1/1.2/1.3/1.4**）。
+
+```mbt check
+///|
+test "README · 捕获组：编号 / 命名 / 非捕获" {
+  let p = match Pattern::compile("(?<user>[a-z]+)@(?:[a-z]+)\\.(?<tld>[a-z]+)") {
+    Ok(v) => v
+    Err(_) => fail("expected successful compile")
+  }
+  match p.captures("bob@example.com") {
+    Some(caps) => {
+      // 第 0 组：整体匹配 [0,15)
+      assert_true(caps.group(0) == Some({ start: 0, end: 15 }))
+      // 第 1 组 = 命名 user = "bob" [0,3)，编号与命名检索一致
+      assert_true(caps.group(1) == Some({ start: 0, end: 3 }))
+      assert_true(caps.name("user") == caps.group(1))
+      // (?:...) 非捕获组不占编号；第 2 组 = 命名 tld = "com" [12,15)
+      assert_true(caps.group(2) == Some({ start: 12, end: 15 }))
+      assert_true(caps.name("tld") == caps.group(2))
+      // 含第 0 组共 3 组（非捕获组未计入）
+      assert_eq(caps.group_count(), 3)
+    }
+    None => fail("expected captures")
+  }
+}
+```
+
+---
+
+## 示例 6 · 惰性量词 —— 贪婪 vs 惰性（LeftmostFirst）
+
+惰性量词 `*?`/`+?`/`??`/`{m,n}?` 在不破坏整体匹配的前提下尽可能**少**匹配，与
+贪婪量词共存。两者差异在 `LeftmostFirst`（PCRE/Perl）策略下最显著（**R3.1/3.2/3.3**）。
+
+```mbt check
+///|
+test "README · 惰性量词：a+ 取最长、a+? 取最短" {
+  let greedy = match Pattern::compile("a+", kind=LeftmostFirst) {
+    Ok(v) => v
+    Err(_) => fail("compile a+ failed")
+  }
+  let lazy = match Pattern::compile("a+?", kind=LeftmostFirst) {
+    Ok(v) => v
+    Err(_) => fail("compile a+? failed")
+  }
+  // 贪婪取最长 [0,3)
+  assert_true(greedy.find("aaa") == Some({ start: 0, end: 3 }))
+  // 惰性取最短 [0,1)
+  assert_true(lazy.find("aaa") == Some({ start: 0, end: 1 }))
+}
+```
+
+---
+
+## 示例 7 · 零宽断言 —— 词边界与前瞻
+
+`\b`/`\B` 与前瞻 `(?=p)`/`(?!p)` 均**不消费字符**（零宽）。词边界在词 / 非词
+过渡处成立（串首前 / 串尾后视为非词）；前瞻只在当前位置锚定校验后续而不并入
+匹配区间（**R5.1/5.2/5.4/5.5**）。
+
+```mbt check
+///|
+test "README · 零宽断言：词边界 \\b 与正向前瞻 (?=...)" {
+  // 词边界：串首前视为非词，故 "a" 命中、"ba" 不命中
+  let wb = match Pattern::compile("\\ba") {
+    Ok(v) => v
+    Err(_) => fail("compile \\ba failed")
+  }
+  assert_true(wb.find("a") == Some({ start: 0, end: 1 }))
+  assert_true(wb.find("ba") == None)
+  // 正向前瞻：'a' 后须为 'b'，但 'b' 不并入匹配 → [0,1)
+  let la = match Pattern::compile("a(?=b)") {
+    Ok(v) => v
+    Err(_) => fail("compile a(?=b) failed")
+  }
+  assert_true(la.find("ab") == Some({ start: 0, end: 1 }))
+  assert_true(la.find("ac") == None)
+}
+```
+
+---
+
+## 示例 8 · 字符类与编译标志 —— `\d` / `i` / `s`
+
+预定义类 `\d\w\s` 与标志 `i`（大小写不敏感）、`s`（dotall，点号含换行）、`m`
+（多行锚点）均统一规约为 `CharSet` 区间运算（**R6.1/6.2/6.3/6.4**）。
+
+```mbt check
+///|
+test "README · 字符类与标志：\\d / i / s" {
+  // 预定义类 \d：在 "ab123cd" 中匹配 "123" → [2,5)
+  let digits = match Pattern::compile("\\d+") {
+    Ok(v) => v
+    Err(_) => fail("compile \\d+ failed")
+  }
+  assert_true(digits.find("ab123cd") == Some({ start: 2, end: 5 }))
+  // i 标志：大小写不敏感
+  let ci = match Pattern::compile("abc", flags=Flags::parse("i")) {
+    Ok(v) => v
+    Err(_) => fail("compile abc/i failed")
+  }
+  assert_true(ci.is_match("ABC"))
+  // s 标志：点号匹配换行；未启用时不匹配换行
+  let dot_s = match Pattern::compile(".", flags=Flags::parse("s")) {
+    Ok(v) => v
+    Err(_) => fail("compile ./s failed")
+  }
+  assert_true(dot_s.is_match("\n"))
+  let dot = match Pattern::compile(".") {
+    Ok(v) => v
+    Err(_) => fail("compile . failed")
+  }
+  assert_true(!dot.is_match("\n"))
+}
+```
+
+---
+
+## 示例 9 · 高层搜索 API —— find_all / split / replace_all
+
+高层 API 直接完成扫描、抽取、切分与替换；替换文本可引用 `$1..$9`、`${name}`、
+`$$`（字面 `$`）（**R8.1/8.5/8.6/8.7**）。
+
+```mbt check
+///|
+test "README · 高层搜索：find_all / split / replace_all 引用捕获" {
+  let comma = match Pattern::compile(",") {
+    Ok(v) => v
+    Err(_) => fail("compile , failed")
+  }
+  // find_all 不重叠枚举（"a,b,c" 有 2 个逗号）
+  assert_eq(comma.find_all("a,b,c").length(), 2)
+  // split 以匹配为分隔切分
+  let parts = comma.split("a,b,c")
+  assert_eq(parts.length(), 3)
+  assert_eq(parts[1], "b")
+  // replace_all 引用编号组：交换 (a)(b)
+  let pair = match Pattern::compile("(a)(b)") {
+    Ok(v) => v
+    Err(_) => fail("compile (a)(b) failed")
+  }
+  assert_eq(pair.replace_all("abab", "$2$1"), "baba")
+  // replace_all 引用命名组
+  let named = match Pattern::compile("(?<x>a)(?<y>b)") {
+    Ok(v) => v
+    Err(_) => fail("compile named failed")
+  }
+  assert_eq(named.replace_all("ab", "${y}${x}"), "ba")
+}
+```
+
+---
+
+## 示例 10 · 实战 demo —— ISO 日期捕获与重排替换
+
+`demo_*` 实战正则集贯穿文档与基准。下例以 `demo_iso_date()` 演示命名捕获与
+`replace_all` 引用命名组重排（**R11.2/11.3**）。
+
+```mbt check
+///|
+test "README · 实战 demo：ISO 日期命名捕获与重排" {
+  let p = match Pattern::compile(demo_iso_date()) {
+    Ok(v) => v
+    Err(_) => fail("compile demo_iso_date failed")
+  }
+  match p.captures("2026-06-12") {
+    Some(caps) => {
+      assert_true(caps.name("year") == Some({ start: 0, end: 4 }))
+      assert_true(caps.name("month") == Some({ start: 5, end: 7 }))
+      assert_true(caps.name("day") == Some({ start: 8, end: 10 }))
+    }
+    None => fail("expected captures for iso date")
+  }
+  // 命名引用重排为 day/month/year
+  assert_eq(p.replace_all("2026-06-12", "${day}/${month}/${year}"), "12/06/2026")
+}
+```
+
+---
+
+## 实现边界与开源对标（RE2 / Rust `regex` / PCRE）
+
+本库与 **Google RE2**、**Rust `regex`** 同侧：以放弃反向引用与变长后瞻换取**最坏
+情形线性时间**保证，**无回溯指数爆炸**。显式声明的实现边界（**R5.6/R10.5/R10.6**）：
+
+* **前瞻 `(?=...)`/`(?!...)`** 仅在 **Pike VM 执行路径**可用；纯 DFA / 惰性 DFA 快
+  路径**不支持前瞻**（无法折叠进有限状态转移表），故含前瞻的模式不参与「五路
+  差分一致」，仅由 Pike VM 求值。
+* **捕获不跨前瞻边界导出**：前瞻内的捕获组不写回外层 `Captures`（与 RE2 对
+  lookaround 的保守策略一致）。
+* **不支持反向引用（backreference）与变长后瞻 `(?<=...)`**：二者需要回溯、破坏
+  线性保证；解析期对明确不支持的构造报含位置的 `ParseError`，而非静默接受。
+* **Unicode 折叠**：以 ASCII 大小写折叠为主，Unicode 简单折叠为声明边界。
+
+| 维度 | 本库 | RE2 | Rust `regex` | PCRE |
+|---|---|---|---|---|
+| 匹配复杂度 | 线性（Pike VM / DFA） | 线性 | 线性 | 可指数（回溯） |
+| 匹配策略 | LL 默认 + LF 可选 | LL / LF | LF | LF |
+| 捕获子匹配 | 支持（Pike VM 寄存器） | 支持 | 支持 | 支持 |
+| 前瞻 | Pike VM 有限支持，捕获不跨界 | 不支持 | 不支持 | 支持 |
+| 后瞻 / 反向引用 | 不支持（显式报错） | 不支持 | 不支持 | 支持 |
+
+算法 paper-to-code 可追溯：NFA 构造（Thompson 1968）、子集构造、DFA 最小化
+（Hopcroft 1971）、线性时间匹配 + 捕获（Russ Cox / Pike VM）、最左最长（POSIX）。
+
+---
+
 ## 验证方式
 
 ```bash
@@ -161,10 +386,10 @@ moon test src/regex_engine/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 4, passed: 4, failed: 0.
+Total tests: 10, passed: 10, failed: 0.
 ```
 
-（示例 1~4 的 4 段可执行测试全部通过。）一旦修改解析/匹配实现使其输出与本文档的
+（示例 1~10 的 10 段可执行测试全部通过。）一旦修改解析/匹配实现使其输出与本文档的
 `inspect(..., content="...")` 快照或 `assert_*` 断言不符，`moon test` 会立即报错并以
 最小化差异提示同步更新文档——这正是 MoonBit 独占的**文档即测试**体验。
 

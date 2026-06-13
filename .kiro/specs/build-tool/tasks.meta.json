@@ -1,0 +1,65 @@
+{
+  "pbtResults": {
+    "1.4 编写属性测试：规则解析 round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272891412
+    },
+    "1.5 编写属性测试：最小文法向后兼容": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272892381
+    },
+    "2.4 编写属性测试：缓存键确定且内容敏感": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272893391
+    },
+    "2.5 编写属性测试：缓存往返一致性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272894377
+    },
+    "4.3 编写属性测试：最小重建集充分性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272896319
+    },
+    "4.4 编写属性测试：最小重建集最小性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272897320
+    },
+    "4.5 编写属性测试：增量空操作幂等": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272898332
+    },
+    "5.3 编写属性测试：调度尊重依赖": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272899358
+    },
+    "5.4 编写属性测试：批内独立": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272900370
+    },
+    "5.5 编写属性测试：调度确定性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272901404
+    },
+    "5.6 编写属性测试：并行度约束": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272902378
+    },
+    "5.7 编写属性测试：关键路径等于最小批次层数": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272903398
+    },
+    "6.3 编写属性测试：环检测可靠性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272905301
+    },
+    "6.4 编写属性测试：动态依赖拓扑保持": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272906321
+    },
+    "7.3 编写属性测试：可复现性与溯源确定": {
+      "status": "passed",
+      "lastRunTimestamp": 1781272906628
+    }
+  },
+  "executionHistory": {}
+}

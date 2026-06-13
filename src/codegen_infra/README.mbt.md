@@ -254,6 +254,295 @@ test "README · select 以声明式规则覆盖二元运算树" {
 
 ---
 
+## 示例 6 · 活跃性分析 —— 干涉图来自真实活跃性
+
+`analyze_liveness(blocks)` 以后向数据流不动点计算各块 live-in / live-out；
+`build_interference_from_liveness` 据此在「同一程序点同时活跃」的变量对间建边
+（满足 **R4**，paper-to-code：经典后向数据流 / Appel）。下例中 `a` 与 `b` 在
+`c = a + b` 处同时活跃，故二者干涉。
+
+```mbt check
+///|
+test "README · analyze_liveness 驱动干涉图构造" {
+  let blocks = [
+    BasicBlock::{
+      label: "b0",
+      instrs: ["a = 1", "b = 2", "c = a + b", "ret c"],
+      succs: [],
+    },
+  ]
+  let live = analyze_liveness(blocks)
+  let g = build_interference_from_liveness(blocks, live)
+  inspect(g.nodes.length(), content="3")
+  // a 与 b 同时活跃 → 恰一条干涉边
+  inspect(g.edges.length(), content="1")
+}
+```
+
+---
+
+## 示例 7 · 支配树与支配边界（Lengauer-Tarjan / Cytron）
+
+`build_dom_tree(blocks, entry~)` 以 Lengauer-Tarjan（1979）计算直接支配者；
+`dominance_frontier` 以 Cytron et al.（1991）计算支配边界（满足 **R5**）。菱形 CFG
+中 `then` / `else` / `join` 的直接支配者均为 `entry`，且 `join` 属于 `then` 的支配边界。
+
+```mbt check
+///|
+test "README · build_dom_tree 与 dominance_frontier" {
+  let blocks = [
+    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
+  ]
+  let dom = build_dom_tree(blocks, entry="entry")
+  inspect(dom.reachable.length(), content="4")
+  inspect(dom.dominates("entry", "join"), content="true")
+  inspect(dom.dominates("then", "join"), content="false")
+  let df = dominance_frontier(blocks, dom)
+  // join 属于 then 的支配边界
+  match df.get("then") {
+    Some(frontier) => assert_true(frontier.contains("join"))
+    None => fail("then 应有支配边界")
+  }
+}
+```
+
+---
+
+## 示例 8 · 最小 SSA 构造（Cytron 支配边界 φ 放置）
+
+`build_ssa_minimal(blocks, entry~)` 仅在变量定义的迭代支配边界放置 φ，并沿支配树
+前序重命名（满足 **R6**）；在「直线 / 简单菱形」等最小文法上与冻结的 `build_ssa`
+逐字段一致（向后兼容）。
+
+```mbt check
+///|
+test "README · build_ssa_minimal 菱形最小 φ 放置" {
+  let diamond = [
+    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
+  ]
+  let ssa = build_ssa_minimal(diamond, entry="entry")
+  inspect(ssa.phis.length(), content="1")
+  inspect(ssa.phis[0].args.length(), content="2")
+  inspect(ssa.blocks[1].instrs[0], content="x#0 = 1")
+}
+```
+
+---
+
+## 示例 9 · SSA 析构（out-of-SSA）—— φ 消除且语义等价
+
+`destruct_ssa(p)` 将每个 φ 消除为前驱边上的复制并破环序列化，产出不含 φ 的等价程序
+（满足 **R7**，paper-to-code：Sreedhar / Boissinot）。以参考解释器 `evaluate` 为
+oracle 验证：沿同一路径，析构前后输出一致。
+
+```mbt check
+///|
+test "README · destruct_ssa 消除 φ 且语义等价" {
+  let diamond = [
+    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
+    BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
+  ]
+  let ssa = build_ssa_minimal(diamond, entry="entry")
+  let d = destruct_ssa(ssa)
+  inspect(d.phis.length(), content="0")
+  // 沿 then 来路：析构前后输出一致（均为 1）
+  let before = evaluate(ssa, Map([]), ["entry", "then", "join"]).output
+  let after = evaluate(d, Map([]), ["entry", "then", "join"]).output
+  assert_eq(before, after)
+  inspect(after, content="[1]")
+}
+```
+
+---
+
+## 示例 10 · 数据流优化 —— SCCP 与 GVN（保持语义）
+
+`sccp(p)`（Wegman-Zadeck 稀疏条件常量传播）折叠常量并替换常量变量的使用；
+`gvn(p)`（全局值编号 + 强化 DCE / 复制传播）合并计算等价表达式（满足 **R8 / R9**）。
+
+```mbt check
+///|
+test "README · sccp 折叠常量并替换使用" {
+  let p = SsaProgram::{
+    blocks: [
+      BasicBlock::{
+        label: "b0",
+        instrs: ["x#0 = 5", "y#1 = x#0 + 1", "ret y#1"],
+        succs: [],
+      },
+    ],
+    phis: [],
+  }
+  let out = sccp(p)
+  // x#0 = 5 常量 → y#1 = 5 + 1 折叠为 6 → ret 替换为字面量
+  inspect(out.blocks[0].instrs[1], content="y#1 = 6")
+  inspect(out.blocks[0].instrs[2], content="ret 6")
+}
+```
+
+```mbt check
+///|
+test "README · gvn 合并计算等价的表达式" {
+  let p = SsaProgram::{
+    blocks: [
+      BasicBlock::{
+        label: "b0",
+        instrs: [
+          "a#0 = 5", "b#1 = 6", "x#2 = a#0 + b#1", "y#3 = a#0 + b#1", "ret y#3",
+        ],
+        succs: [],
+      },
+    ],
+    phis: [],
+  }
+  let out = gvn(p)
+  // y#3 与 x#2 计算等价 → y#3 删除，ret 引用替换为 x#2
+  inspect(out.blocks[0].instrs.length(), content="4")
+  inspect(out.blocks[0].instrs[3], content="ret x#2")
+}
+```
+
+---
+
+## 示例 11 · Chaitin-Briggs 乐观着色与线性扫描一致性
+
+`allocate_coloring_briggs(g, k)` 实现 simplify / potential-spill / select 三阶段栈式
+乐观着色（Chaitin 1982 / Briggs 1994，满足 **R1**）。在最大重叠度不超过 k 的区间集上，
+图着色与线性扫描在「是否需要溢出」结论上一致（满足 **R3.5**）。
+
+```mbt check
+///|
+test "README · allocate_coloring_briggs K3 在 k=3 无溢出" {
+  let g = InterferenceGraph::{
+    nodes: [Var::{ id: 0 }, Var::{ id: 1 }, Var::{ id: 2 }],
+    edges: [
+      (Var::{ id: 0 }, Var::{ id: 1 }),
+      (Var::{ id: 1 }, Var::{ id: 2 }),
+      (Var::{ id: 0 }, Var::{ id: 2 }),
+    ],
+  }
+  let alloc = allocate_coloring_briggs(g, 3)
+  inspect(allocation_has_spill(alloc), content="false")
+  // 干涉不变量：相邻两端寄存器编号不同
+  for e in g.edges {
+    let (a, b) = e
+    match (alloc.get(a), alloc.get(b)) {
+      (Some(Reg(x)), Some(Reg(y))) => assert_true(x != y)
+      _ => ()
+    }
+  }
+}
+```
+
+```mbt check
+///|
+test "README · 线性扫描与图着色无溢出结论一致" {
+  // 两个重叠区间（团大小 2），k=2 足够
+  let intervals = [
+    LiveInterval::{ variable: Var::{ id: 0 }, start: 0, end: 1 },
+    LiveInterval::{ variable: Var::{ id: 1 }, start: 0, end: 1 },
+  ]
+  let g = interference_from_intervals(intervals)
+  let by_coloring = allocate_coloring_briggs(g, 2)
+  let by_linear = allocate_linear_scan(intervals, 2)
+  // 两法均判无需溢出
+  inspect(allocation_has_spill(by_coloring), content="false")
+  inspect(allocation_has_spill(by_linear), content="false")
+}
+```
+
+---
+
+## 示例 12 · BURS 指令选择与端到端流水线
+
+`select_burs(rules, ir)` 以自底向上动态规划求代价最优 tiling（满足 **R11**，
+paper-to-code：BURS / Appel）；`tiling_cost` 给出最优总代价。`demo_pipeline()` 串起
+活跃性 → 最小 SSA → SCCP/GVN/DCE → 图着色 / 线性扫描 → BURS 全链路（满足 **R12**）。
+
+```mbt check
+///|
+test "README · select_burs 代价最优 tiling" {
+  let rules = [
+    CostRule::{ pattern: "Const", template: "li", cost: 1 },
+    CostRule::{ pattern: "BinOp:*", template: "mul", cost: 2 },
+    CostRule::{ pattern: "BinOp", template: "op", cost: 5 },
+  ]
+  let ir = IrNode::BinOp("*", IrNode::Const(3), IrNode::Const(4))
+  let instrs = select_burs(rules, ir)
+  // 特化 mul 优先且代价最优；最优 tiling 总代价 = 1 + 1 + 2 = 4
+  inspect(instrs[2].op, content="mul")
+  inspect(tiling_cost(rules, ir), content="4")
+}
+```
+
+```mbt check
+///|
+test "README · demo_pipeline 端到端各阶段产物" {
+  let stages = demo_pipeline()
+  // 仅在支配边界放 φ：恰一个 φ
+  inspect(stages.ssa.phis.length(), content="1")
+  // k 充足：图着色无溢出
+  inspect(allocation_has_spill(stages.coloring), content="false")
+  // (n + 1) * 2 共 5 个 IR 节点 → 5 条目标指令
+  inspect(stages.instrs.length(), content="5")
+}
+```
+
+---
+
+## paper-to-code 可追溯（R14.1 / 14.2）
+
+| 算法 | 论文 / 规范 | 本库落点 |
+|---|---|---|
+| 图着色寄存器分配 | Chaitin 1982；Briggs 1994 乐观着色 | `allocate_coloring_briggs`（simplify / potential-spill / select） |
+| 线性扫描分配 | Poletto-Sarnak 1999 | `allocate_linear_scan`（既有，冻结） |
+| 寄存器合并 | George-Appel 1996；Briggs 保守判据 | `can_coalesce_george` / `can_coalesce_briggs` / `coalesce` |
+| 支配树 | Lengauer-Tarjan 1979 | `build_dom_tree` |
+| 支配边界 + 最小 SSA | Cytron et al. 1991 | `dominance_frontier` + `build_ssa_minimal` |
+| SSA 析构 | Sreedhar et al. / Boissinot 并行复制破环 | `destruct_ssa` + `sequentialize_parallel_copy` |
+| 稀疏条件常量传播 | Wegman-Zadeck 1991 | `sccp` |
+| 全局值编号 | 值编号 / Appel《Modern Compiler Implementation》 | `gvn` |
+| 活跃性分析 | 经典后向数据流；Appel | `analyze_liveness` |
+| 指令选择 | BURS / 最大吞噬；Appel | `select_burs` / `max_munch` |
+
+---
+
+## 与主流编译器后端对标（R14.3）
+
+| 维度 | 本库（Codegen_Infra） | LLVM | GCC | Cranelift | regalloc2 |
+|---|---|---|---|---|---|
+| 寄存器分配 | 图着色（Chaitin-Briggs）+ 线性扫描并存 | 贪心 + PBQP 可选 | 图着色（IRA） | 偏好引导 + 线性扫描风格 | SSA-based 回填 + 移动优化 |
+| 合并 | George / Briggs 保守 | 复制合并 + rematerialization | 合并 + 重materialize | 偏好 / 约束驱动 | 移动消除 |
+| SSA 构造 | Cytron 支配边界最小 φ | mem2reg + 支配边界 | GIMPLE→SSA | CLIF 即 SSA | 输入即 SSA |
+| 指令选择 | BURS 代价最优 / 最大吞噬（模型层） | SelectionDAG / GlobalISel | RTL 模式 | ISLE 模式 | 不涉及 isel |
+| 输出层级 | **IR / 算法模型层，不产机器码** | 真实机器码 | 真实机器码 | 真实机器码 | 仅分配结果 |
+
+---
+
+## 实现边界声明（R14.4 / 14.5）
+
+Codegen_Infra 是编译器后端的**算法与中间表示模型层**，停留在「控制流图、活跃性、
+支配关系、SSA、数据流优化、寄存器分配、指令选择」这一抽象层：
+
+- **不**生成真实目标机器码、**不**汇编或链接、**不**绑定任何具体指令集架构（ISA）；
+- IR 为简化教学 / 研究模型（块内为空格分隔记号串、`IrNode` 为 `Const`/`VarRef`/`BinOp` 树）；
+- 目标指令以不透明 `TargetInstr{ op, operands }` 建模，`op` 不解释为真实助记符；
+- 寄存器为抽象编号，不做 rematerialization。
+
+该边界是刻意取舍：以放弃真实机器码生成换取核心算法可被属性测试穷尽校验、三后端
+逐位一致与 paper-to-code 透明可追溯。凡与所对标后端的语义差异均在此显式声明，而非
+隐式留白。
+
+---
+
 ## 验证方式
 
 ```bash
@@ -272,10 +561,10 @@ moon test src/codegen_infra/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 7, passed: 7, failed: 0.
+Total tests: 17, passed: 17, failed: 0.
 ```
 
-（示例 1~5 共 7 段可执行测试全部通过。）一旦修改寄存器分配 / SSA / 指令选择实现使其
+（示例 1~12 共 17 段可执行测试全部通过。）一旦修改寄存器分配 / SSA / 指令选择实现使其
 输出与本文档的 `inspect(..., content="...")` 快照或 `assert_*` 断言不符，`moon test`
 会立即报错并以最小化差异提示同步更新文档——这正是 MoonBit 独占的**文档即测试**体验。
 

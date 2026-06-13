@@ -7,21 +7,21 @@
 //   * 依质量门禁评估时 release_ready 与聚合判定一致。
 
 ///|
-/// 登记的发布元数据身份字段正确，版本为骨架首版 0.1.0。
-test "build_tool release_info registers identity at 0.1.0" {
+/// 登记的发布元数据身份字段正确，版本为旗舰深化次版本 0.2.0。
+test "build_tool release_info registers identity at 0.2.0" {
   let info = release_info()
   assert_eq(info.name, "build_tool")
-  assert_eq(info.version, "0.1.0")
+  assert_eq(info.version, "0.2.0")
   assert_eq(info.changelog_path, "src/build_tool/CHANGELOG.md")
 }
 
 ///|
-/// 登记的版本号是合法 SemVer，且恰为 0.1.0。
-test "build_tool version is a well-formed 0.1.0 semver" {
+/// 登记的版本号是合法 SemVer，且恰为 0.2.0。
+test "build_tool version is a well-formed 0.2.0 semver" {
   assert_true(@release_meta.is_valid_semver(build_tool_version))
   assert_eq(
     @release_meta.parse_semver(build_tool_version),
-    Some({ major: 0, minor: 1, patch: 0 }),
+    Some({ major: 0, minor: 2, patch: 0 }),
   )
 }
 
@@ -44,11 +44,49 @@ test "build_tool release_info_with_gates matches aggregate gate" {
   })
   assert_true(ready.release_ready)
   assert_eq(ready.name, "build_tool")
-  assert_eq(ready.version, "0.1.0")
+  assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: true,
     docs_passing: false,
   })
   assert_false(blocked.release_ready)
+}
+
+///|
+/// 发布门禁真值表（任务 11.6 / R14.1 / R14.2 / R14.6）：三后端测试 / 属性测试
+/// （证明维）/ 可执行文档任一未过即阻止 release-ready。
+test "build_tool release gates truth table blocks on any failing gate" {
+  // 三项全绿 → 就绪。
+  assert_true(
+    release_info_with_gates({
+      tests_passing: true,
+      proofs_passing: true,
+      docs_passing: true,
+    }).release_ready,
+  )
+  // 测试未过 → 阻止。
+  assert_false(
+    release_info_with_gates({
+      tests_passing: false,
+      proofs_passing: true,
+      docs_passing: true,
+    }).release_ready,
+  )
+  // 属性 / 证明未过 → 阻止。
+  assert_false(
+    release_info_with_gates({
+      tests_passing: true,
+      proofs_passing: false,
+      docs_passing: true,
+    }).release_ready,
+  )
+  // 可执行文档未过 → 阻止。
+  assert_false(
+    release_info_with_gates({
+      tests_passing: true,
+      proofs_passing: true,
+      docs_passing: false,
+    }).release_ready,
+  )
 }

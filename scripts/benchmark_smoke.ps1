@@ -57,6 +57,14 @@ $benchmarks = @(
         scenario = "1k-node 10k-edge weighted undirected multigraph"
         input = [ordered]@{ nodes = 1000; edges = 10000; seed = 17; max_weight = 100; edge_kind = "weighted undirected multigraph" }
         baseline = "Smoke gate only; verifies MSF edge-count and weight-range invariants."
+    },
+    [ordered]@{
+        algorithm = "Regex"
+        package = "Suquster/moonbit-pathfinding/benches/regex_bench"
+        file = "benches/regex_bench/regex_bench.mbt"
+        scenario = "NFA / DFA / Pike VM on a?{n}a{n} pathological input plus demo real workloads"
+        input = [ordered]@{ pathological_rep = 24; real_copies = 16; engines = "nfa,dfa,pikevm" }
+        baseline = "Smoke gate only; verifies three-engine differential consistency and Pike VM linear-step guard, not a published speedup claim."
     }
 )
 

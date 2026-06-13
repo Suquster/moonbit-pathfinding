@@ -1,0 +1,117 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/serialization"
+
+import {
+  "Suquster/moonbit-pathfinding/src/parser_combinator",
+  "Suquster/moonbit-pathfinding/src/release_meta",
+}
+
+// Values
+pub fn decode(Bytes, Schema) -> Result[Message, DecodeError]
+
+pub fn encode(Message) -> Bytes
+
+pub fn gen_moonbit(Schema) -> String
+
+pub fn parse_proto(String) -> Result[Schema, ParseError]
+
+pub fn release_info() -> @release_meta.DirectionRelease
+
+pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub let serialization_name : String
+
+pub let serialization_version : String
+
+// Errors
+
+// Types and methods
+pub(all) enum DecodeError {
+  UnexpectedEof(offset~ : Int)
+  MalformedVarint(offset~ : Int)
+  InvalidWireType(offset~ : Int, tag~ : UInt64)
+  InvalidFieldNumber(offset~ : Int, number~ : Int)
+} derive(Eq, Show)
+pub fn DecodeError::offset(Self) -> Int
+
+pub(all) struct EnumDef {
+  name : String
+  values : Array[(String, Int)]
+} derive(Eq, Show)
+
+pub(all) struct FieldDef {
+  name : String
+  number : Int
+  ftype : FieldType
+  repeated : Bool
+} derive(Eq, Show)
+
+pub(all) struct FieldEntry {
+  number : Int
+  value : FieldValue
+} derive(Eq, Show)
+pub fn FieldEntry::new(Int, FieldValue) -> Self
+
+pub(all) enum FieldType {
+  TInt32
+  TInt64
+  TUInt32
+  TUInt64
+  TBool
+  TString
+  TBytes
+  TMessage(String)
+  TEnum(String)
+} derive(Eq, Show)
+
+pub(all) enum FieldValue {
+  VVarint(UInt64)
+  VI64(UInt64)
+  VI32(UInt)
+  VBytes(Bytes)
+} derive(Eq, Show)
+pub fn FieldValue::bytes(Bytes) -> Self
+pub fn FieldValue::i32(UInt) -> Self
+pub fn FieldValue::i64(UInt64) -> Self
+pub fn FieldValue::varint(UInt64) -> Self
+pub fn FieldValue::wire_type(Self) -> WireType
+
+pub(all) struct Message {
+  fields : Array[FieldEntry]
+} derive(Eq, Show)
+pub fn Message::empty() -> Self
+pub fn Message::from_fields(Array[FieldEntry]) -> Self
+
+pub(all) struct MessageDef {
+  name : String
+  fields : Array[FieldDef]
+} derive(Eq, Show)
+
+pub(all) struct ParseError {
+  line : Int
+  col : Int
+  offset : Int
+  message : String
+} derive(Eq, Show)
+pub fn ParseError::at(@parser_combinator.Pos, String) -> Self
+pub fn ParseError::new(Int, Int, Int, String) -> Self
+
+pub(all) struct Schema {
+  messages : Array[MessageDef]
+  enums : Array[EnumDef]
+} derive(Eq, Show)
+pub fn Schema::empty() -> Self
+
+pub(all) enum WireType {
+  Varint
+  I64
+  Len
+  I32
+} derive(Eq, Show)
+pub fn WireType::code(Self) -> Int
+pub fn WireType::from_code(Int) -> Self?
+
+// Type aliases
+
+// Traits
+

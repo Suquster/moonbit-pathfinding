@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-06-12T10:55:24Z",
+  "packages": ["benches/parser_json_bench", "benches/parser_arith_bench"],
+  "moonbit": "moon 0.1.20260608 (60bc8c3 2026-06-08)",
+  "target": "native",
+  "machine": { "os": "Linux 6.1.172 x86_64", "logical_processors": 8 },
+  "run_commands": [
+    "moon bench -p benches/parser_json_bench --target native",
+    "moon bench -p benches/parser_arith_bench --target native"
+  ],
+  "library_path_note": "native runs require: export LIBRARY_PATH=/usr/lib64:/usr/lib",
+  "results": [
+    { "package": "parser_json_bench", "name": "json_flat_packrat_16", "mode": "packrat", "size": 16, "mean_us": 100.78 },
+    { "package": "parser_json_bench", "name": "json_flat_naive_16", "mode": "naive", "size": 16, "mean_us": 100.28 },
+    { "package": "parser_json_bench", "name": "json_flat_packrat_64", "mode": "packrat", "size": 64, "mean_us": 383.60 },
+    { "package": "parser_json_bench", "name": "json_flat_naive_64", "mode": "naive", "size": 64, "mean_us": 384.77 },
+    { "package": "parser_json_bench", "name": "json_flat_packrat_256", "mode": "packrat", "size": 256, "mean_us": 1520.0 },
+    { "package": "parser_json_bench", "name": "json_flat_naive_256", "mode": "naive", "size": 256, "mean_us": 1530.0 },
+    { "package": "parser_json_bench", "name": "json_nested_packrat_8", "mode": "packrat", "size": 8, "mean_us": 55.46 },
+    { "package": "parser_json_bench", "name": "json_nested_naive_8", "mode": "naive", "size": 8, "mean_us": 55.54 },
+    { "package": "parser_json_bench", "name": "json_nested_packrat_16", "mode": "packrat", "size": 16, "mean_us": 106.02 },
+    { "package": "parser_json_bench", "name": "json_nested_naive_16", "mode": "naive", "size": 16, "mean_us": 105.64 },
+    { "package": "parser_json_bench", "name": "json_nested_packrat_32", "mode": "packrat", "size": 32, "mean_us": 208.58 },
+    { "package": "parser_json_bench", "name": "json_nested_naive_32", "mode": "naive", "size": 32, "mean_us": 206.62 },
+    { "package": "parser_arith_bench", "name": "arith_sum_packrat_16", "mode": "packrat", "size": 16, "mean_us": 47.49 },
+    { "package": "parser_arith_bench", "name": "arith_sum_naive_16", "mode": "naive", "size": 16, "mean_us": 47.62 },
+    { "package": "parser_arith_bench", "name": "arith_sum_packrat_64", "mode": "packrat", "size": 64, "mean_us": 186.59 },
+    { "package": "parser_arith_bench", "name": "arith_sum_naive_64", "mode": "naive", "size": 64, "mean_us": 185.28 },
+    { "package": "parser_arith_bench", "name": "arith_sum_packrat_256", "mode": "packrat", "size": 256, "mean_us": 729.84 },
+    { "package": "parser_arith_bench", "name": "arith_sum_naive_256", "mode": "naive", "size": 256, "mean_us": 729.62 },
+    { "package": "parser_arith_bench", "name": "arith_parens_packrat_8", "mode": "packrat", "size": 8, "mean_us": 40.81 },
+    { "package": "parser_arith_bench", "name": "arith_parens_naive_8", "mode": "naive", "size": 8, "mean_us": 40.48 },
+    { "package": "parser_arith_bench", "name": "arith_parens_packrat_16", "mode": "packrat", "size": 16, "mean_us": 76.56 },
+    { "package": "parser_arith_bench", "name": "arith_parens_naive_16", "mode": "naive", "size": 16, "mean_us": 76.56 },
+    { "package": "parser_arith_bench", "name": "arith_parens_packrat_32", "mode": "packrat", "size": 32, "mean_us": 149.36 },
+    { "package": "parser_arith_bench", "name": "arith_parens_naive_32", "mode": "naive", "size": 32, "mean_us": 149.17 }
+  ]
+}

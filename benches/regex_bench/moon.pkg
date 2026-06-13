@@ -1,0 +1,19 @@
+// Package: benches/regex_bench
+//
+// Regex_Engine 旗舰深化性能基准（design.md §4.12，R9）。对三路执行
+// （Nfa::find / Dfa::find / Program::exec）在两类工作负载计时：
+//   * 病态输入——`a?{n}a{n}` 应用于 `a^n`（暴露回溯型实现的指数爆炸，
+//     Pike VM / 自动机保持线性）；
+//   * 真实负载——复用 `demo_*` 实战模式 × 规模化输入。
+//
+// 同时提供确定性回归 guard（exec_steps 线性界 + 真实负载匹配计数基线，
+// 超声明容差给出可审计失败报告，R9.4）。
+//
+// 运行命令（文档化，R9.5）：
+//   moon test  -p Suquster/moonbit-pathfinding/benches/regex_bench --target wasm-gc
+//   moon bench -p Suquster/moonbit-pathfinding/benches/regex_bench --target native
+// native 运行前须先：export LIBRARY_PATH=/usr/lib64:/usr/lib
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/regex_engine" @re,
+}

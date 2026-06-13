@@ -1,0 +1,65 @@
+{
+  "pbtResults": {
+    "8.3 编写属性测试：同种子确定性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329194153
+    },
+    "8.4 编写属性测试：虚拟时间单调性与事件全序": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329195148
+    },
+    "8.5 编写属性测试：仿真循环终止性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329197102
+    },
+    "6.3 编写属性测试：因果序保持": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329198099
+    },
+    "5.3 编写属性测试：故障注入点确定性与可重放": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329199127
+    },
+    "5.4 编写属性测试：网络故障语义（分区隔离与消息重复）": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329200132
+    },
+    "7.3 编写属性测试：不变量违反必检出": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329202677
+    },
+    "10.3 编写属性测试：收缩保真": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329202836
+    },
+    "10.4 编写属性测试：收缩终止与单调": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329203151
+    },
+    "11.3 编写属性测试：有界穷尽探索完整性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329204153
+    },
+    "12.3 编写属性测试：DPOR 可靠性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329206109
+    },
+    "12.4 编写属性测试：DPOR 约简有效性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329207274
+    },
+    "14.3 编写属性测试：线性一致性判定可靠性": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329208132
+    },
+    "15.3 编写属性测试：序列化往返": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329209146
+    },
+    "15.4 编写属性测试：跨会话重放保真": {
+      "status": "passed",
+      "lastRunTimestamp": 1781329209563
+    }
+  },
+  "executionHistory": {}
+}

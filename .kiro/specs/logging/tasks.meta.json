@@ -1,0 +1,61 @@
+{
+  "pbtResults": {
+    "2.2 为嵌套 JSON 往返编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278190445
+    },
+    "2.3 为既有标量 JSON 往返编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278191009
+    },
+    "4.2 为 logfmt 往返编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278195016
+    },
+    "4.4 为格式器确定性编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278196199
+    },
+    "5.2 为 trace 内采样一致性编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278197128
+    },
+    "5.4 为采样比例有界编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278198069
+    },
+    "5.5 为采样确定性与可重放编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278198812
+    },
+    "5.7 为限流配额上界编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278202629
+    },
+    "6.3 为过滤判定一致性编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278203637
+    },
+    "8.2 为 span 树父子不变量与时长非负编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278204660
+    },
+    "9.2 为 traceparent 注入/提取往返编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278205688
+    },
+    "10.2 为脱敏完整性编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278206679
+    },
+    "11.2 为计数守恒编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278207678
+    },
+    "11.4 为指标派生确定性编写属性测试": {
+      "status": "passed",
+      "lastRunTimestamp": 1781278208376
+    }
+  },
+  "executionHistory": {}
+}

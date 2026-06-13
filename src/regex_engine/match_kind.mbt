@@ -10,6 +10,7 @@
 // Perl/PCRE 的择一与量词优先级语义（Russ Cox 的 Pike VM 线程优先级实现）。
 
 ///|
+/// 匹配策略：决定 Pike VM 在「同一起点、多候选」时如何取舍，不改变可匹配性。
 pub(all) enum MatchKind {
   /// PCRE/Perl 最左优先：取首个按优先级成功的匹配。
   LeftmostFirst

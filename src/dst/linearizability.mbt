@@ -179,7 +179,10 @@ fn linearize(ops : Array[LinOp], state : Int) -> Bool {
 ///|
 /// Wing & Gong 线性化点检查：在寄存器 / 单键 KV 顺序规约下判定历史是否线性一致。
 /// 线性一致返回 `Linearizable`；否则返回 `NotLinearizable` 并携带冲突操作（R7.4/7.5）。
-pub fn is_linearizable(history : Array[OpEvent], model : RegisterModel) -> LinResult {
+pub fn is_linearizable(
+  history : Array[OpEvent],
+  model : RegisterModel,
+) -> LinResult {
   let ops = build_ops(history)
   if linearize(ops, model.init) {
     Linearizable

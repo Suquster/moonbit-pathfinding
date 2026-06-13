@@ -198,7 +198,8 @@ fn pg_parse_enum(
   enums : Array[EnumDef],
 ) -> Result[(@parser_combinator.Input, String), ParseError] {
   let a1 = skip_trivia(after_kw)
-  let (name, after_name) = match pg_expect_ident(a1, "enum 后期望枚举名") {
+  let (name, after_name) = match
+    pg_expect_ident(a1, "enum 后期望枚举名") {
     Ok(p) => p
     Err(e) => return Err(e)
   }
@@ -220,7 +221,8 @@ fn pg_parse_enum(
       }
       Some(';') => cur = cur.advance()
       _ => {
-        let (vname, after_v) = match pg_expect_ident(cur, "枚举值期望标识符") {
+        let (vname, after_v) = match
+          pg_expect_ident(cur, "枚举值期望标识符") {
           Ok(p) => p
           Err(e) => return Err(e)
         }
@@ -236,7 +238,8 @@ fn pg_parse_enum(
             Err(e) => return Err(e)
           }
           let r3 = skip_trivia(r2)
-          let (v, r4) = match pg_expect_number(r3, "枚举值期望整数取值") {
+          let (v, r4) = match
+            pg_expect_number(r3, "枚举值期望整数取值") {
             Ok(p) => p
             Err(e) => return Err(e)
           }
@@ -337,7 +340,8 @@ fn pg_parse_message(
   enums : Array[EnumDef],
 ) -> Result[(@parser_combinator.Input, String), ParseError] {
   let a1 = skip_trivia(after_kw)
-  let (name, after_name) = match pg_expect_ident(a1, "message 后期望消息名") {
+  let (name, after_name) = match
+    pg_expect_ident(a1, "message 后期望消息名") {
     Ok(p) => p
     Err(e) => return Err(e)
   }
@@ -365,7 +369,8 @@ fn pg_parse_message(
       }
       Some(';') => cur = cur.advance()
       _ => {
-        let (tok, after_tok) = match pg_expect_ident(cur, "成员期望标识符") {
+        let (tok, after_tok) = match
+          pg_expect_ident(cur, "成员期望标识符") {
           Ok(p) => p
           Err(e) => return Err(e)
         }
@@ -469,12 +474,14 @@ fn pg_parse_oneof(
       }
       Some(';') => oc = oc.advance()
       _ => {
-        let (tname, t1) = match pg_expect_ident(oc, "oneof 成员期望类型") {
+        let (tname, t1) = match
+          pg_expect_ident(oc, "oneof 成员期望类型") {
           Ok(p) => p
           Err(e) => return Err(e)
         }
         let mt = skip_trivia(t1)
-        let (mname, t2) = match pg_expect_ident(mt, "oneof 成员期望字段名") {
+        let (mname, t2) = match
+          pg_expect_ident(mt, "oneof 成员期望字段名") {
           Ok(p) => p
           Err(e) => return Err(e)
         }
@@ -484,7 +491,8 @@ fn pg_parse_oneof(
           Err(e) => return Err(e)
         }
         let t5 = skip_trivia(t4)
-        let (mnum, t6) = match pg_expect_number(t5, "oneof 成员期望字段号") {
+        let (mnum, t6) = match
+          pg_expect_number(t5, "oneof 成员期望字段号") {
           Ok(p) => p
           Err(e) => return Err(e)
         }
@@ -592,7 +600,10 @@ fn pg_parse_field(
   let mut repeated = false
   let mut type_token = tok
   let mut tail = after_tok
-  if tok == "repeated" || tok == "optional" || tok == "singular" || tok == "required" {
+  if tok == "repeated" ||
+    tok == "optional" ||
+    tok == "singular" ||
+    tok == "required" {
     repeated = tok == "repeated"
     let a = skip_trivia(after_tok)
     match pg_expect_ident(a, "期望字段类型") {
@@ -674,7 +685,12 @@ fn pg_resolve_enums(schema : ProtoSchema) -> ProtoSchema {
   }
   let resolve = fn(t : ProtoType) -> ProtoType {
     match t {
-      PMessage(n) => if pg_name_in(enum_names, n) { PEnum(n) } else { PMessage(n) }
+      PMessage(n) =>
+        if pg_name_in(enum_names, n) {
+          PEnum(n)
+        } else {
+          PMessage(n)
+        }
       other => other
     }
   }
@@ -725,10 +741,8 @@ pub fn parse_proto_full(src : String) -> Result[ProtoSchema, ParseError] {
     if input.is_eof() {
       break
     }
-    let (kw, after_kw) = match pg_expect_ident(
-        input,
-        "期望顶层声明（message / enum / 语句）",
-      ) {
+    let (kw, after_kw) = match
+      pg_expect_ident(input, "期望顶层声明（message / enum / 语句）") {
       Ok(p) => p
       Err(e) => return Err(e)
     }
@@ -755,7 +769,10 @@ pub fn parse_proto_full(src : String) -> Result[ProtoSchema, ParseError] {
             Ok(r) => input = r
             Err(e) => return Err(e)
           }
-        _ => return Err(ParseError::at(before_brace.pos, "service 名后期望 '{'"))
+        _ =>
+          return Err(
+            ParseError::at(before_brace.pos, "service 名后期望 '{'"),
+          )
       }
     } else {
       // syntax / package / import / option 等：跳到 ';'。

@@ -10,32 +10,34 @@
 /// 贯穿文档与基准的实战 `.proto`：覆盖标量 / repeated / 嵌套消息 / enum / oneof /
 /// map 六类构造（R9.1）。
 pub fn demo_proto() -> String {
-  #|syntax = "proto3";
-  #|
-  #|enum Status {
-  #|  STATUS_UNKNOWN = 0;
-  #|  STATUS_ACTIVE = 1;
-  #|  STATUS_BANNED = 2;
-  #|}
-  #|
-  #|message Address {
-  #|  string city = 1;
-  #|  string zip = 2;
-  #|}
-  #|
-  #|message UserProfile {
-  #|  int32 id = 1;
-  #|  string name = 2;
-  #|  repeated string tags = 3;
-  #|  Status status = 4;
-  #|  Address address = 5;
-  #|  oneof contact {
-  #|    string email = 6;
-  #|    string phone = 7;
-  #|  }
-  #|  map<string, int32> metadata = 8;
-  #|  double score = 9;
-  #|}
+  (
+    #|syntax = "proto3";
+    #|
+    #|enum Status {
+    #|  STATUS_UNKNOWN = 0;
+    #|  STATUS_ACTIVE = 1;
+    #|  STATUS_BANNED = 2;
+    #|}
+    #|
+    #|message Address {
+    #|  string city = 1;
+    #|  string zip = 2;
+    #|}
+    #|
+    #|message UserProfile {
+    #|  int32 id = 1;
+    #|  string name = 2;
+    #|  repeated string tags = 3;
+    #|  Status status = 4;
+    #|  Address address = 5;
+    #|  oneof contact {
+    #|    string email = 6;
+    #|    string phone = 7;
+    #|  }
+    #|  map<string, int32> metadata = 8;
+    #|  double score = 9;
+    #|}
+  )
 }
 
 ///|

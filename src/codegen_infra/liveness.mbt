@@ -37,7 +37,8 @@ fn is_var_token(tok : String) -> Bool {
   }
   match parse_int(tok) {
     Some(_) => false
-    None => not(tok == "+" || tok == "-" || tok == "*" || tok == "/" || tok == "=")
+    None =>
+      not(tok == "+" || tok == "-" || tok == "*" || tok == "/" || tok == "=")
   }
 }
 
@@ -274,16 +275,20 @@ fn liveness_equal(
   b : LivenessResult,
 ) -> Bool {
   for blk in blocks {
-    if not(var_arrays_equal(
-        a.live_in.get(blk.label).unwrap_or([]),
-        b.live_in.get(blk.label).unwrap_or([]),
-      )) {
+    if not(
+        var_arrays_equal(
+          a.live_in.get(blk.label).unwrap_or([]),
+          b.live_in.get(blk.label).unwrap_or([]),
+        ),
+      ) {
       return false
     }
-    if not(var_arrays_equal(
-        a.live_out.get(blk.label).unwrap_or([]),
-        b.live_out.get(blk.label).unwrap_or([]),
-      )) {
+    if not(
+        var_arrays_equal(
+          a.live_out.get(blk.label).unwrap_or([]),
+          b.live_out.get(blk.label).unwrap_or([]),
+        ),
+      ) {
       return false
     }
   }
@@ -485,7 +490,7 @@ pub fn build_intervals_from_liveness(
   for id in 0..<names.length() {
     match (start_of.get(id), end_of.get(id)) {
       (Some(s), Some(e)) =>
-        intervals.push({ variable: { id }, start: s, end: e })
+        intervals.push({ variable: { id, }, start: s, end: e })
       _ => ()
     }
   }

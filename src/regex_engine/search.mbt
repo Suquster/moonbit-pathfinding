@@ -23,8 +23,8 @@ pub struct Pattern {
 /// 返回含位置的 `ParseError`（R8 / R12.3）。
 pub fn Pattern::compile(
   pattern : String,
-  flags~ : Flags = Flags::default(),
-  kind~ : MatchKind = LeftmostLongest,
+  flags? : Flags = Flags::default(),
+  kind? : MatchKind = LeftmostLongest,
 ) -> Result[Pattern, ParseError] {
   match parse_pattern(pattern, flags~) {
     Err(e) => Err(e)
@@ -111,7 +111,11 @@ pub fn Pattern::captures_all(self : Pattern, input : String) -> Array[Captures] 
 
 ///|
 /// 替换首个匹配（R8.5）。
-pub fn Pattern::replace(self : Pattern, input : String, repl : String) -> String {
+pub fn Pattern::replace(
+  self : Pattern,
+  input : String,
+  repl : String,
+) -> String {
   let chars = input.iter().to_array()
   let n = chars.length()
   match self.prog.exec(input, kind=self.kind) {
@@ -197,7 +201,11 @@ fn group_text(caps : Captures, g : Int, chars : Array[Char]) -> String {
 
 ///|
 /// 取命名组的匹配子串；未设置 / 未知名返回空串。
-fn group_text_named(caps : Captures, name : String, chars : Array[Char]) -> String {
+fn group_text_named(
+  caps : Captures,
+  name : String,
+  chars : Array[Char],
+) -> String {
   match caps.name(name) {
     Some(m) => slice_chars(chars, m.start, m.end)
     None => ""

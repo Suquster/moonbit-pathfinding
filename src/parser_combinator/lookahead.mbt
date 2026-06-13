@@ -30,7 +30,9 @@ pub fn[T] not_followed_by(p : Parser[T]) -> Parser[Unit] {
   Parser::new(fn(input) {
     match p.parse(input) {
       Ok(_v, _rest) =>
-        ParseResult::Fail(input.pos, expected=["不应出现的内容（否定前瞻）"])
+        ParseResult::Fail(input.pos, expected=[
+          "不应出现的内容（否定前瞻）",
+        ])
       Fail(_pos, ..) => ParseResult::Ok((), input)
     }
   })

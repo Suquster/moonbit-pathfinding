@@ -106,7 +106,7 @@ fn try_shrink_once(
 pub fn shrink(
   seed : UInt64,
   scenario : DesScenario,
-  fails~ : (DesResult) -> Bool = default_fails,
+  fails? : (DesResult) -> Bool = default_fails,
 ) -> ShrinkOutcome {
   if !fails(run_des(seed, scenario)) {
     return NotFailing

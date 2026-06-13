@@ -65,7 +65,8 @@ pub fn[T] alt(ps : Array[Parser[T]]) -> Parser[T] {
       }
     }
     match acc {
-      Some(fe) => ParseResult::Fail(fe.pos, expected=normalize_expected(fe.expected))
+      Some(fe) =>
+        ParseResult::Fail(fe.pos, expected=normalize_expected(fe.expected))
       // 空分支列表：在起始位置失败且无期望符号（退化边界）。
       None => ParseResult::Fail(input.pos, expected=[])
     }

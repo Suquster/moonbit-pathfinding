@@ -122,7 +122,9 @@ fn de_check(bytes : Bytes) -> Bool {
 ///
 /// **Validates: Requirements 11.3**
 test "Feature: serialization, Property 10: decode-error offset (decode and decode_typed)" {
-  let ok = @infra_pbt.holds_for_all(de_gen_illegal(), fn(bytes) { de_check(bytes) })
+  let ok = @infra_pbt.holds_for_all(de_gen_illegal(), fn(bytes) {
+    de_check(bytes)
+  })
   assert_true(ok)
 }
 

@@ -46,11 +46,7 @@ fn sv_has_duplicate(errs : Array[SchemaError]) -> Bool {
 
 ///|
 test "validate_schema rejects duplicate field numbers" {
-  let s = sv_schema(
-    [sv_field("a", 1, PInt32), sv_field("b", 1, PString)],
-    [],
-    [],
-  )
+  let s = sv_schema([sv_field("a", 1, PInt32), sv_field("b", 1, PString)], [], [])
   match validate_schema(s) {
     Ok(_) => fail("重复字段号应被拒绝")
     Err(errs) => assert_true(sv_has_duplicate(errs))
@@ -93,11 +89,9 @@ test "validate_schema rejects unresolved type reference" {
 
 ///|
 test "validate_schema rejects enum whose first value is non-zero" {
-  let s = sv_schema(
-    [sv_field("a", 1, PInt32)],
-    [],
-    [{ name: "E", values: [("FIRST", 1), ("SECOND", 2)] }],
-  )
+  let s = sv_schema([sv_field("a", 1, PInt32)], [], [
+    { name: "E", values: [("FIRST", 1), ("SECOND", 2)] },
+  ])
   match validate_schema(s) {
     Ok(_) => fail("枚举首值非 0 应被拒绝")
     Err(errs) => {

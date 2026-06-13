@@ -68,7 +68,11 @@ pub fn NetFaultKind::of_legacy(k : FaultKind) -> NetFaultKind {
 ///|
 /// 向后兼容桥：把既有 `FaultPolicy` 提升为扩展故障策略（注入点与语义等价）。
 pub fn FaultPolicyEx::of_legacy(p : FaultPolicy) -> FaultPolicyEx {
-  { at_step: p.at_step, task_id: p.task_id, kind: NetFaultKind::of_legacy(p.kind) }
+  {
+    at_step: p.at_step,
+    task_id: p.task_id,
+    kind: NetFaultKind::of_legacy(p.kind),
+  }
 }
 
 ///|

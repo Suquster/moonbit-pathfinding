@@ -16,19 +16,15 @@ fn p14_event(rng : @infra_pbt.Rng) -> SimEvent {
     1 => EvCompleted(time~, task_id=tid)
     2 => EvFaulted(time~, task_id=tid, kind=sample_netfault(rng, 5))
     3 =>
-      EvSend(
-        time~,
-        from=tid,
-        to=rng.next_range(0, 5),
-        msg={ id: rng.next_range(0, 100), payload: rng.next_range(-50, 50) },
-      )
+      EvSend(time~, from=tid, to=rng.next_range(0, 5), msg={
+        id: rng.next_range(0, 100),
+        payload: rng.next_range(-50, 50),
+      })
     _ =>
-      EvDeliver(
-        time~,
-        from=tid,
-        to=rng.next_range(0, 5),
-        msg={ id: rng.next_range(0, 100), payload: rng.next_range(-50, 50) },
-      )
+      EvDeliver(time~, from=tid, to=rng.next_range(0, 5), msg={
+        id: rng.next_range(0, 100),
+        payload: rng.next_range(-50, 50),
+      })
   }
 }
 

@@ -11,7 +11,9 @@
 ///|
 /// 数字解析器：`digit+` → 非负整数（无前导符号）。
 fn dp_number() -> Parser[Int] {
-  map(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(chars) {
+  map(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(
+    chars,
+  ) {
     let mut n = 0
     for c in chars {
       n = n * 10 + (c.to_int() - '0'.to_int())
@@ -54,7 +56,12 @@ fn join_minus(xs : Array[Int]) -> String {
 
 ///|
 /// 生成长度 `lo`~`hi`、元素取值 `[0, vmax]` 的整数序列。
-fn gen_int_list(rng : @infra_pbt.Rng, lo : Int, hi : Int, vmax : Int) -> Array[Int] {
+fn gen_int_list(
+  rng : @infra_pbt.Rng,
+  lo : Int,
+  hi : Int,
+  vmax : Int,
+) -> Array[Int] {
   let len = rng.next_range(lo, hi)
   let xs : Array[Int] = []
   let mut i = 0
@@ -218,8 +225,10 @@ test "chainl/chainr yield default on empty operand sequence without consuming" {
     Fail(_, ..) => fail("chainr should yield default on empty")
   }
   // 非空时退化为 chainl1 / chainr1。
-  assert_true(chainl(dp_number(), dp_sub_op(), -1).parse_string("8-3-2").value() ==
-    Some(3))
+  assert_true(
+    chainl(dp_number(), dp_sub_op(), -1).parse_string("8-3-2").value() ==
+    Some(3),
+  )
 }
 
 ///|

@@ -50,7 +50,7 @@ pub fn[A, B] map(p : Parser[A], f : (A) -> B) -> Parser[B] {
 pub fn[A, B] bind(p : Parser[A], f : (A) -> Parser[B]) -> Parser[B] {
   Parser::new(fn(input) {
     match p.parse(input) {
-      Ok(v, rest) => (f(v)).parse(rest)
+      Ok(v, rest) => f(v).parse(rest)
       Fail(pos, expected~) => ParseResult::Fail(pos, expected~)
     }
   })

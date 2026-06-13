@@ -91,7 +91,9 @@ test "guard: sample_stream retained count matches floor(rate*n)" {
     )
   }
   if @log.retained_count(0.25, 1000) != 250 {
-    fail("LOGGING-BENCH GUARD FAIL [retained-count]: retained_count 偏离基线 250。")
+    fail(
+      "LOGGING-BENCH GUARD FAIL [retained-count]: retained_count 偏离基线 250。",
+    )
   }
 }
 

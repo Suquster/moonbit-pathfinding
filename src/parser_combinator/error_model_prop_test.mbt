@@ -46,7 +46,10 @@ test "Feature: parser-combinator, Property 16: failure structure completeness" {
     let (p, s) = pair
     match p.parse_string(s) {
       Fail(pos, expected~) =>
-        expected.length() > 0 && pos.line >= 1 && pos.col >= 1 && pos.offset >= 0
+        expected.length() > 0 &&
+        pos.line >= 1 &&
+        pos.col >= 1 &&
+        pos.offset >= 0
       Ok(_, _) => true
     }
   })

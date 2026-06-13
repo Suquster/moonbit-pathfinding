@@ -43,15 +43,7 @@ pub fn demo_graph() -> BuildGraph {
   let core_b_c = Target::new("core_b.c")
   let util_a_c = Target::new("util_a.c")
   let nodes = [
-    app,
-    libcore,
-    libutil,
-    core_a_o,
-    core_b_o,
-    util_a_o,
-    core_a_c,
-    common_h,
-    core_b_c,
+    app, libcore, libutil, core_a_o, core_b_o, util_a_o, core_a_c, common_h, core_b_c,
     util_a_c,
   ]
   let edges = [

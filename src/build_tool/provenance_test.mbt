@@ -34,7 +34,13 @@ test "record_provenance distinguishes different inputs and actions" {
 ///|
 /// 输出哈希对各分量单射（R9.4，构造性）。
 test "derive_output_hash is injective on components" {
-  assert_true(derive_output_hash(["h1"], "a") != derive_output_hash(["h2"], "a"))
-  assert_true(derive_output_hash(["h1"], "a") != derive_output_hash(["h1"], "b"))
-  assert_true(derive_output_hash(["h1"], "a") == derive_output_hash(["h1"], "a"))
+  assert_true(
+    derive_output_hash(["h1"], "a") != derive_output_hash(["h2"], "a"),
+  )
+  assert_true(
+    derive_output_hash(["h1"], "a") != derive_output_hash(["h1"], "b"),
+  )
+  assert_true(
+    derive_output_hash(["h1"], "a") == derive_output_hash(["h1"], "a"),
+  )
 }

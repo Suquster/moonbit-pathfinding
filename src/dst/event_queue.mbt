@@ -78,9 +78,7 @@ fn qe_less(a : QueuedEvent, b : QueuedEvent) -> Bool {
 /// 取出全序最小事件，返回 `(最小元素, 余下队列)`；空队列返回 `None`。
 ///
 /// 余下队列保持其余元素原有相对顺序（确定性，且不修改 `self`）。
-pub fn EventQueue::pop_min(
-  self : EventQueue,
-) -> (QueuedEvent, EventQueue)? {
+pub fn EventQueue::pop_min(self : EventQueue) -> (QueuedEvent, EventQueue)? {
   if self.events.length() == 0 {
     return None
   }

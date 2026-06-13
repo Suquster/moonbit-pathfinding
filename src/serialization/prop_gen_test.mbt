@@ -63,8 +63,21 @@ fn sg_bytes(rng : @infra_pbt.Rng) -> Bytes {
 /// 全部标量 proto 类型（不含消息/枚举引用）。
 fn sg_scalar_types() -> Array[ProtoType] {
   [
-    PInt32, PInt64, PUInt32, PUInt64, PSInt32, PSInt64, PFixed32, PFixed64,
-    PSFixed32, PSFixed64, PFloat, PDouble, PBool, PString, PBytes,
+    PInt32,
+    PInt64,
+    PUInt32,
+    PUInt64,
+    PSInt32,
+    PSInt64,
+    PFixed32,
+    PFixed64,
+    PSFixed32,
+    PSFixed64,
+    PFloat,
+    PDouble,
+    PBool,
+    PString,
+    PBytes,
   ]
 }
 
@@ -72,8 +85,19 @@ fn sg_scalar_types() -> Array[ProtoType] {
 /// 可 packed 的数值标量 proto 类型。
 fn sg_numeric_types() -> Array[ProtoType] {
   [
-    PInt32, PInt64, PUInt32, PUInt64, PSInt32, PSInt64, PFixed32, PFixed64,
-    PSFixed32, PSFixed64, PFloat, PDouble, PBool,
+    PInt32,
+    PInt64,
+    PUInt32,
+    PUInt64,
+    PSInt32,
+    PSInt64,
+    PFixed32,
+    PFixed64,
+    PSFixed32,
+    PSFixed64,
+    PFloat,
+    PDouble,
+    PBool,
   ]
 }
 
@@ -101,7 +125,10 @@ fn sg_value_for(rng : @infra_pbt.Rng, t : ProtoType) -> TypedValue {
 /// 随机富模式：枚举 E、嵌套叶子消息 Inner、根消息 M（1~4 个字段，
 /// 类型涵盖标量 / repeated 数值（packed 随机）/ 枚举 / 嵌套消息）。
 fn sg_random_schema(rng : @infra_pbt.Rng) -> ProtoSchema {
-  let enum_e : EnumDef = { name: "E", values: [("E0", 0), ("E1", 1), ("E2", 2)] }
+  let enum_e : EnumDef = {
+    name: "E",
+    values: [("E0", 0), ("E1", 1), ("E2", 2)],
+  }
   let inner : ProtoMessage = {
     name: "Inner",
     fields: [
@@ -129,10 +156,23 @@ fn sg_random_schema(rng : @infra_pbt.Rng) -> ProtoSchema {
       }
       1 => {
         let t = numerics[rng.next_below(numerics.length())]
-        { name, number, ptype: t, label: LRepeated(packed=rng.next_bool()), options: [] }
+        {
+          name,
+          number,
+          ptype: t,
+          label: LRepeated(packed=rng.next_bool()),
+          options: [],
+        }
       }
       2 => { name, number, ptype: PEnum("E"), label: LSingular, options: [] }
-      _ => { name, number, ptype: PMessage("Inner"), label: LSingular, options: [] }
+      _ =>
+        {
+          name,
+          number,
+          ptype: PMessage("Inner"),
+          label: LSingular,
+          options: [],
+        }
     }
     fields.push(f)
   }
@@ -252,21 +292,51 @@ fn sg_gen_valid_schema() -> @infra_pbt.Gen[ProtoSchema] {
     let nscalar = rng.next_range(1, 3)
     for _i in 0..<nscalar {
       let t = scalars[rng.next_below(scalars.length())]
-      fields.push({ name: "f" + num.to_string(), number: num, ptype: t, label: LSingular, options: [] })
+      fields.push({
+        name: "f" + num.to_string(),
+        number: num,
+        ptype: t,
+        label: LSingular,
+        options: [],
+      })
       num = num + 1
     }
     // 嵌套消息引用字段。
-    fields.push({ name: "child", number: num, ptype: PMessage("Inner"), label: LSingular, options: [] })
+    fields.push({
+      name: "child",
+      number: num,
+      ptype: PMessage("Inner"),
+      label: LSingular,
+      options: [],
+    })
     num = num + 1
     // 枚举引用字段。
-    fields.push({ name: "st", number: num, ptype: PEnum("E"), label: LSingular, options: [] })
+    fields.push({
+      name: "st",
+      number: num,
+      ptype: PEnum("E"),
+      label: LSingular,
+      options: [],
+    })
     num = num + 1
     // oneof 两成员。
     let o_a = num
-    fields.push({ name: "ca", number: o_a, ptype: PString, label: LOneof(group="c"), options: [] })
+    fields.push({
+      name: "ca",
+      number: o_a,
+      ptype: PString,
+      label: LOneof(group="c"),
+      options: [],
+    })
     num = num + 1
     let o_b = num
-    fields.push({ name: "cb", number: o_b, ptype: PInt32, label: LOneof(group="c"), options: [] })
+    fields.push({
+      name: "cb",
+      number: o_b,
+      ptype: PInt32,
+      label: LOneof(group="c"),
+      options: [],
+    })
     num = num + 1
     let oneofs : Array[OneofDef] = [{ name: "c", members: [o_a, o_b] }]
     // map 字段。
@@ -315,12 +385,30 @@ fn sg_gen_roundtrip_schema() -> @infra_pbt.Gen[ProtoSchema] {
       let kind = rng.next_below(3)
       let f : ProtoField = if kind == 0 {
         let t = scalars[rng.next_below(scalars.length())]
-        { name: "f" + num.to_string(), number: num, ptype: t, label: LSingular, options: [] }
+        {
+          name: "f" + num.to_string(),
+          number: num,
+          ptype: t,
+          label: LSingular,
+          options: [],
+        }
       } else if kind == 1 {
         let t = numerics[rng.next_below(numerics.length())]
-        { name: "f" + num.to_string(), number: num, ptype: t, label: LRepeated(packed=rng.next_bool()), options: [] }
+        {
+          name: "f" + num.to_string(),
+          number: num,
+          ptype: t,
+          label: LRepeated(packed=rng.next_bool()),
+          options: [],
+        }
       } else {
-        { name: "f" + num.to_string(), number: num, ptype: PEnum("E"), label: LSingular, options: [] }
+        {
+          name: "f" + num.to_string(),
+          number: num,
+          ptype: PEnum("E"),
+          label: LSingular,
+          options: [],
+        }
       }
       fields.push(f)
       num = num + 1
@@ -329,10 +417,22 @@ fn sg_gen_roundtrip_schema() -> @infra_pbt.Gen[ProtoSchema] {
     let oneofs : Array[OneofDef] = []
     if rng.next_bool() {
       let o_a = num
-      fields.push({ name: "ca", number: o_a, ptype: PString, label: LOneof(group="choice"), options: [] })
+      fields.push({
+        name: "ca",
+        number: o_a,
+        ptype: PString,
+        label: LOneof(group="choice"),
+        options: [],
+      })
       num = num + 1
       let o_b = num
-      fields.push({ name: "cb", number: o_b, ptype: PInt32, label: LOneof(group="choice"), options: [] })
+      fields.push({
+        name: "cb",
+        number: o_b,
+        ptype: PInt32,
+        label: LOneof(group="choice"),
+        options: [],
+      })
       num = num + 1
       oneofs.push({ name: "choice", members: [o_a, o_b] })
     }

@@ -166,7 +166,8 @@ test "README · 非法表达式返回含位置的解析错误" {
 ```mbt check
 ///|
 test "README · 捕获组：编号 / 命名 / 非捕获" {
-  let p = match Pattern::compile("(?<user>[a-z]+)@(?:[a-z]+)\\.(?<tld>[a-z]+)") {
+  let p = match
+    Pattern::compile("(?<user>[a-z]+)@(?:[a-z]+)\\.(?<tld>[a-z]+)") {
     Ok(v) => v
     Err(_) => fail("expected successful compile")
   }
@@ -335,7 +336,10 @@ test "README · 实战 demo：ISO 日期命名捕获与重排" {
     None => fail("expected captures for iso date")
   }
   // 命名引用重排为 day/month/year
-  assert_eq(p.replace_all("2026-06-12", "${day}/${month}/${year}"), "12/06/2026")
+  assert_eq(
+    p.replace_all("2026-06-12", "${day}/${month}/${year}"),
+    "12/06/2026",
+  )
 }
 ```
 

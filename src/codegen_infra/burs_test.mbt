@@ -28,7 +28,10 @@ test "select_burs 代价更低的通用规则胜出" {
   let instrs = select_burs(rules, IrNode::BinOp("+", Const(1), Const(2)))
   inspect(instrs[2].op, content="add")
   // 最优 tiling 总代价 = 1 + 1 + 2 = 4。
-  inspect(tiling_cost(rules, IrNode::BinOp("+", Const(1), Const(2))), content="4")
+  inspect(
+    tiling_cost(rules, IrNode::BinOp("+", Const(1), Const(2))),
+    content="4",
+  )
 }
 
 ///|

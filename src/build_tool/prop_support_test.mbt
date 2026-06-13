@@ -319,10 +319,7 @@ fn targets_eq(a : Array[Target], b : Array[Target]) -> Bool {
 
 ///|
 /// 两个依赖边序列逐元素相等。
-fn edges_eq(
-  a : Array[(Target, Target)],
-  b : Array[(Target, Target)],
-) -> Bool {
+fn edges_eq(a : Array[(Target, Target)], b : Array[(Target, Target)]) -> Bool {
   if a.length() != b.length() {
     return false
   }

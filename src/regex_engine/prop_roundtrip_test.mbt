@@ -316,7 +316,6 @@ test "Feature: moonbit-infra-suite, Property 4: parse(print(r)) equals r (holds_
   assert_true(ok)
 }
 
-
 // ---------------------------------------------------------------------------
 // Property 1（旗舰深化）：语法树往返（round-trip）
 //

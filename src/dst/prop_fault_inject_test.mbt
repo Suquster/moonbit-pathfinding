@@ -25,7 +25,13 @@ fn p5_gen() -> @infra_pbt.Gen[(UInt64, DesScenario)] {
         ),
       )
     }
-    let sc = DesScenario::new(tasks, faults, [], replication_protocol(n), 4 * n + 16)
+    let sc = DesScenario::new(
+      tasks,
+      faults,
+      [],
+      replication_protocol(n),
+      4 * n + 16,
+    )
     (rng.next(), sc)
   })
 }

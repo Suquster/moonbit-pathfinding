@@ -212,7 +212,11 @@ fn mm_node(
 
 ///|
 /// 取首个匹配规则的模板：运算符特化（`BinOp:<op>`）优先于通用 `BinOp`。
-fn first_template(rules : Array[CostRule], kind : String, op : String) -> String? {
+fn first_template(
+  rules : Array[CostRule],
+  kind : String,
+  op : String,
+) -> String? {
   if kind == "BinOp" {
     for r in rules {
       if r.pattern == "BinOp:" + op {

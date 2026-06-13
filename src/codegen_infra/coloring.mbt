@@ -48,7 +48,7 @@ pub fn spill_cost(
     }
     cost[v] = freq / len.to_double()
   }
-  { cost }
+  { cost, }
 }
 
 ///|
@@ -56,7 +56,7 @@ pub fn spill_cost(
 pub fn allocate_coloring_briggs(
   g : InterferenceGraph,
   k : Int,
-  cost~ : SpillCost = SpillCost::uniform(),
+  cost? : SpillCost = SpillCost::uniform(),
 ) -> Map[Var, Location] {
   let result : Map[Var, Location] = Map([])
   // 退化：k ≤ 0，全部溢出。
@@ -106,10 +106,11 @@ pub fn allocate_coloring_briggs(
               best = Some(v)
               best_cost = c
             }
-            Some(_) => if c < best_cost {
-              best = Some(v)
-              best_cost = c
-            }
+            Some(_) =>
+              if c < best_cost {
+                best = Some(v)
+                best_cost = c
+              }
           }
         }
         best.unwrap()

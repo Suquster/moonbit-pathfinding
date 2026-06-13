@@ -23,7 +23,10 @@ test "SimEvent variants expose time and actor" {
   assert_eq(s.actor_of(), 5)
   let snd : SimEvent = EvSend(time=4UL, from=1, to=2, msg={ id: 0, payload: 9 })
   assert_eq(snd.actor_of(), 1)
-  let dlv : SimEvent = EvDeliver(time=5UL, from=1, to=2, msg={ id: 0, payload: 9 })
+  let dlv : SimEvent = EvDeliver(time=5UL, from=1, to=2, msg={
+    id: 0,
+    payload: 9,
+  })
   assert_eq(dlv.actor_of(), 2)
 }
 

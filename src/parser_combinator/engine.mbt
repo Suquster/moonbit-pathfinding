@@ -84,7 +84,8 @@ fn pc_new_ctx(enable_memo : Bool) -> PCtx {
 fn[T] pc_project(o : Outcome[T]) -> ParseResult[T] {
   match o {
     OOk(v, rest) => ParseResult::Ok(v, rest)
-    OFail(pos, exp, _) => ParseResult::Fail(pos, expected=normalize_expected(exp))
+    OFail(pos, exp, _) =>
+      ParseResult::Fail(pos, expected=normalize_expected(exp))
   }
 }
 
@@ -140,7 +141,10 @@ pub fn[A, B] Grammar::bind(
 ///
 /// 作为 packrat 的差分参照（Property 23）：与 `run_packrat` 对同一文法、同一
 /// 输入应产生逐字段一致的结果。
-pub fn[T] Grammar::run_naive(self : Grammar[T], input : Input) -> ParseResult[T] {
+pub fn[T] Grammar::run_naive(
+  self : Grammar[T],
+  input : Input,
+) -> ParseResult[T] {
   pc_project(pc_run(self, pc_new_ctx(false), input))
 }
 

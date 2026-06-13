@@ -10,5 +10,5 @@
 // _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 import {
   "moonbitlang/core/bench",
-  "Suquster/moonbit-pathfinding/src/dst" @dst,
+  "Suquster/moonbit-pathfinding/src/dst",
 }

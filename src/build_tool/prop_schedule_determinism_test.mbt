@@ -5,10 +5,7 @@
 
 ///|
 /// 两个批次序列逐元素相等。
-fn batches_eq(
-  a : Array[Array[Target]],
-  b : Array[Array[Target]],
-) -> Bool {
+fn batches_eq(a : Array[Array[Target]], b : Array[Array[Target]]) -> Bool {
   if a.length() != b.length() {
     return false
   }

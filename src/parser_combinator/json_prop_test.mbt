@@ -160,7 +160,9 @@ test "Feature: parser-combinator, Property 29: JSON escape decoding" {
     let mut expected = ""
     let mut i = 0
     while i < len {
-      let (frag, ch) = json_escape_cases[rng.next_below(json_escape_cases.length())]
+      let (frag, ch) = json_escape_cases[rng.next_below(
+          json_escape_cases.length(),
+        )]
       src = src + frag
       expected = expected + "\{ch}"
       i = i + 1

@@ -42,7 +42,7 @@ pub fn run_pipeline(p : SsaProgram, passes : Array[OptPass]) -> SsaProgram {
 pub fn run_to_fixpoint(
   p : SsaProgram,
   passes : Array[OptPass],
-  max_iters~ : Int = 64,
+  max_iters? : Int = 64,
 ) -> SsaProgram {
   let mut cur = p
   let mut sig = program_signature(cur)

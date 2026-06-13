@@ -95,10 +95,7 @@ pub fn parse_env_filter(spec : String) -> Result[EnvFilter, FilterError] {
       match parse_level_ci(text) {
         Some(lv) => pending_fallback = Some(lv)
         None =>
-          return Err({
-            pos: off,
-            message: "unrecognized level label: " + text,
-          })
+          return Err({ pos: off, message: "unrecognized level label: " + text })
       }
     } else {
       // target=level。

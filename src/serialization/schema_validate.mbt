@@ -86,7 +86,9 @@ fn type_ref_resolves(schema : ProtoSchema, t : ProtoType) -> Bool {
 /// 唯一（含 map 字段号）；③ 字段号/名不得命中本消息 `reserved`；④ `PMessage`/
 /// `PEnum` 引用按限定名可解析；⑤ proto3 枚举首值须为 0。一次性收集全部诊断：
 /// 通过返回 `Ok(())`；否则返回 `Err(Array[SchemaError])`（R4.6）。
-pub fn validate_schema(schema : ProtoSchema) -> Result[Unit, Array[SchemaError]] {
+pub fn validate_schema(
+  schema : ProtoSchema,
+) -> Result[Unit, Array[SchemaError]] {
   let errors : Array[SchemaError] = []
 
   // 枚举首值须为 0（R4.5）。
@@ -110,12 +112,16 @@ pub fn validate_schema(schema : ProtoSchema) -> Result[Unit, Array[SchemaError]]
         )
       }
       match seen.get(f.number) {
-        Some(_) => errors.push(DuplicateFieldNumber(message=m.name, number=f.number))
+        Some(_) =>
+          errors.push(DuplicateFieldNumber(message=m.name, number=f.number))
         None => seen[f.number] = true
       }
       if hits_reserved_number(m, f.number) {
         errors.push(
-          ReservedConflict(message=m.name, which="number " + f.number.to_string()),
+          ReservedConflict(
+            message=m.name,
+            which="number " + f.number.to_string(),
+          ),
         )
       }
       if hits_reserved_name(m, f.name) {
@@ -138,12 +144,16 @@ pub fn validate_schema(schema : ProtoSchema) -> Result[Unit, Array[SchemaError]]
         )
       }
       match seen.get(mp.number) {
-        Some(_) => errors.push(DuplicateFieldNumber(message=m.name, number=mp.number))
+        Some(_) =>
+          errors.push(DuplicateFieldNumber(message=m.name, number=mp.number))
         None => seen[mp.number] = true
       }
       if hits_reserved_number(m, mp.number) {
         errors.push(
-          ReservedConflict(message=m.name, which="number " + mp.number.to_string()),
+          ReservedConflict(
+            message=m.name,
+            which="number " + mp.number.to_string(),
+          ),
         )
       }
       if not(type_ref_resolves(schema, mp.value)) {

@@ -169,7 +169,9 @@ pub fn destruct_ssa(p : SsaProgram) -> SsaProgram {
     let copy_instrs : Array[String] = []
     for c in seq {
       let (d, s) = c
-      copy_instrs.push(token_of(d.id, id2name) + " = " + token_of(s.id, id2name))
+      copy_instrs.push(
+        token_of(d.id, id2name) + " = " + token_of(s.id, id2name),
+      )
     }
     let new_instrs = insert_before_terminator(b.instrs, copy_instrs)
     new_blocks.push({ label: b.label, instrs: new_instrs, succs: b.succs })

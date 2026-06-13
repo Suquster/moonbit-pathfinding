@@ -37,7 +37,13 @@ test "gen_moonbit_full maps scalar types to MoonBit types" {
         name: "T",
         fields: [
           { name: "i", number: 1, ptype: PInt32, label: LSingular, options: [] },
-          { name: "u", number: 2, ptype: PUInt64, label: LSingular, options: [] },
+          {
+            name: "u",
+            number: 2,
+            ptype: PUInt64,
+            label: LSingular,
+            options: [],
+          },
           { name: "f", number: 3, ptype: PBool, label: LSingular, options: [] },
         ],
         maps: [],

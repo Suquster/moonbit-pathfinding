@@ -7,17 +7,36 @@
 /// 字段数 / 分量长度 / hex 字符不符规范的 traceparent 一律返回 None。
 test "extract_traceparent rejects malformed inputs" {
   // 分量数不足（缺 flags）。
-  assert_true(extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(16)) is None)
+  assert_true(
+    extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(16)) is None,
+  )
   // trace-id 长度错误（31 hex）。
-  assert_true(extract_traceparent("00-" + "0".repeat(31) + "-" + "0".repeat(16) + "-01") is None)
+  assert_true(
+    extract_traceparent("00-" + "0".repeat(31) + "-" + "0".repeat(16) + "-01")
+    is None,
+  )
   // span-id 长度错误（15 hex）。
-  assert_true(extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(15) + "-01") is None)
+  assert_true(
+    extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(15) + "-01")
+    is None,
+  )
   // flags 长度错误（1 hex）。
-  assert_true(extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(16) + "-1") is None)
+  assert_true(
+    extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(16) + "-1")
+    is None,
+  )
   // 非 hex 字符。
-  assert_true(extract_traceparent("00-" + "g".repeat(32) + "-" + "0".repeat(16) + "-01") is None)
+  assert_true(
+    extract_traceparent("00-" + "g".repeat(32) + "-" + "0".repeat(16) + "-01")
+    is None,
+  )
   // 多余分量。
-  assert_true(extract_traceparent("00-" + "0".repeat(32) + "-" + "0".repeat(16) + "-01-extra") is None)
+  assert_true(
+    extract_traceparent(
+      "00-" + "0".repeat(32) + "-" + "0".repeat(16) + "-01-extra",
+    )
+    is None,
+  )
   // 空串。
   assert_true(extract_traceparent("") is None)
 }

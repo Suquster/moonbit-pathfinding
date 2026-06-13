@@ -70,29 +70,39 @@ fn node_log_from_finals(finals : Array[(Int, NodeApp)], id : Int) -> Array[Int] 
 ///|
 /// 测试协议：节点 0 向节点 1 发送一条负载为 7 的消息；节点收到即追加该负载。
 fn one_send_protocol() -> Protocol {
-  Protocol::new(fn(_id) { NodeApp::empty() }, fn(app, msg) {
-    let log = app.log.copy()
-    log.push(msg.payload)
-    ({ log, kv: app.kv }, [])
-  }, fn(id) { if id == 0 { [ActSend(to=1, payload=7, after=1UL)] } else { [] } })
+  Protocol::new(
+    fn(_id) { NodeApp::empty() },
+    fn(app, msg) {
+      let log = app.log.copy()
+      log.push(msg.payload)
+      ({ log, kv: app.kv }, [])
+    },
+    fn(id) { if id == 0 { [ActSend(to=1, payload=7, after=1UL)] } else { [] } },
+  )
 }
 
 ///|
 /// 测试协议：节点 0 向节点 1 连续发送负载 7、8 两条消息；节点收到即追加。
 fn double_send_protocol() -> Protocol {
-  Protocol::new(fn(_id) { NodeApp::empty() }, fn(app, msg) {
-    let log = app.log.copy()
-    log.push(msg.payload)
-    ({ log, kv: app.kv }, [])
-  }, fn(id) {
-    if id == 0 {
-      [ActSend(to=1, payload=7, after=1UL), ActSend(to=1, payload=8, after=1UL)]
-    } else {
-      []
-    }
-  })
+  Protocol::new(
+    fn(_id) { NodeApp::empty() },
+    fn(app, msg) {
+      let log = app.log.copy()
+      log.push(msg.payload)
+      ({ log, kv: app.kv }, [])
+    },
+    fn(id) {
+      if id == 0 {
+        [
+          ActSend(to=1, payload=7, after=1UL),
+          ActSend(to=1, payload=8, after=1UL),
+        ]
+      } else {
+        []
+      }
+    },
+  )
 }
-
 
 ///|
 /// 朴素子串包含判定（测试期辅助；主源 `str_contains` 为包私有不跨黑盒测试边界）。
@@ -126,7 +136,6 @@ fn tcontains(hay : String, needle : String) -> Bool {
   false
 }
 
-
 ///|
 /// 阶乘（供有界穷尽探索完整性属性以参考计数）。
 fn factorial(n : Int) -> Int {
@@ -152,7 +161,6 @@ fn faulted_events(trace : Array[SimEvent]) -> Array[SimEvent] {
   out
 }
 
-
 ///|
 /// 采样一个扩展故障类型（覆盖全部 NetFaultKind 变体，供故障 / 时序属性使用）。
 fn sample_netfault(rng : @infra_pbt.Rng, _n : Int) -> NetFaultKind {
@@ -161,7 +169,10 @@ fn sample_netfault(rng : @infra_pbt.Rng, _n : Int) -> NetFaultKind {
     1 => NetFaultKind::Delay(by=rng.next_range(1, 3).to_uint64())
     2 => NetFaultKind::Drop
     3 =>
-      NetFaultKind::Partition(group=rng.next_below(2), until_step=rng.next_range(2, 30))
+      NetFaultKind::Partition(
+        group=rng.next_below(2),
+        until_step=rng.next_range(2, 30),
+      )
     4 => NetFaultKind::Reorder
     5 => NetFaultKind::Duplicate
     _ => NetFaultKind::ClockSkew(offset=(rng.next_range(0, 6) - 3).to_int64())

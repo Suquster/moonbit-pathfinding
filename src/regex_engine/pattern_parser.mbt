@@ -32,7 +32,7 @@ priv struct PState {
 /// （R1.7），且不构造任何程序 / 自动机。要求整个输入被完全消费。
 pub fn parse_pattern(
   pattern : String,
-  flags~ : Flags = Flags::default(),
+  flags? : Flags = Flags::default(),
 ) -> Result[Ast, ParseError] {
   let st : PState = { next_group: 1, names: Map([]), flags }
   let input = @pc.Input::from_string(pattern)
@@ -143,8 +143,7 @@ fn p_quant_suffix(
   input : @pc.Input,
 ) -> Result[(Ast, @pc.Input), ParseError] {
   match input.peek() {
-    Some('?') =>
-      Ok((Repeat(node~, min~, max~, greedy=false), input.advance()))
+    Some('?') => Ok((Repeat(node~, min~, max~, greedy=false), input.advance()))
     _ => Ok((Repeat(node~, min~, max~, greedy=true), input))
   }
 }
@@ -244,7 +243,8 @@ fn p_escape(
   let bs = input.pos.offset
   let after_bs = input.advance() // 消费 '\'
   match after_bs.peek() {
-    None => Err(Unexpected(pos=after_bs.pos.offset, expected=["escaped character"]))
+    None =>
+      Err(Unexpected(pos=after_bs.pos.offset, expected=["escaped character"]))
     Some('d') => Ok((Set(predef_digit()), after_bs.advance()))
     Some('D') => Ok((Set(predef_non_digit()), after_bs.advance()))
     Some('w') => Ok((Set(predef_word()), after_bs.advance()))
@@ -451,7 +451,9 @@ fn read_group_name(
           name = name + c.to_string()
           cur = cur.advance()
         } else {
-          return Err(Unexpected(pos=cur.pos.offset, expected=["group name char"]))
+          return Err(
+            Unexpected(pos=cur.pos.offset, expected=["group name char"]),
+          )
         }
     }
   }
@@ -522,7 +524,8 @@ fn p_class(
                   }
                   None => return Err(Unbalanced(pos=open, what="["))
                   _ => {
-                    let (tok2, after2) = match read_class_token(dash_next, open) {
+                    let (tok2, after2) = match
+                      read_class_token(dash_next, open) {
                       Err(e) => return Err(e)
                       Ok(pair) => pair
                     }

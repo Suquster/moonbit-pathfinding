@@ -147,14 +147,15 @@ fn cap_check(caps : Captures, spec : CapSpec) -> Bool {
 ///|
 /// 健全性：生成器只产出可成功编译的模式（避免主属性被平凡满足）。
 test "Feature: regex-engine, Property 3: capture spec generator only emits valid patterns" {
-  let ok = @infra_pbt.holds_for_all(@infra_pbt.Gen::new(fn(rng) {
-    gen_capture_spec(rng)
-  }), fn(spec) {
-    match Pattern::compile(spec.pattern) {
-      Ok(_) => true
-      Err(_) => false
-    }
-  })
+  let ok = @infra_pbt.holds_for_all(
+    @infra_pbt.Gen::new(fn(rng) { gen_capture_spec(rng) }),
+    fn(spec) {
+      match Pattern::compile(spec.pattern) {
+        Ok(_) => true
+        Err(_) => false
+      }
+    },
+  )
   assert_true(ok)
 }
 

@@ -247,7 +247,9 @@ fn gen_cost_rules(rng : @infra_pbt.Rng) -> Array[CostRule] {
 
 ///|
 /// 生成器：随机 IR 树 + 覆盖完整带代价规则集。
-fn gen_ir_and_rules(max_depth : Int) -> @infra_pbt.Gen[(IrNode, Array[CostRule])] {
+fn gen_ir_and_rules(
+  max_depth : Int,
+) -> @infra_pbt.Gen[(IrNode, Array[CostRule])] {
   @infra_pbt.Gen::new(fn(rng) {
     let ir = gen_ir_node(rng, max_depth)
     let rules = gen_cost_rules(rng)
@@ -264,7 +266,6 @@ fn count_ir_nodes(ir : IrNode) -> Int {
     BinOp(_, l, r) => 1 + count_ir_nodes(l) + count_ir_nodes(r)
   }
 }
-
 
 // ---------------------------------------------------------------------------
 // 黑盒记号工具（自带 tokenizer / 版本解析，不依赖包内私有）
@@ -470,7 +471,10 @@ fn t_def_blocks(
 
 ///|
 /// 沿 succs 从入口（`blocks[0]`）随机游走，产生一条 entry-rooted 路径（终于 sink）。
-fn t_gen_path(rng : @infra_pbt.Rng, blocks : Array[BasicBlock]) -> Array[String] {
+fn t_gen_path(
+  rng : @infra_pbt.Rng,
+  blocks : Array[BasicBlock],
+) -> Array[String] {
   let by_label : Map[String, BasicBlock] = Map([])
   for b in blocks {
     by_label[b.label] = b
@@ -598,7 +602,6 @@ fn t_outputs_equal(a : EvalResult, b : EvalResult) -> Bool {
   true
 }
 
-
 // ---------------------------------------------------------------------------
 // 寄存器分配 / 一致性属性的共享生成器
 // ---------------------------------------------------------------------------
@@ -648,7 +651,10 @@ fn t_max_degree(g : InterferenceGraph) -> Int {
 
 ///|
 /// 图着色分配是否尊重干涉：每条边两端若均为 Reg 则编号不同。
-fn t_coloring_respects(g : InterferenceGraph, alloc : Map[Var, Location]) -> Bool {
+fn t_coloring_respects(
+  g : InterferenceGraph,
+  alloc : Map[Var, Location],
+) -> Bool {
   for e in g.edges {
     let (a, b) = e
     match (alloc.get(a), alloc.get(b)) {
@@ -716,9 +722,7 @@ fn gen_bounded_overlap_intervals() -> @infra_pbt.Gen[(Array[LiveInterval], Int)]
 
 ///|
 /// 生成随机干涉图 + 传送候选集 + k（用于保守合并安全性属性）。
-fn gen_coalesce_case() -> @infra_pbt.Gen[
-  (InterferenceGraph, MoveSet, Int),
-] {
+fn gen_coalesce_case() -> @infra_pbt.Gen[(InterferenceGraph, MoveSet, Int)] {
   @infra_pbt.Gen::new(fn(rng) {
     let n = rng.next_range(2, 8)
     let nodes : Array[Var] = []

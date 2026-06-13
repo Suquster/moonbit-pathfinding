@@ -299,10 +299,16 @@ test "README · 过滤与路由" {
     }
   }
   // db 阈值 debug：Debug 保留；http 阈值 warn：Info 丢弃
-  assert_true(f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("db") })))
-  assert_false(f.allows(Event::new(0L, Level::Info, { "target": Value::VStr("http") })))
+  assert_true(
+    f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("db") })),
+  )
+  assert_false(
+    f.allows(Event::new(0L, Level::Info, { "target": Value::VStr("http") })),
+  )
   // 未登记 target 走全局兜底 info：Debug 丢弃
-  assert_false(f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("x") })))
+  assert_false(
+    f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("x") })),
+  )
   // 路由：仅 Error+ 交付给告警 sink
   let errors = Sink::new("errors", Formatter::Json, route=fn(e) {
     e.level.rank() >= Level::Error.rank()

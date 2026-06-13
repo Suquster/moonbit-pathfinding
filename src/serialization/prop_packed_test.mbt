@@ -19,7 +19,13 @@ fn pp_schema(t : ProtoType, packed : Bool) -> ProtoSchema {
       {
         name: "M",
         fields: [
-          { name: "xs", number: 1, ptype: t, label: LRepeated(packed~), options: [] },
+          {
+            name: "xs",
+            number: 1,
+            ptype: t,
+            label: LRepeated(packed~),
+            options: [],
+          },
         ],
         maps: [],
         oneofs: [],

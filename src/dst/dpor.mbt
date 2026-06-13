@@ -107,7 +107,12 @@ fn index_of_id(ids : Array[Int], id : Int) -> Int {
 
 ///|
 /// 任务 `a` 与 `b` 是否独立（可交换）。
-fn task_indep(dep : Array[Array[Bool]], ids : Array[Int], a : Int, b : Int) -> Bool {
+fn task_indep(
+  dep : Array[Array[Bool]],
+  ids : Array[Int],
+  a : Int,
+  b : Int,
+) -> Bool {
   let ia = index_of_id(ids, a)
   let ib = index_of_id(ids, b)
   if ia < 0 || ib < 0 {
@@ -171,8 +176,7 @@ fn dpor_rec(
     let next_order = order.copy()
     next_order.push(t)
     dpor_rec(
-      seed, scenario, ids, dep, next_remaining, child_sleep, next_order, limit,
-      acc,
+      seed, scenario, ids, dep, next_remaining, child_sleep, next_order, limit, acc,
     )
     local_sleep.push(t)
   }

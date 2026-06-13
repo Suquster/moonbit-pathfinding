@@ -52,7 +52,9 @@ fn json_hexdigit() -> Parser[Int] {
   map(
     satisfy(
       fn(c) {
-        (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
+        (c >= '0' && c <= '9') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= 'A' && c <= 'F')
       },
       label="十六进制数字",
     ),
@@ -110,7 +112,10 @@ fn json_escape() -> Parser[Char] {
 ///|
 /// 字符串内单字符：转义序列或非 `"` / `\` 的普通字符。
 fn json_str_char() -> Parser[Char] {
-  alt([json_escape(), satisfy(fn(c) { c != '"' && c != '\\' }, label="字符串字符")])
+  alt([
+    json_escape(),
+    satisfy(fn(c) { c != '"' && c != '\\' }, label="字符串字符"),
+  ])
 }
 
 ///|
@@ -397,9 +402,7 @@ pub fn json_value_grammar() -> Grammar[Json] {
 ///
 /// 返回 `(解析出的值?, 错误列表)`：顶层为数组时按元素恢复；非数组时退化为
 /// 严格的 `parse_json`（错误进入列表、值为 None 或成功值）。
-pub fn parse_json_recover(
-  src : String,
-) -> (Json?, Array[@core.PathError]) {
+pub fn parse_json_recover(src : String) -> (Json?, Array[@core.PathError]) {
   let errors : Array[@core.PathError] = []
   let input = Input::from_string(src)
   // 跳过前导空白，探测是否为数组。
@@ -428,12 +431,7 @@ fn skip_ws_input(input : Input) -> Input {
   let mut cur = input
   while true {
     match cur.peek() {
-      Some(c) =>
-        if json_is_ws(c) {
-          cur = cur.advance()
-        } else {
-          break
-        }
+      Some(c) => if json_is_ws(c) { cur = cur.advance() } else { break }
       None => break
     }
   }

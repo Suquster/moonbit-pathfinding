@@ -135,5 +135,5 @@ pub fn[T] chainr(
 /// 命名说明：design.md 记为 `lazy`，但 `lazy` 是 MoonBit 的保留字，故落地为
 /// `lazy_parser`（语义不变）。
 pub fn[T] lazy_parser(thunk : () -> Parser[T]) -> Parser[T] {
-  Parser::new(fn(input) { (thunk()).parse(input) })
+  Parser::new(fn(input) { thunk().parse(input) })
 }

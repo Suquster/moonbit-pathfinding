@@ -75,7 +75,9 @@ test "parse_pattern lowers predefined classes and dot" {
     Ok(Set({ intervals: [('0'.to_int(), '9'.to_int())] })),
   )
   // 非 dotall：'.' 不含 '\n'（码点 10）。
-  assert_true(parse_pattern(".") == Ok(Set({ intervals: [(0, 9), (11, 0x10FFFF)] })))
+  assert_true(
+    parse_pattern(".") == Ok(Set({ intervals: [(0, 9), (11, 0x10FFFF)] })),
+  )
 }
 
 ///|
@@ -84,7 +86,11 @@ test "parse_pattern inline case-insensitive flag" {
   // (?i)a → Set({A,a})
   assert_true(
     parse_pattern("(?i)a") ==
-    Ok(Set({ intervals: [('A'.to_int(), 'A'.to_int()), ('a'.to_int(), 'a'.to_int())] })),
+    Ok(
+      Set({
+        intervals: [('A'.to_int(), 'A'.to_int()), ('a'.to_int(), 'a'.to_int())],
+      }),
+    ),
   )
 }
 
@@ -92,8 +98,12 @@ test "parse_pattern inline case-insensitive flag" {
 /// 锚点按多行 / 非多行选择断言类型。
 test "parse_pattern anchors depend on multiline flag" {
   assert_true(parse_pattern("^") == Ok(Assert(TextStart)))
-  assert_true(parse_pattern("^", flags=Flags::parse("m")) == Ok(Assert(LineStart)))
-  assert_true(parse_pattern("$", flags=Flags::parse("m")) == Ok(Assert(LineEnd)))
+  assert_true(
+    parse_pattern("^", flags=Flags::parse("m")) == Ok(Assert(LineStart)),
+  )
+  assert_true(
+    parse_pattern("$", flags=Flags::parse("m")) == Ok(Assert(LineEnd)),
+  )
 }
 
 ///|
@@ -106,12 +116,8 @@ test "parse_pattern word boundary and text anchors" {
 ///|
 /// 前瞻解析为 `Look`。
 test "parse_pattern lookahead" {
-  assert_true(
-    parse_pattern("(?=a)") == Ok(Look(positive=true, body=Lit('a'))),
-  )
-  assert_true(
-    parse_pattern("(?!a)") == Ok(Look(positive=false, body=Lit('a'))),
-  )
+  assert_true(parse_pattern("(?=a)") == Ok(Look(positive=true, body=Lit('a'))))
+  assert_true(parse_pattern("(?!a)") == Ok(Look(positive=false, body=Lit('a'))))
 }
 
 ///|

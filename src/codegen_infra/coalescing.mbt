@@ -154,7 +154,7 @@ pub fn coalesce(
   g : InterferenceGraph,
   moves : MoveSet,
   k : Int,
-  strategy~ : CoalesceStrategy = George,
+  strategy? : CoalesceStrategy = George,
 ) -> InterferenceGraph {
   let mut cur = g
   let rep : Map[Int, Int] = Map([])

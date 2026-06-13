@@ -23,7 +23,11 @@ test "build_dom_tree 排除不可达块" {
 /// 菱形 CFG：then/else/join 的直接支配者均为 entry；恰各一个 idom。
 test "build_dom_tree 菱形汇合各非入口节点恰有一个 idom" {
   let blocks = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },

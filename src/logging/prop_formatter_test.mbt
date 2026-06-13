@@ -24,10 +24,7 @@ test "Feature: logging, Property 4: formatter determinism (holds_for_all)" {
 ///|
 /// 三种格式器对同一事件产出各自确定的文本（具体见证）。
 test "format_event is deterministic per formatter (witness)" {
-  let e = Event::new(5L, Level::Info, {
-    "svc": VStr("api"),
-    "n": VInt(7L),
-  })
+  let e = Event::new(5L, Level::Info, { "svc": VStr("api"), "n": VInt(7L) })
   let j1 = format_event(Formatter::Json, e)
   let j2 = format_event(Formatter::Json, e)
   assert_eq(j1, j2)

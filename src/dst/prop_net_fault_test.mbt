@@ -31,7 +31,13 @@ fn p6_gen() -> @infra_pbt.Gen[(UInt64, DesScenario, Array[Int])] {
         ),
       )
     }
-    let sc = DesScenario::new(tasks, faults, [], replication_protocol(n), 4 * n + 20)
+    let sc = DesScenario::new(
+      tasks,
+      faults,
+      [],
+      replication_protocol(n),
+      4 * n + 20,
+    )
     (rng.next(), sc, groups)
   })
 }
@@ -46,7 +52,10 @@ test "Feature: dst, Property 6a: partition blocks all cross-group deliveries" {
     let r = run_des(seed, sc)
     for e in r.trace {
       match e {
-        EvDeliver(from~, to~, ..) => if groups[from] != groups[to] { return false }
+        EvDeliver(from~, to~, ..) =>
+          if groups[from] != groups[to] {
+            return false
+          }
         _ => ()
       }
     }

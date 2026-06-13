@@ -53,7 +53,7 @@ pub struct Program {
 
 ///|
 /// 把富语法树编译为 Pike VM 程序（R2.1）。
-pub fn compile_program(ast : Ast, flags~ : Flags = Flags::default()) -> Program {
+pub fn compile_program(ast : Ast, flags? : Flags = Flags::default()) -> Program {
   let insts : Array[Inst] = []
   insts.push(ISave(0))
   emit_node(insts, ast, flags)
@@ -101,7 +101,7 @@ fn emit_node(insts : Array[Inst], ast : Ast, flags : Flags) -> Unit {
     }
     Assert(kind) => insts.push(IAssert(kind))
     Look(positive~, body~) => {
-      let sub = compile_program(body, flags=flags)
+      let sub = compile_program(body, flags~)
       insts.push(ILook(positive~, prog=sub))
     }
   }

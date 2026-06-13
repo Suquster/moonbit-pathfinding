@@ -104,9 +104,12 @@ test "Feature: parser-combinator, Property 4: functor identity law" {
 /// **Validates: Requirements 2.2**
 test "Feature: parser-combinator, Property 5: functor composition law" {
   let gen = @infra_pbt.Gen::new(fn(rng) {
-    (gen_parser_int_at(rng, 3), gen_fun_int(rng), gen_fun_int(rng), gen_input_str(
-      rng,
-    ))
+    (
+      gen_parser_int_at(rng, 3),
+      gen_fun_int(rng),
+      gen_fun_int(rng),
+      gen_input_str(rng),
+    )
   })
   let ok = @infra_pbt.holds_for_all(gen, fn(quad) {
     let (p, f, g, s) = quad
@@ -161,9 +164,12 @@ test "Feature: parser-combinator, Property 7: monad right identity law" {
 /// **Validates: Requirements 2.5**
 test "Feature: parser-combinator, Property 8: monad associativity law" {
   let gen = @infra_pbt.Gen::new(fn(rng) {
-    (gen_parser_int_at(rng, 3), gen_fun_parser(rng), gen_fun_parser(rng), gen_input_str(
-      rng,
-    ))
+    (
+      gen_parser_int_at(rng, 3),
+      gen_fun_parser(rng),
+      gen_fun_parser(rng),
+      gen_input_str(rng),
+    )
   })
   let ok = @infra_pbt.holds_for_all(gen, fn(quad) {
     let (p, f, g, s) = quad

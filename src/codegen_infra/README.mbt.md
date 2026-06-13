@@ -291,7 +291,11 @@ test "README · analyze_liveness 驱动干涉图构造" {
 ///|
 test "README · build_dom_tree 与 dominance_frontier" {
   let blocks = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
@@ -321,7 +325,11 @@ test "README · build_dom_tree 与 dominance_frontier" {
 ///|
 test "README · build_ssa_minimal 菱形最小 φ 放置" {
   let diamond = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
@@ -345,7 +353,11 @@ oracle 验证：沿同一路径，析构前后输出一致。
 ///|
 test "README · destruct_ssa 消除 φ 且语义等价" {
   let diamond = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },

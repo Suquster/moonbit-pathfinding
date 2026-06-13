@@ -8,6 +8,8 @@
 //
 // paper-to-code：`LeftmostLongest` 追溯 POSIX 正则规范；`LeftmostFirst` 追溯
 // Perl/PCRE 的择一与量词优先级语义（Russ Cox 的 Pike VM 线程优先级实现）。
+
+///|
 pub(all) enum MatchKind {
   /// PCRE/Perl 最左优先：取首个按优先级成功的匹配。
   LeftmostFirst

@@ -62,10 +62,7 @@ test "Feature: parser-combinator, Property 22: commit transparency" {
   let ok = @infra_pbt.holds_for_all(g, fn(pair) {
     let (p, s) = pair
     let gram = lift(p)
-    gresult_eq(
-      commit(gram).run_naive_string(s),
-      gram.run_naive_string(s),
-    )
+    gresult_eq(commit(gram).run_naive_string(s), gram.run_naive_string(s))
   })
   assert_true(ok)
 }
@@ -90,6 +87,7 @@ test "recover synchronizes past sync point after a committed failure" {
   // 软失败（'(' 不匹配，未跨提交点）应原样透传为失败。
   match r.run_packrat_string("yyy") {
     Fail(_, ..) => assert_true(true)
-    Ok(_, _) => fail("soft failure before commit should pass through as failure")
+    Ok(_, _) =>
+      fail("soft failure before commit should pass through as failure")
   }
 }

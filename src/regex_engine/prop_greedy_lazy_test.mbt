@@ -99,7 +99,8 @@ test "Feature: regex-engine, Property 4: greedy/lazy length monotonicity" {
 ///|
 /// 代表性见证：贪婪 `a+` 取最长、惰性 `a+?` 取最短（LeftmostFirst）。
 test "greedy/lazy representative witnesses" {
-  match (
+  match
+    (
       Pattern::compile("a+", kind=LeftmostFirst),
       Pattern::compile("a+?", kind=LeftmostFirst),
     ) {
@@ -110,7 +111,8 @@ test "greedy/lazy representative witnesses" {
     _ => fail("compile failed for a+ / a+?")
   }
   // `a*` 贪婪取全部前导 'a'，`a*?` 惰性取空。
-  match (
+  match
+    (
       Pattern::compile("a*", kind=LeftmostFirst),
       Pattern::compile("a*?", kind=LeftmostFirst),
     ) {

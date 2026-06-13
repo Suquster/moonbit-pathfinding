@@ -222,7 +222,6 @@ fn World::apply_actions(
         }
       ActSend(to~, payload~, after~) => {
         let _ = self.schedule_send(actor_id, to, payload, after)
-
       }
     }
   }
@@ -265,7 +264,6 @@ fn World::do_deliver_step(self : World) -> Unit {
       match qe.pending {
         PDeliver(from~, to~, msg~) => {
           let _ = self.deliver(from, to, msg)
-
         }
         PWake(task_id~) => {
           let t = self.advance_clock()
@@ -526,11 +524,17 @@ fn reconstruct_finals(trace : Array[SimEvent]) -> Array[(Int, NodeApp)] {
 pub fn DesScenario::of_legacy(
   scenario : Scenario,
   protocol~ : Protocol,
-  invariants~ : Array[Invariant] = [],
+  invariants? : Array[Invariant] = [],
 ) -> DesScenario {
   let faults : Array[FaultPolicyEx] = []
   for p in scenario.faults {
     faults.push(FaultPolicyEx::of_legacy(p))
   }
-  { tasks: scenario.tasks, faults, invariants, protocol, max_steps: scenario.max_steps }
+  {
+    tasks: scenario.tasks,
+    faults,
+    invariants,
+    protocol,
+    max_steps: scenario.max_steps,
+  }
 }

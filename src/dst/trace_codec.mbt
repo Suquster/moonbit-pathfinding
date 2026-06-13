@@ -336,7 +336,12 @@ fn TokenReader::str(self : TokenReader) -> String? {
       let mut i = 0
       while i < n {
         match self.int() {
-          Some(code) => if code < 0 { return None } else { sb.write_char(code.unsafe_to_char()) }
+          Some(code) =>
+            if code < 0 {
+              return None
+            } else {
+              sb.write_char(code.unsafe_to_char())
+            }
           None => return None
         }
         i = i + 1
@@ -362,7 +367,8 @@ fn TokenReader::fault_kind(self : TokenReader) -> NetFaultKind? {
       match self.int() {
         Some(group) =>
           match self.int() {
-            Some(until_step) => Some(NetFaultKind::Partition(group~, until_step~))
+            Some(until_step) =>
+              Some(NetFaultKind::Partition(group~, until_step~))
             None => None
           }
         None => None
@@ -508,7 +514,8 @@ pub fn deserialize_result(s : String) -> Result[DesResult, CodecError] {
       } else {
         Err(Malformed(reason="多余的尾部记号", pos=r.pos))
       }
-    None => Err(Malformed(reason="非法或损坏的序列化文本", pos=r.pos))
+    None =>
+      Err(Malformed(reason="非法或损坏的序列化文本", pos=r.pos))
   }
 }
 

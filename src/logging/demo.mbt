@@ -59,7 +59,11 @@ pub fn run_demo() -> DemoOutcome {
   exit_span(root)
   let span_count = finished_spans().length()
   // 采样（rate=1.0 保留全部，保证 demo 输出确定且非空）+ 脱敏 + 双格式渲染。
-  let sampled = sample_stream(1.0, captured_events(), @infra_pbt.rng_new(2026UL))
+  let sampled = sample_stream(
+    1.0,
+    captured_events(),
+    @infra_pbt.rng_new(2026UL),
+  )
   let policy = RedactionPolicy::by_names(["password", "token"])
   let json_lines : Array[String] = []
   let logfmt_lines : Array[String] = []

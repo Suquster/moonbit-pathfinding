@@ -199,7 +199,8 @@ fn encode_json_value(
       Ok(n.to_int().to_string())
     (PInt64, TInt(n)) | (PSInt64, TInt(n)) | (PSFixed64, TInt(n)) =>
       Ok(json_escape(n.to_string()))
-    (PUInt32, TUInt(u)) | (PFixed32, TUInt(u)) => Ok((u & 0xFFFFFFFFUL).to_string())
+    (PUInt32, TUInt(u)) | (PFixed32, TUInt(u)) =>
+      Ok((u & 0xFFFFFFFFUL).to_string())
     (PUInt64, TUInt(u)) | (PFixed64, TUInt(u)) => Ok(json_escape(u.to_string()))
     (PBool, TBoolV(b)) => Ok(if b { "true" } else { "false" })
     (PEnum(_), TEnumV(e)) => Ok(e.to_string())
@@ -259,7 +260,8 @@ fn encode_json_message(
                     "]",
                   )
                 }
-              _ => return Err(InvalidWireType(offset=0, tag=f.number.to_uint64()))
+              _ =>
+                return Err(InvalidWireType(offset=0, tag=f.number.to_uint64()))
             }
           _ =>
             if proto_is_scalar(f.ptype) && typed_is_default(v) {
@@ -295,7 +297,8 @@ fn encode_json_message(
             "}",
           )
         }
-      Some(_) => return Err(InvalidWireType(offset=0, tag=mp.number.to_uint64()))
+      Some(_) =>
+        return Err(InvalidWireType(offset=0, tag=mp.number.to_uint64()))
     }
   }
   Ok("{" + json_join(parts) + "}")
@@ -544,7 +547,8 @@ fn decode_json_message(
 ) -> Result[TypedMessage, ParseError] {
   let pmsg = match schema.message(msg_name) {
     Some(m) => m
-    None => return Err(ParseError::new(0, 0, 0, "schema 中无消息 " + msg_name))
+    None =>
+      return Err(ParseError::new(0, 0, 0, "schema 中无消息 " + msg_name))
   }
   match j {
     @parser_combinator.JObject(members) => {

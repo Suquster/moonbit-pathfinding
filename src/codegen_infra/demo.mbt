@@ -25,7 +25,11 @@ pub(all) struct PipelineStages {
 ///   join:  y = x * 2; ret y
 pub fn demo_program() -> Array[BasicBlock] {
   [
-    { label: "entry", instrs: ["n = 3", "cbr p then else"], succs: ["then", "else"] },
+    {
+      label: "entry",
+      instrs: ["n = 3", "cbr p then else"],
+      succs: ["then", "else"],
+    },
     { label: "then", instrs: ["x = n + 1", "br join"], succs: ["join"] },
     { label: "else", instrs: ["x = n - 1", "br join"], succs: ["join"] },
     { label: "join", instrs: ["y = x * 2", "ret y"], succs: [] },

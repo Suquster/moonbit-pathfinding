@@ -67,7 +67,9 @@ test "packrat entry switches without modifying the grammar" {
 fn many1_grammar(_g : Grammar[Char]) -> Grammar[Array[Int]] {
   // 直接以 L0 many1 构造再 lift，聚焦验证引擎入口切换而非重写 many。
   lift(
-    map(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(chars) {
+    map(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(
+      chars,
+    ) {
       let acc : Array[Int] = []
       for c in chars {
         acc.push(c.to_int() - '0'.to_int())

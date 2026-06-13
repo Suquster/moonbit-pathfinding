@@ -10,10 +10,7 @@ test "Captures::group returns overall and sub-group spans, None for unset" {
   // slots: 组0=[0,5) 组1=[0,2) 组2=未设置(-1) 组3=[3,5)
   let names : Map[String, Int] = Map([])
   names["tail"] = 3
-  let caps : Captures = {
-    slots: [0, 5, 0, 2, -1, -1, 3, 5],
-    names,
-  }
+  let caps : Captures = { slots: [0, 5, 0, 2, -1, -1, 3, 5], names }
   assert_true(caps.group(0) == Some({ start: 0, end: 5 }))
   assert_true(caps.group(1) == Some({ start: 0, end: 2 }))
   // 第 2 组未参与匹配 → None（而非整体失败）。
@@ -40,10 +37,7 @@ test "Captures::name agrees with numbered group and None for unknown" {
   let names : Map[String, Int] = Map([])
   names["year"] = 1
   names["day"] = 2
-  let caps : Captures = {
-    slots: [0, 10, 0, 4, 6, 10],
-    names,
-  }
+  let caps : Captures = { slots: [0, 10, 0, 4, 6, 10], names }
   // 命名检索得到与编号检索一致的区间。
   assert_true(caps.name("year") == caps.group(1))
   assert_true(caps.name("year") == Some({ start: 0, end: 4 }))

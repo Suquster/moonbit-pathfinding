@@ -13,11 +13,25 @@
 /// 或缺失（跳过）。返回 (event, 是否数值)。
 fn mt_event(rng : @infra_pbt.Rng, i : Int) -> (Event, Bool) {
   match rng.next_below(5) {
-    0 => (Event::new(i.to_int64(), sh_level(rng), { "v": VInt(rng.next_range(-50, 50).to_int64()) }), true)
-    1 => (Event::new(i.to_int64(), sh_level(rng), { "v": VFloat(sh_float(rng)) }), true)
+    0 =>
+      (
+        Event::new(i.to_int64(), sh_level(rng), {
+          "v": VInt(rng.next_range(-50, 50).to_int64()),
+        }),
+        true,
+      )
+    1 =>
+      (
+        Event::new(i.to_int64(), sh_level(rng), { "v": VFloat(sh_float(rng)) }),
+        true,
+      )
     2 => (Event::new(i.to_int64(), sh_level(rng), { "v": VStr("x") }), false) // 非数值
     3 => (Event::new(i.to_int64(), sh_level(rng), { "other": VInt(1L) }), false) // 缺字段
-    _ => (Event::new(i.to_int64(), sh_level(rng), { "v": VList([VInt(1L)]) }), false) // 嵌套非数值
+    _ =>
+      (
+        Event::new(i.to_int64(), sh_level(rng), { "v": VList([VInt(1L)]) }),
+        false,
+      ) // 嵌套非数值
   }
 }
 

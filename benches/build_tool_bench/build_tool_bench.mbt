@@ -60,10 +60,12 @@ fn layered_grid(layers : Int, width : Int) -> @bt.BuildGraph {
   for l in 0..<(layers - 1) {
     for w1 in 0..<width {
       for w2 in 0..<width {
-        edges.push((
-          @bt.Target::new("L" + l.to_string() + "_W" + w1.to_string()),
-          @bt.Target::new("L" + (l + 1).to_string() + "_W" + w2.to_string()),
-        ))
+        edges.push(
+          (
+            @bt.Target::new("L" + l.to_string() + "_W" + w1.to_string()),
+            @bt.Target::new("L" + (l + 1).to_string() + "_W" + w2.to_string()),
+          ),
+        )
       }
     }
   }
@@ -229,7 +231,9 @@ test "bench: dirty_targets on a large cache" (b : @bench.T) {
   let g = layered_grid(40, 20)
   let cache = build_clean_cache(g)
   dirty_every(cache, g, 4)
-  b.bench(name="bt_dirty_targets_800", fn() { b.keep(@bt.dirty_targets(g, cache)) })
+  b.bench(name="bt_dirty_targets_800", fn() {
+    b.keep(@bt.dirty_targets(g, cache))
+  })
 }
 
 ///|

@@ -46,8 +46,9 @@ test "compat: primitives unchanged" {
 /// 组合子签名与行为不变：seq / many / many1 / optional。
 test "compat: combinators seq/many/many1/optional unchanged" {
   // seq 产出二元组
-  assert_true(seq(pchar('a'), pchar('b')).parse_string("abc").value() ==
-    Some(('a', 'b')))
+  assert_true(
+    seq(pchar('a'), pchar('b')).parse_string("abc").value() == Some(('a', 'b')),
+  )
   // many 零次成功
   let empty : Array[Char] = []
   assert_true(many(pchar('a')).parse_string("bbb").value() == Some(empty))
@@ -61,8 +62,10 @@ test "compat: combinators seq/many/many1/optional unchanged" {
 /// alt 成功路径不变 + 同位置全失败退化为既有顺序汇总（R14.2）。
 test "compat: alt success path and same-position aggregation unchanged" {
   // 成功路径：首个成功分支
-  assert_true(alt([pchar('a'), pchar('b'), pchar('c')]).parse_string("bzz").value() ==
-    Some('b'))
+  assert_true(
+    alt([pchar('a'), pchar('b'), pchar('c')]).parse_string("bzz").value() ==
+    Some('b'),
+  )
   // 同位置全失败：期望按分支顺序去重汇总（与 0.1.0 一致）
   match alt([pchar('a'), pchar('b')]).parse_string("zzz") {
     Fail(pos, expected~) => {

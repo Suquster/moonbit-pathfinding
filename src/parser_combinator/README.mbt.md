@@ -184,11 +184,14 @@ test "README · 衍生组合子 sep_by / between / chainl1" {
     n
   })
   // sep_by：以逗号分隔收集数字
-  assert_true(sep_by(number, pchar(',')).parse_string("1,2,3").value() ==
-    Some([1, 2, 3]))
+  assert_true(
+    sep_by(number, pchar(',')).parse_string("1,2,3").value() == Some([1, 2, 3]),
+  )
   // between：仅产出括号内主体
-  assert_true(between(pchar('('), number, pchar(')')).parse_string("(42)").value() ==
-    Some(42))
+  assert_true(
+    between(pchar('('), number, pchar(')')).parse_string("(42)").value() ==
+    Some(42),
+  )
   // chainl1：左结合减法 8-3-2 == (8-3)-2 == 3
   let sub = map(pchar('-'), fn(_c) { fn(a : Int, b : Int) -> Int { a - b } })
   assert_true(chainl1(number, sub).parse_string("8-3-2").value() == Some(3))

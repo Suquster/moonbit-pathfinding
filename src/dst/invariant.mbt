@@ -36,7 +36,9 @@ pub fn Invariant::new(name : String, check : (World) -> Bool) -> Invariant {
 pub fn eval_invariants(world : World) -> String? {
   for inv in world.invariants {
     if !(inv.check)(world) {
-      return Some("不变量 \{inv.name} 于逻辑时间 \{world.clock} 被违反")
+      return Some(
+        "不变量 \{inv.name} 于逻辑时间 \{world.clock} 被违反",
+      )
     }
   }
   None

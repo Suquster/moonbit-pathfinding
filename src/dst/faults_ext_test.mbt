@@ -88,7 +88,10 @@ test "of_legacy bridges Crash/Delay/Drop equivalently to legacy run" {
     16,
   )
   let legacy = run(42, scenario)
-  let des = run_des(42, DesScenario::of_legacy(scenario, protocol=null_protocol()))
+  let des = run_des(
+    42,
+    DesScenario::of_legacy(scenario, protocol=null_protocol()),
+  )
   assert_eq(des_scheduled_ids(des.trace), legacy_scheduled_ids(legacy.trace))
   // 崩溃使两条流水线终态同为 Failed。
   let leg_failed = match legacy.status {
@@ -106,6 +109,9 @@ test "of_legacy bridges Crash/Delay/Drop equivalently to legacy run" {
 /// NetFaultKind::of_legacy 的逐项映射见证。
 test "NetFaultKind::of_legacy maps each legacy kind" {
   assert_eq(NetFaultKind::of_legacy(FaultKind::Crash), NetFaultKind::Crash)
-  assert_eq(NetFaultKind::of_legacy(FaultKind::Delay), NetFaultKind::Delay(by=1UL))
+  assert_eq(
+    NetFaultKind::of_legacy(FaultKind::Delay),
+    NetFaultKind::Delay(by=1UL),
+  )
   assert_eq(NetFaultKind::of_legacy(FaultKind::Drop), NetFaultKind::Drop)
 }

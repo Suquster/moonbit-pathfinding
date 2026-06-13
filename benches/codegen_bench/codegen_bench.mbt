@@ -175,7 +175,7 @@ test "bench: minimal SSA construction on large CFG" (b : @bench.T) {
 ///|
 /// 基准：大规模干涉图 Chaitin-Briggs 图着色分配。
 test "bench: graph coloring allocation on large interference graph" (
-  b : @bench.T
+  b : @bench.T,
 ) {
   let rng = @pbt.rng_new(0xC010_1234)
   let g = make_interference(rng, 256)

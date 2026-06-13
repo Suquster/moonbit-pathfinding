@@ -73,7 +73,9 @@ test "encode_json renders bytes as base64 and round-trips" {
 ///|
 /// base64 编解码自洽（具体见证）。
 test "base64 encode/decode round-trips" {
-  let cases : Array[Bytes] = [b"", b"f", b"fo", b"foo", b"foob", b"\x00\xff\x10"]
+  let cases : Array[Bytes] = [
+    b"", b"f", b"fo", b"foo", b"foob", b"\x00\xff\x10",
+  ]
   for c in cases {
     let enc = base64_encode(c)
     match base64_decode(enc) {

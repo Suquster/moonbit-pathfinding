@@ -34,7 +34,10 @@ test "value depth of empty and single-level nesting is one" {
   assert_eq(Value::VMap(empty_map).depth(), 1)
   let empty_list : Array[Value] = []
   assert_eq(Value::VList(empty_list).depth(), 1)
-  assert_eq(Value::VMap({ "a": Value::VInt(1L), "b": Value::VStr("x") }).depth(), 1)
+  assert_eq(
+    Value::VMap({ "a": Value::VInt(1L), "b": Value::VStr("x") }).depth(),
+    1,
+  )
   assert_eq(Value::VList([Value::VInt(1L), Value::VBool(true)]).depth(), 1)
 }
 

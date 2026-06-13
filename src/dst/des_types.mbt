@@ -138,11 +138,11 @@ pub fn Protocol::new(
 /// 用于「无消息、仅遗留故障」的 `DesScenario::of_legacy` 提升场景，使 DES 调度
 /// 退化为与既有 `run` 等价的纯任务调度，支撑两条流水线的差分一致性验证（P1）。
 pub fn null_protocol() -> Protocol {
-  Protocol::new(
-    fn(_id) { NodeApp::empty() },
-    fn(app, _msg) { (app, []) },
-    fn(_id) { [] },
-  )
+  Protocol::new(fn(_id) { NodeApp::empty() }, fn(app, _msg) { (app, []) }, fn(
+    _id,
+  ) {
+    []
+  })
 }
 
 ///|

@@ -221,7 +221,6 @@ test "topo_order returns a cycle with node sequence on cyclic graph" {
   }
 }
 
-
 // ─────────────────── 既有 API 向后兼容回归（任务 11.5） ───────────────────
 //
 // 校验旗舰深化后既有公开契约（parse_rules / detect_cycle / topo_order /

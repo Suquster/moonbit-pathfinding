@@ -22,7 +22,11 @@ test "sequentialize_parallel_copy 破环引入临时" {
 /// 析构后不含任何 φ，且沿路径解释执行与原 SSA 一致。
 test "destruct_ssa 消除全部 φ 且语义一致" {
   let diamond = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },

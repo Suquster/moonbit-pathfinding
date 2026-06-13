@@ -151,8 +151,14 @@ fn proto_is_numeric_scalar(t : ProtoType) -> Bool {
 /// 该 proto 类型在 wire 上的类别。
 fn proto_wire_type(t : ProtoType) -> WireType {
   match t {
-    PInt32 | PInt64 | PUInt32 | PUInt64 | PSInt32 | PSInt64 | PBool | PEnum(_) =>
-      Varint
+    PInt32
+    | PInt64
+    | PUInt32
+    | PUInt64
+    | PSInt32
+    | PSInt64
+    | PBool
+    | PEnum(_) => Varint
     PFixed32 | PSFixed32 | PFloat => I32
     PFixed64 | PSFixed64 | PDouble => I64
     PString | PBytes | PMessage(_) => Len
@@ -318,7 +324,10 @@ fn typed_encode_field(
             // proto3：空 packed 视为默认，省略不写。
             if buf.length() > 0 {
               entries.push(
-                FieldEntry::new(f.number, FieldValue::VBytes(Bytes::from_array(buf))),
+                FieldEntry::new(
+                  f.number,
+                  FieldValue::VBytes(Bytes::from_array(buf)),
+                ),
               )
             }
             Ok(())
@@ -445,7 +454,8 @@ fn typed_interpret_scalar(
   fv : FieldValue,
 ) -> Result[TypedValue, DecodeError] {
   match (t, fv) {
-    (PInt32, VVarint(u)) => Ok(TInt(u.to_uint().reinterpret_as_int().to_int64()))
+    (PInt32, VVarint(u)) =>
+      Ok(TInt(u.to_uint().reinterpret_as_int().to_int64()))
     (PInt64, VVarint(u)) => Ok(TInt(u.reinterpret_as_int64()))
     (PUInt32, VVarint(u)) => Ok(TUInt(u & 0xFFFFFFFFUL))
     (PUInt64, VVarint(u)) => Ok(TUInt(u))
@@ -529,7 +539,8 @@ fn typed_append_list(
   more : Array[TypedValue],
 ) -> Unit {
   match fields.get(number) {
-    Some(TList(existing)) => for x in more {
+    Some(TList(existing)) =>
+      for x in more {
         existing.push(x)
       }
     _ => {

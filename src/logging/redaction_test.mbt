@@ -10,10 +10,7 @@ test "redact masks nested values wholesale" {
     "cvv": VInt(123L),
     "meta": VList([VStr("a"), VStr("b")]),
   })
-  let e = Event::new(1L, Level::Info, {
-    "secret": nested,
-    "public": VStr("ok"),
-  })
+  let e = Event::new(1L, Level::Info, { "secret": nested, "public": VStr("ok") })
   let policy = RedactionPolicy::by_names(["secret"])
   let red = redact(policy, e)
   // 敏感字段整体替换为掩码（不再是 VMap）。

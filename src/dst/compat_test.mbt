@@ -9,7 +9,11 @@
 /// 既有 run 同种子确定、崩溃失败、可重放复现，三性质同时保持。
 test "compat: legacy run is deterministic, fails on crash, and replays" {
   let tasks = [Task::new(0, "a"), Task::new(1, "b"), Task::new(2, "c")]
-  let scenario = Scenario::new(tasks, [FaultPolicy::new(0, 1, FaultKind::Crash)], 16)
+  let scenario = Scenario::new(
+    tasks,
+    [FaultPolicy::new(0, 1, FaultKind::Crash)],
+    16,
+  )
   let a = run(0xABCD, scenario)
   let b = run(0xABCD, scenario)
   assert_eq(a, b)

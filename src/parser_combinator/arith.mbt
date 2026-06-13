@@ -23,14 +23,18 @@ pub(all) enum Expr {
 ///|
 /// 跳过零个或多个空白（空格 / 制表）。
 fn arith_ws() -> Parser[Unit] {
-  map(many(satisfy(fn(c) { c == ' ' || c == '\t' }, label="空白")), fn(_u) { () })
+  map(many(satisfy(fn(c) { c == ' ' || c == '\t' }, label="空白")), fn(_u) {
+    ()
+  })
 }
 
 ///|
 /// 数字（非负，可选小数）→ `Num(Double)`（已跳过前导空白）。
 fn arith_number() -> Parser[Expr] {
   bind(arith_ws(), fn(_u) {
-    bind(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(intd) {
+    bind(many1(satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")), fn(
+      intd,
+    ) {
       bind(
         optional(
           seq(
@@ -78,7 +82,9 @@ fn arith_base() -> Parser[Expr] {
 ///|
 /// `^` 运算符（右结合）→ 二元构造函数。
 fn arith_pow_op() -> Parser[(Expr, Expr) -> Expr] {
-  map(arith_lex_char('^'), fn(_c) { fn(a : Expr, b : Expr) -> Expr { Pow(a, b) } })
+  map(arith_lex_char('^'), fn(_c) {
+    fn(a : Expr, b : Expr) -> Expr { Pow(a, b) }
+  })
 }
 
 ///|
@@ -205,7 +211,8 @@ pub fn parse_and_eval(src : String) -> Result[Double, @core.PathError] {
     Fail(_, ..) as f =>
       match f.to_path_error() {
         Some(e) => Err(e)
-        None => Err(@core.PathError::InvalidInput("算术表达式解析失败"))
+        None =>
+          Err(@core.PathError::InvalidInput("算术表达式解析失败"))
       }
   }
 }

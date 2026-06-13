@@ -92,12 +92,12 @@ fn is_inline_ws(c : Char) -> Bool {
 /// 允许 `%`（模式）、`$` / `(` / `)`（变量引用）、`.` / `/` / `-` 等路径字符。
 fn is_grammar_name_char(c : Char) -> Bool {
   !(c == ' ' ||
-    c == '\t' ||
-    c == '\r' ||
-    c == '\n' ||
-    c == ':' ||
-    c == '#' ||
-    c == '=')
+  c == '\t' ||
+  c == '\r' ||
+  c == '\n' ||
+  c == ':' ||
+  c == '#' ||
+  c == '=')
 }
 
 ///|
@@ -273,7 +273,11 @@ fn pattern_stem(pattern : String, target : String) -> String? {
       return None
     }
   }
-  Some(chars_to_string(slice_chars(t, prefix.length(), t.length() - suffix.length())))
+  Some(
+    chars_to_string(
+      slice_chars(t, prefix.length(), t.length() - suffix.length()),
+    ),
+  )
 }
 
 ///|
@@ -516,7 +520,10 @@ pub fn parse_rules_full_with_includes(
     if is_phony_line(line) {
       let c = first_index_char(line, ':')
       let names = parse_names(
-        expand_vars(chars_to_string(slice_chars(line, c + 1, line_len)), variables),
+        expand_vars(
+          chars_to_string(slice_chars(line, c + 1, line_len)),
+          variables,
+        ),
       )
       for nm in names {
         if !list_contains(phony, nm) {
@@ -594,9 +601,7 @@ pub fn parse_rules_full_with_includes(
     let recipe_lines : Array[String] = []
     let mut k = idx + 1
     let mut off2 = offset + line_len + 1
-    while k < lines.length() &&
-          lines[k].length() > 0 &&
-          lines[k][0] == '\t' {
+    while k < lines.length() && lines[k].length() > 0 && lines[k][0] == '\t' {
       let rline = lines[k]
       let raw = chars_to_string(slice_chars(rline, 1, rline.length()))
       recipe_lines.push(expand_vars(raw, variables))

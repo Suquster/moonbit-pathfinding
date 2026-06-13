@@ -72,8 +72,12 @@ test "env filter threshold and allows (witness)" {
     }
   }
   // http 阈值 Warn：Info 事件被丢弃，Error 被保留。
-  assert_false(f.allows(Event::new(0L, Level::Info, { "target": VStr("http") })))
-  assert_true(f.allows(Event::new(0L, Level::Error, { "target": VStr("http") })))
+  assert_false(
+    f.allows(Event::new(0L, Level::Info, { "target": VStr("http") })),
+  )
+  assert_true(
+    f.allows(Event::new(0L, Level::Error, { "target": VStr("http") })),
+  )
   // db 阈值 Debug：Debug 被保留。
   assert_true(f.allows(Event::new(0L, Level::Debug, { "target": VStr("db") })))
   // 未登记 target 走兜底 Info：Debug 丢弃、Info 保留。

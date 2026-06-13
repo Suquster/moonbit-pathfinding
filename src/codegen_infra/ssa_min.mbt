@@ -229,7 +229,12 @@ pub fn build_ssa_minimal(
           for pair in row {
             let (v, did) = pair
             let val = match stacks.get(v) {
-              Some(st) => if st.length() > 0 { st[st.length() - 1] } else { first_def.get(v).unwrap_or(did) }
+              Some(st) =>
+                if st.length() > 0 {
+                  st[st.length() - 1]
+                } else {
+                  first_def.get(v).unwrap_or(did)
+                }
               None => first_def.get(v).unwrap_or(did)
             }
             match phi_args.get((s, v)) {

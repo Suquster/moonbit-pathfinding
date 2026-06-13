@@ -22,7 +22,11 @@ fn t_str_arr_eq(a : Array[String], b : Array[String]) -> Bool {
 /// 菱形汇合的版本化重命名见证：then→x#0、else→x#1、join 处 φ(x#0,x#1)→x#2。
 test "build_ssa_minimal 菱形汇合版本化重命名见证" {
   let diamond = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
@@ -39,7 +43,11 @@ test "build_ssa_minimal 菱形汇合版本化重命名见证" {
 /// 向后兼容（菱形）：build_ssa_minimal 与 build_ssa 的 φ 数 / 文本 / 块结构一致。
 test "build_ssa_minimal 与 build_ssa 在菱形上逐字段一致" {
   let diamond = [
-    BasicBlock::{ label: "entry", instrs: ["cbr p then else"], succs: ["then", "else"] },
+    BasicBlock::{
+      label: "entry",
+      instrs: ["cbr p then else"],
+      succs: ["then", "else"],
+    },
     BasicBlock::{ label: "then", instrs: ["x = 1", "br join"], succs: ["join"] },
     BasicBlock::{ label: "else", instrs: ["x = 2", "br join"], succs: ["join"] },
     BasicBlock::{ label: "join", instrs: ["ret x"], succs: [] },
@@ -60,7 +68,11 @@ test "build_ssa_minimal 与 build_ssa 在菱形上逐字段一致" {
 /// 向后兼容（直线代码）：无 φ，定义左值与右值使用版本化文本一致。
 test "build_ssa_minimal 与 build_ssa 在直线代码上一致" {
   let straight = [
-    BasicBlock::{ label: "b0", instrs: ["x = 1", "y = x + 2", "ret y"], succs: [] },
+    BasicBlock::{
+      label: "b0",
+      instrs: ["x = 1", "y = x + 2", "ret y"],
+      succs: [],
+    },
   ]
   let bs = build_ssa(straight)
   let bm = build_ssa_minimal(straight, entry="b0")

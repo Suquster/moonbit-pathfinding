@@ -15,7 +15,13 @@ fn p3_gen() -> @infra_pbt.Gen[(UInt64, DesScenario)] {
     for i in 0..<n {
       tasks.push(Task::new(i, "r\{i}"))
     }
-    let sc = DesScenario::new(tasks, [], [], replication_protocol(n), 4 * n + 16)
+    let sc = DesScenario::new(
+      tasks,
+      [],
+      [],
+      replication_protocol(n),
+      4 * n + 16,
+    )
     (rng.next(), sc)
   })
 }

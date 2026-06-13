@@ -27,9 +27,30 @@ fn sh_level(rng : @infra_pbt.Rng) -> Level {
 /// 随机字符串（长度 0~6）：取自含命名转义、`\u00XX` 控制字符的 ASCII 字母表。
 fn sh_string(rng : @infra_pbt.Rng) -> String {
   let alphabet : Array[Char] = [
-    'a', 'b', 'z', 'A', 'M', 'Z', '0', '9', ' ', '/', ':', '{', '}', '[', ']',
-    '"', '\\', '\n', '\r', '\t', (0x08).unsafe_to_char(), (0x0C).unsafe_to_char(),
-    (0x01).unsafe_to_char(), (0x1F).unsafe_to_char(),
+    'a',
+    'b',
+    'z',
+    'A',
+    'M',
+    'Z',
+    '0',
+    '9',
+    ' ',
+    '/',
+    ':',
+    '{',
+    '}',
+    '[',
+    ']',
+    '"',
+    '\\',
+    '\n',
+    '\r',
+    '\t',
+    (0x08).unsafe_to_char(),
+    (0x0C).unsafe_to_char(),
+    (0x01).unsafe_to_char(),
+    (0x1F).unsafe_to_char(),
   ]
   let n = rng.next_range(0, 6)
   let mut s = ""

@@ -32,7 +32,11 @@ fn p1_gen() -> @infra_pbt.Gen[(UInt64, Scenario)] {
     let faults : Array[FaultPolicy] = []
     for _ in 0..<fc {
       faults.push(
-        FaultPolicy::new(rng.next_range(0, tc), rng.next_below(tc), p1_fault_kind(rng)),
+        FaultPolicy::new(
+          rng.next_range(0, tc),
+          rng.next_below(tc),
+          p1_fault_kind(rng),
+        ),
       )
     }
     let ms = rng.next_range(tc, tc + 8)

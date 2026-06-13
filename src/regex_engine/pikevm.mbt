@@ -211,8 +211,8 @@ fn pick_longest(cur : Array[Int]?, cand : Array[Int]) -> Array[Int]? {
 pub fn Program::exec(
   self : Program,
   input : String,
-  start~ : Int = 0,
-  kind~ : MatchKind = LeftmostLongest,
+  start? : Int = 0,
+  kind? : MatchKind = LeftmostLongest,
 ) -> Captures? {
   let chars = input.iter().to_array()
   let n = chars.length()
@@ -285,7 +285,6 @@ pub fn Program::is_match(self : Program, input : String) -> Bool {
     None => false
   }
 }
-
 
 ///|
 /// 基准 / 复杂度 guard 用：返回 Pike VM 在 `input` 上自位置 0 起执行的**线程

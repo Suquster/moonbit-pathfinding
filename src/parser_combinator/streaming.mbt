@@ -76,7 +76,10 @@ fn[T] pc_stream_eval(g : Grammar[T], src : StreamSource) -> Step[T] {
 ///
 /// 在已到达数据上推进解析（R10.1）；数据不足且未结束时返回 `NeedMore` 续延
 /// （R10.2）。
-pub fn[T] Grammar::run_incremental(self : Grammar[T], initial : String) -> Step[T] {
+pub fn[T] Grammar::run_incremental(
+  self : Grammar[T],
+  initial : String,
+) -> Step[T] {
   let src : StreamSource = { chunks: initial.iter().to_array(), closed: false }
   pc_stream_eval(self, src)
 }
@@ -112,6 +115,7 @@ pub fn[T] drive(
   // 理论不可达：极端情况下以一次性求值兜底。
   match cur {
     Done(r) => r
-    NeedMore(_) => ParseResult::Fail(Pos::start(), expected=["流式解析未收敛"])
+    NeedMore(_) =>
+      ParseResult::Fail(Pos::start(), expected=["流式解析未收敛"])
   }
 }

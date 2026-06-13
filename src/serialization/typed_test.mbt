@@ -10,7 +10,9 @@ fn tt_scalar_schema(t : ProtoType) -> ProtoSchema {
     messages: [
       {
         name: "M",
-        fields: [{ name: "x", number: 1, ptype: t, label: LSingular, options: [] }],
+        fields: [
+          { name: "x", number: 1, ptype: t, label: LSingular, options: [] },
+        ],
         maps: [],
         oneofs: [],
         reserved_numbers: [],
@@ -58,7 +60,13 @@ test "encode_typed/decode_typed handle nested messages recursively" {
       {
         name: "M",
         fields: [
-          { name: "child", number: 1, ptype: PMessage("Inner"), label: LSingular, options: [] },
+          {
+            name: "child",
+            number: 1,
+            ptype: PMessage("Inner"),
+            label: LSingular,
+            options: [],
+          },
         ],
         maps: [],
         oneofs: [],
@@ -71,7 +79,13 @@ test "encode_typed/decode_typed handle nested messages recursively" {
         name: "Inner",
         fields: [
           { name: "a", number: 1, ptype: PInt32, label: LSingular, options: [] },
-          { name: "b", number: 2, ptype: PString, label: LSingular, options: [] },
+          {
+            name: "b",
+            number: 2,
+            ptype: PString,
+            label: LSingular,
+            options: [],
+          },
         ],
         maps: [],
         oneofs: [],

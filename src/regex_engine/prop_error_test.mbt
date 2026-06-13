@@ -161,7 +161,6 @@ test "Feature: moonbit-infra-suite, Property 6: generator only emits illegal str
   assert_true(all_illegal)
 }
 
-
 // ---------------------------------------------------------------------------
 // Property 10（旗舰深化）：非法表达式错误条件（`parse_pattern`）
 //
@@ -202,8 +201,15 @@ fn gen_illegal_pattern() -> @infra_pbt.Gen[String] {
       // 旗舰新增：重复组名。
       8 => {
         let nm = gen_safe_letters(rng, 1, 2)
-        "(?<" + nm + ">" + gen_safe_letters(rng, 0, 2) + ")(?<" + nm + ">" +
-        gen_safe_letters(rng, 0, 2) + ")"
+        "(?<" +
+        nm +
+        ">" +
+        gen_safe_letters(rng, 0, 2) +
+        ")(?<" +
+        nm +
+        ">" +
+        gen_safe_letters(rng, 0, 2) +
+        ")"
       }
       // 旗舰新增：后瞻（不支持）。
       _ => {

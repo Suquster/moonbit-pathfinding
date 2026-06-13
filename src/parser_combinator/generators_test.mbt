@@ -52,7 +52,8 @@ fn gen_parser_int_at(rng : @infra_pbt.Rng, depth : Int) -> Parser[Int] {
           ),
           fn(pair) { pair.0 + pair.1 },
         )
-      _ => map(many(gen_parser_int_at(rng, depth - 1)), fn(arr) { arr.length() })
+      _ =>
+        map(many(gen_parser_int_at(rng, depth - 1)), fn(arr) { arr.length() })
     }
   }
 }
@@ -120,7 +121,6 @@ fn presult_eq(a : ParseResult[Int], b : ParseResult[Int]) -> Bool {
     _ => false
   }
 }
-
 
 ///|
 /// 在给定剩余深度下采样一个引擎层富解析器 `Grammar[Int]`。

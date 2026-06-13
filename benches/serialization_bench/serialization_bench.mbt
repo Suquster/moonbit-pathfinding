@@ -37,9 +37,10 @@ fn schema_of(src : String) -> @ser.ProtoSchema {
 /// varint 密集：repeated int32（packed）。
 fn varint_schema() -> @ser.ProtoSchema {
   schema_of(
-    #|syntax = "proto3";
-    #|message M { repeated int32 xs = 1; }
-    ,
+    (
+      #|syntax = "proto3";
+      #|message M { repeated int32 xs = 1; }
+    ),
   )
 }
 
@@ -48,15 +49,17 @@ fn varint_schema() -> @ser.ProtoSchema {
 fn repeated_schema(packed : Bool) -> @ser.ProtoSchema {
   if packed {
     schema_of(
-      #|syntax = "proto3";
-      #|message M { repeated int64 xs = 1; }
-      ,
+      (
+        #|syntax = "proto3";
+        #|message M { repeated int64 xs = 1; }
+      ),
     )
   } else {
     schema_of(
-      #|syntax = "proto3";
-      #|message M { repeated int64 xs = 1 [packed = false]; }
-      ,
+      (
+        #|syntax = "proto3";
+        #|message M { repeated int64 xs = 1 [packed = false]; }
+      ),
     )
   }
 }
@@ -65,9 +68,10 @@ fn repeated_schema(packed : Bool) -> @ser.ProtoSchema {
 /// 嵌套深度：Node{ v; next }。
 fn nest_schema() -> @ser.ProtoSchema {
   schema_of(
-    #|syntax = "proto3";
-    #|message Node { int32 v = 1; Node next = 2; }
-    ,
+    (
+      #|syntax = "proto3";
+      #|message Node { int32 v = 1; Node next = 2; }
+    ),
   )
 }
 
@@ -75,9 +79,10 @@ fn nest_schema() -> @ser.ProtoSchema {
 /// 字符串密集：repeated string。
 fn string_schema() -> @ser.ProtoSchema {
   schema_of(
-    #|syntax = "proto3";
-    #|message S { repeated string ss = 1; }
-    ,
+    (
+      #|syntax = "proto3";
+      #|message S { repeated string ss = 1; }
+    ),
   )
 }
 

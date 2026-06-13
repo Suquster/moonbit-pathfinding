@@ -156,7 +156,12 @@ pub fn serialize_cache(cache : BuildCache) -> String {
   }
   out = out + "# recorded_hashes\n"
   for name in sorted_keys_str(cache.recorded_hashes) {
-    out = out + "H " + name + " " + cache.recorded_hashes.get(name).unwrap_or("") + "\n"
+    out = out +
+      "H " +
+      name +
+      " " +
+      cache.recorded_hashes.get(name).unwrap_or("") +
+      "\n"
   }
   out = out + "# current_mtimes\n"
   for name in sorted_keys_i64(cache.current_mtimes) {
@@ -169,7 +174,12 @@ pub fn serialize_cache(cache : BuildCache) -> String {
   }
   out = out + "# current_hashes\n"
   for name in sorted_keys_str(cache.current_hashes) {
-    out = out + "h " + name + " " + cache.current_hashes.get(name).unwrap_or("") + "\n"
+    out = out +
+      "h " +
+      name +
+      " " +
+      cache.current_hashes.get(name).unwrap_or("") +
+      "\n"
   }
   out
 }
@@ -251,7 +261,10 @@ pub fn deserialize_cache(text : String) -> Result[BuildCache, ParseError] {
         }
       "H" => cache.recorded_hashes[name] = value
       "h" => cache.current_hashes[name] = value
-      _ => return Err(ParseError::new("未知缓存段标记 '" + marker + "'", line_no))
+      _ =>
+        return Err(
+          ParseError::new("未知缓存段标记 '" + marker + "'", line_no),
+        )
     }
   }
   Ok(cache)

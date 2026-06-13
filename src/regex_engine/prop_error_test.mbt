@@ -160,3 +160,106 @@ test "Feature: moonbit-infra-suite, Property 6: generator only emits illegal str
   })
   assert_true(all_illegal)
 }
+
+
+// ---------------------------------------------------------------------------
+// Property 10（旗舰深化）：非法表达式错误条件（`parse_pattern`）
+//
+// 在既有 Property 6（`parse_regex`）之上扩展：对生成器产出的语法非法模式
+// （含重复组名、反向引用、后瞻等不支持构造）校验 `parse_pattern` 返回携带
+// 合法字符偏移的解析错误，且不构造任何程序 / 自动机（≥100 迭代）。
+//
+// **Validates: Requirements 1.7, 2.3**
+// ---------------------------------------------------------------------------
+
+///|
+/// 确定性「语法非法模式字符串」生成器（面向 `parse_pattern`）。
+///
+/// 在 10 个互斥非法类别间按随机源选择，每个都对 pattern_parser.mbt 文法保证
+/// 非法：既有 7 类结构错误，外加重复组名、反向引用、后瞻三类旗舰新增构造。
+fn gen_illegal_pattern() -> @infra_pbt.Gen[String] {
+  @infra_pbt.Gen::new(fn(rng) {
+    match rng.next_below(10) {
+      0 => "(" + gen_safe_letters(rng, 1, 4) // 未闭合分组
+      1 => "[" + gen_safe_letters(rng, 1, 4) // 未闭合字符类
+      2 => {
+        let quants = ['*', '+', '?', '{']
+        let q = quants[rng.next_below(quants.length())]
+        "\{q}" + gen_safe_letters(rng, 0, 3) // 前导悬空量词
+      }
+      3 => gen_safe_letters(rng, 0, 4) + ")" // 多余右括号
+      4 => gen_safe_letters(rng, 0, 4) + "\\" // 末尾悬空转义
+      5 => {
+        let stray = if rng.next_bool() { "]" } else { "}" }
+        gen_safe_letters(rng, 0, 3) + stray // 杂散闭合元字符
+      }
+      6 => {
+        let body = if rng.next_bool() { "{}" } else { "{" }
+        gen_safe_letters(rng, 1, 2) + body // 非法计数量词
+      }
+      // 旗舰新增：反向引用（不支持）。
+      7 => gen_safe_letters(rng, 0, 2) + "\\" + "\{rng.next_range(1, 9)}"
+      // 旗舰新增：重复组名。
+      8 => {
+        let nm = gen_safe_letters(rng, 1, 2)
+        "(?<" + nm + ">" + gen_safe_letters(rng, 0, 2) + ")(?<" + nm + ">" +
+        gen_safe_letters(rng, 0, 2) + ")"
+      }
+      // 旗舰新增：后瞻（不支持）。
+      _ => {
+        let kind = if rng.next_bool() { "=" } else { "!" }
+        "(?<" + kind + gen_safe_letters(rng, 1, 3) + ")"
+      }
+    }
+  })
+}
+
+///|
+/// 模拟流水线：仅当 `parse_pattern` 成功才编译程序。返回构造的程序数：
+///   * `Err` → 0（解析失败，不构造任何程序）；
+///   * `Ok`  → 1（解析成功才推进到编译）。
+fn programs_built_for(s : String) -> Int {
+  match parse_pattern(s) {
+    Err(_) => 0
+    Ok(a) => {
+      let _p = compile_program(a)
+      1
+    }
+  }
+}
+
+///|
+/// Feature: regex-engine, Property 10: 非法表达式错误条件（parse_pattern）
+///
+/// 对任意语法非法模式，`parse_pattern` 返回携带合法字符偏移的 `Err`，且不
+/// 构造任何程序。
+///
+/// **Validates: Requirements 1.7, 2.3**
+test "Feature: regex-engine, Property 10: illegal pattern yields located error and builds no program" {
+  let ok = @infra_pbt.holds_for_all(gen_illegal_pattern(), fn(s) {
+    match parse_pattern(s) {
+      Ok(_) => false
+      Err(e) => {
+        let p = e.pos()
+        let located = p >= 0 && p <= s.length()
+        let no_program = programs_built_for(s) == 0
+        located && no_program
+      }
+    }
+  })
+  assert_true(ok)
+}
+
+///|
+/// 健全性：生成器产出的样本确实全部非法（避免主属性被平凡满足）。
+///
+/// **Validates: Requirements 1.7, 2.3**
+test "Feature: regex-engine, Property 10: pattern generator only emits illegal strings" {
+  let all_illegal = @infra_pbt.holds_for_all(gen_illegal_pattern(), fn(s) {
+    match parse_pattern(s) {
+      Err(_) => true
+      Ok(_) => false
+    }
+  })
+  assert_true(all_illegal)
+}

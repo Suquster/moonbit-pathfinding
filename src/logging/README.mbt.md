@@ -183,6 +183,315 @@ test "README · format_json 与 parse_json_log 往返" {
 
 ---
 
+## 示例 5 · 嵌套结构化取值与嵌套 JSON 往返（R1）
+
+旗舰深化在标量取值之上新增嵌套对象 `VMap` 与数组 `VList`，可任意层级嵌套；
+`format_json` 将其渲染为 JSON 对象（成员稳定排序）/数组，`parse_json_log`
+逆还原，二者对任意嵌套深度往返（**R1.2/1.3/1.4/1.6**）。
+
+```mbt check
+///|
+test "README · 嵌套取值与嵌套 JSON 往返" {
+  reset_logger()
+  let event = Event::new(1L, Level::Info, {
+    "user": Value::VMap({
+      "id": Value::VInt(42L),
+      "roles": Value::VList([Value::VStr("admin"), Value::VStr("ops")]),
+    }),
+  })
+  let json = format_json(event)
+  // VList 保持原序、VMap 成员稳定排序
+  assert_true(json.contains("\"roles\":[\"admin\",\"ops\"]"))
+  // 嵌套往返：解析回等价事件（Map 相等按内容判定，与字段顺序无关）
+  assert_true(parse_json_log(json) == Some(event))
+}
+```
+
+---
+
+## 示例 6 · 多 formatter 与可插拔 sink（R2）
+
+`Formatter{Json|Logfmt|Pretty}` 提供三种渲染；`Sink`（内存缓冲 + 格式器 +
+路由谓词）与 `dispatch` 把同一事件落地到多个 sink 的多种格式（**R2.1/2.4/2.5**）。
+
+```mbt check
+///|
+test "README · 多 formatter 与可插拔 sink" {
+  reset_logger()
+  let e = Event::new(3L, Level::Warn, {
+    "svc": Value::VStr("api"),
+    "code": Value::VInt(503L),
+  })
+  assert_true(format_event(Formatter::Json, e).contains("\"level\":\"WARN\""))
+  assert_true(format_event(Formatter::Logfmt, e).contains("level=WARN"))
+  assert_true(format_event(Formatter::Pretty, e).contains("[WARN]"))
+  // 可插拔 sink：同一事件落地到 JSON 与 logfmt 两个内存 sink
+  let json_sink = Sink::new("json", Formatter::Json)
+  let logfmt_sink = Sink::new("logfmt", Formatter::Logfmt)
+  dispatch([json_sink, logfmt_sink], e)
+  assert_eq(json_sink.buffer.length(), 1)
+  assert_eq(logfmt_sink.buffer.length(), 1)
+}
+```
+
+---
+
+## 示例 7 · logfmt 往返（R2.3/2.6/2.7）
+
+logfmt 以 `key=value` 空格分隔；含空格/特殊字符的取值施加引号与转义，标量域
+内 `parse_logfmt(format_logfmt(e)) ≡ e`。
+
+```mbt check
+///|
+test "README · logfmt 往返" {
+  let e = Event::new(5L, Level::Info, {
+    "msg": Value::VStr("hello world"),
+    "n": Value::VInt(7L),
+  })
+  let line = format_logfmt(e)
+  assert_true(line.contains("msg=\"hello world\"")) // 含空格 → 引号包裹
+  assert_true(parse_logfmt(line) == Some(e))
+}
+```
+
+---
+
+## 示例 8 · 确定性采样与限流（R3）
+
+`sample_trace` 同一 trace 判定恒定（trace 内一致）；`retained_count` 给出系统
+采样保留条数上界；`RateLimiter` 在逻辑时间窗内限流（**R3.2/3.3/3.5**）。
+
+```mbt check
+///|
+test "README · 确定性采样与限流" {
+  // trace 内一致：同一 trace 多次判定恒定；边界 rate=0 全弃、rate=1 全采
+  let trace : TraceId = { value: 12345L }
+  let decision = sample_trace(0.5, trace, 42UL)
+  assert_eq(sample_trace(0.5, trace, 42UL), decision)
+  assert_false(sample_trace(0.0, trace, 42UL))
+  assert_true(sample_trace(1.0, trace, 42UL))
+  // 系统采样保留条数 = floor(rate*n)
+  assert_eq(retained_count(0.25, 1000), 250)
+  // 限流：window=10 limit=2，同窗放行 2 条后丢弃，窗口到期重置
+  let limiter = RateLimiter::new(10L, 2)
+  assert_true(limiter.allow("k", 0L))
+  assert_true(limiter.allow("k", 1L))
+  assert_false(limiter.allow("k", 2L))
+  assert_true(limiter.allow("k", 10L)) // 新窗口
+}
+```
+
+---
+
+## 示例 9 · 过滤与路由（R4）
+
+`EnvFilter` 解析 `target=level,…,level` 指令（对标 `tracing-subscriber`），按
+target 阈值过滤；`route` 将事件分发到条件匹配的 sink（**R4.1/4.3/4.5**）。
+
+```mbt check
+///|
+test "README · 过滤与路由" {
+  let f = match parse_env_filter("db=debug,http=warn,info") {
+    Ok(filter) => filter
+    Err(_) => {
+      fail("合法指令应解析成功")
+      return
+    }
+  }
+  // db 阈值 debug：Debug 保留；http 阈值 warn：Info 丢弃
+  assert_true(f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("db") })))
+  assert_false(f.allows(Event::new(0L, Level::Info, { "target": Value::VStr("http") })))
+  // 未登记 target 走全局兜底 info：Debug 丢弃
+  assert_false(f.allows(Event::new(0L, Level::Debug, { "target": Value::VStr("x") })))
+  // 路由：仅 Error+ 交付给告警 sink
+  let errors = Sink::new("errors", Formatter::Json, route=fn(e) {
+    e.level.rank() >= Level::Error.rank()
+  })
+  assert_eq(route([errors], Event::new(0L, Level::Error, {})).length(), 1)
+  assert_eq(route([errors], Event::new(0L, Level::Info, {})).length(), 0)
+}
+```
+
+---
+
+## 示例 10 · OpenTelemetry 风格 span 语义（R5）
+
+`SpanData` 在既有 `Span` 之上旁路叠加属性 / 事件 / 状态 / kind，不改既有 span
+树与时长语义（**R5.1–5.5**）。
+
+```mbt check
+///|
+test "README · OpenTelemetry span 语义" {
+  reset_logger()
+  let _t = begin_trace()
+  let span = enter_span("http.request")
+  let sd = SpanData::new(span)
+  sd.set_kind(SpanKind::Server)
+  sd.set_attribute("http.method", Value::VStr("GET"))
+  sd.add_event("cache.miss", span.start, { "key": Value::VStr("u:1") })
+  sd.set_status(SpanStatus::Ok)
+  exit_span(span)
+  assert_true(sd.kind == SpanKind::Server)
+  assert_true(sd.status == SpanStatus::Ok)
+  assert_true(sd.attributes.get("http.method") == Some(Value::VStr("GET")))
+  assert_eq(sd.events.length(), 1)
+}
+```
+
+---
+
+## 示例 11 · W3C Trace Context 注入与提取（R6）
+
+`inject_traceparent` 产出 `00-<32hex>-<16hex>-<2hex>`；`extract_traceparent`
+严格校验后提取三分量，非法返回 `None`；64↔128 位映射详见下文实现边界声明。
+
+```mbt check
+///|
+test "README · W3C traceparent 注入与提取" {
+  let ctx : TraceContext = {
+    trace: { value: 0x0123456789abcdefL },
+    span: Some({ value: 7L }),
+  }
+  let tp = inject_traceparent(ctx)
+  assert_eq(tp.length(), 55) // 2+1+32+1+16+1+2
+  assert_true(tp.contains("0123456789abcdef")) // trace 低 64 位编码
+  match extract_traceparent(tp) {
+    Some(w) => {
+      assert_true(w.is_sampled()) // flags 01 最低位为 1
+      assert_eq(w.to_trace_context().trace.value, ctx.trace.value) // 无损往返
+    }
+    None => fail("合法 traceparent 应提取成功")
+  }
+  // 非法输入返回 None，不产部分上下文
+  assert_true(extract_traceparent("not-a-traceparent") is None)
+}
+```
+
+---
+
+## 示例 12 · 脱敏 / PII 过滤（R7）
+
+`redact` 将敏感字段（名命中或谓词为真）取值**整体**替换为掩码（嵌套也整体
+替换），字段键集合不变（**R7.1/7.3/7.4**）。
+
+```mbt check
+///|
+test "README · 脱敏 / PII 过滤" {
+  let e = Event::new(1L, Level::Info, {
+    "user": Value::VStr("alice"),
+    "password": Value::VStr("hunter2"),
+    "card": Value::VMap({ "no": Value::VStr("4111111111111111") }),
+  })
+  let policy = RedactionPolicy::by_names(["password", "card"])
+  let red = redact(policy, e)
+  // 键集合不变；敏感字段整体掩码；非敏感字段不变
+  assert_eq(red.fields.size(), e.fields.size())
+  assert_true(red.fields.get("password") == Some(redaction_mask))
+  assert_true(red.fields.get("card") == Some(redaction_mask)) // 嵌套整体替换
+  assert_true(red.fields.get("user") == Some(Value::VStr("alice")))
+  // 输出不残留任何敏感原值片段
+  assert_false(format_json(red).contains("4111111111111111"))
+}
+```
+
+---
+
+## 示例 13 · 指标派生（R8）
+
+`count_by_level` 按级别计数（定长数组，计数守恒）；`histogram` 按升序边界把
+数值字段分桶，缺字段 / 非数值事件被跳过（**R8.1/8.2/8.3**）。
+
+```mbt check
+///|
+test "README · 指标派生" {
+  let events = [
+    Event::new(0L, Level::Info, { "lat": Value::VInt(5L) }),
+    Event::new(1L, Level::Warn, { "lat": Value::VInt(15L) }),
+    Event::new(2L, Level::Error, { "lat": Value::VInt(150L) }),
+    Event::new(3L, Level::Info, { "msg": Value::VStr("no-lat") }), // 缺 lat → 跳过
+  ]
+  let counts = count_by_level(events)
+  assert_eq(level_count(counts, Level::Info), 2)
+  assert_eq(level_count(counts, Level::Error), 1)
+  // 边界 [10,100] ⇒ 3 桶；缺字段事件不计入
+  let h = histogram(events, "lat", [10.0, 100.0])
+  assert_eq(h.buckets.length(), 3)
+  assert_eq(h.buckets[0], 1) // 5 < 10
+  assert_eq(h.buckets[1], 1) // 15 ∈ [10,100)
+  assert_eq(h.buckets[2], 1) // 150 >= 100
+}
+```
+
+---
+
+## 示例 14 · 端到端 demo 与跨进程传播（R11）
+
+`run_demo` 串联开 trace → 嵌套 span + OTel 属性 → 采样 + 脱敏 → JSON/logfmt
+双格式 → traceparent 注入；`run_downstream` 在模拟下游进程提取并续记，与父进程
+归属同一 trace-id（**R11.1/11.2/11.3**）。
+
+```mbt check
+///|
+test "README · 端到端 demo 与跨进程传播" {
+  let outcome = run_demo()
+  // 嵌套 span（root + db）、3 条事件双格式输出
+  assert_eq(outcome.span_count, 2)
+  assert_eq(outcome.json_lines.length(), 3)
+  assert_eq(outcome.logfmt_lines.length(), 3)
+  // 跨进程：下游提取 traceparent 后与父进程同 trace-id
+  match run_downstream(outcome.traceparent) {
+    Some(tid) => assert_eq(tid.value, outcome.trace.value)
+    None => fail("下游应能从 traceparent 提取上下文")
+  }
+}
+```
+
+---
+
+## paper-to-code 可追溯与开源对标（R10）
+
+每个关键追踪 / 日志机制可追溯到规范或论文，并与主流方案对比：
+
+| 算法 / 规范 | 来源 | 本库落点 |
+|---|---|---|
+| span 树 + 上下文传播 | Google Dapper（Sigelman 等, 2010） | `enter_span`/`exit_span`/`with_context` + `otel_span.mbt` 叠加（**R10.1**） |
+| span 属性 / 事件 / 状态 / kind | OpenTelemetry 规范（Tracing / SpanKind / Status） | `otel_span.mbt`：`SpanData`/`SpanEvent`/`SpanStatus`/`SpanKind`（**R10.2**） |
+| traceparent 格式与字段语义 | W3C Trace Context 规范 | `trace_context.mbt`：`inject_traceparent`/`extract_traceparent`（**R10.3**） |
+| logfmt 文本表示 | 结构化日志 / logfmt 约定（Heroku / go-kit） | `logfmt.mbt`：`format_logfmt`/`parse_logfmt`（**R10.4**） |
+| EnvFilter 分 target 级别控制 | Rust `tracing-subscriber` EnvFilter | `filter.mbt`：`parse_env_filter`/`threshold_for` |
+| 系统采样 + trace 内一致采样 | systematic sampling + Dapper 一致采样 | `sampling.mbt`：`sample_stream`/`sample_trace` |
+
+**与主流方案的模型与权衡对比（R10.5）：**
+
+| 维度 | 本库 | Rust `tracing` | `slog` | Uber `zap` | OpenTelemetry SDK |
+|---|---|---|---|---|---|
+| 结构化字段 | `Value`（标量 + 嵌套 VMap/VList） | typed fields | KV serializer | 强类型 `Field` | Attributes |
+| span / scope | 既有 span 树 + OTel 语义叠加 | `Span`/`Subscriber` | 无原生 span | 无原生 span | `Span`/`Tracer`/`Context` |
+| 采样 | 确定性系统采样 + trace 内一致 | subscriber 自定义 | Drain 自定义 | sampler core | `Sampler`（TraceIdRatioBased 等） |
+| 上下文传播 | 显式捕获 + `with_context`；W3C traceparent | task-local + `Span` | logger 传递 | logger 传递 | `Context` + W3C Propagator |
+| 导出 | 内存 sink（模型层） | 多 layer | 多 Drain | 多 Core | 多 Exporter（OTLP 等） |
+| 格式 | JSON / logfmt / pretty + 解析往返 | fmt / json layer | json / logfmt | json / console | OTLP / 自定义 |
+
+**核心取舍**：与 OpenTelemetry SDK 同侧——以**可形式化验证的纯模型层**（确定性
+采样 / 往返编解码 / 不变量可证）换取三后端一致性与可审计性，而非 `tracing`/`zap`
+面向真实 IO 的高性能导出管线；同时吸收 `tracing` 的 EnvFilter 分模块控制与
+`slog`/`zap` 的多格式器表达力。
+
+## 实现边界声明（R10.6，显式而非隐式留白）
+
+- **不接真实网络 / 文件导出**：sink 以内存缓冲（`Sink.buffer`）建模，不做真实 IO；
+  多 sink / 路由 / 多格式在内存模型内完整可测。
+- **不耦合 `moonbitlang/async`**：跨任务 trace 传播以「显式上下文捕获 +
+  `with_context`」模型替代异步任务局部存储，行为不变量（子任务保留父 trace 标识）
+  与真实异步运行时一致。
+- **不接真实墙钟**：时间戳以单调逻辑时钟建模，保证三后端对同一调用序列产逐位
+  一致的时间戳。
+- **traceparent 128↔64 映射**：内部 64 位标识编码进 traceparent 的 128 位 trace-id
+  低位（高位补 0），inject/extract 对内部标识无损往返，但不承载完整 128 位外部
+  trace-id 语义。
+
+---
+
 ## 验证方式
 
 ```bash
@@ -201,10 +510,10 @@ moon test src/logging/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 4, passed: 4, failed: 0.
+Total tests: 14, passed: 14, failed: 0.
 ```
 
-（示例 1~4 的 4 段可执行测试全部通过。）一旦修改实现使其输出与本文档的
+（示例 1~14 的 14 段可执行测试全部通过。）一旦修改实现使其输出与本文档的
 `assert_*` 断言不符，`moon test` 会立即报错——这正是 MoonBit 独占的**文档即测试**体验。
 
 ---

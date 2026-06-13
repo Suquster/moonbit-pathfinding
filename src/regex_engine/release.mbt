@@ -15,8 +15,13 @@
 //   DirectionRelease，从而保持方向自包含、release_meta 零反向耦合。
 
 ///|
-/// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let regex_engine_version : String = "0.1.0"
+/// 本方向的独立 SemVer 版本号。
+///
+/// 自骨架首版 `0.1.0` 起，本次旗舰深化以**严格向后兼容、旁路扩展**的方式新增
+/// 捕获 / Pike VM / 标志 / 高层搜索 / 惰性 DFA / DFA 最小化 / 实战 demo 等能力
+/// （既有公开签名与语义冻结、`ParseError` 不扩容），按 SemVer 做**次版本**推进
+/// 至 `0.2.0`（新增向后兼容功能，主版本保持 `0` 表示公共 API 仍可能演进）。
+pub let regex_engine_version : String = "0.2.0"
 
 ///|
 /// 本方向的包名（与子包目录名一致），用于推导 changelog 路径与发布身份。

@@ -37,13 +37,10 @@ import {
   // format_json / parse_json_log 的「序列化再解析」往返（Requirement 7.7）。
   // 属 moonbitlang/core 标准库，三后端（wasm-gc / js / native）行为一致。
   "moonbitlang/core/strconv",
-}
-
-// 属性测试（task 10.3 Property 16 级别阈值过滤 / Property 17 span 树与 trace
-// 上下文传播不变量；task 10.4 结构化日志往返）复用共享 PBT 包 @infra_pbt 的
-// Gen / Rng / round_trip / holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖
-// 仅作用于黑盒测试驱动（`for "test"`），不进入运行时产物，符合 design.md
-// 「infra_pbt 为横切测试期共享约定」的定位。
-import {
+  // @infra_pbt —— 共享属性测试包，提供确定性随机源 `Rng`（`rng_new(seed)`）。
+  // 旗舰深化的确定性采样（sampling.mbt 的 `sample_stream`，Requirement 3.1 /
+  // 3.4 / 3.7）与端到端 demo（demo.mbt）以 `@infra_pbt.Rng` 为随机源，保证
+  // 三后端逐位一致、可重放。该包为不依赖任何方向的横切叶子包，作为运行时
+  // 依赖引入不破坏既有 API，且使新增属性测试与运行时共用同一确定性随机源。
   "Suquster/moonbit-pathfinding/src/infra_pbt",
-} for "test"
+}

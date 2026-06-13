@@ -49,6 +49,12 @@ $benchmarks = @(
         package = "Suquster/moonbit-pathfinding/benches/kruskal_bench"
         file = "benches/kruskal_bench/kruskal_bench.mbt"
         scenario = "1k-node 10k-edge weighted undirected multigraph"
+    },
+    [ordered]@{
+        algorithm = "Regex"
+        package = "Suquster/moonbit-pathfinding/benches/regex_bench"
+        file = "benches/regex_bench/regex_bench.mbt"
+        scenario = "NFA / DFA / Pike VM on a?{n}a{n} pathological input plus demo real workloads"
     }
 )
 

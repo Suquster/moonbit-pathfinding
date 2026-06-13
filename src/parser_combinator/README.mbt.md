@@ -143,6 +143,152 @@ test "README · seq + many1 端到端解析带井号编号" {
 
 ---
 
+## 示例 5 · 核心代数 map / bind / pure —— 单子风格组合
+
+L0 代数核心层提供 `pure`（不消费输入恒成功）、`map`（变换产出值并保持消费量）、
+`bind`（依赖式串联）。这是对标 Haskell `parsec` 单子接口的地基
+（Hutton & Meijer 1998《Monadic Parser Combinators》）。
+
+```mbt check
+///|
+test "README · 核心代数 map / bind / pure" {
+  let digit = satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")
+  // map：把数字字符变换为其数值
+  let to_int = map(digit, fn(c) { c.to_int() - '0'.to_int() })
+  assert_true(to_int.parse_string("7").value() == Some(7))
+  // pure：不消费输入、恒成功、携带给定值
+  assert_true(pure(42).parse_string("abc").value() == Some(42))
+  // bind：读一个字符，要求其后紧随同一字符（依赖前驱产出值）
+  let doubled = bind(any_char(), fn(c) { pchar(c) })
+  assert_true(doubled.parse_string("aa").is_ok())
+  assert_false(doubled.parse_string("ab").is_ok())
+}
+```
+
+---
+
+## 示例 6 · 衍生组合子 sep_by / between / chainl1 —— 高层结构
+
+衍生组合子让列表、括号包裹与带优先级的运算符表达式可直接表达，无需手写递归。
+`chainl1` 以左结合折叠操作数序列（Hutton & Meijer 1998 §chainl）。
+
+```mbt check
+///|
+test "README · 衍生组合子 sep_by / between / chainl1" {
+  let digit = satisfy(fn(c) { c >= '0' && c <= '9' }, label="数字")
+  let number = map(many1(digit), fn(chars) {
+    let mut n = 0
+    for c in chars {
+      n = n * 10 + (c.to_int() - '0'.to_int())
+    }
+    n
+  })
+  // sep_by：以逗号分隔收集数字
+  assert_true(sep_by(number, pchar(',')).parse_string("1,2,3").value() ==
+    Some([1, 2, 3]))
+  // between：仅产出括号内主体
+  assert_true(between(pchar('('), number, pchar(')')).parse_string("(42)").value() ==
+    Some(42))
+  // chainl1：左结合减法 8-3-2 == (8-3)-2 == 3
+  let sub = map(pchar('-'), fn(_c) { fn(a : Int, b : Int) -> Int { a - b } })
+  assert_true(chainl1(number, sub).parse_string("8-3-2").value() == Some(3))
+}
+```
+
+---
+
+## 示例 7 · 错误处理 —— label 与最远失败（farthest-failure）
+
+`label`（`<?>`）在起始位置失败时以友好名称替换期望符号；`alt` 在多分支失败时
+报告推进得**最远**的失败点（对标 Parsec 的错误模型，Leijen & Meijer）。
+
+```mbt check
+///|
+test "README · 错误处理 label 与最远失败" {
+  // label：在起始位置失败时用名称替换期望
+  match label(pchar('x'), "标识符").parse_string("abc") {
+    Fail(pos, expected~) => {
+      inspect(pos, content="1:1")
+      assert_true(expected == ["标识符"])
+    }
+    Ok(_, _) => fail("expected failure")
+  }
+  // alt 最远失败：分支二在 offset 1 失败（推进更远），故报告 1:2
+  let deep = map(seq(pchar('a'), pchar('b')), fn(_p) { '!' })
+  match alt([pchar('z'), deep]).parse_string("ax") {
+    Fail(pos, expected~) => {
+      inspect(pos, content="1:2")
+      assert_true(expected == ["'b'"])
+    }
+    Ok(_, _) => fail("expected failure")
+  }
+  // to_path_error：桥接为 @core.PathError
+  assert_true(pchar('x').parse_string("y").to_path_error() is Some(_))
+}
+```
+
+---
+
+## 示例 8 · 旗舰示例 JSON —— 递归结构 / 转义 / 往返 / 恢复
+
+`parse_json` 解析完整 JSON 文法（对象/数组/字符串/数值/布尔/null），解码全部
+转义序列；`print_json` 与之互为逆（往返）；`parse_json_recover` 在数组元素语法
+错误时同步到下一分隔符继续解析。
+
+```mbt check
+///|
+test "README · 旗舰示例 JSON 解析 / 转义 / 往返 / 恢复" {
+  // 解析嵌套结构
+  match parse_json("{\"name\":\"kiro\",\"tags\":[1,2,3],\"ok\":true}") {
+    Ok(JObject(pairs)) => assert_eq(pairs.length(), 3)
+    _ => fail("expected object")
+  }
+  // 转义解码：\n 解码为换行
+  match parse_json("\"line1\\nline2\"") {
+    Ok(JString(s)) => assert_true(s == "line1\nline2")
+    _ => fail("expected string")
+  }
+  // 往返：parse → print → reparse，规范化打印形式稳定（parse(print(x)) ≡ x）
+  match parse_json("[1,false,null]") {
+    Ok(v) => {
+      let printed = print_json(v)
+      match parse_json(printed) {
+        Ok(v2) => assert_true(print_json(v2) == printed)
+        Err(_) => fail("re-parse failed")
+      }
+    }
+    Err(_) => fail("parse failed")
+  }
+  // 错误恢复：跳过非法元素 @@@ 继续解析 1 与 3
+  let (recovered, errors) = parse_json_recover("[1,@@@,3]")
+  assert_true(recovered is Some(_))
+  assert_true(errors.length() >= 1)
+}
+```
+
+---
+
+## 示例 9 · 旗舰示例 算术求值器 —— 优先级与左/右结合
+
+`parse_and_eval` 按运算符优先级与结合性求值中缀算术表达式：`+ -`/`* /` 左结合
+（`chainl1`）、`^` 右结合（`chainr1`）。
+
+```mbt check
+///|
+test "README · 旗舰示例 算术优先级与结合性" {
+  // 乘高于加
+  assert_true(parse_and_eval("2+3*4") == Ok(14.0))
+  // 左结合减法
+  assert_true(parse_and_eval("8-3-2") == Ok(3.0))
+  // 右结合幂：2^(3^2) == 2^9 == 512
+  assert_true(parse_and_eval("2^3^2") == Ok(512.0))
+  // 括号改变优先级
+  assert_true(parse_and_eval("(2+3)*4") == Ok(20.0))
+}
+```
+
+---
+
 ## 验证方式
 
 ```bash
@@ -161,12 +307,53 @@ moon test src/parser_combinator/README.mbt.md --target native
 预期看到：
 
 ```
-Total tests: 4, passed: 4, failed: 0.
+Total tests: 9, passed: 9, failed: 0.
 ```
 
-（示例 1~4 的 4 段可执行测试全部通过。）一旦修改组合子实现使其输出与本文档的
+（示例 1~9 的 9 段可执行测试全部通过。）一旦修改组合子实现使其输出与本文档的
 `inspect(..., content="...")` 快照或 `assert_*` 断言不符，`moon test` 会立即报错并以
 最小化差异提示同步更新文档——这正是 MoonBit 独占的**文档即测试**体验。
+
+---
+
+## 论文可追溯（paper-to-code）与开源对标
+
+本库的关键算法均可追溯到经典文献，并相对主流开源库显式声明语义差异。
+
+### Paper-to-code 对照
+
+| 设计构造 | 论文出处 | 对应实现 |
+|---|---|---|
+| `pure` / `map` / `bind` / `ap`、`chainl1` / `chainr1` 单子风格折叠 | Hutton & Meijer 1998《Monadic Parser Combinators》 | `algebra.mbt`、`derived.mbt` |
+| 消费提交语义（`commit` / `cut`）、最远失败 + 期望合并错误模型、`label`（`<?>`） | Leijen & Meijer 的 Parsec 设计 | `commit.mbt`、`error_model.mbt`、`combinators.mbt`（`alt`） |
+| PEG 有序选择（首个成功即提交）、packrat 记忆化（位置 × 规则缓存 → 线性时间） | Ford 2002《Parsing Expression Grammars》 / packrat 论文 | `combinators.mbt`（`alt`）、`packrat.mbt` |
+| 直接左递归 seed-growing（失败种子 + 迭代增长） | Warth et al. 2008《Packrat Parsers Can Support Left Recursion》 | `left_recursion.mbt` |
+
+### 与 Haskell `parsec` / `megaparsec` 及 Rust `nom` 的对比
+
+- **回溯默认行为**：`parsec` / `megaparsec` 默认**不**回溯已消费输入的分支（择一仅在
+  前一分支未消费时回退），需以 `try` 显式开启回溯；`nom` 默认基于消费的可回溯组合子。
+  本库的 L0 `alt` 默认**总是**从同一不可变游标重试每个分支（PEG 风格的完全回溯），
+  更贴近 PEG / packrat 语义；当需要「一旦进入即不回退」的硬失败时，使用 L1 的
+  `commit` + `choice`（对应 `parsec` 默认的不回溯 + `try` 反向开关的语义取舍）。
+- **提交语义**：`megaparsec` 以是否消费输入 + `try` 表达提交；本库以显式 `commit` / `cut`
+  把软失败提升为硬失败，`choice` 据此停止回溯（更接近 `nom` 的 `cut`/`Err::Failure`）。
+- **错误模型**：`parsec` / `megaparsec` 采用最远失败位置 + 期望集合合并；本库的 `alt`
+  同样报告最远失败点并合并该点期望（去重保序），`label`（`<?>`）在起始位置失败时替换
+  期望符号。`nom` 的错误模型以错误种类链为主，本库则以「位置 + 期望集合」为中心。
+
+### 显式差异声明（R13.6）
+
+1. **仅支持直接左递归**：`left_recursive` 以 Warth 2008 seed-growing 支持形如
+   `A := A op b | b` 的**直接**左递归；间接 / 相互左递归不在本库范围内（与 `parsec`
+   一致地不支持左递归，但本库额外提供直接左递归入口）。
+2. **`alt` 失败诊断精化**：相对 `0.1.0`，`alt` 在全分支失败时由「报告分支起点 + 拼接全部
+   期望」精化为「报告最远失败点 + 仅合并该点期望（去重保序）」。这是唯一可观察的行为
+   精化（严格信息增益：位置不早于原值、期望更聚焦），签名与成功路径行为不变，故版本
+   推进为次版本 `0.2.0`。
+3. **期望集合顺序**：采用**去重并保留首次出现顺序**的确定性归一，而非字典序重排——
+   既满足确定性（同输入重复解析逐元素一致），又保持 `0.1.0` 既有的「按分支顺序汇总」
+   可观察顺序（向后兼容）。
 
 ---
 

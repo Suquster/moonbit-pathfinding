@@ -315,3 +315,40 @@ test "Feature: moonbit-infra-suite, Property 4: parse(print(r)) equals r (holds_
   })
   assert_true(ok)
 }
+
+
+// ---------------------------------------------------------------------------
+// Property 1（旗舰深化）：语法树往返（round-trip）
+//
+// 旗舰深化在既有 infra-suite Property 4 的往返种子之上，以本方向 Property 1
+// 编号扩展覆盖面：复用同一规范语法树生成器（≥100 迭代），同时以 round_trip
+// 与 holds_for_all 两种 @infra_pbt 模板断言 `parse_regex(print_regex(r)) ≡ r`，
+// 验证打印器与解析器在受支持子集上的互逆性。
+// ---------------------------------------------------------------------------
+
+///|
+/// Feature: regex-engine, Property 1: 语法树往返（round-trip）
+///
+/// 对任意由生成器产出的规范正则语法树 `r`，经"打印 → Bytes → 解析"的往返
+/// 应还原为等价语法树。复用 @infra_pbt 的 `round_trip` 模板（≥100 迭代）。
+///
+/// **Validates: Requirements 2.2, 2.7, 12.6**
+test "Feature: regex-engine, Property 1: parse(print(r)) round-trips" {
+  let ok = @infra_pbt.round_trip(
+    gen_roundtrip_regex(),
+    rt_regex_to_bytes,
+    rt_bytes_to_regex,
+  )
+  assert_true(ok)
+}
+
+///|
+/// Feature: regex-engine, Property 1: 语法树往返（holds_for_all 直接谓词形式）
+///
+/// **Validates: Requirements 2.2, 2.7, 12.6**
+test "Feature: regex-engine, Property 1: parse(print(r)) equals r" {
+  let ok = @infra_pbt.holds_for_all(gen_roundtrip_regex(), fn(r) {
+    parse_regex(print_regex(r)) == Ok(r)
+  })
+  assert_true(ok)
+}

@@ -1,0 +1,49 @@
+{
+  "pbtResults": {
+    "1.3 为 zigzag 编写属性测试 `src/serialization/prop_zigzag_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270021188
+    },
+    "1.4 为既有 wire 往返编写属性测试 `src/serialization/prop_legacy_roundtrip_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270024553
+    },
+    "3.3 为模式解析 round-trip 编写属性测试 `src/serialization/prop_parse_roundtrip_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270029121
+    },
+    "3.6 为合法模式校验通过编写属性测试 `src/serialization/prop_validate_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270032359
+    },
+    "5.3 为类型化往返编写属性测试 `src/serialization/prop_typed_roundtrip_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270037125
+    },
+    "5.4 为 packed 与非 packed 等价编写属性测试 `src/serialization/prop_packed_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270043603
+    },
+    "5.5 为解码错误位置编写属性测试 `src/serialization/prop_decode_error_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270048318
+    },
+    "7.2 为规范编码幂等编写属性测试 `src/serialization/prop_canonical_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270053287
+    },
+    "7.3 为未知字段保留编写属性测试 `src/serialization/prop_unknown_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270057598
+    },
+    "7.6 为 JSON↔二进制等价编写属性测试 `src/serialization/prop_json_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270061873
+    },
+    "7.9 为生成代码往返编写属性测试 `src/serialization/prop_codegen_test.mbt`": {
+      "status": "passed",
+      "lastRunTimestamp": 1781270130715
+    }
+  },
+  "executionHistory": {}
+}

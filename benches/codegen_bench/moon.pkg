@@ -1,0 +1,13 @@
+// Package: benches/codegen_bench
+//
+// 平滑回归守卫（smoke guard）+ native `moon bench` 工作负载，覆盖 codegen_infra
+// 方向旗舰深化的五类核心计算：支配树构造、最小 SSA 构造、图着色分配、线性扫描
+// 分配与 SCCP（R13.1–13.5）。规模化随机 CFG / 干涉图 / 区间集由确定性 @infra_pbt
+// 随机源驱动，保证三后端可复现。
+//
+// 运行 native 基准前需先：export LIBRARY_PATH=/usr/lib64:/usr/lib
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/codegen_infra" @cg,
+  "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+}

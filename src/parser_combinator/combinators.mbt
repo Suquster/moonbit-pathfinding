@@ -38,21 +38,37 @@ pub fn[A, B] seq(a : Parser[A], b : Parser[B]) -> Parser[(A, B)] {
 /// 择一组合（alternative）：按顺序尝试 `ps` 中的每个解析器，返回首个成功结果。
 ///
 /// 回溯（R4.4）：每个分支都从**同一**起始 `Input` 运行，因此前一分支即便消费了
-/// 部分输入也会被丢弃，下一分支从分支起点重新开始。全部分支失败时，在分支起始
-/// 位置返回失败，并汇总各分支的期望符号集合，且不消费输入（R4.3）。
+/// 部分输入也会被丢弃，下一分支从分支起点重新开始。
+///
+/// 失败诊断精化（farthest-failure，R6.1~R6.3）：全部分支失败时，不再朴素拼接
+/// 所有分支的期望符号，而是用 `merge_farthest` 在分支间归约——报告 `offset`
+/// **最远**的失败位置，仅合并落在该最远位置上的分支期望（去重并保留首次出现
+/// 顺序），舍弃较早位置分支的期望。
+///
+/// 向后兼容（R14.2）：签名与成功路径行为零变更；当全部分支在**同一**位置
+/// （如 0.1.0 既有用例中皆于分支起点）失败时，本精化退化为「按分支顺序去重
+/// 汇总期望」，与既有可观察行为一致。唯一的可观察精化是：当各分支推进到不同
+/// 位置时，失败位置由「分支起点」精化为「最远失败点」（严格信息增益）。
 pub fn[T] alt(ps : Array[Parser[T]]) -> Parser[T] {
   Parser::new(fn(input) {
-    let expected_all : Array[String] = []
+    let mut acc : FarthestError? = None
     for p in ps {
       match p.parse(input) {
         Ok(v, rest) => return ParseResult::Ok(v, rest)
-        Fail(_, expected~) =>
-          for e in expected {
-            expected_all.push(e)
+        Fail(pos, expected~) => {
+          let here : FarthestError = { pos, expected }
+          acc = match acc {
+            None => Some(here)
+            Some(prev) => Some(merge_farthest(prev, here))
           }
+        }
       }
     }
-    ParseResult::Fail(input.pos, expected=expected_all)
+    match acc {
+      Some(fe) => ParseResult::Fail(fe.pos, expected=normalize_expected(fe.expected))
+      // 空分支列表：在起始位置失败且无期望符号（退化边界）。
+      None => ParseResult::Fail(input.pos, expected=[])
+    }
   })
 }
 

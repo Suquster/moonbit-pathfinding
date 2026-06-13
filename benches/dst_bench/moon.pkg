@@ -1,0 +1,14 @@
+// Package: benches/dst_bench
+//
+// Smoke guards plus native `moon bench` workloads for the DST_Framework
+// (deterministic simulation testing) direction: run_des / replay_des /
+// explore_bounded / explore_dpor / shrink, plus a DPOR partial-order
+// reduction-ratio guard.
+//
+// native 后端运行前需先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`。
+//
+// _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/dst" @dst,
+}

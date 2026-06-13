@@ -6,9 +6,31 @@ import {
 }
 
 // Values
+pub fn default_fails(DesResult) -> Bool
+
+pub fn demo_partition_crash_scenario() -> DesScenario
+
+pub fn demo_replication_scenario(Int) -> DesScenario
+
+pub fn depends(SimEvent, SimEvent) -> Bool
+
+pub fn deserialize_result(String) -> Result[DesResult, CodecError]
+
 pub let dst_name : String
 
 pub let dst_version : String
+
+pub fn eval_invariants(World) -> String?
+
+pub fn explore_bounded(UInt64, DesScenario, Int) -> ExploreReport
+
+pub fn explore_dpor(UInt64, DesScenario, Int) -> ExploreReport
+
+pub fn fault_ex_cmp(FaultPolicyEx, FaultPolicyEx) -> Int
+
+pub fn is_linearizable(Array[OpEvent], RegisterModel) -> LinResult
+
+pub fn null_protocol() -> Protocol
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
@@ -16,17 +38,83 @@ pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.Dire
 
 pub fn replay(UInt64, Array[Event]) -> SimResult
 
+pub fn replay_des(UInt64, Array[SimEvent]) -> DesResult
+
+pub fn replica_consistency_invariant() -> Invariant
+
+pub fn replication_protocol(Int) -> Protocol
+
+pub fn result_of_bytes(Bytes) -> DesResult?
+
+pub fn result_to_bytes(DesResult) -> Bytes
+
 pub fn rng_new(UInt64) -> Rng
 
 pub fn run(UInt64, Scenario) -> SimResult
 
+pub fn run_des(UInt64, DesScenario) -> DesResult
+
+pub fn run_des_with_order(UInt64, DesScenario, Array[Int]) -> DesResult
+
+pub fn serialize_result(DesResult) -> String
+
+pub fn shrink(UInt64, DesScenario, fails? : (DesResult) -> Bool) -> ShrinkOutcome
+
+pub fn skewed_time(UInt64, Int64) -> UInt64
+
+pub fn status_from_des_trace(Array[SimEvent]) -> SimStatus
+
+pub fn violates_consistency(DesResult) -> Bool
+
 // Errors
 
 // Types and methods
+pub(all) enum Action {
+  ActSend(to~ : Int, payload~ : Int, after~ : UInt64)
+  ActAppend(value~ : Int)
+} derive(Eq, Show)
+
+pub(all) enum CodecError {
+  Malformed(reason~ : String, pos~ : Int)
+} derive(Eq, Show)
+pub fn CodecError::pos(Self) -> Int
+
+pub(all) struct DesResult {
+  seed : UInt64
+  trace : Array[SimEvent]
+  status : SimStatus
+  finals : Array[(Int, NodeApp)]
+} derive(Eq, Show)
+
+pub struct DesScenario {
+  tasks : Array[Task]
+  faults : Array[FaultPolicyEx]
+  invariants : Array[Invariant]
+  protocol : Protocol
+  max_steps : Int
+}
+pub fn DesScenario::new(Array[Task], Array[FaultPolicyEx], Array[Invariant], Protocol, Int) -> Self
+pub fn DesScenario::of_legacy(Scenario, protocol~ : Protocol, invariants? : Array[Invariant]) -> Self
+pub fn DesScenario::size(Self) -> Int
+
 pub(all) enum Event {
   Scheduled(step~ : Int, task_id~ : Int)
   Faulted(step~ : Int, task_id~ : Int, kind~ : FaultKind)
   Completed(step~ : Int, task_id~ : Int)
+} derive(Eq, Show)
+
+pub struct EventQueue {
+  events : Array[QueuedEvent]
+}
+pub fn EventQueue::is_empty(Self) -> Bool
+pub fn EventQueue::new() -> Self
+pub fn EventQueue::pop_min(Self) -> (QueuedEvent, Self)?
+pub fn EventQueue::push(Self, QueuedEvent) -> Self
+pub fn EventQueue::size(Self) -> Int
+
+pub(all) struct ExploreReport {
+  explored : Int
+  failing : (UInt64, Array[SimEvent])?
 } derive(Eq, Show)
 
 pub(all) enum FaultKind {
@@ -42,6 +130,98 @@ pub(all) struct FaultPolicy {
 } derive(Eq, Show)
 pub fn FaultPolicy::new(Int, Int, FaultKind) -> Self
 
+pub(all) struct FaultPolicyEx {
+  at_step : Int
+  task_id : Int
+  kind : NetFaultKind
+} derive(Eq, Show)
+pub fn FaultPolicyEx::new(Int, Int, NetFaultKind) -> Self
+pub fn FaultPolicyEx::of_legacy(FaultPolicy) -> Self
+
+pub struct Invariant {
+  name : String
+  check : (World) -> Bool
+}
+pub fn Invariant::new(String, (World) -> Bool) -> Self
+
+pub(all) enum LinResult {
+  Linearizable
+  NotLinearizable(conflict~ : Array[OpEvent])
+} derive(Eq, Show)
+
+pub(all) struct Message {
+  id : Int
+  payload : Int
+} derive(Eq, Show)
+
+pub(all) enum NetFaultKind {
+  Crash
+  Delay(by~ : UInt64)
+  Drop
+  Partition(group~ : Int, until_step~ : Int)
+  Reorder
+  Duplicate
+  ClockSkew(offset~ : Int64)
+  Byzantine
+} derive(Eq, Show)
+pub fn NetFaultKind::of_legacy(FaultKind) -> Self
+
+pub struct Node {
+  id : Int
+  name : String
+  mut app : NodeApp
+  mut skew : Int64
+  mut alive : Bool
+  mut reorder : Bool
+  mut duplicate : Bool
+  mut byzantine : Bool
+}
+
+pub(all) struct NodeApp {
+  log : Array[Int]
+  kv : Array[(String, Int)]
+} derive(Eq, Show)
+pub fn NodeApp::empty() -> Self
+
+pub(all) struct OpEvent {
+  proc : Int
+  kind : OpKind
+  op : String
+  arg : Int
+  ret : Int
+  time : UInt64
+} derive(Eq, Show)
+pub fn OpEvent::invoke(Int, String, Int, UInt64) -> Self
+pub fn OpEvent::ret(Int, String, Int, UInt64) -> Self
+
+pub(all) enum OpKind {
+  Invoke
+  Return
+} derive(Eq, Show)
+
+pub(all) enum Pending {
+  PDeliver(from~ : Int, to~ : Int, msg~ : Message)
+  PWake(task_id~ : Int)
+} derive(Eq, Show)
+
+pub struct Protocol {
+  init : (Int) -> NodeApp
+  on_deliver : (NodeApp, Message) -> (NodeApp, Array[Action])
+  on_start : (Int) -> Array[Action]
+}
+pub fn Protocol::new((Int) -> NodeApp, (NodeApp, Message) -> (NodeApp, Array[Action]), (Int) -> Array[Action]) -> Self
+
+pub(all) struct QueuedEvent {
+  time : UInt64
+  task_id : Int
+  order_key : UInt64
+  pending : Pending
+} derive(Eq, Show)
+
+pub(all) struct RegisterModel {
+  init : Int
+} derive(Eq, Show)
+
 pub struct Rng {
   seed : UInt64
   mut state : UInt64
@@ -56,6 +236,13 @@ pub(all) struct Scenario {
 } derive(Eq, Show)
 pub fn Scenario::new(Array[Task], Array[FaultPolicy], Int) -> Self
 
+pub enum ShrinkOutcome {
+  Minimal(DesScenario)
+  NotFailing
+}
+pub fn ShrinkOutcome::is_minimal(Self) -> Bool
+pub fn ShrinkOutcome::scenario(Self) -> DesScenario?
+
 pub struct Sim {
   rng : Rng
   tasks : Array[Task]
@@ -64,6 +251,16 @@ pub struct Sim {
 pub fn Sim::inject_fault(Self, FaultPolicy) -> Self
 pub fn Sim::new(UInt64, Array[Task]) -> Self
 pub fn Sim::step(Self) -> Self
+
+pub(all) enum SimEvent {
+  EvScheduled(time~ : UInt64, task_id~ : Int)
+  EvCompleted(time~ : UInt64, task_id~ : Int)
+  EvFaulted(time~ : UInt64, task_id~ : Int, kind~ : NetFaultKind)
+  EvSend(time~ : UInt64, from~ : Int, to~ : Int, msg~ : Message)
+  EvDeliver(time~ : UInt64, from~ : Int, to~ : Int, msg~ : Message)
+} derive(Eq, Show)
+pub fn SimEvent::actor_of(Self) -> Int
+pub fn SimEvent::time_of(Self) -> UInt64
 
 pub(all) struct SimResult {
   seed : UInt64
@@ -82,7 +279,39 @@ pub(all) struct Task {
 } derive(Eq, Show)
 pub fn Task::new(Int, String) -> Self
 
+pub struct World {
+  seed : UInt64
+  rng : Rng
+  mut clock : UInt64
+  mut step_no : Int
+  nodes : Array[Node]
+  mut queue : EventQueue
+  trace : Array[SimEvent]
+  mut msg_seq : Int
+  protocol : Protocol
+  faults : Array[FaultPolicyEx]
+  invariants : Array[Invariant]
+  max_steps : Int
+  mut pending : Array[Int]
+  mut status : SimStatus
+  mut order_seq : UInt64
+  mut fault_idx : Int
+  partitions : Array[FaultPolicyEx]
+  mut wake_count : Int
+}
+pub fn World::clock_now(Self) -> UInt64
+pub fn World::deliver(Self, Int, Int, Message) -> Self
+pub fn World::new(UInt64, DesScenario) -> Self
+pub fn World::schedule_send(Self, Int, Int, Int, UInt64) -> Self
+pub fn World::step(Self) -> Self
+pub fn World::trace_view(Self) -> Array[SimEvent]
+
 // Type aliases
+pub type History = Array[OpEvent]
+
+pub type LogicalTime = UInt64
+
+pub type Schedule = Array[Int]
 
 // Traits
 

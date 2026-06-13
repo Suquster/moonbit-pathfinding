@@ -1,0 +1,14 @@
+// Package: benches/parser_arith_bench
+//
+// Smoke guard plus native `moon bench` workload for the parser_combinator
+// arithmetic example: compares packrat (`run_packrat`) against the naive
+// reference (`run_naive`) over increasing expression sizes.
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench benches/parser_arith_bench --target native
+//
+// _Requirements: 12.1, 12.2, 12.3, 12.5_
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
+}

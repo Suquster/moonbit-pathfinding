@@ -17,6 +17,48 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-12
+
+旗舰深化（🟣 档位 3「业界顶尖」）：在冻结的 `0.1.0` 骨架之上做**严格向后兼容**的
+增量深化，对标 Protocol Buffers / Cap'n Proto / FlatBuffers / MessagePack。全部新
+能力以**旁路新增** API 提供，既有 `WireType`/`FieldValue`/`FieldType`/`DecodeError`
+枚举不扩容，`encode`/`decode`/`parse_proto`/`gen_moonbit` 公开签名与行为不变。
+
+### Added
+- 富模式模型（`schema_model.mbt`）：`ProtoType`（区分 sint/fixed/sfixed/float/
+  double）、`FieldLabel`、`FieldOption`、`ProtoField`、`ReservedRange`、`MapEntry`、
+  `OneofDef`、`ProtoMessage`、`ProtoSchema`，及 `ProtoSchema::to_legacy` 向下投影桥。
+- zigzag 与定长位级辅助（`zigzag.mbt`）：`zigzag_encode/decode_32/64`、
+  `double_to_bits`/`bits_to_double`/`float_to_bits`/`bits_to_float`（位级 reinterpret，
+  规避 js 后端浮点漂移，三后端位级一致）。
+- 完整 proto3 文法解析（`proto_grammar.mbt`）：`parse_proto_full` 覆盖
+  message/enum/全部标量/oneof/map<K,V>/嵌套类型（限定名登记）/reserved/字段选项；
+  配套规范打印 `print_proto` 支撑解析 round-trip。
+- 模式驱动的类型化编解码（`typed.mbt`）：`TypedValue`/`TypedMessage` 与
+  `encode_typed`/`decode_typed`（sint zigzag、bool/enum、定长 float/double/fixed
+  位级、string/bytes、嵌套递归、repeated 聚合、packed 拆包、proto3 默认值省略、
+  未设置字段语义、未知字段保留）。
+- 确定性/规范化编码（`canonical.mbt`）：`encode_canonical`（字段号升序 + packed +
+  每字段一次 + 未知字段并入）与 wire 级 `canonicalize_wire`，编码幂等。
+- 模式校验（`schema_validate.mbt`）：`SchemaError` 与 `validate_schema`（字段号范围/
+  唯一/保留冲突/类型引用解析/proto3 枚举首值 0），一次性多诊断。
+- proto3 JSON 映射（`json.mbt`）：`encode_json`/`decode_json` 与 `base64_encode`/
+  `base64_decode`（camelCase、64 位整数为字符串、bytes base64、默认值省略）。
+- 完整代码生成（`codegen_full.mbt`）：`gen_moonbit_full` 产出带字段 `pub struct` +
+  委托共享类型化模型的编解码函数。
+- 端到端实战 demo（`demo.mbt`）：`demo_proto`/`demo_message`（UserProfile，覆盖
+  标量/repeated/嵌套/enum/oneof/map 六类构造）。
+- 性能基准（`benches/serialization_bench`）：varint 密集 / 大 repeated（packed 对比）/
+  嵌套深度 / 字符串密集四类负载 + 往返/紧凑度/字节基线回归 guard。
+- 属性测试：11 条正确性属性（既有 wire 往返、类型化往返、zigzag 双射、规范编码
+  幂等、未知字段保留、packed 等价、合法模式校验、JSON↔二进制等价、生成代码往返、
+  解码错误位置、模式解析 round-trip），每条 ≥100 迭代，三后端一致。
+- 可执行文档：`README.mbt.md` 扩充覆盖六大新能力 + paper-to-code 追溯 + 开源对标 +
+  实现边界声明。
+
+### Changed
+- release: `serialization_version` 自 `0.1.0` 推进至 `0.2.0`（次版本，向后兼容）。
+
 ## [0.1.0] - 2026-06-11
 
 骨架首版（breadth-first 第一版）：达成「可编译 + 跑通三后端（wasm-gc / js /
@@ -43,5 +85,6 @@ native）+ protobuf wire format 编解码 + `.proto` 解析 + 代码生成 + 往
   `0.1.0`，changelog 路径 `src/serialization/CHANGELOG.md`）
   （新增方向发布元数据登记）。
 
-[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/serialization-v0.1.0...HEAD
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/serialization-v0.2.0...HEAD
+[0.2.0]: https://github.com/Suquster/moonbit-pathfinding/compare/serialization-v0.1.0...serialization-v0.2.0
 [0.1.0]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/serialization-v0.1.0

@@ -85,13 +85,27 @@ pub fn Level::from_label(s : String) -> Level? {
 ///|
 /// 结构化日志字段的取值（structured field value）。
 ///
-/// 覆盖最常见的标量字段类型；嵌套对象 / 数组等富结构按需在后续子 spec 迭代
-/// 扩展。`Map[String, Value]` 即一条事件的键值字段集合。
+/// 标量取值（`VStr` / `VInt` / `VBool` / `VFloat`）覆盖最常见的字段类型；
+/// 旗舰深化（Requirement 1.1 / 1.2）在其上**加性追加**两个嵌套取值变体：
+///   * `VMap`  —— 对象型键值映射（嵌套结构化字段，对应 JSON 对象）；
+///   * `VList` —— 数组型有序元素序列（对应 JSON 数组）。
+/// 嵌套取值可任意层级容纳标量与进一步的 `VMap` / `VList`（Requirement 1.2）。
+///
+/// **向后兼容契约（Requirement 12.1 / 12.4）**：既有四个标量变体的名称、载荷
+/// 与 `derive(Eq, Show)` 语义逐字保留；本次仅在其后**追加**两个变体，不改动、
+/// 不重排、不重命名任何既有变体，故仅含标量字段事件的 `format_json` /
+/// `parse_json_log` 行为逐字节不变（嵌套臂仅在 logging.mbt 私有助手中追加）。
+///
+/// 注意 `VMap` 的 `Eq` 经由 `Map` 的内容相等（与键插入顺序无关）判定，这正是
+/// 「JSON 对象成员升序稳定排序后再往返」仍满足逐字段相等的代数基础
+/// （见 Property 1：嵌套 JSON 往返）。
 pub(all) enum Value {
   VStr(String)
   VInt(Int64)
   VBool(Bool)
   VFloat(Double)
+  VMap(Map[String, Value]) // 新增：对象型嵌套取值（Requirement 1.1）
+  VList(Array[Value]) // 新增：数组型嵌套取值（Requirement 1.1）
 } derive(Eq, Show)
 
 // ───────────────────────────── 标识符类型 ─────────────────────────────────

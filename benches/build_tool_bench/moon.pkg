@@ -1,0 +1,26 @@
+// Package: benches/build_tool_bench
+//
+// Build_Tool 旗舰深化性能基准与回归 guard（design.md §4.9，R11）。覆盖大规模
+// 有向无环依赖图上的四类核心工作负载并计时：
+//   * 拓扑排序——`topo_order`（Kahn，复用 @directed）于链 / 分层网格；
+//   * 并行调度——`schedule`（拓扑分层 + jobs 切分）于不同并行度；
+//   * 脏检查——`dirty_targets` / `is_dirty` 于大规模缓存；
+//   * 最小重建集——`minimal_rebuild_set`（前向可达闭包）于单源变更。
+//
+// 参数化 DAG 生成（链 / 扇出 / 分层网格），同时提供确定性回归 guard（拓扑层数 /
+// 关键路径 / 重建集规模对内联基线精确比较，超声明容差给出可审计失败报告，
+// R11.3）。
+//
+// 运行命令（文档化，R11.5）：
+//   moon test  -p Suquster/moonbit-pathfinding/benches/build_tool_bench --target wasm-gc
+//   moon test  -p Suquster/moonbit-pathfinding/benches/build_tool_bench --target js
+//   moon bench -p Suquster/moonbit-pathfinding/benches/build_tool_bench --target native
+// native 运行前须先：export LIBRARY_PATH=/usr/lib64:/usr/lib（R11.4）
+//
+// 基准 JSON/Markdown 工件（含机器标识 / 后端目标 / 图规模（节点数 / 边数）/ 计时
+// 统计，R11.2）由 scripts/benchmark_*.ps1 驱动本包 `moon test` / `moon bench`
+// 产出，写入 benches/results/；新运行与基线中位数比较给出回归报告。
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/build_tool" @bt,
+}

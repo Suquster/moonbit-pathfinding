@@ -17,9 +17,15 @@
 //     避免重写已被证明谓词覆盖的图算法（design.md §「核心设计决策」4）。
 //   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 9.6）。
+//   * @parser_combinator —— 共享解析器组合子包（旗舰深化）。完整规则文法
+//     `parse_rules_full`（rule_grammar.mbt）构建于其 `Input` / `Pos` /
+//     `Parser` / `satisfy` / `many` / `many1` / `map` / `not_followed_by` /
+//     `any_char` 等原语之上，并以其 `Pos`（行 / 列 / 偏移）承载列号级诊断
+//     （R1 / R2，旁路扩展，不改既有 `parse_rules` 最小文法语义）。
 import {
   "Suquster/moonbit-pathfinding/src/directed",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/parser_combinator",
 }
 
 // 属性测试（task 9.3 拓扑不变量、9.4 环检测错误条件 + 增量幂等空操作）

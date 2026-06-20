@@ -2,6 +2,7 @@
 package "Suquster/moonbit-pathfinding/src/actor"
 
 import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
 }
 
@@ -10,18 +11,56 @@ pub let actor_name : String
 
 pub let actor_version : String
 
+pub fn affected_children(SupervisionStrategy, Int, Int) -> Array[Int]
+
+pub fn[S, M, R] ask(ActorSystem[S, M], AskBroker[R], ActorRef[M], (CorrelationId) -> M, Int) -> AskResult[R]
+
+pub fn[S, M] behavior_stack_depth(Array[Behavior[S, M]]) -> Int
+
+pub fn[S, M] behavior_stack_new(Behavior[S, M]) -> Array[Behavior[S, M]]
+
+pub fn[S, M] behavior_stack_pop(Array[Behavior[S, M]]) -> Unit
+
+pub fn[S, M] behavior_stack_push(Array[Behavior[S, M]], Behavior[S, M]) -> Unit
+
+pub fn[S, M] behavior_stack_top(Array[Behavior[S, M]]) -> Behavior[S, M]?
+
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
 
+pub fn[S, M] replay_consistent(UInt64, (UInt64) -> ActorSystem[S, M]) -> Bool
+
 pub fn reset_runtime() -> Unit
 
+pub fn[S] restart_state(S, LifecycleHooks[S], S, String) -> S
+
 pub fn[S, M] spawn(S, (S, M) -> S) -> ActorRef[M]
+
+pub fn[S] start_state(S, LifecycleHooks[S]) -> S
+
+pub fn within_intensity(Array[Int], Int, Int, Int) -> Bool
+
+pub fn worker_pool_demo(Int, Array[Task], Int?, UInt64) -> WorkerPoolReport
 
 // Errors
 
 // Types and methods
 type ActorCell[S, M]
+
+pub struct ActorContext[S, M] {
+  self_id : ActorId
+  effects : Array[ContextEffect[S, M]]
+}
+pub fn[S, M] ActorContext::become_(Self[S, M], Behavior[S, M]) -> Unit
+pub fn[S, M] ActorContext::effect_count(Self[S, M]) -> Int
+pub fn[S, M] ActorContext::id(Self[S, M]) -> ActorId
+pub fn[S, M] ActorContext::new(ActorId) -> Self[S, M]
+pub fn[S, M] ActorContext::stash(Self[S, M]) -> Unit
+pub fn[S, M] ActorContext::unbecome(Self[S, M]) -> Unit
+pub fn[S, M] ActorContext::unstash_all(Self[S, M]) -> Unit
+pub fn[S, M] ActorContext::unwatch(Self[S, M], ActorId) -> Unit
+pub fn[S, M] ActorContext::watch(Self[S, M], ActorId, (ActorId, TerminationReason) -> M) -> Unit
 
 pub(all) struct ActorId {
   value : Int
@@ -48,6 +87,103 @@ pub(all) enum ActorStatus {
   Failed(String)
 } derive(Eq, Show)
 
+pub struct ActorSystem[S, M] {
+  cells : Array[SupervisedCell[S, M]]
+  supervisors : Map[Int, SupervisorSpec]
+  parents : Map[Int, Int]
+  children : Map[Int, Array[Int]]
+  watches : WatchRegistry[M]
+  trace : Array[TraceEvent]
+  mut clock : Int
+  mut rng : @infra_pbt.Rng?
+  mut next_id : Int
+}
+pub fn[S, M] ActorSystem::is_running(Self[S, M], ActorRef[M]) -> Bool
+pub fn[S, M] ActorSystem::new() -> Self[S, M]
+pub fn[S, M] ActorSystem::pending(Self[S, M], ActorRef[M]) -> Int
+pub fn[S, M] ActorSystem::restart_count(Self[S, M], ActorRef[M]) -> Int
+pub fn[S, M] ActorSystem::run_until_idle(Self[S, M]) -> Unit
+pub fn[S, M] ActorSystem::set_directive(Self[S, M], ActorRef[M], Directive) -> Unit
+pub fn[S, M] ActorSystem::spawn(Self[S, M], S, Behavior[S, M], hooks? : LifecycleHooks[S], supervisor? : ActorRef[M], directive? : Directive, bounded? : (Int, BackpressurePolicy)) -> ActorRef[M]
+pub fn[S, M] ActorSystem::state_of(Self[S, M], ActorRef[M]) -> S?
+pub fn[S, M] ActorSystem::status_of(Self[S, M], ActorRef[M]) -> ActorStatus?
+pub fn[S, M] ActorSystem::step(Self[S, M]) -> Bool
+pub fn[S, M] ActorSystem::supervise(Self[S, M], ActorRef[M], SupervisorSpec, Array[ActorRef[M]]) -> Unit
+pub fn[S, M] ActorSystem::trace_of(Self[S, M]) -> Array[TraceEvent]
+pub fn[S, M] ActorSystem::with_seed(UInt64) -> Self[S, M]
+
+pub struct AskBroker[R] {
+  mut next : Int
+  pending : Map[Int, R]
+  consumed : Map[Int, Bool]
+}
+pub fn[R] AskBroker::allocate(Self[R]) -> CorrelationId
+pub fn[R] AskBroker::fulfill(Self[R], CorrelationId, R) -> Unit
+pub fn[R] AskBroker::has_reply(Self[R], CorrelationId) -> Bool
+pub fn[R] AskBroker::new() -> Self[R]
+pub fn[R] AskBroker::poll(Self[R], CorrelationId) -> AskResult[R]
+
+pub(all) enum AskResult[R] {
+  Replied(R)
+  Timeout
+} derive(Eq, Show)
+
+pub(all) enum BackpressurePolicy {
+  DropNewest
+  DropOldest
+  Reject
+} derive(Eq, Show)
+
+pub(all) struct Behavior[S, M] {
+  receive : (ActorContext[S, M], S, M) -> ActorOutcome[S]
+}
+pub fn[S, M] Behavior::apply(Self[S, M], ActorContext[S, M], S, M) -> ActorOutcome[S]
+pub fn[S, M] Behavior::new((ActorContext[S, M], S, M) -> ActorOutcome[S]) -> Self[S, M]
+
+pub struct BoundedMailbox[M] {
+  capacity : Int
+  policy : BackpressurePolicy
+  items : Array[M]
+  mut enqueued : Int
+  mut dropped : Int
+  mut rejected : Int
+}
+pub fn[M] BoundedMailbox::capacity(Self[M]) -> Int
+pub fn[M] BoundedMailbox::counts(Self[M]) -> (Int, Int, Int)
+pub fn[M] BoundedMailbox::dequeue(Self[M]) -> M?
+pub fn[M] BoundedMailbox::is_empty(Self[M]) -> Bool
+pub fn[M] BoundedMailbox::length(Self[M]) -> Int
+pub fn[M] BoundedMailbox::new(Int, BackpressurePolicy) -> Self[M]
+pub fn[M] BoundedMailbox::offer(Self[M], M) -> OfferResult
+
+pub(all) enum ContextEffect[S, M] {
+  PushBehavior(Behavior[S, M])
+  PopBehavior
+  StashCurrent
+  UnstashAll
+  Watch(ActorId, (ActorId, TerminationReason) -> M)
+  Unwatch(ActorId)
+}
+
+pub(all) struct CorrelationId {
+  value : Int
+} derive(Eq, Show)
+
+pub(all) enum Directive {
+  Restart
+  Stop
+  Escalate
+} derive(Eq, Show)
+
+pub(all) struct LifecycleHooks[S] {
+  pre_start : (S) -> S
+  post_stop : (S) -> Unit
+  pre_restart : (S, String) -> Unit
+  post_restart : (S) -> S
+}
+pub fn[S] LifecycleHooks::identity() -> Self[S]
+pub fn[S] LifecycleHooks::new((S) -> S, (S) -> Unit, (S, String) -> Unit, (S) -> S) -> Self[S]
+
 pub(all) struct Mailbox[M] {
   mut items : Array[M]
   mut closed : Bool
@@ -61,6 +197,45 @@ pub fn[M] Mailbox::length(Self[M]) -> Int
 pub fn[M] Mailbox::new() -> Self[M]
 pub fn[M] Mailbox::peek(Self[M]) -> M?
 
+pub(all) enum OfferResult {
+  Enqueued
+  Dropped
+  Rejected
+} derive(Eq, Show)
+
+pub(all) enum PoolMsg {
+  RunTask(Task)
+  FaultTask(Task)
+  AskCount(CorrelationId)
+  WatchWorker(ActorId)
+  WorkerDown(ActorId, TerminationReason)
+} derive(Eq, Show)
+
+pub(all) struct RestartIntensity {
+  max_restarts : Int
+  window : Int
+} derive(Eq, Show)
+pub fn RestartIntensity::new(Int, Int) -> Self
+
+type RingNode
+
+pub struct Router[M] {
+  strategy : RoutingStrategy
+  workers : Array[ActorRef[M]]
+  mut cursor : Int
+}
+pub fn[M] Router::new(RoutingStrategy, Array[ActorRef[M]]) -> Self[M]
+pub fn[M] Router::route(Self[M], M) -> Unit
+pub fn[M] Router::route_keyed(Self[M], String, M) -> Unit
+pub fn[M] Router::worker_count(Self[M]) -> Int
+pub fn[M] Router::worker_for_key(Self[M], String) -> ActorId
+
+pub(all) enum RoutingStrategy {
+  RoundRobin
+  Broadcast
+  ConsistentHash
+} derive(Eq, Show)
+
 pub struct Scheduler[S, M] {
   cells : Array[ActorCell[S, M]]
   mut next_id : Int
@@ -73,6 +248,82 @@ pub fn[S, M] Scheduler::spawn(Self[S, M], S, (S, M) -> ActorOutcome[S], supervis
 pub fn[S, M] Scheduler::state_of(Self[S, M], ActorRef[M]) -> S?
 pub fn[S, M] Scheduler::status_of(Self[S, M], ActorRef[M]) -> ActorStatus?
 pub fn[S, M] Scheduler::step(Self[S, M]) -> Bool
+
+pub struct StashBuffer[M] {
+  items : Array[M]
+}
+pub fn[M] StashBuffer::clear(Self[M]) -> Unit
+pub fn[M] StashBuffer::drain_to_front(Self[M], Mailbox[M]) -> Unit
+pub fn[M] StashBuffer::is_empty(Self[M]) -> Bool
+pub fn[M] StashBuffer::length(Self[M]) -> Int
+pub fn[M] StashBuffer::new() -> Self[M]
+pub fn[M] StashBuffer::push(Self[M], M) -> Unit
+
+pub(all) struct SupervisedCell[S, M] {
+  id : ActorId
+  mailbox : Mailbox[M]
+  bounded : BoundedMailbox[M]?
+  mut state : S
+  init_state : S
+  behaviors : Array[Behavior[S, M]]
+  stash : StashBuffer[M]
+  hooks : LifecycleHooks[S]
+  mut directive : Directive
+  mut status : ActorStatus
+  mut started : Bool
+  restart_times : Array[Int]
+}
+
+pub(all) enum SupervisionStrategy {
+  OneForOne
+  OneForAll
+  RestForOne
+} derive(Eq, Show)
+
+pub(all) struct SupervisorSpec {
+  strategy : SupervisionStrategy
+  intensity : RestartIntensity
+  default_directive : Directive
+} derive(Eq, Show)
+pub fn SupervisorSpec::new(SupervisionStrategy, RestartIntensity, Directive) -> Self
+
+pub(all) struct Task {
+  id : Int
+  payload : Int
+} derive(Eq, Show)
+
+pub(all) enum TerminationReason {
+  StoppedNormally
+  FailedWith(String)
+} derive(Eq, Show)
+
+pub(all) struct TraceEvent {
+  actor : ActorId
+  seq : Int
+} derive(Eq, Show)
+
+pub(all) struct WatchEntry[M] {
+  target : ActorId
+  watcher : ActorId
+  on_terminated : (ActorId, TerminationReason) -> M
+  mut active : Bool
+}
+
+pub struct WatchRegistry[M] {
+  entries : Array[WatchEntry[M]]
+}
+pub fn[M] WatchRegistry::active_count(Self[M]) -> Int
+pub fn[M] WatchRegistry::collect_terminations(Self[M], ActorId, TerminationReason) -> Array[(ActorId, M)]
+pub fn[M] WatchRegistry::new() -> Self[M]
+pub fn[M] WatchRegistry::unwatch(Self[M], ActorId, ActorId) -> Unit
+pub fn[M] WatchRegistry::watch(Self[M], ActorId, ActorId, (ActorId, TerminationReason) -> M) -> Unit
+
+pub(all) struct WorkerPoolReport {
+  completed : Int
+  restarts : Int
+  terminated_seen : Array[ActorId]
+  ask_results : Array[AskResult[Int]]
+} derive(Eq, Show)
 
 // Type aliases
 

@@ -11,11 +11,65 @@ pub fn[T] alt(Array[Parser[T]]) -> Parser[T]
 
 pub fn any_char() -> Parser[Char]
 
+pub fn[A, B] ap(Parser[(A) -> B], Parser[A]) -> Parser[B]
+
+pub fn[O, T, C] between(Parser[O], Parser[T], Parser[C]) -> Parser[T]
+
+pub fn[A, B] bind(Parser[A], (A) -> Parser[B]) -> Parser[B]
+
+pub fn[T] chainl(Parser[T], Parser[(T, T) -> T], T) -> Parser[T]
+
+pub fn[T] chainl1(Parser[T], Parser[(T, T) -> T]) -> Parser[T]
+
+pub fn[T] chainr(Parser[T], Parser[(T, T) -> T], T) -> Parser[T]
+
+pub fn[T] chainr1(Parser[T], Parser[(T, T) -> T]) -> Parser[T]
+
+pub fn[T] choice(Array[Grammar[T]]) -> Grammar[T]
+
+pub fn[T] commit(Grammar[T]) -> Grammar[T]
+
+pub fn[T] cut(Grammar[T]) -> Grammar[T]
+
+pub fn[T] drive(Step[T], Array[String], closed~ : Bool) -> ParseResult[T]
+
+pub fn eval_expr(Expr) -> Double
+
+pub fn expr_parser() -> Parser[Expr]
+
+pub fn json_parser() -> Parser[Json]
+
+pub fn json_value_grammar() -> Grammar[Json]
+
+pub fn[T] label(Parser[T], String) -> Parser[T]
+
+pub fn[T] lazy_parser(() -> Parser[T]) -> Parser[T]
+
+pub fn[T] left_recursive(String, (Grammar[T]) -> Grammar[T]) -> Grammar[T]
+
+pub fn[T] lift(Parser[T]) -> Grammar[T]
+
+pub fn[T] lookahead(Parser[T]) -> Parser[T]
+
 pub fn[T] many(Parser[T]) -> Parser[Array[T]]
 
 pub fn[T] many1(Parser[T]) -> Parser[Array[T]]
 
+pub fn[A, B] map(Parser[A], (A) -> B) -> Parser[B]
+
+pub fn[T] memoize(Grammar[T]) -> Grammar[T]
+
+pub fn[T] not_followed_by(Parser[T]) -> Parser[Unit]
+
+pub fn[T] op_as_label(Parser[T], String) -> Parser[T]
+
 pub fn[T] optional(Parser[T]) -> Parser[T?]
+
+pub fn parse_and_eval(String) -> Result[Double, @core.PathError]
+
+pub fn parse_json(String) -> Result[Json, @core.PathError]
+
+pub fn parse_json_recover(String) -> (Json?, Array[@core.PathError])
 
 pub let parser_combinator_name : String
 
@@ -23,7 +77,17 @@ pub let parser_combinator_version : String
 
 pub fn pchar(Char) -> Parser[Char]
 
+pub fn[T] pfail(expected~ : Array[String]) -> Parser[T]
+
+pub fn print_expr(Expr) -> String
+
+pub fn print_json(Json) -> String
+
 pub fn ptoken(String) -> Parser[String]
+
+pub fn[T] pure(T) -> Parser[T]
+
+pub fn[T] recover(Grammar[T], Grammar[Unit], T) -> Grammar[T]
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
@@ -31,11 +95,36 @@ pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.Dire
 
 pub fn satisfy((Char) -> Bool, label~ : String) -> Parser[Char]
 
+pub fn[T, S] sep_by(Parser[T], Parser[S]) -> Parser[Array[T]]
+
+pub fn[T, S] sep_by1(Parser[T], Parser[S]) -> Parser[Array[T]]
+
 pub fn[A, B] seq(Parser[A], Parser[B]) -> Parser[(A, B)]
 
 // Errors
 
 // Types and methods
+pub(all) enum Expr {
+  Num(Double)
+  Add(Expr, Expr)
+  Sub(Expr, Expr)
+  Mul(Expr, Expr)
+  Div(Expr, Expr)
+  Pow(Expr, Expr)
+} derive(Eq)
+
+pub struct Grammar[T] {
+  run_ctx : (PCtx, Input) -> Outcome[T]
+}
+pub fn[A, B] Grammar::bind(Self[A], (A) -> Self[B]) -> Self[B]
+pub fn[A, B] Grammar::map(Self[A], (A) -> B) -> Self[B]
+pub fn[T] Grammar::pure(T) -> Self[T]
+pub fn[T] Grammar::run_incremental(Self[T], String) -> Step[T]
+pub fn[T] Grammar::run_naive(Self[T], Input) -> ParseResult[T]
+pub fn[T] Grammar::run_naive_string(Self[T], String) -> ParseResult[T]
+pub fn[T] Grammar::run_packrat(Self[T], Input) -> ParseResult[T]
+pub fn[T] Grammar::run_packrat_string(Self[T], String) -> ParseResult[T]
+
 pub struct Input {
   chars : Array[Char]
   pos : Pos
@@ -44,6 +133,25 @@ pub fn Input::advance(Self) -> Self
 pub fn Input::from_string(String) -> Self
 pub fn Input::is_eof(Self) -> Bool
 pub fn Input::peek(Self) -> Char?
+
+pub(all) enum Json {
+  JNull
+  JBool(Bool)
+  JNumber(Double)
+  JString(String)
+  JArray(Array[Json])
+  JObject(Array[(String, Json)])
+} derive(Eq)
+
+pub enum Outcome[T] {
+  OOk(T, Input)
+  OFail(Pos, Array[String], Bool)
+}
+
+pub struct PCtx {
+  run_id : Int
+  enable_memo : Bool
+}
 
 pub enum ParseResult[T] {
   Ok(T, Input)
@@ -68,6 +176,16 @@ pub struct Pos {
 } derive(Eq)
 pub fn Pos::start() -> Self
 pub impl Show for Pos
+
+pub(all) enum Step[T] {
+  Done(ParseResult[T])
+  NeedMore((String) -> Step[T])
+}
+
+pub struct StreamSource {
+  chunks : Array[Char]
+  mut closed : Bool
+}
 
 // Type aliases
 

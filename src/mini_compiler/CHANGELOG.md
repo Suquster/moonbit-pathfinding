@@ -17,10 +17,48 @@
 
 ## [Unreleased]
 
-### 计划中（后续任务）
-- 任务 15.2：完整树遍历解释器 `eval` 与含类型错误诊断的 `check`。
-- 任务 15.3 ~ 15.5：AST 往返、词法/语法错误条件、求值确定性与作用域不变量属性测试及证明谓词。
-- 任务 15.6：`*.mbt.md` 端到端可执行文档（源码 → AST → 求值）。
+（暂无计划中条目；后续新增方向能力时在此登记。）
+
+## [0.2.0] - 2026-06-12
+
+**旗舰深化版（flagship deepening）**：在 `0.1.0` 骨架基线之上，以
+**bypass-additive**（旁路增量、零破坏）方式新增完整的 **MiniML** 语言层——
+覆盖词法/语法、Hindley–Milner 类型推断、树遍历解释器、栈式字节码后端与
+虚拟机、AST 优化、统一流水线、旗舰演示、基准与可执行文档，并以 16 条
+正确性属性（PBT）守护。版本按 **SemVer 次版本号**递进（向后兼容的增量
+特性），既有 MiniLet 公开 API（`lex` / `parse` / `check` / `eval` /
+`print_ast` / `compile`）**行为冻结**，保持严格向后兼容。
+
+### Added
+- 语言层 **MiniML**（bypass-additive）：核心数据模型 `Expr` / `Ty` /
+  `TExpr` / `Val`，以及从既有 MiniLet AST 桥接到 MiniML 的 `of_minilet`
+  提升入口（不改动 MiniLet 既有产物）。
+- 前端：MiniML 词法 `lex_ml`、递归下降语法 `parse_ml`、与解析互逆的
+  打印器 `print_expr`（为 AST 往返性质奠基）。
+- 类型系统：Hindley–Milner 类型推断——合一 `unify`（含 occurs-check）与
+  Algorithm W 风格的 `infer`，给出主类型（principal type）。
+- 解释器：树遍历求值 `eval_ml` 与作用域检查 `scope_check_ml`。
+- 后端：栈式字节码后端 `compile_ml`（指令集 `Instr` / 程序 `Bytecode`）与
+  虚拟机 `VM::run`。
+- 优化：AST 级优化遍——常量折叠 `const_fold`、死绑定消除
+  `dead_let_elim`、beta 归约 `beta_reduce`，及聚合入口 `optimize`。
+- 流水线：统一入口 `run_interp`（解释执行）与 `run_compiled`（编译到
+  字节码后经 VM 执行），二者结果一致。
+- 演示：旗舰端到端 `run_demo`（源码 → 词法 → 语法 → 推断 → 优化 →
+  解释 / 编译执行）。
+- 基准：新增 MiniML 基准包，度量推断 / 编译 / 执行路径。
+- 文档：扩充 `*.mbt.md` 可执行文档，端到端覆盖 MiniML 全流程。
+- 测试：新增 16 条正确性属性（PBT）——AST 往返、合一正确性、occurs-check、
+  替换/推断幂等、主类型、类型安全、求值确定性、作用域、优化语义保持/可类型化、
+  编译-VM 与解释一致、beta 捕获规避、兼容性金标准等。
+
+### Changed
+- release：`mini_compiler_version` 自 `0.1.0` 推进至 `0.2.0`（次版本号）；
+  `release_info_with_gates(QualityGates)` 沿用既有签名，门禁聚合语义明确为
+  **三后端测试 / 属性测试 / 可执行文档**三要素，经
+  `@release_meta.aggregate_release_ready` 聚合 `release_ready`。
+- 公开签名不变：`mini_compiler_name`、`release_info()`、
+  `release_info_with_gates(QualityGates)` 维持原签名（仅版本常量值变化）。
 
 ## [0.1.0] - 2026-06-11
 
@@ -44,5 +82,6 @@
 - release：通过 `release_info()` 登记本方向 `DirectionRelease`（版本
   `0.1.0`，changelog 路径 `src/mini_compiler/CHANGELOG.md`）。
 
-[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/mini_compiler-v0.1.0...HEAD
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/mini_compiler-v0.2.0...HEAD
+[0.2.0]: https://github.com/Suquster/moonbit-pathfinding/compare/mini_compiler-v0.1.0...mini_compiler-v0.2.0
 [0.1.0]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/mini_compiler-v0.1.0

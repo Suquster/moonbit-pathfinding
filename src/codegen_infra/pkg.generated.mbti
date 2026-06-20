@@ -8,15 +8,61 @@ import {
 // Values
 pub fn allocate_coloring(InterferenceGraph, Int) -> Map[Var, Location]
 
+pub fn allocate_coloring_briggs(InterferenceGraph, Int, cost? : SpillCost) -> Map[Var, Location]
+
 pub fn allocate_linear_scan(Array[LiveInterval], Int) -> Map[Var, Location]
 
+pub fn allocation_has_spill(Map[Var, Location]) -> Bool
+
+pub fn analyze_liveness(Array[BasicBlock]) -> LivenessResult
+
+pub fn build_dom_tree(Array[BasicBlock], entry~ : String) -> DomTree
+
+pub fn build_interference_from_liveness(Array[BasicBlock], LivenessResult) -> InterferenceGraph
+
+pub fn build_intervals_from_liveness(Array[BasicBlock], LivenessResult) -> Array[LiveInterval]
+
 pub fn build_ssa(Array[BasicBlock]) -> SsaProgram
+
+pub fn build_ssa_minimal(Array[BasicBlock], entry~ : String) -> SsaProgram
+
+pub fn can_coalesce_briggs(InterferenceGraph, Var, Var, Int) -> Bool
+
+pub fn can_coalesce_george(InterferenceGraph, Var, Var, Int) -> Bool
+
+pub fn coalesce(InterferenceGraph, MoveSet, Int, strategy? : CoalesceStrategy) -> InterferenceGraph
 
 pub let codegen_infra_name : String
 
 pub let codegen_infra_version : String
 
+pub fn copy_prop_strong(SsaProgram) -> SsaProgram
+
+pub fn dce_strong(SsaProgram) -> SsaProgram
+
+pub fn demo_ir() -> IrNode
+
+pub fn demo_isel_rules() -> Array[CostRule]
+
+pub fn demo_pipeline() -> PipelineStages
+
+pub fn demo_program() -> Array[BasicBlock]
+
+pub fn destruct_ssa(SsaProgram) -> SsaProgram
+
+pub fn dominance_frontier(Array[BasicBlock], DomTree) -> Map[String, Array[String]]
+
+pub fn evaluate(SsaProgram, Map[String, Int], Array[String]) -> EvalResult
+
+pub fn gvn(SsaProgram) -> SsaProgram
+
 pub fn interference_components(InterferenceGraph) -> Array[Array[Var]]
+
+pub fn interference_from_intervals(Array[LiveInterval]) -> InterferenceGraph
+
+pub fn liveness_step(Array[BasicBlock], LivenessResult) -> LivenessResult
+
+pub fn max_munch(Array[CostRule], IrNode) -> Array[TargetInstr]
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
@@ -24,7 +70,21 @@ pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.Dire
 
 pub fn run_passes(SsaProgram, Array[Pass]) -> SsaProgram
 
+pub fn run_pipeline(SsaProgram, Array[OptPass]) -> SsaProgram
+
+pub fn run_to_fixpoint(SsaProgram, Array[OptPass], max_iters? : Int) -> SsaProgram
+
+pub fn sccp(SsaProgram) -> SsaProgram
+
 pub fn select(Array[IselRule], IrNode) -> Array[TargetInstr]
+
+pub fn select_burs(Array[CostRule], IrNode) -> Array[TargetInstr]
+
+pub fn sequentialize_parallel_copy(Array[(Var, Var)]) -> Array[(Var, Var)]
+
+pub fn spill_cost(InterferenceGraph, Array[LiveInterval]) -> SpillCost
+
+pub fn tiling_cost(Array[CostRule], IrNode) -> Int
 
 // Errors
 
@@ -34,6 +94,30 @@ pub(all) struct BasicBlock {
   instrs : Array[String]
   succs : Array[String]
 } derive(Show)
+
+pub(all) enum CoalesceStrategy {
+  George
+  Briggs
+} derive(Eq, Show)
+
+pub(all) struct CostRule {
+  pattern : String
+  template : String
+  cost : Int
+} derive(Eq, Show)
+
+pub(all) struct DomTree {
+  root : String
+  idom : Map[String, String]
+  children : Map[String, Array[String]]
+  reachable : Array[String]
+} derive(Show)
+pub fn DomTree::dominates(Self, String, String) -> Bool
+
+pub(all) struct EvalResult {
+  values : Map[String, Int]
+  output : Array[Int]
+} derive(Eq, Show)
 
 pub(all) struct InterferenceGraph {
   nodes : Array[Var]
@@ -51,15 +135,38 @@ pub(all) struct IselRule {
   template : String
 } derive(Eq, Show)
 
+pub(all) enum LatticeValue {
+  Top
+  Const(Int)
+  Bottom
+} derive(Eq, Show)
+
 pub(all) struct LiveInterval {
   variable : Var
   start : Int
   end : Int
 } derive(Eq, Show)
 
+pub(all) struct LivenessResult {
+  live_in : Map[String, Array[Var]]
+  live_out : Map[String, Array[Var]]
+} derive(Show)
+
 pub(all) enum Location {
   Reg(Int)
   Spill(Int)
+} derive(Eq, Show)
+
+pub(all) struct MoveSet {
+  moves : Array[(Var, Var)]
+} derive(Show)
+
+pub(all) enum OptPass {
+  ConstFold
+  DeadCodeElim
+  CopyProp
+  Sccp
+  Gvn
 } derive(Eq, Show)
 
 pub(all) enum Pass {
@@ -72,6 +179,23 @@ pub(all) struct Phi {
   dest : Var
   args : Array[Var]
 } derive(Show)
+
+type PhiSite
+
+pub(all) struct PipelineStages {
+  liveness : LivenessResult
+  dom : DomTree
+  ssa : SsaProgram
+  optimized : SsaProgram
+  coloring : Map[Var, Location]
+  linear_scan : Map[Var, Location]
+  instrs : Array[TargetInstr]
+} derive(Show)
+
+pub(all) struct SpillCost {
+  cost : Map[Var, Double]
+} derive(Show)
+pub fn SpillCost::uniform() -> Self
 
 pub(all) struct SsaProgram {
   blocks : Array[BasicBlock]

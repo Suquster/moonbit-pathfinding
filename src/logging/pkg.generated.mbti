@@ -2,6 +2,7 @@
 package "Suquster/moonbit-pathfinding/src/logging"
 
 import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
 }
 
@@ -14,19 +15,39 @@ pub fn captured_events() -> Array[Event]
 
 pub fn child_context(TraceContext) -> TraceContext
 
+pub fn count_by_level(Array[Event]) -> Array[Int]
+
 pub fn current_span() -> SpanId?
 
 pub fn current_threshold() -> Level
 
 pub fn current_trace() -> TraceId
 
+pub fn dispatch(Array[Sink], Event) -> Unit
+
 pub fn enter_span(String) -> Span
 
 pub fn exit_span(Span) -> Unit
 
+pub fn extract_traceparent(String) -> W3CContext?
+
+pub fn field_filter((Map[String, Value]) -> Bool, Event) -> Bool
+
 pub fn finished_spans() -> Array[Span]
 
+pub fn format_event(Formatter, Event) -> String
+
 pub fn format_json(Event) -> String
+
+pub fn format_logfmt(Event) -> String
+
+pub fn format_pretty(Event) -> String
+
+pub fn histogram(Array[Event], String, Array[Double]) -> Histogram
+
+pub fn inject_traceparent(TraceContext) -> String
+
+pub fn level_count(Array[Int], Level) -> Int
 
 pub fn log(Level, Map[String, Value]) -> Unit
 
@@ -34,13 +55,35 @@ pub let logging_name : String
 
 pub let logging_version : String
 
+pub fn mix(UInt64, UInt64) -> UInt64
+
+pub fn parse_env_filter(String) -> Result[EnvFilter, FilterError]
+
 pub fn parse_json_log(String) -> Event?
+
+pub fn parse_logfmt(String) -> Event?
+
+pub fn redact(RedactionPolicy, Event) -> Event
+
+pub let redaction_mask : Value
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
 
 pub fn reset_logger() -> Unit
+
+pub fn retained_count(Double, Int) -> Int
+
+pub fn route(Array[Sink], Event) -> Array[String]
+
+pub fn run_demo() -> DemoOutcome
+
+pub fn run_downstream(String) -> TraceId?
+
+pub fn sample_stream(Double, Array[Event], @infra_pbt.Rng) -> Array[Event]
+
+pub fn sample_trace(Double, TraceId, UInt64) -> Bool
 
 pub fn set_threshold(Level) -> Unit
 
@@ -51,12 +94,43 @@ pub fn[T] with_context(TraceContext, () -> T) -> T
 // Errors
 
 // Types and methods
+pub(all) struct DemoOutcome {
+  trace : TraceId
+  json_lines : Array[String]
+  logfmt_lines : Array[String]
+  traceparent : String
+  span_count : Int
+} derive(Eq, Show)
+
+pub(all) struct EnvFilter {
+  directives : Map[String, Level]
+  fallback : Level
+} derive(Eq, Show)
+pub fn EnvFilter::allows(Self, Event) -> Bool
+pub fn EnvFilter::threshold_for(Self, String) -> Level
+
 pub(all) struct Event {
   ts : Int64
   level : Level
   fields : Map[String, Value]
 } derive(Eq, Show)
 pub fn Event::new(Int64, Level, Map[String, Value]) -> Self
+
+pub(all) struct FilterError {
+  pos : Int
+  message : String
+} derive(Eq, Show)
+
+pub(all) enum Formatter {
+  Json
+  Logfmt
+  Pretty
+} derive(Eq, Show)
+
+pub(all) struct Histogram {
+  boundaries : Array[Double]
+  buckets : Array[Int]
+} derive(Eq, Show)
 
 type JVal
 
@@ -76,6 +150,29 @@ pub fn Level::rank(Self) -> Int
 
 type Logger
 
+pub(all) struct RateLimiter {
+  window : Int64
+  limit : Int
+  mut state : Map[String, (Int64, Int)]
+}
+pub fn RateLimiter::allow(Self, String, Int64) -> Bool
+pub fn RateLimiter::new(Int64, Int) -> Self
+
+pub(all) struct RedactionPolicy {
+  sensitive : Array[String]
+  predicate : (String, Value) -> Bool
+}
+pub fn RedactionPolicy::by_names(Array[String]) -> Self
+pub fn RedactionPolicy::with_predicate(Self, (String, Value) -> Bool) -> Self
+
+pub(all) struct Sink {
+  name : String
+  formatter : Formatter
+  route : (Event) -> Bool
+  mut buffer : Array[String]
+}
+pub fn Sink::new(String, Formatter, route? : (Event) -> Bool) -> Self
+
 pub(all) struct Span {
   id : SpanId
   parent : SpanId?
@@ -83,8 +180,41 @@ pub(all) struct Span {
   end : Int64?
 } derive(Eq, Show)
 
+pub(all) struct SpanData {
+  span : Span
+  mut attributes : Map[String, Value]
+  mut events : Array[SpanEvent]
+  mut status : SpanStatus
+  mut kind : SpanKind
+} derive(Eq, Show)
+pub fn SpanData::add_event(Self, String, Int64, Map[String, Value]) -> Unit
+pub fn SpanData::new(Span) -> Self
+pub fn SpanData::set_attribute(Self, String, Value) -> Unit
+pub fn SpanData::set_kind(Self, SpanKind) -> Unit
+pub fn SpanData::set_status(Self, SpanStatus) -> Unit
+
+pub(all) struct SpanEvent {
+  name : String
+  ts : Int64
+  fields : Map[String, Value]
+} derive(Eq, Show)
+
 pub(all) struct SpanId {
   value : Int64
+} derive(Eq, Show)
+
+pub(all) enum SpanKind {
+  Internal
+  Server
+  Client
+  Producer
+  Consumer
+} derive(Eq, Show)
+
+pub(all) enum SpanStatus {
+  Unset
+  Ok
+  Error
 } derive(Eq, Show)
 
 pub(all) struct TraceContext {
@@ -101,7 +231,20 @@ pub(all) enum Value {
   VInt(Int64)
   VBool(Bool)
   VFloat(Double)
+  VMap(Map[String, Value])
+  VList(Array[Value])
 } derive(Eq, Show)
+pub fn Value::depth(Self) -> Int
+pub fn Value::is_nested(Self) -> Bool
+pub fn Value::is_scalar(Self) -> Bool
+
+pub(all) struct W3CContext {
+  trace_id : String
+  span_id : String
+  flags : Int
+} derive(Eq, Show)
+pub fn W3CContext::is_sampled(Self) -> Bool
+pub fn W3CContext::to_trace_context(Self) -> TraceContext
 
 // Type aliases
 

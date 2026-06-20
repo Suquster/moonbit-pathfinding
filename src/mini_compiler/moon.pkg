@@ -47,9 +47,16 @@
 //     语法诊断。以别名 @pc 引用。
 //   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5）。
+//   * moonbitlang/core/list —— 不可变单链表 `@list.List`，承载 MiniML 求值
+//     环境 `Env` 与类型环境 `TyEnv` 的 (名字, 绑定) 序列（持久化、遮蔽语义）。
+//   * moonbitlang/core/immut/sorted_map —— 不可变有序映射 `@sorted_map.SortedMap`，
+//     承载类型替换 `Subst`（类型变量 id → 类型项），保证 compose / apply 无副作用。
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/list",
+  "moonbitlang/core/immut/sorted_map",
+  "moonbitlang/core/immut/sorted_set",
 }
 
 // 属性测试（task 15.3 Property 1：Mini_Compiler AST 往返）复用共享 PBT 包

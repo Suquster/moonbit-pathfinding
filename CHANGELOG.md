@@ -30,6 +30,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — Production Hardening（生产级加固，仅新增 / 不破坏既有 API）
+
+> 本批次将 10 个基础设施方向包整体提升至「业界顶尖（旗舰）」生产级质量。
+> 全程遵循 **bypass 原则**：所有新能力以新增类型/函数/方法实现，未修改或删除任何
+> 加固前既有公开签名；11 个变更的 `.mbti` 经审计**只增不减**（422 行纯新增、0 删除）；
+> 未改动任何加固前既有测试（301 个既有测试文件零改动，仅新增测试文件）。
+> 所有属性测试 **≥100 迭代**，关键路径覆盖 **wasm-gc / js / native 三后端一致**。
+
+- feat(infra_text): 新增共享高效文本构建工具 `TextBuilder`（`push_char`/`push_str`/
+  `build`/`reset` 等），以 `Array[Char]` 缓冲 + 分块 `join` 替代 O(n²) 字符串拼接
+  (新增共享文本构建器，供各方向复用)
+- feat(infra_pbt): PBT 框架增强——生成器组合子 `one_of`/`frequency`/`sized`、
+  反例收缩 `shrink`（`Shrinkable`/`check_with_shrink`/`CheckResult`）、统计收集
+  `Stats`/`holds_for_all_stats` (属性测试框架补齐 shrink/组合子/统计)
+- feat(logging): 新增 Sink 层（`SinkTarget`/`SinkHandle`，含 `console`/`callback`/
+  `buffered`）与运行时调级 `set_level`，落地真实 I/O 输出 (日志 Sink 层与运行时调级)
+- feat(build_tool): 新增动作执行框架——`Action`/`Executor` trait/`DryRunExecutor`/
+  `CallbackExecutor`/`ParallelSchedule`/`BuildLog`/`run_actions`，支持并行波次调度与
+  指纹增量判定 (构建工具动作执行/并行调度/增量构建日志)
+- feat(regex_engine): 新增 Unicode General Category 支持、`CharSet` 二分查询、
+  实用 API（`find_at`/`split_n`/`replace_fn`）与 Hybrid 匹配器（缓存上限 + NFA 回退）
+  (正则 Unicode 类别 / Hybrid 执行 / 实用 API)
+- feat(parser_combinator): 新增错误恢复组合子 `with_recovery` 与有界 packrat
+  缓存 `BoundedCache`（LRU 淘汰），保持增量解析与一次性解析等价
+  (解析器错误恢复 / 有界 packrat 缓存)
+- feat(serialization): 新增 proto3 service/rpc/import 解析与打印、结构化代码生成
+  AST（`CodeNode`/`render_code`）、`Any` 类型与流式编解码（`ByteSink`/`ByteSource`/
+  `encode_to`/`decode_from`） (序列化 service-rpc-import / 结构化代码生成 / Any / 流式)
+- feat(codegen_infra): 新增类型化 IR（`Operand`/`TypedInstr`/`TypedBlock`/
+  `TypedFunction`，替代字符串化指令）、IR 验证器（SSA/类型/控制流）与解释器
+  (代码生成类型化 IR / 验证器 / 解释器)
+- feat(dst): 新增可执行任务体（`SimContext`/`ExecutableTask`/`run_executable`）与
+  `eventually` 最终性断言，复用确定性 `World`/`NetworkSim`/`SimClock`
+  (确定性仿真可执行任务 / eventually)
+- feat(mini_compiler): 新增 match/元组/列表特性（`Pattern`/`ExprX`/`check_x`/`eval_x`）
+  与字节码 `peephole`/`tco` 优化，类型错误含 expected/actual
+  (迷你编译器模式匹配 / peephole / 尾调用优化)
+- feat(lsp_server): 新增 JSON-RPC 成帧/校验（`encode_frame`/`decode_frame`，
+  兼容 `\r\n` 与 `\n`；`validate_jsonrpc`/`FrameError`/`JsonRpcError`）与 O(N)
+  增量文档同步 `apply_incremental` (LSP 成帧 / 校验 / O(N) 增量同步)
+- perf: 消除 serialization / build_tool / regex_engine / parser_combinator /
+  logging 五个方向的 O(n²) 循环字符串拼接，统一改用 `infra_text.TextBuilder`，
+  并以逐字符等价性测试锁定输出不变 (消除五方向 O(n²) 拼接，输出逐字符等价)
+
 ## [0.0.3] - 2026-06-10
 
 ### Added

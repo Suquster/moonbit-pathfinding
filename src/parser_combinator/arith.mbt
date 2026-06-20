@@ -178,16 +178,30 @@ fn arith_print_num(d : Double) -> String {
 }
 
 ///|
+/// 以 `TextBuilder` 物化完全括号化的二元节点 `'(' a op b ')'`，消除单节点
+/// 内 4 次顺序字符串 `+`（超过 3 次顺序拼接的缓冲化要求，Requirement 1.5 /
+/// 1.6）；逐片段追加与原顺序 `+` 拼接逐字符相等，打印形式不变。
+fn arith_wrap_binop(op : Char, a : Expr, b : Expr) -> String {
+  let tb = @infra_text.TextBuilder::new()
+  tb.push_char('(')
+  tb.push_str(print_expr(a))
+  tb.push_char(op)
+  tb.push_str(print_expr(b))
+  tb.push_char(')')
+  tb.build()
+}
+
+///|
 /// 完全括号化打印器：每个二元节点以一对括号唯一界定，使打印形式与解析互为
 /// 双射（解析可无歧义恢复同一结构），从而支撑求值一致性（R11.8）。
 pub fn print_expr(e : Expr) -> String {
   match e {
     Num(d) => arith_print_num(d)
-    Add(a, b) => "(" + print_expr(a) + "+" + print_expr(b) + ")"
-    Sub(a, b) => "(" + print_expr(a) + "-" + print_expr(b) + ")"
-    Mul(a, b) => "(" + print_expr(a) + "*" + print_expr(b) + ")"
-    Div(a, b) => "(" + print_expr(a) + "/" + print_expr(b) + ")"
-    Pow(a, b) => "(" + print_expr(a) + "^" + print_expr(b) + ")"
+    Add(a, b) => arith_wrap_binop('+', a, b)
+    Sub(a, b) => arith_wrap_binop('-', a, b)
+    Mul(a, b) => arith_wrap_binop('*', a, b)
+    Div(a, b) => arith_wrap_binop('/', a, b)
+    Pow(a, b) => arith_wrap_binop('^', a, b)
   }
 }
 

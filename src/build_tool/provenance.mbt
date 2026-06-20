@@ -27,11 +27,16 @@ pub fn derive_output_hash(
   input_hashes : Array[String],
   action_fp : String,
 ) -> String {
-  let mut out = lp(action_fp) + lp(input_hashes.length().to_string())
+  // 动作指纹、输入数与各输入哈希的长度前缀单射编码经 `TextBuilder` 物化，
+  // 消除循环内 `out = out + lp(h)` 的 O(n²) 拼接（Requirement 1.5 / 1.6）；
+  // 逐片段 `push_str` 与原顺序 `+` 拼接逐字符相等，输出哈希不变。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(lp(action_fp))
+  out.push_str(lp(input_hashes.length().to_string()))
   for h in input_hashes {
-    out = out + lp(h)
+    out.push_str(lp(h))
   }
-  out
+  out.build()
 }
 
 ///|

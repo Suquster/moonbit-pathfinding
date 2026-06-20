@@ -105,11 +105,13 @@ fn parse_ident(
   )
   match @parser_combinator.many1(ident_char).parse(input) {
     Ok(chars, rest) => {
-      let mut name = ""
+      // 以 `@infra_text.TextBuilder` 顺序追加字符，消除原 `name = name + ...`
+      // 的循环内 O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
+      let sb = @infra_text.TextBuilder::new()
       for c in chars {
-        name = name + c.to_string()
+        sb.push_char(c)
       }
-      Some((name, rest))
+      Some((sb.build(), rest))
     }
     Fail(_, ..) => None
   }
@@ -129,13 +131,15 @@ fn parse_number(
     }
     _ => ()
   }
-  let mut digits = ""
+  // 以 `@infra_text.TextBuilder` 顺序追加数字字符，消除原 `digits = digits + ...`
+  // 的循环内 O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
+  let digits_buf = @infra_text.TextBuilder::new()
   let mut go = true
   while go {
     match cur.peek() {
       Some(d) =>
         if d >= '0' && d <= '9' {
-          digits = digits + d.to_string()
+          digits_buf.push_char(d)
           cur = cur.advance()
         } else {
           go = false
@@ -143,6 +147,7 @@ fn parse_number(
       None => go = false
     }
   }
+  let digits = digits_buf.build()
   if digits == "" {
     return None
   }

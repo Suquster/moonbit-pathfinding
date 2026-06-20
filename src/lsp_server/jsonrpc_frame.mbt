@@ -94,11 +94,40 @@ let ascii_case_gap : Int = 0x20 // 大小写字母码位差
 
 ///|
 /// 成帧解析错误（Requirement 10.2）。
-pub enum FrameError {
+///
+/// `Show` 一律手写（`derive(Eq)` + `pub impl Show ... with fn output`）以规避
+/// `derive(Show)` 弃用告警，与本仓 mini_compiler / codegen_infra 等方向一致。
+pub(all) enum FrameError {
   MissingContentLength // 头部缺失 Content-Length
   InvalidContentLength(raw~ : String) // Content-Length 值非数字（携带原始文本）
   IncompleteBody(need~ : Int, got~ : Int) // 内容不足 N 个码位（携带期望/实际）
-} derive(Eq, Show)
+} derive(Eq)
+
+///|
+/// 把成帧错误写入日志缓冲（手写 `Show` 的共享渲染器），全程 `write_string` 直写。
+fn write_frame_error(logger : &Logger, err : FrameError) -> Unit {
+  match err {
+    MissingContentLength => logger.write_string("MissingContentLength")
+    InvalidContentLength(raw~) => {
+      logger.write_string("InvalidContentLength(raw=")
+      logger.write_string(raw)
+      logger.write_string(")")
+    }
+    IncompleteBody(need~, got~) => {
+      logger.write_string("IncompleteBody(need=")
+      logger.write_string(need.to_string())
+      logger.write_string(", got=")
+      logger.write_string(got.to_string())
+      logger.write_string(")")
+    }
+  }
+}
+
+///|
+/// 以可读形式展示成帧错误（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+pub impl Show for FrameError with fn output(self : FrameError, logger : &Logger) -> Unit {
+  write_frame_error(logger, self)
+}
 
 // ───────────────────────────── 成帧编码 ─────────────────────────────────
 
@@ -294,13 +323,29 @@ fn ascii_lower(cp : Int) -> Int {
 ///|
 /// JSON-RPC 2.0 结构校验错误（Requirement 10.1/10.6）。错误码语义与
 /// @lsp_binding 的标准码一一对应（parse_error / invalid_request / ...）。
-pub enum JsonRpcError {
+pub(all) enum JsonRpcError {
   ParseErr // 整体非对象 / 无法解析为消息
   InvalidRequest // 结构不符合请求/通知/响应任一形态
   MethodNotFound // 方法未注册（结构校验不产生，供错误码映射完整性）
   InvalidParams // 参数非法（结构校验不产生，供错误码映射完整性）
   InternalErr // 内部错误（供错误码映射完整性）
-} derive(Eq, Show)
+} derive(Eq)
+
+///|
+/// 以可读形式展示 JSON-RPC 校验错误（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+pub impl Show for JsonRpcError with fn output(
+  self : JsonRpcError,
+  logger : &Logger,
+) -> Unit {
+  let text = match self {
+    ParseErr => "ParseErr"
+    InvalidRequest => "InvalidRequest"
+    MethodNotFound => "MethodNotFound"
+    InvalidParams => "InvalidParams"
+    InternalErr => "InternalErr"
+  }
+  logger.write_string(text)
+}
 
 ///|
 /// 校验 JSON 是否符合 JSON-RPC 2.0 消息结构（Requirement 10.1/10.6）。
@@ -331,9 +376,9 @@ pub fn validate_jsonrpc(json : @lsp_binding.Json) -> Result[Unit, JsonRpcError] 
       }
     _ => return Err(InvalidRequest)
   }
-  let method = json_lookup_field(fields, field_method)
+  let method_field = json_lookup_field(fields, field_method)
   let id = json_lookup_field(fields, field_id)
-  match method {
+  match method_field {
     Some(m) => {
       // 含 method：method 必须为字符串。
       match m {
@@ -351,14 +396,14 @@ pub fn validate_jsonrpc(json : @lsp_binding.Json) -> Result[Unit, JsonRpcError] 
       match id {
         None => Err(InvalidRequest)
         Some(idv) => {
-          if not(is_valid_id(idv)) {
+          if !is_valid_id(idv) {
             return Err(InvalidRequest)
           }
           let has_result = has_field(fields, field_result)
           let has_error = has_field(fields, field_error)
-          if has_result && not(has_error) {
+          if has_result && !has_error {
             Ok(())
-          } else if has_error && not(has_result) {
+          } else if has_error && !has_result {
             Ok(())
           } else {
             Err(InvalidRequest)

@@ -222,29 +222,31 @@ fn make_pos(
 fn expand_vars(s : String, vars : Map[String, String]) -> String {
   let cs = s.iter().to_array()
   let n = cs.length()
-  let mut out = ""
+  // 输出与变量名累积均经 `TextBuilder`，消除 `out = out + ...` /
+  // `name = name + ...` 的 O(n²) 拼接（Requirement 1.5 / 1.6），输出不变。
+  let out = @infra_text.TextBuilder::new()
   let mut i = 0
   while i < n {
     if cs[i] == '$' && i + 1 < n && cs[i + 1] == '(' {
       let mut j = i + 2
-      let mut name = ""
+      let name = @infra_text.TextBuilder::new()
       while j < n && cs[j] != ')' {
-        name = name + cs[j].to_string()
+        name.push_char(cs[j])
         j = j + 1
       }
       if j < n {
-        out = out + vars.get(name).unwrap_or("")
+        out.push_str(vars.get(name.build()).unwrap_or(""))
         i = j + 1
       } else {
-        out = out + "$"
+        out.push_str("$")
         i = i + 1
       }
     } else {
-      out = out + cs[i].to_string()
+      out.push_char(cs[i])
       i = i + 1
     }
   }
-  out
+  out.build()
 }
 
 // ───────────────────────────── 模式规则实例化（R1.4） ─────────────────────────────
@@ -283,15 +285,17 @@ fn pattern_stem(pattern : String, target : String) -> String? {
 ///|
 /// 将 `%` 回填为 stem。
 fn subst_percent(s : String, stem : String) -> String {
-  let mut out = ""
+  // 经 `TextBuilder` 物化，消除循环内 `out = out + ...` 的 O(n²) 拼接
+  // （Requirement 1.5 / 1.6）；逐片段累积与原 `+` 拼接逐字符相等。
+  let out = @infra_text.TextBuilder::new()
   for c in s.iter().to_array() {
     if c == '%' {
-      out = out + stem
+      out.push_str(stem)
     } else {
-      out = out + c.to_string()
+      out.push_char(c)
     }
   }
-  out
+  out.build()
 }
 
 ///|
@@ -299,18 +303,20 @@ fn subst_percent(s : String, stem : String) -> String {
 fn subst_stem_var(s : String, stem : String) -> String {
   let cs = s.iter().to_array()
   let n = cs.length()
-  let mut out = ""
+  // 经 `TextBuilder` 物化，消除循环内 `out = out + ...` 的 O(n²) 拼接
+  // （Requirement 1.5 / 1.6）；逐片段累积与原 `+` 拼接逐字符相等。
+  let out = @infra_text.TextBuilder::new()
   let mut i = 0
   while i < n {
     if cs[i] == '$' && i + 1 < n && cs[i + 1] == '*' {
-      out = out + stem
+      out.push_str(stem)
       i = i + 2
     } else {
-      out = out + cs[i].to_string()
+      out.push_char(cs[i])
       i = i + 1
     }
   }
-  out
+  out.build()
 }
 
 ///|
@@ -387,40 +393,55 @@ pub fn RuleSet::to_graph(self : RuleSet) -> BuildGraph {
 /// 规则后紧随其 TAB 缩进 recipe 行。由此 `parse_rules_full(print_rules(rs))`
 /// 与 `rs` 等价。
 pub fn print_rules(rs : RuleSet) -> String {
-  let mut out = ""
+  // 变量 / .PHONY / 模式规则 / 具体规则的规范化打印经 `TextBuilder` 物化，
+  // 消除多个循环内 `out = out + ...` 的 O(n²) 拼接（Requirement 1.5 /
+  // 1.6）；逐片段 `push_str` 与原顺序 `+` 拼接逐字符相等，输出与排序不变。
+  let out = @infra_text.TextBuilder::new()
   let names = rs.variables.keys().to_array()
   names.sort()
   for name in names {
-    out = out + name + " = " + rs.variables.get(name).unwrap_or("") + "\n"
+    out.push_str(name)
+    out.push_str(" = ")
+    out.push_str(rs.variables.get(name).unwrap_or(""))
+    out.push_str("\n")
   }
   if rs.phony.length() > 0 {
-    out = out + ".PHONY:"
+    out.push_str(".PHONY:")
     for p in rs.phony {
-      out = out + " " + p
+      out.push_str(" ")
+      out.push_str(p)
     }
-    out = out + "\n"
+    out.push_str("\n")
   }
   for pr in rs.pattern_rules {
-    out = out + pr.target_pattern + ":"
+    out.push_str(pr.target_pattern)
+    out.push_str(":")
     for d in pr.dep_patterns {
-      out = out + " " + d
+      out.push_str(" ")
+      out.push_str(d)
     }
-    out = out + "\n"
+    out.push_str("\n")
     for line in pr.recipe.lines {
-      out = out + "\t" + line + "\n"
+      out.push_str("\t")
+      out.push_str(line)
+      out.push_str("\n")
     }
   }
   for r in rs.rules {
-    out = out + r.target + ":"
+    out.push_str(r.target)
+    out.push_str(":")
     for d in r.deps {
-      out = out + " " + d
+      out.push_str(" ")
+      out.push_str(d)
     }
-    out = out + "\n"
+    out.push_str("\n")
     for line in r.recipe.lines {
-      out = out + "\t" + line + "\n"
+      out.push_str("\t")
+      out.push_str(line)
+      out.push_str("\n")
     }
   }
-  out
+  out.build()
 }
 
 // ───────────────────────────── 完整文法解析 ─────────────────────────────

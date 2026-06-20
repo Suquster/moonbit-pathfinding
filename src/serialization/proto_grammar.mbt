@@ -84,7 +84,9 @@ fn pg_parse_string_lit(
   match input.peek() {
     Some('"') => {
       let mut cur = input.advance()
-      let mut s = ""
+      // 以 `@infra_text.TextBuilder` 顺序追加字符，消除原 `s = s + ...` 的循环内
+      // O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
+      let sb = @infra_text.TextBuilder::new()
       while true {
         match cur.peek() {
           Some('"') => {
@@ -92,13 +94,13 @@ fn pg_parse_string_lit(
             break
           }
           Some(c) => {
-            s = s + c.to_string()
+            sb.push_char(c)
             cur = cur.advance()
           }
           None => return None
         }
       }
-      Some((s, cur))
+      Some((sb.build(), cur))
     }
     _ => None
   }
@@ -113,13 +115,15 @@ fn pg_parse_option_value(
     Some('"') => pg_parse_string_lit(input)
     Some(_) => {
       let mut cur = input
-      let mut s = ""
+      // 以 `@infra_text.TextBuilder` 顺序追加字符，消除原 `s = s + ...` 的循环内
+      // O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
+      let sb = @infra_text.TextBuilder::new()
       let mut go = true
       while go {
         match cur.peek() {
           Some(c) =>
             if is_ident_char(c) || c == '-' || c == '+' {
-              s = s + c.to_string()
+              sb.push_char(c)
               cur = cur.advance()
             } else {
               go = false
@@ -127,6 +131,7 @@ fn pg_parse_option_value(
           None => go = false
         }
       }
+      let s = sb.build()
       if s == "" {
         None
       } else {
@@ -789,12 +794,15 @@ pub fn parse_proto_full(src : String) -> Result[ProtoSchema, ParseError] {
 
 ///|
 /// 由缩进层级产出缩进字符串（每层两空格）。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加，消除原 `s = s + "  "` 的循环内 O(n²)
+/// 字符串拼接（R1.5）；逐字符等价于原实现。
 fn pg_indent(level : Int) -> String {
-  let mut s = ""
+  let sb = @infra_text.TextBuilder::new()
   for _i in 0..<level {
-    s = s + "  "
+    sb.push_str("  ")
   }
-  s
+  sb.build()
 }
 
 ///|
@@ -840,15 +848,18 @@ fn pg_type_name(t : ProtoType) -> String {
 
 ///|
 /// 用分隔符连接字符串数组。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加片段，消除原 `s = s + ...` 的循环内
+/// O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
 fn pg_join(parts : Array[String], sep : String) -> String {
-  let mut s = ""
+  let sb = @infra_text.TextBuilder::new()
   for i in 0..<parts.length() {
     if i > 0 {
-      s = s + sep
+      sb.push_str(sep)
     }
-    s = s + parts[i]
+    sb.push_str(parts[i])
   }
-  s
+  sb.build()
 }
 
 ///|
@@ -876,31 +887,41 @@ fn pg_print_options(f : ProtoField) -> String {
 
 ///|
 /// 打印一条普通字段（含 repeated 标签与选项）。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加片段，避免超过 3 次顺序 `+`（R1.5 /
+/// 质量门禁缓冲方案约定）；逐字符等价于原实现。
 fn pg_print_field(f : ProtoField) -> String {
   let label = match f.label {
     LRepeated(..) => "repeated "
     _ => ""
   }
-  label +
-  pg_type_name(f.ptype) +
-  " " +
-  f.name +
-  " = " +
-  f.number.to_string() +
-  pg_print_options(f) +
-  ";"
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(label)
+  out.push_str(pg_type_name(f.ptype))
+  out.push_str(" ")
+  out.push_str(f.name)
+  out.push_str(" = ")
+  out.push_str(f.number.to_string())
+  out.push_str(pg_print_options(f))
+  out.push_str(";")
+  out.build()
 }
 
 ///|
 /// 打印一个 oneof 成员（无标签）。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加片段，避免超过 3 次顺序 `+`（R1.5 /
+/// 质量门禁缓冲方案约定）；逐字符等价于原实现。
 fn pg_print_oneof_member(f : ProtoField) -> String {
-  pg_type_name(f.ptype) +
-  " " +
-  f.name +
-  " = " +
-  f.number.to_string() +
-  pg_print_options(f) +
-  ";"
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(pg_type_name(f.ptype))
+  out.push_str(" ")
+  out.push_str(f.name)
+  out.push_str(" = ")
+  out.push_str(f.number.to_string())
+  out.push_str(pg_print_options(f))
+  out.push_str(";")
+  out.build()
 }
 
 ///|
@@ -916,6 +937,9 @@ fn pg_find_field_by_number(m : ProtoMessage, number : Int) -> ProtoField? {
 
 ///|
 /// 递归打印一个消息定义。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加片段，消除原 `out = out + ...` 的循环内
+/// O(n²) 字符串拼接（R1.5），对总输出长度线性；逐字符等价于原实现。
 fn pg_print_message(
   schema : ProtoSchema,
   m : ProtoMessage,
@@ -923,7 +947,11 @@ fn pg_print_message(
 ) -> String {
   let pad = pg_indent(level)
   let pad2 = pg_indent(level + 1)
-  let mut out = pad + "message " + pg_simple_name(m.name) + " {\n"
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(pad)
+  out.push_str("message ")
+  out.push_str(pg_simple_name(m.name))
+  out.push_str(" {\n")
   // reserved 字段号 / 范围。
   if m.reserved_numbers.length() > 0 {
     let parts : Array[String] = []
@@ -934,7 +962,10 @@ fn pg_print_message(
         parts.push(r.lo.to_string() + " to " + r.hi.to_string())
       }
     }
-    out = out + pad2 + "reserved " + pg_join(parts, ", ") + ";\n"
+    out.push_str(pad2)
+    out.push_str("reserved ")
+    out.push_str(pg_join(parts, ", "))
+    out.push_str(";\n")
   }
   // reserved 名。
   if m.reserved_names.length() > 0 {
@@ -942,68 +973,97 @@ fn pg_print_message(
     for nm in m.reserved_names {
       parts.push("\"" + nm + "\"")
     }
-    out = out + pad2 + "reserved " + pg_join(parts, ", ") + ";\n"
+    out.push_str(pad2)
+    out.push_str("reserved ")
+    out.push_str(pg_join(parts, ", "))
+    out.push_str(";\n")
   }
   // 非 oneof 字段。
   for f in m.fields {
     match f.label {
       LOneof(..) => ()
-      _ => out = out + pad2 + pg_print_field(f) + "\n"
+      _ => {
+        out.push_str(pad2)
+        out.push_str(pg_print_field(f))
+        out.push_str("\n")
+      }
     }
   }
   // oneof 块。
   for o in m.oneofs {
-    out = out + pad2 + "oneof " + o.name + " {\n"
+    out.push_str(pad2)
+    out.push_str("oneof ")
+    out.push_str(o.name)
+    out.push_str(" {\n")
     let pad3 = pg_indent(level + 2)
     for num in o.members {
       match pg_find_field_by_number(m, num) {
-        Some(f) => out = out + pad3 + pg_print_oneof_member(f) + "\n"
+        Some(f) => {
+          out.push_str(pad3)
+          out.push_str(pg_print_oneof_member(f))
+          out.push_str("\n")
+        }
         None => ()
       }
     }
-    out = out + pad2 + "}\n"
+    out.push_str(pad2)
+    out.push_str("}\n")
   }
   // map 字段。
   for mp in m.maps {
-    out = out +
-      pad2 +
-      "map<" +
-      pg_type_name(mp.key) +
-      ", " +
-      pg_type_name(mp.value) +
-      "> " +
-      mp.name +
-      " = " +
-      mp.number.to_string() +
-      ";\n"
+    out.push_str(pad2)
+    out.push_str("map<")
+    out.push_str(pg_type_name(mp.key))
+    out.push_str(", ")
+    out.push_str(pg_type_name(mp.value))
+    out.push_str("> ")
+    out.push_str(mp.name)
+    out.push_str(" = ")
+    out.push_str(mp.number.to_string())
+    out.push_str(";\n")
   }
   // 嵌套类型。
   for nm_name in m.nested_messages {
     match schema.message(nm_name) {
-      Some(nm) => out = out + pg_print_message(schema, nm, level + 1)
+      Some(nm) => out.push_str(pg_print_message(schema, nm, level + 1))
       None => ()
     }
   }
   for ne_name in m.nested_enums {
     match schema.enum_def(ne_name) {
-      Some(ne) => out = out + pg_print_enum(ne, level + 1)
+      Some(ne) => out.push_str(pg_print_enum(ne, level + 1))
       None => ()
     }
   }
-  out + pad + "}\n"
+  out.push_str(pad)
+  out.push_str("}\n")
+  out.build()
 }
 
 ///|
 /// 递归打印一个枚举定义。
+///
+/// 以 `@infra_text.TextBuilder` 顺序追加片段，消除原 `out = out + ...` 的循环内
+/// O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
 fn pg_print_enum(e : EnumDef, level : Int) -> String {
   let pad = pg_indent(level)
   let pad2 = pg_indent(level + 1)
-  let mut out = pad + "enum " + pg_simple_name(e.name) + " {\n"
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(pad)
+  out.push_str("enum ")
+  out.push_str(pg_simple_name(e.name))
+  out.push_str(" {\n")
   for pair in e.values {
     let (name, v) = pair
-    out = out + pad2 + name + " = " + v.to_string() + ";\n"
+    out.push_str(pad2)
+    out.push_str(name)
+    out.push_str(" = ")
+    out.push_str(v.to_string())
+    out.push_str(";\n")
   }
-  out + pad + "}\n"
+  out.push_str(pad)
+  out.push_str("}\n")
+  out.build()
 }
 
 ///|
@@ -1013,16 +1073,19 @@ fn pg_print_enum(e : EnumDef, level : Int) -> String {
 /// 关键字；嵌套类型在其父块内递归打印。`parse_proto_full(print_proto(s))` 与 `s`
 /// 等价。
 pub fn print_proto(schema : ProtoSchema) -> String {
-  let mut out = "syntax = \"proto3\";\n"
+  // 以 `@infra_text.TextBuilder` 顺序追加片段，消除原 `out = out + ...` 的循环内
+  // O(n²) 字符串拼接（R1.5）；逐字符等价于原实现。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str("syntax = \"proto3\";\n")
   for m in schema.messages {
     if not(pg_is_nested_name(m.name)) {
-      out = out + pg_print_message(schema, m, 0)
+      out.push_str(pg_print_message(schema, m, 0))
     }
   }
   for e in schema.enums {
     if not(pg_is_nested_name(e.name)) {
-      out = out + pg_print_enum(e, 0)
+      out.push_str(pg_print_enum(e, 0))
     }
   }
-  out
+  out.build()
 }

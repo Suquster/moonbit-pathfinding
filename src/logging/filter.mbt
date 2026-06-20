@@ -58,18 +58,18 @@ pub fn parse_env_filter(spec : String) -> Result[EnvFilter, FilterError] {
   // 切分为逗号分隔的段，记录每段起始偏移。
   let segments : Array[(Int, String)] = []
   let mut seg_start = 0
-  let mut cur = ""
+  let cur = @infra_text.TextBuilder::new()
   for i = 0; i < n; i = i + 1 {
     let c = chars[i]
     if c == ',' {
-      segments.push((seg_start, cur))
-      cur = ""
+      segments.push((seg_start, cur.build()))
+      cur.reset()
       seg_start = i + 1
     } else {
-      cur = cur + c.to_string()
+      cur.push_char(c)
     }
   }
-  segments.push((seg_start, cur))
+  segments.push((seg_start, cur.build()))
   // 逐段校验并暂存（先完整校验，全部合法后再登记）。
   let pending : Array[(String, Level)] = []
   let mut pending_fallback : Level? = None
@@ -170,24 +170,24 @@ pub fn route(sinks : Array[Sink], e : Event) -> Array[String] {
 ///|
 /// 大小写不敏感的级别标签解析：归一为大写后经 `Level::from_label` 识别。
 fn parse_level_ci(s : String) -> Level? {
-  let mut up = ""
+  let up = @infra_text.TextBuilder::new()
   for c in s {
     let code = c.to_int()
     if code >= 'a'.to_int() && code <= 'z'.to_int() {
-      up = up + (code - 32).unsafe_to_char().to_string()
+      up.push_str((code - 32).unsafe_to_char().to_string())
     } else {
-      up = up + c.to_string()
+      up.push_char(c)
     }
   }
-  Level::from_label(up)
+  Level::from_label(up.build())
 }
 
 ///|
 /// 从字符数组取 `[start, end)` 子串。
 fn substr_chars(chars : Array[Char], start : Int, end : Int) -> String {
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   for i = start; i < end; i = i + 1 {
-    out = out + chars[i].to_string()
+    out.push_char(chars[i])
   }
-  out
+  out.build()
 }

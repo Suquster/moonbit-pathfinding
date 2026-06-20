@@ -33,6 +33,11 @@
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 10.6）。
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  // @infra_text —— 共享高效文本构建工具 `TextBuilder`（叶子基础设施包，
+  // 不依赖任何方向，无循环依赖）。用于消除格式化器与解析器中循环内
+  // `out = out + ...` 的 O(n²) 拼接反模式（Requirement 1.5 / 1.6，任务 12.5），
+  // 以摊还 O(1) 追加、O(n) 物化替换，保持公开签名与输出逐字符不变。
+  "Suquster/moonbit-pathfinding/src/infra_text",
   // @strconv —— 解析 JSON 日志中的数值字段（Int64 / Double），用于
   // format_json / parse_json_log 的「序列化再解析」往返（Requirement 7.7）。
   // 属 moonbitlang/core 标准库，三后端（wasm-gc / js / native）行为一致。

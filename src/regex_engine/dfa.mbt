@@ -81,14 +81,15 @@ fn build_bounds(nfa : Nfa) -> Array[Int] {
 ///|
 /// 将排序去重的核（NFA 状态集合）编码为可作哈希键的字符串。
 fn encode_core(core : Array[Int]) -> String {
-  let mut s = ""
+  // 以 TextBuilder 物化逗号分隔键，消除循环内字符串 `+`（Requirement 1.5）。
+  let acc = @infra_text.TextBuilder::new()
   for i, x in core {
     if i > 0 {
-      s = s + ","
+      acc.push_char(',')
     }
-    s = s + x.to_string()
+    acc.push_str(x.to_string())
   }
-  s
+  acc.build()
 }
 
 ///|

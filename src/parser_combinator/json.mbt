@@ -125,11 +125,14 @@ fn json_string_raw() -> Parser[String] {
     bind(pchar('"'), fn(_q) {
       bind(many(json_str_char()), fn(chars) {
         map(pchar('"'), fn(_q2) {
-          let mut s = ""
+          // 以 `TextBuilder` 逐字符物化解码后的字符串，消除循环内
+          // `s = s + "\{c}"` 的 O(n²) 拼接（Requirement 1.5 / 1.6）；
+          // `build()` 与等价顺序 `+` 拼接逐字符相等。
+          let sb = @infra_text.TextBuilder::new()
           for c in chars {
-            s = s + "\{c}"
+            sb.push_char(c)
           }
-          s
+          sb.build()
         })
       })
     })
@@ -291,27 +294,32 @@ fn json_object() -> Parser[Json] {
 ///|
 /// 打印字符串字面量（转义特殊字符），与解析器互为逆。
 fn print_json_string(s : String) -> String {
-  let mut out = "\""
+  // 以 `TextBuilder` 顺序物化转义结果，消除循环内 `out = out + ...` 的
+  // O(n²) 拼接（Requirement 1.5 / 1.6）；逐字符 / 逐片段追加与原顺序 `+`
+  // 拼接逐字符相等，转义输出不变。
+  let out = @infra_text.TextBuilder::new()
+  out.push_char('"')
   for c in s {
     if c == '"' {
-      out = out + "\\\""
+      out.push_str("\\\"")
     } else if c == '\\' {
-      out = out + "\\\\"
+      out.push_str("\\\\")
     } else if c == '\n' {
-      out = out + "\\n"
+      out.push_str("\\n")
     } else if c == '\r' {
-      out = out + "\\r"
+      out.push_str("\\r")
     } else if c == '\t' {
-      out = out + "\\t"
+      out.push_str("\\t")
     } else if c == '\u{0008}' {
-      out = out + "\\b"
+      out.push_str("\\b")
     } else if c == '\u{000C}' {
-      out = out + "\\f"
+      out.push_str("\\f")
     } else {
-      out = out + "\{c}"
+      out.push_char(c)
     }
   }
-  out + "\""
+  out.push_char('"')
+  out.build()
 }
 
 ///|
@@ -334,24 +342,34 @@ pub fn print_json(j : Json) -> String {
     JNumber(d) => print_json_number(d)
     JString(s) => print_json_string(s)
     JArray(items) => {
-      let mut out = "["
+      // 以 `TextBuilder` 顺序物化数组文本，消除循环内 `out = out + ...` 的
+      // O(n²) 拼接（Requirement 1.5 / 1.6）；逐片段追加与原顺序 `+` 拼接
+      // 逐字符相等，紧凑输出不变。
+      let out = @infra_text.TextBuilder::new()
+      out.push_char('[')
       for i, it in items {
         if i > 0 {
-          out = out + ","
+          out.push_char(',')
         }
-        out = out + print_json(it)
+        out.push_str(print_json(it))
       }
-      out + "]"
+      out.push_char(']')
+      out.build()
     }
     JObject(pairs) => {
-      let mut out = "{"
+      // 同上：对象键值对文本经 `TextBuilder` 物化，消除循环内字符串 `+`。
+      let out = @infra_text.TextBuilder::new()
+      out.push_char('{')
       for i, kv in pairs {
         if i > 0 {
-          out = out + ","
+          out.push_char(',')
         }
-        out = out + print_json_string(kv.0) + ":" + print_json(kv.1)
+        out.push_str(print_json_string(kv.0))
+        out.push_char(':')
+        out.push_str(print_json(kv.1))
       }
-      out + "}"
+      out.push_char('}')
+      out.build()
     }
   }
 }

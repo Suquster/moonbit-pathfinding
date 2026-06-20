@@ -40,13 +40,15 @@ fn is_ws(c : Char) -> Bool {
 }
 
 ///|
-/// 将字符序列拼接为字符串（骨架阶段以 `+` 拼接，规模优化留待后续）。
+/// 将字符序列拼接为字符串。经 `@infra_text.TextBuilder` 逐字符缓冲后一次性
+/// 物化，消除 `s = s + c.to_string()` 的 O(n²) 拼接（Requirement 1.5 /
+/// 1.6）；`build()` 与等价顺序 `+` 拼接逐字符相等。
 fn chars_to_string(cs : Array[Char]) -> String {
-  let mut s = ""
+  let sb = @infra_text.TextBuilder::new()
   for c in cs {
-    s = s + c.to_string()
+    sb.push_char(c)
   }
-  s
+  sb.build()
 }
 
 ///|

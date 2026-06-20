@@ -14,9 +14,13 @@
 //     通过显式导入 @core 锁定"地基包复用公共契约"的依赖关系。
 //   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5）。
+//   * @infra_text —— 共享高效文本构建工具（叶子包，不依赖任何方向，无循环
+//     依赖风险）；用于消除打印 / 解析路径中循环内字符串 `+` 的 O(n²) 拼接
+//     （任务 12.4 / Requirement 1.5 / 1.6），以 `TextBuilder` 顺序物化。
 import {
   "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/infra_text",
 }
 
 // 属性测试（task 5.3 / 5.4）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /

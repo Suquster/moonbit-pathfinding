@@ -154,41 +154,41 @@
     - `moon info && moon fmt && moon test`
     - _Requirements: 12.2, 12.3, 12.6_
 
-- [ ] 11. LSP 协议鲁棒性与增量同步（Requirement 10）
-  - [-] 11.1 JSON-RPC 成帧与校验
+- [x] 11. LSP 协议鲁棒性与增量同步（Requirement 10）
+  - [x] 11.1 JSON-RPC 成帧与校验
     - 新增 `src/lsp_server/jsonrpc_frame.mbt`：`FrameError`/`encode_frame`/`decode_frame`（`\r\n`/`\n` 兼容）/`JsonRpcError`/`validate_jsonrpc`
     - _Requirements: 10.1, 10.2, 10.3, 10.6_
-  - [~] 11.2 增量文档同步（O(N)）
+  - [x] 11.2 增量文档同步（O(N)）
     - 新增 `src/lsp_server/incremental_sync.mbt`：`apply_incremental`（`Array[Char]` 切片，次平方级）
     - _Requirements: 10.4, 10.5_
-  - [~] 11.3 LSP 增强属性测试（≥100 迭代，三后端）
+  - [x] 11.3 LSP 增强属性测试（≥100 迭代，三后端）
     - 成帧往返；增量同步 == 全量替换（对照 `apply_changes`）；换行兼容；非法结构返回错误对象
     - _Requirements: 10.2, 10.3, 10.4, 10.6_
-  - [~] 11.4 方向校验
+  - [x] 11.4 方向校验
     - `moon info && moon fmt && moon test`
     - _Requirements: 12.2, 12.3, 12.6_
 
-- [ ] 12. 消除 O(n²) 拼接：方向内循环拼接替换（Requirement 1.5）
-  - [~] 12.1 审计并替换 serialization 循环拼接点
+- [x] 12. 消除 O(n²) 拼接：方向内循环拼接替换（Requirement 1.5）
+  - [x] 12.1 审计并替换 serialization 循环拼接点
     - grep 定位 `serialization` 中循环内 `out = out + ...`，逐个替换为 `TextBuilder`；新增等价性快照测试
     - _Requirements: 1.5, 1.6_
-  - [~] 12.2 审计并替换 build_tool 循环拼接点（`print_rules` 等）
+  - [x] 12.2 审计并替换 build_tool 循环拼接点（`print_rules` 等）
     - _Requirements: 1.5, 1.6_
-  - [~] 12.3 审计并替换 regex_engine 循环拼接点（`print_ast`/`print_regex` 等）
+  - [x] 12.3 审计并替换 regex_engine 循环拼接点（`print_ast`/`print_regex` 等）
     - _Requirements: 1.5, 1.6_
-  - [~] 12.4 审计并替换 parser_combinator 循环拼接点（`print_json`/`print_expr` 等）
+  - [x] 12.4 审计并替换 parser_combinator 循环拼接点（`print_json`/`print_expr` 等）
     - _Requirements: 1.5, 1.6_
-  - [~] 12.5 审计并替换 logging 循环拼接点（格式化器等）
+  - [x] 12.5 审计并替换 logging 循环拼接点（格式化器等）
     - _Requirements: 1.5, 1.6_
-  - [~] 12.6 替换后等价性属性测试与全方向校验
+  - [x] 12.6 替换后等价性属性测试与全方向校验
     - 每个被改造函数输出与改造前逐字符相等；`moon info && moon fmt && moon test`
     - _Requirements: 1.5, 12.2, 12.3, 12.6_
 
-- [ ] 13. 横切质量门禁最终校验（Requirement 12）
-  - [~] 13.1 三后端全量测试
+- [x] 13. 横切质量门禁最终校验（Requirement 12）
+  - [x] 13.1 三后端全量测试
     - `moon test --target wasm-gc`、`moon test --target js`、`moon test --target native` 全通过
     - _Requirements: 12.4, 12.5_
-  - [~] 13.2 `.mbti` 只增不减审计与文档更新
+  - [x] 13.2 `.mbti` 只增不减审计与文档更新
     - diff 全部 `.mbti` 确认既有条目不变；更新 `README.mbt.md` 与 `CHANGELOG.md`
     - _Requirements: 12.1, 12.2, 12.3_
 

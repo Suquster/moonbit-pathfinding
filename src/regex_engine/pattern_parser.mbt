@@ -437,7 +437,8 @@ fn read_group_name(
   open : Int,
 ) -> Result[(String, @pc.Input), ParseError] {
   let mut cur = input
-  let mut name = ""
+  // 以 TextBuilder 逐字符累积组名，消除循环内字符串 `+`（Requirement 1.5）。
+  let name = @infra_text.TextBuilder::new()
   let mut go = true
   while go {
     match cur.peek() {
@@ -448,7 +449,7 @@ fn read_group_name(
       }
       Some(c) =>
         if is_name_char(c) {
-          name = name + c.to_string()
+          name.push_char(c)
           cur = cur.advance()
         } else {
           return Err(
@@ -457,6 +458,7 @@ fn read_group_name(
         }
     }
   }
+  let name = name.build()
   if name.length() == 0 {
     Err(Unexpected(pos=open, expected=["group name"]))
   } else {

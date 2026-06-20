@@ -32,43 +32,60 @@ fn moonbit_full_type(t : ProtoType) -> String {
 /// （R6.1/6.2）；每消息配套 `<Name>_encode`/`<Name>_decode` 委托
 /// `encode_typed`/`decode_typed`（R6.3），二者互逆（R6.5）。
 pub fn gen_moonbit_full(schema : ProtoSchema) -> String {
-  let mut out = "// 由 gen_moonbit_full 生成 —— 请勿手工编辑\n"
-  out = out +
-    "// 结构体提供类型化视图；编解码委托共享 encode_typed / decode_typed。\n"
+  // 以共享高效缓冲 `@infra_text.TextBuilder` 顺序追加片段，消除原循环内
+  // `out = out + ...` 的 O(n²) 字符串拼接（R1.5），对总输出长度线性；输出与
+  // 逐次 `+` 拼接逐字符相等。每行片段拆分为多次 `push_str`，避免超过 3 次顺序
+  // `+`（遵循质量门禁缓冲方案约定）。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str("// 由 gen_moonbit_full 生成 —— 请勿手工编辑\n")
+  out.push_str(
+    "// 结构体提供类型化视图；编解码委托共享 encode_typed / decode_typed。\n",
+  )
   for m in schema.messages {
     let sname = pg_simple_name(m.name)
     // 结构体定义（R6.1 / R6.2）。
-    out = out + "\npub struct " + sname + " {\n"
+    out.push_str("\npub struct ")
+    out.push_str(sname)
+    out.push_str(" {\n")
     for f in m.fields {
       let base = moonbit_full_type(f.ptype)
       let ty = match f.label {
         LRepeated(..) => "Array[" + base + "]"
         _ => base
       }
-      out = out + "  " + f.name + " : " + ty + "\n"
+      out.push_str("  ")
+      out.push_str(f.name)
+      out.push_str(" : ")
+      out.push_str(ty)
+      out.push_str("\n")
     }
     for mp in m.maps {
-      out = out +
-        "  " +
-        mp.name +
-        " : Array[(" +
-        moonbit_full_type(mp.key) +
-        ", " +
-        moonbit_full_type(mp.value) +
-        ")]\n"
+      out.push_str("  ")
+      out.push_str(mp.name)
+      out.push_str(" : Array[(")
+      out.push_str(moonbit_full_type(mp.key))
+      out.push_str(", ")
+      out.push_str(moonbit_full_type(mp.value))
+      out.push_str(")]\n")
     }
-    out = out + "} derive(Eq, Show)\n"
+    out.push_str("} derive(Eq, Show)\n")
     // 配套编解码函数，委托共享类型化模型（R6.3）。
-    out = out +
-      "\npub fn " +
-      sname +
-      "_encode(schema : ProtoSchema, msg : TypedMessage) -> Result[Bytes, DecodeError] {\n"
-    out = out + "  encode_typed(schema, \"" + m.name + "\", msg)\n}\n"
-    out = out +
-      "\npub fn " +
-      sname +
-      "_decode(schema : ProtoSchema, bytes : Bytes) -> Result[TypedMessage, DecodeError] {\n"
-    out = out + "  decode_typed(schema, \"" + m.name + "\", bytes)\n}\n"
+    out.push_str("\npub fn ")
+    out.push_str(sname)
+    out.push_str(
+      "_encode(schema : ProtoSchema, msg : TypedMessage) -> Result[Bytes, DecodeError] {\n",
+    )
+    out.push_str("  encode_typed(schema, \"")
+    out.push_str(m.name)
+    out.push_str("\", msg)\n}\n")
+    out.push_str("\npub fn ")
+    out.push_str(sname)
+    out.push_str(
+      "_decode(schema : ProtoSchema, bytes : Bytes) -> Result[TypedMessage, DecodeError] {\n",
+    )
+    out.push_str("  decode_typed(schema, \"")
+    out.push_str(m.name)
+    out.push_str("\", bytes)\n}\n")
   }
-  out
+  out.build()
 }

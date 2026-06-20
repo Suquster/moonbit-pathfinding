@@ -230,3 +230,319 @@ test "position_from_json parses LSP position object" {
   let bad = @lsp_binding.JObj([("line", @lsp_binding.JNum("3"))])
   assert_true(position_from_json(bad) == None)
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// 任务 15.4：能力层既有 API 回归（向后兼容硬约束）
+//
+// 目的（Requirement 10.3 / 10.4 / 10.5）：以**具体见证**逐字段锁定 `0.1.0`
+// 既有契约，确保旗舰深化（lifecycle/sync/position_encoding/references/rename/
+// format/semantic/diagnostics 等旁路新增）未改动能力层既有 API 的签名与行为：
+//   * 五个能力处理器 on_initialize / on_did_change / on_completion /
+//     on_definition / on_hover；
+//   * 三个 @lsp_binding 适配器 capabilities_to_json /
+//     publish_diagnostics_notification / position_from_json；
+//   * 既有数据类型（Position/Range/Location/TextDocument/Diagnostic/
+//     CompletionItem/Hover/ServerCapabilities/InitializeParams/Symbol/
+//     Reference/Analysis）的字段与语义。
+//
+// 这些断言一旦因任何回归而失败，即表明既有 API 调用方的兼容性被破坏。
+// 区别于上文以「能力维度」组织的单元测试，本组以**冻结黄金基线对照**的方式
+// 锁定逐字段的精确形态，是 0.1.0 契约的硬约束。
+// ═══════════════════════════════════════════════════════════════════════
+
+///|
+/// 回归：`on_initialize` 恒定声明全部四项 provider，与 root_uri 取值无关。
+test "regression: on_initialize declares exactly four providers regardless of params" {
+  // root_uri = Some(..) 与 None 两种输入产出同一能力声明。
+  let with_root = on_initialize({ root_uri: Some("file:///proj") })
+  let without_root = on_initialize({ root_uri: None })
+  let expected : ServerCapabilities = {
+    diagnostic_provider: true,
+    completion_provider: true,
+    definition_provider: true,
+    hover_provider: true,
+  }
+  assert_true(with_root == expected)
+  assert_true(without_root == expected)
+}
+
+///|
+/// 回归：`on_did_change` 对语法正确文档产出空诊断（等价于 `analyze(doc).diagnostics`）。
+test "regression: on_did_change equals analyze diagnostics projection" {
+  let doc = good_doc()
+  let via_handler = on_did_change(doc)
+  let via_analyze = analyze(doc).diagnostics
+  // on_did_change 是 analyze 诊断投影的恒等封装，二者逐条相等。
+  assert_true(via_handler == via_analyze)
+  assert_true(via_handler.length() == 0)
+}
+
+///|
+/// 回归：`on_did_change` 对含错误文档产出与 `0.1.0` 一致的具体诊断序列。
+test "regression: on_did_change diagnostics shape is unchanged" {
+  let doc : TextDocument = {
+    uri: "file:///bad.conf",
+    text: "bad line without eq\n1bad = x\nok = ${missing}\ndup = 1\ndup = 2",
+  }
+  let diags = on_did_change(doc)
+  assert_true(diags.length() == 4)
+  // 行 0：缺 '=' → Error，范围覆盖整行 [0, 19)。
+  assert_true(
+    diags[0] ==
+    (
+      {
+        range: {
+          start: { line: 0, character: 0 },
+          end: { line: 0, character: 19 },
+        },
+        severity: Error,
+        message: "缺少 '='：期望形如 key = value 的赋值",
+      } : Diagnostic),
+  )
+  // 行 1：非法键名 → Error，范围覆盖键 [0, 5)（'=' 在第 5 列）。
+  assert_true(
+    diags[1] ==
+    (
+      {
+        range: {
+          start: { line: 1, character: 0 },
+          end: { line: 1, character: 5 },
+        },
+        severity: Error,
+        message: "非法的键名（须为标识符 [A-Za-z_][A-Za-z0-9_]*）",
+      } : Diagnostic),
+  )
+  // 行 4：重复定义 dup → Warning。
+  assert_true(diags[2].severity == Warning)
+  assert_true(diags[2].message == "重复定义键：dup")
+  // 第二遍：未定义引用 ${missing} → Warning。
+  assert_true(diags[3].severity == Warning)
+  assert_true(diags[3].message == "引用了未定义的键：missing")
+}
+
+///|
+/// 回归：`on_completion` 返回去重保序的已定义键候选，逐项形态与 `0.1.0` 一致。
+test "regression: on_completion item shape is unchanged" {
+  let analysis = analyze(good_doc())
+  let items = on_completion(analysis, { line: 2, character: 20 })
+  // 与 pos 无关，恒返回全部已定义键（name/greeting/port）。
+  assert_true(items.length() == 3)
+  assert_true(
+    items[0] ==
+    ({ label: "name", kind: Variable, detail: "= app" } : CompletionItem),
+  )
+  assert_true(
+    items[1] ==
+    (
+      { label: "greeting", kind: Variable, detail: "= hello ${name}" } :
+      CompletionItem),
+  )
+  assert_true(
+    items[2] ==
+    ({ label: "port", kind: Variable, detail: "= 8080" } : CompletionItem),
+  )
+  // pos 不影响候选集（占位语义）：另取一处位置结果不变。
+  let items2 = on_completion(analysis, { line: 0, character: 0 })
+  assert_true(items == items2)
+}
+
+///|
+/// 回归：`on_definition` 在引用、键定义自身与空白处的行为与 `0.1.0` 一致。
+test "regression: on_definition behavior is unchanged" {
+  let analysis = analyze(good_doc())
+  let name_range : Range = {
+    start: { line: 1, character: 0 },
+    end: { line: 1, character: 4 },
+  }
+  // 引用 ${name} → name 定义位置。
+  assert_true(
+    on_definition(analysis, { line: 2, character: 19 }) ==
+    Some(({ uri: "file:///c.conf", range: name_range } : Location)),
+  )
+  // 键定义自身 → 自身位置（自洽）。
+  assert_true(
+    on_definition(analysis, { line: 1, character: 1 }) ==
+    Some(({ uri: "file:///c.conf", range: name_range } : Location)),
+  )
+  // 空白处 → None。
+  assert_true(on_definition(analysis, { line: 3, character: 5 }) == None)
+}
+
+///|
+/// 回归：`on_hover` 对键定义、引用与空白处的描述文本与作用范围与 `0.1.0` 一致。
+test "regression: on_hover contents and range are unchanged" {
+  let analysis = analyze(good_doc())
+  // 键定义上：`(键) name = app`，范围为键 token。
+  assert_true(
+    on_hover(analysis, { line: 1, character: 2 }) ==
+    Some(
+      (
+        {
+          contents: "(键) name = app",
+          range: Some({
+            start: { line: 1, character: 0 },
+            end: { line: 1, character: 4 },
+          }),
+        } : Hover),
+    ),
+  )
+  // 引用上：`(引用) name = app`，范围为引用 token `${name}`（[17, 24)）。
+  assert_true(
+    on_hover(analysis, { line: 2, character: 19 }) ==
+    Some(
+      (
+        {
+          contents: "(引用) name = app",
+          range: Some({
+            start: { line: 2, character: 17 },
+            end: { line: 2, character: 24 },
+          }),
+        } : Hover),
+    ),
+  )
+  // 空白处 → None。
+  assert_true(on_hover(analysis, { line: 3, character: 5 }) == None)
+}
+
+///|
+/// 回归：`capabilities_to_json` 输出确定字段顺序与键名的 JSON 对象，逐字段一致。
+test "regression: capabilities_to_json shape is byte-identical to 0.1.0" {
+  let caps = on_initialize({ root_uri: None })
+  let json = capabilities_to_json(caps)
+  assert_true(
+    json ==
+    @lsp_binding.JObj([
+      ("diagnosticProvider", @lsp_binding.JBool(true)),
+      ("completionProvider", @lsp_binding.JBool(true)),
+      ("definitionProvider", @lsp_binding.JBool(true)),
+      ("hoverProvider", @lsp_binding.JBool(true)),
+    ]),
+  )
+}
+
+///|
+/// 回归：`publish_diagnostics_notification` 通知形态（method/params 字段与顺序）
+/// 与 `0.1.0` 一致；诊断逐条编码为 range/severity/message 三字段对象。
+///
+/// 以**裸 JSON 编码逐字节对照**冻结基线（复用 @lsp_binding.encode_message），
+/// 既锁定 method/params 的字段名与顺序，又避免在测试中复述 `method` 字段名。
+test "regression: publish_diagnostics_notification encoding is byte-identical to 0.1.0" {
+  let doc : TextDocument = { uri: "file:///bad.conf", text: "no eq here" }
+  let diags = on_did_change(doc)
+  let msg = publish_diagnostics_notification(doc.uri, diags)
+  let expected =
+    #|{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"uri":"file:///bad.conf","diagnostics":[{"range":{"start":{"line":0,"character":0},"end":{"line":0,"character":10}},"severity":1,"message":"缺少 '='：期望形如 key = value 的赋值"}]}}
+  assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
+}
+
+///|
+/// 回归：空诊断列表的 `publish_diagnostics_notification` 携带空 diagnostics 数组。
+test "regression: publish_diagnostics_notification with empty diagnostics" {
+  let msg = publish_diagnostics_notification("file:///x.conf", [])
+  let expected =
+    #|{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"uri":"file:///x.conf","diagnostics":[]}}
+  assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
+}
+
+///|
+/// 回归：`position_from_json` 解析合法对象、忽略额外字段，并对各类畸形输入返回 None。
+test "regression: position_from_json parsing behavior is unchanged" {
+  // 合法对象 → Some(Position)。
+  assert_true(
+    position_from_json(
+      @lsp_binding.JObj([
+        ("line", @lsp_binding.JNum("3")),
+        ("character", @lsp_binding.JNum("7")),
+      ]),
+    ) ==
+    Some(({ line: 3, character: 7 } : Position)),
+  )
+  // 负数列号（带符号整数）仍可解析。
+  assert_true(
+    position_from_json(
+      @lsp_binding.JObj([
+        ("line", @lsp_binding.JNum("0")),
+        ("character", @lsp_binding.JNum("-1")),
+      ]),
+    ) ==
+    Some(({ line: 0, character: -1 } : Position)),
+  )
+  // 缺 character 字段 → None。
+  assert_true(
+    position_from_json(@lsp_binding.JObj([("line", @lsp_binding.JNum("3"))])) ==
+    None,
+  )
+  // 缺 line 字段 → None。
+  assert_true(
+    position_from_json(
+      @lsp_binding.JObj([("character", @lsp_binding.JNum("7"))]),
+    ) ==
+    None,
+  )
+  // line 字段非数值（字符串）→ None。
+  assert_true(
+    position_from_json(
+      @lsp_binding.JObj([
+        ("line", @lsp_binding.JStr("3")),
+        ("character", @lsp_binding.JNum("7")),
+      ]),
+    ) ==
+    None,
+  )
+  // 非对象 JSON → None。
+  assert_true(position_from_json(@lsp_binding.JNum("3")) == None)
+  assert_true(position_from_json(@lsp_binding.JNull) == None)
+}
+
+///|
+/// 回归：既有数据类型字段与语义不变——`analyze` 投影出的 Symbol / Reference /
+/// Analysis 形态与 `0.1.0` 一致（逐字段冻结）。
+test "regression: analyze projection types retain 0.1.0 fields" {
+  let analysis = analyze(good_doc())
+  // Analysis.uri 透传文档 uri。
+  assert_true(analysis.uri == "file:///c.conf")
+  // 三个符号，首个 Symbol 逐字段对照。
+  assert_true(analysis.symbols.length() == 3)
+  assert_true(
+    analysis.symbols[0] ==
+    (
+      {
+        name: "name",
+        range: {
+          start: { line: 1, character: 0 },
+          end: { line: 1, character: 4 },
+        },
+        value: "app",
+      } : Symbol),
+  )
+  // 一处引用 ${name}，逐字段对照（范围覆盖 `${name}`）。
+  assert_true(analysis.references.length() == 1)
+  assert_true(
+    analysis.references[0] ==
+    (
+      {
+        name: "name",
+        range: {
+          start: { line: 2, character: 17 },
+          end: { line: 2, character: 24 },
+        },
+      } : Reference),
+  )
+  // 语法/语义均正确：无诊断。
+  assert_true(analysis.diagnostics.length() == 0)
+}
+
+///|
+/// 回归：`DiagnosticSeverity` 四个变体语义稳定（经 diagnostic 严重级别体现）。
+/// 通过既有错误/告警分类间接锁定 Error/Warning 变体不被重排或语义漂移。
+test "regression: DiagnosticSeverity variants retain 0.1.0 semantics" {
+  // 缺 '=' 为 Error；重复定义为 Warning——锁定两个核心变体语义。
+  let doc : TextDocument = {
+    uri: "file:///s.conf",
+    text: "no eq line\na = 1\na = 2",
+  }
+  let diags = on_did_change(doc)
+  assert_true(diags.length() == 2)
+  assert_true(diags[0].severity == Error)
+  assert_true(diags[1].severity == Warning)
+}

@@ -9,13 +9,39 @@ import {
 // Values
 pub fn analyze(TextDocument) -> Analysis
 
+pub fn apply_changes(String, Array[ContentChange], PositionEncoding) -> Result[String, @lsp_binding.RpcError]
+
+pub fn apply_workspace_edit(String, Array[TextEdit]) -> String
+
 pub fn capabilities_to_json(ServerCapabilities) -> @lsp_binding.Json
+
+pub fn code_actions(Analysis, Diagnostic) -> Array[CodeAction]
+
+pub fn code_units(Int, PositionEncoding) -> Int
+
+pub fn convert_position(String, Position, from~ : PositionEncoding, to~ : PositionEncoding) -> Position?
+
+pub fn diagnostic_to_json(Diagnostic) -> @lsp_binding.Json
+
+pub fn document_highlights(Analysis, Position) -> Array[Range]
+
+pub fn document_symbols(Analysis) -> Array[DocumentSymbol]
+
+pub fn folding_ranges(TextDocument) -> Array[Range]
+
+pub fn formatting(TextDocument) -> Array[TextEdit]
 
 pub let lsp_changelog_path : String
 
 pub let lsp_name : String
 
 pub let lsp_version : String
+
+pub fn negotiate(InitializeParamsExt) -> ServerCapabilitiesExt
+
+pub fn negotiate_encoding(Array[PositionEncoding]) -> PositionEncoding
+
+pub fn offset_to_position(String, Int, PositionEncoding) -> Position?
 
 pub fn on_completion(Analysis, Position) -> Array[CompletionItem]
 
@@ -29,11 +55,29 @@ pub fn on_initialize(InitializeParams) -> ServerCapabilities
 
 pub fn position_from_json(@lsp_binding.Json) -> Position?
 
+pub fn position_to_offset(String, Position, PositionEncoding) -> Int?
+
 pub fn publish_diagnostics_notification(String, Array[Diagnostic]) -> @lsp_binding.JsonRpcMessage
+
+pub fn pull_diagnostics(TextDocument) -> Array[Diagnostic]
+
+pub fn references(Analysis, String) -> Array[Location]
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn rename(Analysis, String, String) -> WorkspaceEdit
+
+pub fn run_session_demo() -> Array[SessionStep]
+
+pub fn semantic_tokens(Analysis) -> Array[Int]
+
+pub fn signature_help(Analysis, Position) -> SignatureInfo?
+
+pub fn step(LifecycleState, Bool, LifecycleEvent, @lsp_binding.Id) -> StepResult
+
+pub fn workspace_symbols(Array[Analysis], String) -> Array[Location]
 
 // Errors
 
@@ -43,6 +87,11 @@ pub(all) struct Analysis {
   symbols : Array[Symbol]
   references : Array[Reference]
   diagnostics : Array[Diagnostic]
+} derive(Eq)
+
+pub(all) struct CodeAction {
+  title : String
+  edit : WorkspaceEdit
 } derive(Eq)
 
 pub(all) struct CompletionItem {
@@ -55,6 +104,11 @@ pub(all) enum CompletionItemKind {
   Variable
   Keyword
   Value
+} derive(Eq)
+
+pub(all) struct ContentChange {
+  range : Range?
+  text : String
 } derive(Eq)
 
 pub(all) struct Diagnostic {
@@ -70,6 +124,11 @@ pub(all) enum DiagnosticSeverity {
   Hint
 } derive(Eq)
 
+pub(all) struct DocumentSymbol {
+  name : String
+  range : Range
+} derive(Eq)
+
 pub(all) struct Hover {
   contents : String
   range : Range?
@@ -79,15 +138,54 @@ pub(all) struct InitializeParams {
   root_uri : String?
 } derive(Eq)
 
+pub(all) struct InitializeParamsExt {
+  capabilities : Array[String]
+  position_encodings : Array[String]
+} derive(Eq, Show)
+pub fn InitializeParamsExt::empty() -> Self
+pub fn InitializeParamsExt::new(Array[String], Array[String]) -> Self
+
+pub(all) enum LifecycleEvent {
+  EvInitialize(InitializeParamsExt)
+  EvInitialized
+  EvShutdown
+  EvExit
+  EvRequest(method~ : String)
+  EvNotification(method~ : String)
+} derive(Eq, Show)
+
+pub(all) enum LifecycleState {
+  Uninitialized
+  Initializing
+  Initialized
+  ShuttingDown
+  Exited
+} derive(Eq, Show)
+
 pub(all) struct Location {
   uri : String
   range : Range
 } derive(Eq)
 
+pub struct LspSession {
+  state : LifecycleState
+  shutdown_seen : Bool
+  caps : ServerCapabilitiesExt
+}
+pub fn LspSession::handle(Self, @lsp_binding.JsonRpcMessage) -> (Self, @lsp_binding.JsonRpcMessage?)
+pub fn LspSession::new() -> Self
+pub fn LspSession::state(Self) -> LifecycleState
+
 pub(all) struct Position {
   line : Int
   character : Int
 } derive(Eq)
+
+pub(all) enum PositionEncoding {
+  Utf16
+  Utf8
+  Utf32
+} derive(Eq, Show)
 
 pub(all) struct Range {
   start : Position
@@ -99,12 +197,48 @@ pub(all) struct Reference {
   range : Range
 } derive(Eq)
 
+type SemTok
+
 pub(all) struct ServerCapabilities {
   diagnostic_provider : Bool
   completion_provider : Bool
   definition_provider : Bool
   hover_provider : Bool
 } derive(Eq)
+
+pub(all) struct ServerCapabilitiesExt {
+  diagnostic_provider : Bool
+  completion_provider : Bool
+  definition_provider : Bool
+  hover_provider : Bool
+  document_symbol_provider : Bool
+  references_provider : Bool
+  rename_provider : Bool
+  formatting_provider : Bool
+  code_action_provider : Bool
+  signature_help_provider : Bool
+  semantic_tokens_provider : Bool
+  folding_range_provider : Bool
+  document_highlight_provider : Bool
+} derive(Eq, Show)
+pub fn ServerCapabilitiesExt::all() -> Self
+pub fn ServerCapabilitiesExt::default() -> Self
+pub fn ServerCapabilitiesExt::none() -> Self
+
+pub(all) struct SessionStep {
+  label : String
+  output : @lsp_binding.Json
+} derive(Eq, Show)
+
+pub(all) struct SignatureInfo {
+  label : String
+} derive(Eq, Show)
+
+pub(all) struct StepResult {
+  state : LifecycleState
+  reply : @lsp_binding.JsonRpcMessage?
+  exit_code : Int?
+} derive(Eq, Show)
 
 pub(all) struct Symbol {
   name : String
@@ -115,6 +249,27 @@ pub(all) struct Symbol {
 pub(all) struct TextDocument {
   uri : String
   text : String
+} derive(Eq)
+
+pub(all) enum TextDocumentSyncKind {
+  Full
+  Incremental
+} derive(Eq, Show)
+
+pub(all) struct TextEdit {
+  range : Range
+  new_text : String
+} derive(Eq)
+
+pub(all) struct VersionedDocument {
+  uri : String
+  text : String
+  version : Int
+} derive(Eq)
+pub fn VersionedDocument::apply(Self, Array[ContentChange], Int, PositionEncoding) -> Result[Self, @lsp_binding.RpcError]
+
+pub(all) struct WorkspaceEdit {
+  changes : Array[(String, Array[TextEdit])]
 } derive(Eq)
 
 // Type aliases

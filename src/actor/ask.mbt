@@ -101,3 +101,39 @@ pub fn[R] AskBroker::has_reply(self : AskBroker[R], id : CorrelationId) -> Bool 
     _ => not(self.pending.get(id.value) is None)
   }
 }
+
+// ───────────────────────────── 系统级 ask（任务 12.1，R4） ───────────────
+
+///|
+/// 系统级请求-响应（ask，R4.1 / R4.3 / R4.4）—— 在 `ActorSystem` 上发起一次 ask：
+///
+///   1. `broker.allocate()` 得到唯一关联 id；
+///   2. 以 `make_req(id)`（嵌入关联 id 的请求消息）`send` 给 `target`；
+///   3. 驱动 `system` 至多 `budget` 步（每步处理一条消息）；
+///   4. `broker.poll(id)`：命中匹配响应返回 `Replied(resp)`，否则返回 `Timeout`。
+///
+/// 被请求 actor 处理请求时应调用 `broker.fulfill(id, resp)` 回填响应。既有 `send`
+/// （tell）语义保持不变（R4.1）。在 `budget` 内若被请求方提前回填且系统已空闲，
+/// 提前结束驱动（确定性，不依赖墙钟）。
+pub fn[S, M, R] ask(
+  system : ActorSystem[S, M],
+  broker : AskBroker[R],
+  target : ActorRef[M],
+  make_req : (CorrelationId) -> M,
+  budget : Int,
+) -> AskResult[R] {
+  let id = broker.allocate()
+  target.send(make_req(id))
+  let mut steps = 0
+  while steps < budget {
+    // 已收到匹配响应即可提前结束驱动。
+    if broker.has_reply(id) {
+      break
+    }
+    if not(system.step()) {
+      break
+    }
+    steps = steps + 1
+  }
+  broker.poll(id)
+}

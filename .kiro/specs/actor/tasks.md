@@ -147,84 +147,84 @@
 - [x] 10. 检查点 — 中层能力（ask/stash/deathwatch/router/bounded_mailbox）
   - 三后端运行全部已有测试（native 前先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）。Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. 旗舰驱动器与确定性调度（system.mbt + deterministic.mbt，整合 R1~R10）
-  - [ ] 11.1 实现 `deterministic.mbt` 的 trace 事件类型
+- [x] 11. 旗舰驱动器与确定性调度（system.mbt + deterministic.mbt，整合 R1~R10）
+  - [x] 11.1 实现 `deterministic.mbt` 的 trace 事件类型
     - 定义 `TraceEvent{actor : ActorId, seq : Int}` `derive(Eq, Show)`（供 `system.mbt` 引用）
     - _Requirements: 10.3_
-  - [ ] 11.2 实现 `system.mbt` 的结构、构造与派生/观测
+  - [x] 11.2 实现 `system.mbt` 的结构、构造与派生/观测
     - 定义私有 `SupervisedCell[S, M]`（mailbox 复用既有 FIFO、可选 `bounded`、`state`/`init_state`、`behaviors` 行为栈、`stash`、`hooks`、`directive`、`status`、`started`、`restart_times`）
     - 定义 `ActorSystem[S, M]`（cells/supervisors/parents/watches/trace/clock/rng?/next_id）
     - 实现 `ActorSystem::new`（登记顺序）/`with_seed`（种子 Rng）、`spawn`（`init` + `behavior` + `hooks?`/`supervisor?`/`directive?`/`bounded?`）、`supervise`（建立监督树节点）、`state_of`/`status_of`/`is_running`/`restart_count`
     - _Requirements: 14.1, 14.4, 1.1, 3.1_
-  - [ ] 11.3 实现 `system.mbt` 的 step 流水线
+  - [x] 11.3 实现 `system.mbt` 的 step 流水线
     - 就绪选取（种子 Rng 在「Running 且邮箱非空」中确定性选取；无种子退化为登记顺序）→ FIFO 取一条 → 栈顶 `Behavior` 处理 → step 末尾统一应用 `ctx` 效果（become/unbecome/stash/unstash/watch/unwatch）→ 记录一条 `TraceEvent`
     - 实现 `run_until_idle`（反复 step 至返回 false）
     - _Requirements: 10.1, 10.4, 5.6, 6.1_
-  - [ ]* 11.4 为 ActorSystem 路径串行/FIFO 编写属性测试
+  - [x]* 11.4 为 ActorSystem 路径串行/FIFO 编写属性测试
     - **Property 28: 串行处理与 FIFO 顺序**（ActorSystem 路径复测既有不变量，一次仅处理一条、严格按投递顺序）
     - **Validates: Requirements 10.3, 10.4**
-  - [ ]* 11.5 为调度终止性编写属性测试
+  - [x]* 11.5 为调度终止性编写属性测试
     - **Property 29: 调度终止性**（`run_until_idle` 有限步内停机，得有限长度 trace）
     - **Validates: Requirements 10.5**
-  - [ ] 11.6 实现 `system.mbt` 的监督决策与重启接线
+  - [x] 11.6 实现 `system.mbt` 的监督决策与重启接线
     - 检测 `Errored` → `on_child_failed`：用 `within_intensity` 判定是否超限（超限按 `Escalate` 沿 `parents` 链上抛、根退化为停止根，或停止该 actor）→ 否则按 `directive` 处置（Restart 调 `restart_state` 重置状态、行为栈重置为初始、清空 stash、按钩子；Stop 终止；Escalate 上抛）→ 按 `affected_children` 扩展处置范围，范围外子隔离不变
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 2.2, 2.3, 2.4, 2.6, 2.7, 3.3, 3.4, 5.5, 6.4_
-  - [ ]* 11.7 为监督树升级编写属性测试
+  - [x]* 11.7 为监督树升级编写属性测试
     - **Property 4: 监督树升级传递**（下层 `Escalate` 上抛至上层并按上层策略处置）
     - **Validates: Requirements 1.5, 2.4**
-  - [ ]* 11.8 为重启指令语义编写属性测试
+  - [x]* 11.8 为重启指令语义编写属性测试
     - **Property 5: 重启指令语义**（`Restart` 重置为初始并恢复 Running；`Stop` 终止为 Stopped 且不再处理后续消息）
     - **Validates: Requirements 2.1, 2.2, 2.3**
-  - [ ]* 11.9 为重启丢弃当前消息编写属性测试
+  - [x]* 11.9 为重启丢弃当前消息编写属性测试
     - **Property 8: 重启丢弃当前消息**（触发失败的消息不被重放，从下一条继续）
     - **Validates: Requirements 3.4**
-  - [ ]* 11.10 为 pre_start 钩子编写属性测试
+  - [x]* 11.10 为 pre_start 钩子编写属性测试
     - **Property 9: pre_start 至多一次且先于处理**
     - **Validates: Requirements 3.1, 3.7**
-  - [ ]* 11.11 为 post_stop 钩子编写属性测试
+  - [x]* 11.11 为 post_stop 钩子编写属性测试
     - **Property 10: post_stop 调用一次**（因 stop/Stop 终止后恰调用一次）
     - **Validates: Requirements 3.2**
-  - [ ]* 11.12 为重启重置行为栈编写属性测试
+  - [x]* 11.12 为重启重置行为栈编写属性测试
     - **Property 16: 重启重置行为栈**（重启后行为栈恢复为仅含初始行为）
     - **Validates: Requirements 5.5**
-  - [ ]* 11.13 为重启/停止清空暂存编写属性测试
+  - [x]* 11.13 为重启/停止清空暂存编写属性测试
     - **Property 18: 重启或停止清空暂存**（重启或停止后暂存缓冲为空）
     - **Validates: Requirements 6.4**
-  - [ ] 11.14 实现 `system.mbt` 的死亡监视投递与就绪接线
+  - [x] 11.14 实现 `system.mbt` 的死亡监视投递与就绪接线
     - 终止（Stopped/Failed）时遍历 `WatchRegistry`，对每个 active 监视者经 `on_terminated` 适配构造一条用户消息投递（含「watch 已终止 target 立即投递」、同一监视者×同一终止至多一条）
     - 接线有界邮箱 `offer`、暂存消息不计入「邮箱空即挂起」的就绪判定
     - _Requirements: 7.2, 7.4, 7.5, 7.6, 6.3, 9.2_
-  - [ ]* 11.15 为终止通知编写属性测试
+  - [x]* 11.15 为终止通知编写属性测试
     - **Property 19: 终止通知必达且不重复**（仍在监视的监视者恰收到一条携带 id 与原因的 Terminated）
     - **Validates: Requirements 7.1, 7.2, 7.5, 7.6**
-  - [ ]* 11.16 为 unwatch 编写属性测试
+  - [x]* 11.16 为 unwatch 编写属性测试
     - **Property 20: unwatch 撤销监视**（unwatch 后的终止不再通知）
     - **Validates: Requirements 7.3**
-  - [ ]* 11.17 为 watch 已终止目标编写属性测试
+  - [x]* 11.17 为 watch 已终止目标编写属性测试
     - **Property 21: watch 已终止目标立即通知**
     - **Validates: Requirements 7.4**
-  - [ ] 11.18 实现 `deterministic.mbt` 的重放校验与 trace 暴露
+  - [x] 11.18 实现 `deterministic.mbt` 的重放校验与 trace 暴露
     - 实现 `replay_consistent(seed, build)`（同种子两次运行比对 trace 逐事件一致）与 `ActorSystem::trace_of`
     - _Requirements: 10.2, 10.3, 10.6_
-  - [ ]* 11.19 为重放确定性编写属性测试
+  - [x]* 11.19 为重放确定性编写属性测试
     - **Property 27: 重放确定性**（同种子两次运行产生逐事件一致处理序列）
     - **Validates: Requirements 10.1, 10.2, 10.6**
-  - [ ]* 11.20 编写 ActorSystem 集成单元测试
+  - [x]* 11.20 编写 ActorSystem 集成单元测试
     - 覆盖两层监督升级、`unbecome` 弹空空操作、向已停止 actor `send` 丢弃见证
     - _Requirements: 1.5, 5.4, 14.3_
 
-- [ ] 12. ask 系统驱动与端到端（在 ask.mbt 追加 `ask()`，R4）
-  - [ ] 12.1 在 `ask.mbt` 追加系统级 `ask()` 函数
+- [x] 12. ask 系统驱动与端到端（在 ask.mbt 追加 `ask()`，R4）
+  - [x] 12.1 在 `ask.mbt` 追加系统级 `ask()` 函数
     - `ask(system, broker, target, make_req, budget)`：`broker.allocate()` → `target.send(make_req(id))` → 驱动 `system` 至多 `budget` 步 → `broker.poll(id)` 返回 `Replied`/`Timeout`；保留既有 `send`（tell）语义不变
     - _Requirements: 4.1, 4.3, 4.4_
-  - [ ]* 12.2 为 ask 超时编写属性测试
+  - [x]* 12.2 为 ask 超时编写属性测试
     - **Property 13: ask 超时确定性**（预算内未收到匹配响应确定性判定为 `Timeout`，重复执行结果一致）
     - **Validates: Requirements 4.4**
-  - [ ]* 12.3 编写 ask 端到端单元测试
+  - [x]* 12.3 编写 ask 端到端单元测试
     - 覆盖 `Replied` 命中与 `Timeout` 见证
     - _Requirements: 4.3, 4.4_
 
-- [ ] 13. 检查点 — 驱动层（ActorSystem/确定性/ask）
+- [x] 13. 检查点 — 驱动层（ActorSystem/确定性/ask）
   - 三后端运行全部已有测试（native 前先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）。Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. 受监督工作池端到端示例（demo.mbt，R11）

@@ -16,135 +16,135 @@
 
 ## 任务（Tasks）
 
-- [ ] 1. 行为与处理上下文（behavior.mbt，R5）
-  - [ ] 1.1 实现 `behavior.mbt`
+- [x] 1. 行为与处理上下文（behavior.mbt，R5）
+  - [x] 1.1 实现 `behavior.mbt`
     - 定义 `Behavior[S, M]`（`receive : (ActorContext, S, M) -> ActorOutcome[S]`）与 `Behavior::new`；返回值复用冻结枚举 `ActorOutcome[S]`，不新增结果类型
     - 定义 `ActorContext[S, M]`（`self_id` + `effects` 记录器）与私有 `ContextEffect`（`PushBehavior`/`PopBehavior`/`StashCurrent`/`UnstashAll`/`Watch`/`Unwatch`）
     - 实现 `become_`/`unbecome`/`stash`/`unstash_all`/`watch`/`unwatch` 仅记录效果（不立即改全局）
     - 实现纯行为栈 helper（`Array[Behavior]` 的 push/peek/pop，深度==1 时 pop 为空操作，不弹空初始行为）
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [ ]* 1.2 为行为栈编写属性测试
+  - [x]* 1.2 为行为栈编写属性测试
     - **Property 14: become 当前行为生效**（对栈顶选择建模的纯 reducer：折叠 become/unbecome 效果后，每条消息由其被处理时刻栈顶行为处理）
     - **Validates: Requirements 5.1, 5.2, 5.3, 5.6**
-  - [ ]* 1.3 为行为栈往返编写属性测试
+  - [x]* 1.3 为行为栈往返编写属性测试
     - **Property 15: 行为栈往返与不弹空**（`become(b)` 紧随 `unbecome()` 恢复操作前状态；仅含初始行为时 `unbecome()` 保持不变）
     - **Validates: Requirements 5.4, 5.7**
-  - [ ]* 1.4 编写 behavior 单元测试
+  - [x]* 1.4 编写 behavior 单元测试
     - 覆盖弹空空操作见证、效果记录顺序见证
     - _Requirements: 5.1, 5.4_
 
-- [ ] 2. 生命周期钩子与重启语义（lifecycle.mbt，R3）
-  - [ ] 2.1 实现 `lifecycle.mbt`
+- [x] 2. 生命周期钩子与重启语义（lifecycle.mbt，R3）
+  - [x] 2.1 实现 `lifecycle.mbt`
     - 定义 `LifecycleHooks[S]`（`pre_start`/`post_stop`/`pre_restart`/`post_restart`）与全默认 `LifecycleHooks::identity()`
     - 定义 `TerminationReason`（`StoppedNormally`/`FailedWith(String)`）`derive(Eq, Show)`
     - 实现纯重启 reducer：`restart_state(init, hooks, reason)` 严格按 `pre_restart → 以初始状态重置 → post_restart` 顺序产出重启后状态
     - _Requirements: 3.1, 3.2, 3.3, 3.5_
-  - [ ]* 2.2 为重启语义编写属性测试
+  - [x]* 2.2 为重启语义编写属性测试
     - **Property 7: 重启状态重置且按序调用钩子**（重启后状态等于「以初始状态为起点、不重放失败前消息」，且钩子按序）
     - **Validates: Requirements 3.3, 3.5, 3.6**
-  - [ ]* 2.3 编写 lifecycle 单元测试
+  - [x]* 2.3 编写 lifecycle 单元测试
     - 覆盖钩子调用顺序见证、`identity()` 默认行为见证
     - _Requirements: 3.1, 3.3_
 
-- [ ] 3. 监督策略、重启指令与最大重启强度（supervision.mbt，R1 R2）
-  - [ ] 3.1 实现 `supervision.mbt`
+- [x] 3. 监督策略、重启指令与最大重启强度（supervision.mbt，R1 R2）
+  - [x] 3.1 实现 `supervision.mbt`
     - 定义 `SupervisionStrategy`（`OneForOne`/`OneForAll`/`RestForOne`）、`Directive`（`Restart`/`Stop`/`Escalate`）`derive(Eq, Show)`
     - 定义 `RestartIntensity{max_restarts, window}` + `RestartIntensity::new`、`SupervisorSpec{strategy, intensity, default_directive}`
     - 实现纯 helper `affected_children(strategy, child_count, failed_index) -> Array[Int]`（OneForOne=仅失败者；OneForAll=全部；RestForOne=失败者及其后）
     - 实现纯 helper `within_intensity(restart_times, clock, window, max_restarts) -> Bool`（判定窗口内是否仍可重启）
     - _Requirements: 1.1, 2.1, 2.5_
-  - [ ]* 3.2 为 OneForOne 隔离编写属性测试
+  - [x]* 3.2 为 OneForOne 隔离编写属性测试
     - **Property 1: OneForOne 兄弟隔离**（`affected_children(OneForOne, n, i)` 恒为 `{i}`，未失败兄弟不受影响）
     - **Validates: Requirements 1.2, 1.6**
-  - [ ]* 3.3 为 OneForAll 编写属性测试
+  - [x]* 3.3 为 OneForAll 编写属性测试
     - **Property 2: OneForAll 全体处置**（范围恒为全部子）
     - **Validates: Requirements 1.3**
-  - [ ]* 3.4 为 RestForOne 编写属性测试
+  - [x]* 3.4 为 RestForOne 编写属性测试
     - **Property 3: RestForOne 影响范围**（仅失败者及其后启动者，其前不受影响）
     - **Validates: Requirements 1.4, 1.7**
-  - [ ]* 3.5 为重启强度上界编写属性测试
+  - [x]* 3.5 为重启强度上界编写属性测试
     - **Property 6: 重启强度上界**（任意 `window` 窗口内单 actor 重启次数 ≤ `max_restarts`，超限升级/停止）
     - **Validates: Requirements 2.5, 2.6, 2.7**
-  - [ ]* 3.6 编写 supervision 单元测试
+  - [x]* 3.6 编写 supervision 单元测试
     - 覆盖三策略范围见证、强度窗口边界见证
     - _Requirements: 1.1, 2.5_
 
-- [ ] 4. 检查点 — 能力基座（behavior/lifecycle/supervision）
+- [x] 4. 检查点 — 能力基座（behavior/lifecycle/supervision）
   - 三后端运行全部已有测试（native 前先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）。Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. 请求-响应 ask 注册表（ask.mbt，R4）
-  - [ ] 5.1 实现 `ask.mbt` 的关联 id 与注册表
+- [x] 5. 请求-响应 ask 注册表（ask.mbt，R4）
+  - [x] 5.1 实现 `ask.mbt` 的关联 id 与注册表
     - 定义 `CorrelationId{value : Int}`、`AskResult[R]`（`Replied(R)`/`Timeout`）`derive(Eq, Show)`
     - 定义 `AskBroker[R]`（`next`/`pending : Map[Int, R]`/`consumed : Map[Int, Bool]`）
     - 实现 `AskBroker::new`/`allocate`（单调递增、运行内唯一）/`fulfill`（回填）/`poll`（按 id 精确定位、消费一次、命中 `Replied` 否则 `Timeout`）
     - _Requirements: 4.1, 4.2_
-  - [ ]* 5.2 为关联 id 唯一性编写属性测试
+  - [x]* 5.2 为关联 id 唯一性编写属性测试
     - **Property 11: ask 关联 id 唯一性**（同一运行内 `allocate` 的 id 两两不同）
     - **Validates: Requirements 4.2, 4.7**
-  - [ ]* 5.3 为响应匹配编写属性测试
+  - [x]* 5.3 为响应匹配编写属性测试
     - **Property 12: ask 响应-请求匹配唯一性**（响应恰匹配其关联 id，至多消费一次，不串号）
     - **Validates: Requirements 4.3, 4.5, 4.6**
-  - [ ]* 5.4 编写 ask 注册表单元测试
+  - [x]* 5.4 编写 ask 注册表单元测试
     - 覆盖未回填即 `poll` 得 `Timeout`、重复 `poll` 不二次消费见证
     - _Requirements: 4.4_
 
-- [ ] 6. 消息暂存（stash.mbt，R6）
-  - [ ] 6.1 实现 `stash.mbt`
+- [x] 6. 消息暂存（stash.mbt，R6）
+  - [x] 6.1 实现 `stash.mbt`
     - 定义 `StashBuffer[M]{items : Array[M]}`
     - 实现 `new`/`push`（追加，不立即处理）/`length`/`is_empty`/`clear`（重启或停止清空）/`drain_to_front`（按原相对顺序置于邮箱待处理消息之前）
     - _Requirements: 6.1, 6.2, 6.4_
-  - [ ]* 6.2 为暂存保序编写属性测试
+  - [x]* 6.2 为暂存保序编写属性测试
     - **Property 17: stash 保序与就绪判定**（`unstash_all` 后被暂存消息相对顺序一致；仅含暂存消息的 actor 不被错误唤醒）
     - **Validates: Requirements 6.2, 6.3, 6.5**
-  - [ ]* 6.3 编写暂存单元测试
+  - [x]* 6.3 编写暂存单元测试
     - 覆盖 `drain_to_front` 与原邮箱消息拼接顺序见证
     - _Requirements: 6.2_
 
-- [ ] 7. 死亡监视注册表（deathwatch.mbt，R7）
-  - [ ] 7.1 实现 `deathwatch.mbt`
+- [x] 7. 死亡监视注册表（deathwatch.mbt，R7）
+  - [x] 7.1 实现 `deathwatch.mbt`
     - 定义 `WatchRegistry[M]{entries : Array[WatchEntry[M]]}` 与私有 `WatchEntry[M]{target, watcher, on_terminated : (ActorId, TerminationReason) -> M, active}`（数组承载保证遍历有序，三后端一致）
     - 实现 `WatchRegistry::new`/`watch`（登记）/`unwatch`（置非 active）
     - 采用 Akka `watchWith` 风格适配器，不向冻结的消息类型 `M` 或 `ActorOutcome` 注入系统消息变体
     - _Requirements: 7.1, 7.3_
-  - [ ]* 7.2 编写监视注册表单元测试
+  - [x]* 7.2 编写监视注册表单元测试
     - 覆盖登记/撤销、重复登记幂等见证（投递语义属性见任务 11）
     - _Requirements: 7.1, 7.3_
 
-- [ ] 8. 路由器（router.mbt，R8）
-  - [ ] 8.1 实现 `router.mbt`
+- [x] 8. 路由器（router.mbt，R8）
+  - [x] 8.1 实现 `router.mbt`
     - 定义 `RoutingStrategy`（`RoundRobin`/`Broadcast`/`ConsistentHash`）`derive(Eq, Show)`、`Router[M]{strategy, workers, cursor}`
     - 实现 `Router::new`/`route`（RoundRobin 按游标循环、Broadcast 复制到全部 worker）/`route_keyed`（ConsistentHash 用整数 FNV-1a + 排序哈希环，不使用浮点）/`worker_for_key`（可观测键→worker）
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  - [ ]* 8.2 为 Broadcast 编写属性测试
+  - [x]* 8.2 为 Broadcast 编写属性测试
     - **Property 22: Broadcast 全达**（每个 worker 收到条数等于输入条数）
     - **Validates: Requirements 8.3, 8.6**
-  - [ ]* 8.3 为 RoundRobin 编写属性测试
+  - [x]* 8.3 为 RoundRobin 编写属性测试
     - **Property 23: RoundRobin 均衡**（长度为 worker 数整数倍时各 worker 条数相等，按固定循环命中）
     - **Validates: Requirements 8.2, 8.7**
-  - [ ]* 8.4 为 ConsistentHash 编写属性测试
+  - [x]* 8.4 为 ConsistentHash 编写属性测试
     - **Property 24: ConsistentHash 分发稳定**（worker 集合不变时相同键稳定命中同一 worker）
     - **Validates: Requirements 8.4, 8.5, 8.8**
-  - [ ]* 8.5 编写路由器单元测试
+  - [x]* 8.5 编写路由器单元测试
     - 覆盖三策略分发见证、`worker_for_key` 稳定性见证
     - _Requirements: 8.1_
 
-- [ ] 9. 有界邮箱与背压（bounded_mailbox.mbt，R9）
-  - [ ] 9.1 实现 `bounded_mailbox.mbt`
+- [x] 9. 有界邮箱与背压（bounded_mailbox.mbt，R9）
+  - [x] 9.1 实现 `bounded_mailbox.mbt`
     - 定义 `BackpressurePolicy`（`DropNewest`/`DropOldest`/`Reject`）、`OfferResult`（`Enqueued`/`Dropped`/`Rejected`）`derive(Eq, Show)`
     - 定义 `BoundedMailbox[M]{capacity, policy, items, enqueued, dropped, rejected}`
     - 实现 `new`/`offer`（未满 FIFO 入队；满时按策略处置并计数）/`dequeue`（FIFO 出队）/`length`/`counts`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
-  - [ ]* 9.2 为容量上界编写属性测试
+  - [x]* 9.2 为容量上界编写属性测试
     - **Property 25: 有界邮箱容量上界与未满 FIFO**（任意时刻 `length ≤ capacity`；未满时与无界 FIFO 一致）
     - **Validates: Requirements 9.2, 9.7**
-  - [ ]* 9.3 为背压计数守恒编写属性测试
+  - [x]* 9.3 为背压计数守恒编写属性测试
     - **Property 26: 背压计数守恒**（入队+丢弃+拒绝 == 投递总数，每次投递恰使三者之一加一）
     - **Validates: Requirements 9.3, 9.4, 9.5, 9.8**
-  - [ ]* 9.4 编写有界邮箱单元测试
+  - [x]* 9.4 编写有界邮箱单元测试
     - 覆盖满时 DropNewest/DropOldest/Reject 三策略见证
     - _Requirements: 9.3, 9.4, 9.5_
 
-- [ ] 10. 检查点 — 中层能力（ask/stash/deathwatch/router/bounded_mailbox）
+- [x] 10. 检查点 — 中层能力（ask/stash/deathwatch/router/bounded_mailbox）
   - 三后端运行全部已有测试（native 前先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）。Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. 旗舰驱动器与确定性调度（system.mbt + deterministic.mbt，整合 R1~R10）

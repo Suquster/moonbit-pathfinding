@@ -1,0 +1,386 @@
+Warning: Both moon.mod.json and moon.mod exist at module root '/home/ubuntu/moonbit-pathfinding', using the new format moon.mod. Please remove the deprecated moon.mod.json.
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:70:3 ]
+    │
+ 70 │   assert_eq(sched.state_of(counter), Some(6))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:102:3 ]
+     │
+ 102 │   assert_eq(sched.state_of(log), Some("abc"))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:131:3 ]
+     │
+ 131 │   assert_eq(sched.state_of(acc), Some(3))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:134:36 ]
+     │
+ 134 │     other => fail("期望 Stopped，实际 \{other}")
+     │                                         ──┬──  
+     │                                           ╰──── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:178:35 ]
+     │
+ 178 │     other => fail("期望 Failed，实际 \{other}")
+     │                                        ──┬──  
+     │                                          ╰──── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/README.mbt.md:185:3 ]
+     │
+ 185 │   assert_eq(sched.state_of(healthy), Some(15))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0004]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/actor.mbt:25:8 ]
+    │
+ 25 │ struct ActorRuntime {
+    │        ──────┬─────  
+    │              ╰─────── Warning (missing_priv): The type 'ActorRuntime' does not occur in public signature of current package, consider marking it as `priv`.
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/actor_test.mbt:50:3 ]
+    │
+ 50 │   assert_eq(a.mailbox.dequeue(), None)
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/actor_test.mbt:76:3 ]
+    │
+ 76 │   assert_eq(mb.peek(), None)
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/actor_test.mbt:88:3 ]
+    │
+ 88 │   assert_eq(mb.peek(), Some("b"))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/ask.mbt:28:14 ]
+    │
+ 28 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/ask.mbt:101:10 ]
+     │
+ 101 │     _ => not(self.pending.get(id.value) is None)
+     │          ─┬─  
+     │           ╰─── Warning (deprecated): Use !expr instead
+─────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox.mbt:22:14 ]
+    │
+ 22 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox.mbt:30:14 ]
+    │
+ 30 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:16:3 ]
+    │
+ 16 │   assert_eq(mb.dequeue(), None)
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:17:3 ]
+    │
+ 17 │   assert_eq(mb.counts(), (2, 1, 0))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:29:3 ]
+    │
+ 29 │   assert_eq(mb.dequeue(), Some(3))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:30:3 ]
+    │
+ 30 │   assert_eq(mb.counts(), (2, 1, 0))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:42:3 ]
+    │
+ 42 │   assert_eq(mb.dequeue(), Some(2))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/bounded_mailbox_test.mbt:43:3 ]
+    │
+ 43 │   assert_eq(mb.counts(), (2, 0, 1))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/lifecycle.mbt:23:14 ]
+    │
+ 23 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/lifecycle_test.mbt:38:3 ]
+    │
+ 38 │   assert_eq(log, ["pre_restart", "post_restart"])
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_fifo_test.mbt:117:8 ]
+     │
+ 117 │     if not(did) {
+     │        ─┬─  
+     │         ╰─── Warning (deprecated): Use !expr instead
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_fifo_test.mbt:131:12 ]
+     │
+ 131 │         if not(ff_int_arrays_eq(processed, expected_prefix)) {
+     │            ─┬─  
+     │             ╰─── Warning (deprecated): Use !expr instead
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_fifo_test.mbt:166:3 ]
+     │
+ 166 │   assert_eq(sched.state_of(a), Some([3, 1, 4, 1, 5, 9]))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_fifo_test.mbt:191:3 ]
+     │
+ 191 │   assert_eq(sched.state_of(a), Some([7, 8, 9]))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:139:10 ]
+     │
+ 139 │       if not(iso_int_arrays_eq(processed, expected_bad)) {
+     │          ─┬─  
+     │           ╰─── Warning (deprecated): Use !expr instead
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:155:6 ]
+     │
+ 155 │   if not(sched.is_running(good)) {
+     │      ─┬─  
+     │       ╰─── Warning (deprecated): Use !expr instead
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:202:3 ]
+     │
+ 202 │   assert_eq(sched.status_of(bad), Some(Failed("boom")))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:208:3 ]
+     │
+ 208 │   assert_eq(notices[0], (bad.id.value, "boom"))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:211:3 ]
+     │
+ 211 │   assert_eq(sched.state_of(good), Some([1, 2, 3]))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:240:3 ]
+     │
+ 240 │   assert_eq(sched.status_of(bad), Some(Failed("boom")))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_isolation_test.mbt:244:3 ]
+     │
+ 244 │   assert_eq(sched.state_of(good), Some([42]))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_p17_stash_order_test.mbt:54:6 ]
+    │
+ 54 │   if not(stash.is_empty()) {
+    │      ─┬─  
+    │       ╰─── Warning (deprecated): Use !expr instead
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/prop_p24_consistent_hash_test.mbt:48:8 ]
+    │
+ 48 │     if not(found) {
+    │        ─┬─  
+    │         ╰─── Warning (deprecated): Use !expr instead
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/release_test.mbt:22:3 ]
+    │
+ 22 │   assert_eq(
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/router.mbt:18:14 ]
+    │
+ 18 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0004]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/router.mbt:64:8 ]
+    │
+ 64 │ struct RingNode {
+    │        ────┬───  
+    │            ╰───── Warning (missing_priv): The type 'RingNode' does not occur in public signature of current package, consider marking it as `priv`.
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler.mbt:57:14 ]
+    │
+ 57 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:25:3 ]
+    │
+ 25 │   assert_eq(sched.state_of(a), Some([1, 2, 3]))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:47:3 ]
+    │
+ 47 │   assert_eq(sched.state_of(a), Some(30))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:92:3 ]
+    │
+ 92 │   assert_eq(sched.status_of(bad), Some(Failed("negative:-1")))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:98:3 ]
+    │
+ 98 │   assert_eq(notices[0], (bad.id.value, "negative:-1"))
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:101:3 ]
+     │
+ 101 │   assert_eq(sched.state_of(good), Some(15))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:120:3 ]
+     │
+ 120 │   assert_eq(sched.status_of(a), Some(Stopped))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:121:3 ]
+     │
+ 121 │   assert_eq(sched.state_of(a), Some(1))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+     ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/scheduler_test.mbt:143:3 ]
+     │
+ 143 │   assert_eq(sched.state_of(b), Some([10, 20]))
+     │   ────┬────  
+     │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+─────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/stash_test.mbt:24:3 ]
+    │
+ 24 │   assert_eq(mailbox.dequeue(), None)
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/stash_test.mbt:35:3 ]
+    │
+ 35 │   assert_eq(mailbox.dequeue(), None)
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision.mbt:24:14 ]
+    │
+ 24 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision.mbt:36:14 ]
+    │
+ 36 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision.mbt:46:14 ]
+    │
+ 46 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0027]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision.mbt:65:14 ]
+    │
+ 65 │ } derive(Eq, Show)
+    │              ──┬─  
+    │                ╰─── Warning (deprecated_syntax): `derive(Show)` is deprecated. Use `derive(Debug)` or manually implement the `Show` trait instead.
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision_test.mbt:14:3 ]
+    │
+ 14 │   assert_eq(affected_children(RestForOne, 5, 2), [2, 3, 4])
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯
+Warning: [0020]
+    ╭─[ /home/ubuntu/moonbit-pathfinding/src/actor/supervision_test.mbt:21:3 ]
+    │
+ 21 │   assert_eq(affected_children(OneForAll, 3, 5), [])
+    │   ────┬────  
+    │       ╰────── Warning (deprecated): Use Debug instead of Show for debugging purposes. See https://github.com/moonbitlang/core/blob/main/debug/README.mbt.md
+────╯

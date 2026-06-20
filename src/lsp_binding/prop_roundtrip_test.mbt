@@ -261,3 +261,42 @@ test "Feature: moonbit-infra-suite, Property 11: decode(encode(msg)) equals msg 
   })
   assert_true(ok)
 }
+
+///|
+/// Feature: lsp, Property 1: JSON-RPC 消息往返（round_trip 模板）
+///
+/// design.md「正确性属性」Property 1「JSON-RPC 消息往返」的全形态属性实现：
+///
+///   *对任意* 合法的 JSON-RPC 2.0 消息 `m`（覆盖 Request / Response / Notification
+///   三种变体、`Id` 的 IdNum / IdStr / IdNull 三种形态、嵌套 `Json` 参数与结果），
+///   经「编码 → Bytes → 解码」的往返应还原为相等消息
+///   （`decode_message(encode_message(m)) == m`）。
+///
+/// 复用上文既有的全形态生成器 `gen_json_rpc_message()` 与 `Bytes` 解码桥接
+/// `decode_message_opt`，以 @infra_pbt 的 `round_trip` 往返断言模板驱动，默认迭代
+/// 100 次（满足 ≥100 迭代基线）。
+///
+/// **Validates: Requirements 2.8, 10.2**
+test "Feature: lsp, Property 1: decode(encode(m)) round-trips (round_trip template)" {
+  let ok = @infra_pbt.round_trip(
+    gen_json_rpc_message(),
+    encode_message,
+    decode_message_opt,
+  )
+  assert_true(ok)
+}
+
+///|
+/// Feature: lsp, Property 1: JSON-RPC 消息往返（holds_for_all 模板）
+///
+/// 同一往返性质的直接谓词形式：对任意由全形态生成器产出的合法消息 `m`，
+/// `decode_message(encode_message(m))` 应恰好等于 `Ok(m)`。复用 @infra_pbt 的
+/// `holds_for_all` 不变量模板，默认迭代 100 次。
+///
+/// **Validates: Requirements 2.8, 10.2**
+test "Feature: lsp, Property 1: decode(encode(m)) equals m (holds_for_all template)" {
+  let ok = @infra_pbt.holds_for_all(gen_json_rpc_message(), fn(m) {
+    decode_message(encode_message(m)) == Ok(m)
+  })
+  assert_true(ok)
+}

@@ -145,8 +145,13 @@ fn severity_code(s : DiagnosticSeverity) -> Int {
 }
 
 ///|
-/// 将一条 `Diagnostic` 编码为 LSP JSON 对象。
-fn diagnostic_to_json(d : Diagnostic) -> @lsp_binding.Json {
+/// 将一条 `Diagnostic` 编码为 LSP JSON 对象：输出其范围、规范严重级别码
+/// （Error=1 / Warning=2 / Information=3 / Hint=4）与消息（Requirement 6.4）。
+///
+/// 任务 13.1（pull 诊断与诊断 JSON 编码）需要本编码能力作为公开 API。该函数自
+/// `0.1.0` 起即以等价行为存在（彼时为私有），此处仅将可见性提升为 `pub`：纯
+/// 追加、向后兼容，不改变签名、行为或任何既有调用方（Requirement 10.5）。
+pub fn diagnostic_to_json(d : Diagnostic) -> @lsp_binding.Json {
   @lsp_binding.JObj([
     ("range", range_to_json(d.range)),
     ("severity", jint(severity_code(d.severity))),

@@ -2,13 +2,31 @@
 package "Suquster/moonbit-pathfinding/src/lsp_binding"
 
 // Values
+pub fn cancel_id_of(Json) -> Id?
+
+pub fn cancelled_response(Id) -> JsonRpcMessage
+
+pub fn correlate(JsonRpcMessage, JsonRpcMessage) -> Bool
+
+pub fn decode_batch(Bytes) -> Result[Array[Result[JsonRpcMessage, RpcError]], RpcError]
+
+pub fn decode_framed(Bytes) -> Result[JsonRpcMessage, RpcError]
+
 pub fn decode_message(Bytes) -> Result[JsonRpcMessage, RpcError]
 
 pub fn dispatch(JsonRpcMessage, Router) -> JsonRpcMessage?
 
+pub fn dispatch_batch(Array[JsonRpcMessage], Router) -> Array[JsonRpcMessage]
+
+pub fn encode_batch(Array[JsonRpcMessage]) -> Bytes
+
+pub fn encode_framed(JsonRpcMessage) -> Bytes
+
 pub fn encode_message(JsonRpcMessage) -> Bytes
 
 pub fn error_response(Id, Int, String) -> JsonRpcMessage
+
+pub fn id_of(JsonRpcMessage) -> Id?
 
 pub let internal_error_code : Int
 
@@ -16,13 +34,31 @@ pub let invalid_params_code : Int
 
 pub let invalid_request_code : Int
 
+pub let lsp_binding_version : String
+
 pub let method_not_found_code : Int
 
 pub let parse_error_code : Int
 
+pub let request_cancelled_code : Int
+
 // Errors
 
 // Types and methods
+pub struct CancelRegistry {
+  cancelled : Map[String, Bool]
+}
+pub fn CancelRegistry::cancel(Self, Id) -> Self
+pub fn CancelRegistry::is_cancelled(Self, Id) -> Bool
+pub fn CancelRegistry::new() -> Self
+
+pub struct FrameReader {
+  buf : Bytes
+} derive(Eq, Show)
+pub fn FrameReader::new() -> Self
+pub fn FrameReader::next(Self) -> Result[(JsonRpcMessage, Self)?, RpcError]
+pub fn FrameReader::push(Self, Bytes) -> Self
+
 pub(all) enum Id {
   IdNum(Int)
   IdStr(String)

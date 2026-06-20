@@ -1,0 +1,37 @@
+// Package: benches/lsp_bench
+//
+// 方向五（LSP_Suite = lsp_binding + lsp_server）的性能基准包骨架。
+// 结构对齐既有 `benches/astar_bench` / `benches/mini_compiler_bench`：
+// 声明对 `moonbitlang/core/bench`（native `moon bench` 工作负载驱动）以及
+// 两个被测子包 `lsp_binding`（协议层：decode/encode/dispatch）与
+// `lsp_server`（能力层：analyze / apply_changes / references / rename）的依赖。
+//
+// 本文件对应任务 17.2：在骨架之上实现五类工作负载基准块与对应 smoke 守护
+// （(1) decode/encode 往返；(2) dispatch 路由；(3) 大文档 analyze；
+// (4) 增量同步 apply_changes；(5) references/rename），基准块名称编码
+// 「工作负载 + 规模」。含机器标识 / 后端目标 / 输入规模 / 计时统计的 JSON /
+// Markdown 工件、基线中位数比较与超容差可审计失败报告，由既有原生基准脚本
+// 产出（本包已登记进 scripts/benchmark_native.ps1 与 scripts/benchmark_smoke.ps1
+// 的基准清单）。
+//
+// 规模参数：decode/encode N=8/64/512；dispatch N=16/128/1024；
+//          analyze / apply_changes / references / rename N=16/64/256。
+//
+// 可复现运行（native 后端前置约束，R7.4）：运行 smoke 守护或基准前先执行
+//   export LIBRARY_PATH=/usr/lib64:/usr/lib
+// 再运行：
+//   moon bench benches/lsp_bench --target native        # 原生基准
+//   moon test  benches/lsp_bench --target wasm-gc        # smoke 守护（任一后端）
+//   moon test  benches/lsp_bench --target js
+//   moon test  benches/lsp_bench --target native         # 需先 export LIBRARY_PATH
+//
+// 工件 / 基线中位数比较 / 超容差回归报告（R7.x）由既有脚本产出：
+//   pwsh -File scripts/benchmark_native.ps1        -Target native   # 写 benches/results/latest-native.{json,md}
+//   pwsh -File scripts/benchmark_native_guard.ps1  -Target native   # 与基线中位数比较，超容差给出回归失败报告（默认容差 25%）
+//
+// _Requirements: 7.1, 7.2, 7.3, 7.4_
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/lsp_binding" @binding,
+  "Suquster/moonbit-pathfinding/src/lsp_server" @server,
+}

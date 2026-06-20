@@ -61,6 +61,12 @@ $benchmarks = @(
         package = "Suquster/moonbit-pathfinding/benches/mini_compiler_bench"
         file = "benches/mini_compiler_bench/mini_compiler_bench.mbt"
         scenario = "MiniML lex/parse/infer/eval/compile+VM over increasing arith-chain (16/64/256), let-nest & app-depth (8/16/32) programs"
+    },
+    [ordered]@{
+        algorithm = "LSP"
+        package = "Suquster/moonbit-pathfinding/benches/lsp_bench"
+        file = "benches/lsp_bench/lsp_bench.mbt"
+        scenario = "LSP_Suite five workloads: decode/encode round-trip (8/64/512), dispatch routing (16/128/1024), analyze, apply_changes & references/rename over DSL docs (16/64/256)"
     }
 )
 

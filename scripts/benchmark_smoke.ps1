@@ -65,6 +65,14 @@ $benchmarks = @(
         scenario = "NFA / DFA / Pike VM on a?{n}a{n} pathological input plus demo real workloads"
         input = [ordered]@{ pathological_rep = 24; real_copies = 16; engines = "nfa,dfa,pikevm" }
         baseline = "Smoke gate only; verifies three-engine differential consistency and Pike VM linear-step guard, not a published speedup claim."
+    },
+    [ordered]@{
+        algorithm = "LSP"
+        package = "Suquster/moonbit-pathfinding/benches/lsp_bench"
+        file = "benches/lsp_bench/lsp_bench.mbt"
+        scenario = "LSP_Suite five workloads: decode/encode round-trip, dispatch routing, analyze, apply_changes & references/rename over JSON-RPC messages and DSL docs"
+        input = [ordered]@{ codec_entries = "8,64,512"; dispatch_messages = "16,128,1024"; doc_refs = "16,64,256"; encoding = "utf-16" }
+        baseline = "Smoke gate only; verifies encode/decode round-trip, dispatch routing, analyze projection, incremental-sync equivalence and references/rename completeness invariants."
     }
 )
 

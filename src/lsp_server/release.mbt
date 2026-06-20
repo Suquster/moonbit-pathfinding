@@ -20,7 +20,7 @@
 
 ///|
 /// 本方向的独立 SemVer 版本号（骨架首版）。
-pub let lsp_version : String = "0.1.0"
+pub let lsp_version : String = "0.2.0"
 
 ///|
 /// 本发布单元的名称。方向五由 lsp_binding + lsp_server 两个子包组成，

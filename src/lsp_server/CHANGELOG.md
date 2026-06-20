@@ -22,6 +22,41 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-12
+
+旗舰深化版（flagship deepening）：在骨架首版基础上，将方向五推进到贴近真实
+LSP 服务端的能力广度——补齐生命周期状态机、能力协商、增量文档同步、位置编码
+转换、扩展语言特性、推送 + 拉取诊断，以及端到端会话演示。本版本为**向后兼容**
+的能力新增（不破坏既有 `release_info` / `lsp_binding` 公共 API），故按 SemVer
+做**次版本**推进（`0.1.0` → `0.2.0`）。本版本仍以单一发布单元（名称 `lsp`，
+由 `lsp_binding` + `lsp_server` 两子包构成）统一登记。
+
+### Added
+- 生命周期状态机：`LifecycleState` / `LifecycleEvent` 与 `step` 状态转移函数，
+  以及会话封装 `LspSession`，建模 initialize → initialized → shutdown → exit
+  的合法流转与非法事件拒绝（新增 LSP 生命周期状态机）。
+- 能力协商：`ServerCapabilitiesExt` / `InitializeParamsExt` 与 `negotiate`，
+  依据客户端声明与服务端支持求交集，产出最终生效的服务端能力集合
+  （新增能力协商）。
+- 增量文档同步：`TextDocumentSyncKind`（None / Full / Incremental）、
+  `ContentChange`、`VersionedDocument` 与 `apply_changes`，支持范围增量变更
+  与版本号推进（新增增量文档同步）。
+- 位置编码：`PositionEncoding`（UTF-8 / UTF-16 / UTF-32）与
+  `code_units` / `position_to_offset` / `offset_to_position` / `convert_position`
+  / `negotiate_encoding`，处理多编码下 LSP Position 与字节/码元偏移的互转与协商
+  （新增位置编码转换）。
+- 扩展语言特性：`documentSymbol`、`workspace_symbols`、`references`、
+  `document_highlights`、`rename`（产出 `WorkspaceEdit`）、`formatting`、
+  `code_actions`、`signature_help`、`semantic_tokens`、`folding_ranges`，
+  显著拓宽编辑器侧可用能力（新增扩展语言特性）。
+- 推送 + 拉取诊断：在既有 publishDiagnostics 推送模型外，新增
+  `pull_diagnostics` 拉取式诊断与 `diagnostic_to_json` 序列化，覆盖 LSP 3.17
+  的双向诊断模型（新增推送 + 拉取诊断）。
+- 端到端演示：`run_session_demo` 串联生命周期、同步、能力协商与诊断的完整
+  会话演示（新增端到端会话演示）。
+- release：`release_info()` 登记版本推进至 `0.2.0`，仍以单一发布单元名
+  `lsp` 登记，changelog 路径与语义保持不变（新增版本推进登记）。
+
 ## [0.1.0] - 2026-06-11
 
 骨架首版（breadth-first 第一版）：达成「可编译 + 跑通三后端（wasm-gc / js /
@@ -51,5 +86,6 @@ native）+ JSON-RPC 往返与非法消息错误条件属性测试 + 可执行文
   `lsp`，版本 `0.1.0`，changelog 路径 `src/lsp_server/CHANGELOG.md`）
   （新增方向发布元数据登记）。
 
-[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/lsp-v0.1.0...HEAD
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/lsp-v0.2.0...HEAD
+[0.2.0]: https://github.com/Suquster/moonbit-pathfinding/compare/lsp-v0.1.0...lsp-v0.2.0
 [0.1.0]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/lsp-v0.1.0

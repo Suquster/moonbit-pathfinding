@@ -38,3 +38,11 @@ import {
   "Suquster/moonbit-pathfinding/src/lsp_binding",
   "Suquster/moonbit-pathfinding/src/release_meta",
 }
+
+// 属性测试（任务 5.4 Property 4：生命周期合法转移等）复用共享 PBT 包
+// @infra_pbt 的 Gen / Rng / holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖
+// 仅作用于黑盒测试驱动（`for "test"`），不进入运行时产物，符合 design.md
+// 「infra_pbt 为横切测试期共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

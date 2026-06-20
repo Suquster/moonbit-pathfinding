@@ -1,0 +1,29 @@
+// Package: benches/actor_bench
+//
+// 方向十（Actor_Framework）的原生 `moon bench` 工作负载与三后端 smoke guard。
+// 覆盖五类代表性负载（design.md §性能基准，Requirement 12.1 / 12.2）：
+//   ① 高频 `send`        —— 单 actor 高吞吐消息入队 + run_until_idle 串行消费；
+//   ② 海量 actor 调度    —— N 个 actor × M 条消息的确定性调度；
+//   ③ ask 往返           —— AskBroker + 系统级 `ask()` 的请求-响应往返；
+//   ④ 路由分发           —— Router 的 RoundRobin / Broadcast / ConsistentHash 分发；
+//   ⑤ 监督重启           —— OneForOne 注入失败 → 重启恢复的端到端工作池。
+//
+// 工件输出（含机器标识 / 后端目标 / 负载规模 / 计时统计）由 actor_bench.mbt 的
+// `render_actor_bench_artifact` 以 JSON 产出。后端标识经 `options(targets:)` 按
+// 当前编译后端注入（actor_bench_backend_{wasm,js,native}.mbt）。
+//
+// native 后端运行前需先 `export LIBRARY_PATH=/usr/lib64:/usr/lib`。
+//
+// _Requirements: 12.1, 12.2_
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/actor",
+}
+
+options(
+  targets: {
+    "actor_bench_backend_js.mbt": [ "js" ],
+    "actor_bench_backend_native.mbt": [ "native", "llvm" ],
+    "actor_bench_backend_wasm.mbt": [ "wasm", "wasm-gc" ],
+  },
+)

@@ -1,0 +1,32 @@
+// Package: benches/mini_compiler_bench
+//
+// Smoke guard plus native `moon bench` workloads for the mini_compiler
+// direction. Covers the five compiler stages — lex / parse / infer / eval /
+// compile+VM — on programs of increasing size (node count, binding count and
+// application depth) so扩展趋势 can be tracked and性能回归 caught.
+//
+// 工作负载（递增规模参数）：
+//   - arith chain  : 1 + 1 + ... + 1   (operand/node count) sizes 16 / 64 / 256
+//   - let nest     : let x0=1 in let x1=x0+1 in ... in x{n-1} (binding count) 8 / 16 / 32
+//   - app depth    : (fun x -> x + 1) (... (0)) (application depth)            8 / 16 / 32
+//
+// 可复现运行命令（R10.2 / R10.5）：
+//   native 后端运行前必须先执行（R10.4）：
+//     export LIBRARY_PATH=/usr/lib64:/usr/lib
+//   再运行基准：
+//     moon bench benches/mini_compiler_bench --target native
+//   或运行 smoke 守护（任一后端）：
+//     moon test benches/mini_compiler_bench --target wasm-gc
+//     moon test benches/mini_compiler_bench --target js
+//     moon test benches/mini_compiler_bench --target native   # 需先 export LIBRARY_PATH
+//
+// 工件 / 基线中位数比较 / 超容差回归报告（R10.2 / R10.3）由既有原生基准脚本产出：
+//   pwsh -File scripts/benchmark_native.ps1        -Target native   # 写 benches/results/latest-native.{json,md}
+//   pwsh -File scripts/benchmark_native_guard.ps1  -Target native   # 与基线中位数比较，超容差给出回归失败报告
+// 本包已登记进 scripts/benchmark_native.ps1 的基准清单（显式注册）。
+//
+// _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/mini_compiler" @mc,
+}

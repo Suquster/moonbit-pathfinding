@@ -21,17 +21,17 @@
     - 新建 `src/parser_combinator/algebra.mbt`，实现 `pure`（不消费、恒成功、携带值）、`map`（成功施加 `f` 且保持消费量、失败原样透传 `pos`/`expected~` 不调用 `f`）、`bind`（成功在剩余输入上运行 `f(v)` 返回的解析器、失败原样透传不调用 `f`）、由 `bind`/`map` 派生的 `ap`，以及恒失败不消费的 `pfail(expected~)`
     - 严格保留既有 `seq`/`alt`/`many`/`many1`/`optional` 公开签名不变（R1.6/R14.2）
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
-  - [x]* 1.2 编写 Property 1 属性测试（pure 恒成功零消费）
+  - [x] 1.2 编写 Property 1 属性测试（pure 恒成功零消费）
     - **Property 1：pure 恒成功零消费**
     - 基于 `@infra_pbt.holds_for_all`，≥100 迭代；新增至 `algebra_test.mbt`
     - **Validates: Requirements 1.1**
-  - [x]* 1.3 编写 Property 2 属性测试（map 保持消费量）
+  - [x] 1.3 编写 Property 2 属性测试（map 保持消费量）
     - **Property 2：map 保持消费量**
     - **Validates: Requirements 1.2**
-  - [x]* 1.4 编写 Property 3 属性测试（map/bind 失败透传且不调用续延）
+  - [x] 1.4 编写 Property 3 属性测试（map/bind 失败透传且不调用续延）
     - **Property 3：map / bind 失败透传且不调用续延**
     - **Validates: Requirements 1.3, 1.5**
-  - [x]* 1.5 编写核心代数定律属性测试（Property 4~10）
+  - [x] 1.5 编写核心代数定律属性测试（Property 4~10）
     - **Property 4：Functor 恒等律**（Validates: Requirements 2.1）
     - **Property 5：Functor 复合律**（Validates: Requirements 2.2）
     - **Property 6：Monad 左单位元律**（Validates: Requirements 2.3, 1.4）
@@ -41,7 +41,7 @@
     - **Property 10：Alternative 结合律（PEG 有序选择）**（Validates: Requirements 2.7）
     - 每条属性独立成测试函数，复用 `gen_parser`/`gen_input` 生成器，≥100 迭代
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
-  - [x]* 1.6 实现共享生成器 `gen_parser` / `gen_input`
+  - [x] 1.6 实现共享生成器 `gen_parser` / `gen_input`
     - 在有限组合子字母表（`pchar`/`satisfy`/`pure`/`pfail`/`map`/`bind`/`alt`/`seq`/`many`）上按受限深度采样产出 `Parser[T]`，配套 `gen_input` 同字符集采样输入；复用 `@infra_pbt.Rng`（种子驱动、三后端一致）
     - 供任务 1.5 及后续 L0 属性测试复用
     - _Requirements: 2.1, 14.4_
@@ -50,17 +50,17 @@
   - [x] 2.1 实现 `derived.mbt` 衍生组合子
     - 新建 `src/parser_combinator/derived.mbt`，以 L0 原语 + `bind`/`map`/`alt`/`many` 组合实现 `sep_by`/`sep_by1`、`between`、`chainl1`/`chainr1`、`chainl`/`chainr`（空序列产出 `default` 且不消费）、`lazy(thunk)`（构造推迟到首次 `run`，打破递归文法构造期循环）
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
-  - [x]* 2.2 编写 Property 11 属性测试（sep_by 家族收集语义）
+  - [x] 2.2 编写 Property 11 属性测试（sep_by 家族收集语义）
     - **Property 11：sep_by 家族收集语义**
     - **Validates: Requirements 3.1, 3.2**
-  - [x]* 2.3 编写 Property 12 属性测试（between 仅产出主体并消费三段）
+  - [x] 2.3 编写 Property 12 属性测试（between 仅产出主体并消费三段）
     - **Property 12：between 仅产出主体并消费三段**
     - **Validates: Requirements 3.3**
-  - [x]* 2.4 编写 Property 13/14 属性测试（chainl1/chainr1 结合性）
+  - [x] 2.4 编写 Property 13/14 属性测试（chainl1/chainr1 结合性）
     - **Property 13：chainl1 左结合一致**（Validates: Requirements 3.4）
     - **Property 14：chainr1 右结合一致**（Validates: Requirements 3.5）
     - _Requirements: 3.4, 3.5_
-  - [x]* 2.5 编写衍生组合子边界单元测试
+  - [x] 2.5 编写衍生组合子边界单元测试
     - `chainl`/`chainr` 空操作数序列产出 `default` 且零消费（R3.6）；`lazy` 递归文法不发散（R3.7）
     - _Requirements: 3.6, 3.7_
 
@@ -68,7 +68,7 @@
   - [x] 3.1 实现 `lookahead.mbt`
     - 新建 `src/parser_combinator/lookahead.mbt`，实现 `lookahead(p)`（成功产出 `p` 值且以进入时 `input` 作为剩余输入零消费、失败在进入位置报告 `p` 期望）与 `not_followed_by(p)`（`p` 失败则成功产出 Unit 零消费、`p` 成功则在进入位置失败零消费）
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
-  - [x]* 3.2 编写 Property 15 属性测试（前瞻零消费不变量）
+  - [x] 3.2 编写 Property 15 属性测试（前瞻零消费不变量）
     - **Property 15：前瞻与否定前瞻零消费不变量**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
 
@@ -82,7 +82,7 @@
   - [x] 4.3 校验 `to_path_error` 桥接保持既有语义
     - 确认 `Fail(pos, expected)` → `@core.PathError::InvalidInput`，期望文本取 `normalize_expected` 后的稳定序列（不改既有签名/语义）
     - _Requirements: 5.4, 14.3_
-  - [x]* 4.4 编写错误模型属性测试（Property 16~20）
+  - [x] 4.4 编写错误模型属性测试（Property 16~20）
     - **Property 16：失败结构完整性**（Validates: Requirements 5.1）
     - **Property 17：label 位置敏感改写**（Validates: Requirements 5.2, 5.3）
     - **Property 18：期望集合确定性顺序**（Validates: Requirements 5.5）
@@ -90,7 +90,7 @@
     - **Property 20：错误位置单调性**（Validates: Requirements 6.5）
     - 每条独立成测试函数，≥100 迭代
     - _Requirements: 5.1, 5.2, 5.3, 5.5, 6.1, 6.2, 6.3, 6.4, 6.5_
-  - [x]* 4.5 编写 `to_path_error` 桥接单元测试
+  - [x] 4.5 编写 `to_path_error` 桥接单元测试
     - 验证桥接输出携带行列位置与期望文本（R5.4 示例）
     - _Requirements: 5.4_
 
@@ -106,11 +106,11 @@
   - [x] 7.1 实现 `commit.mbt`
     - 新建 `src/parser_combinator/commit.mbt`，实现 `commit`/`cut`（软失败提升为 `OFail(committed=true)`、成功透传）、`choice`（提交感知择一：`OOk` 立即返回；硬失败立即停止并上抛；软失败回溯到分支起点继续；全软失败耗尽返回软失败）、`recover(p, sync, fallback)`（硬失败时登记诊断、扫描至 `sync` 同步点之后以 `fallback` 续解）
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
-  - [x]* 7.2 编写 Property 21/22 属性测试（提交语义）
+  - [x] 7.2 编写 Property 21/22 属性测试（提交语义）
     - **Property 21：提交感知择一语义**（Validates: Requirements 7.1, 7.2, 7.3）
     - **Property 22：提交透明性**（Validates: Requirements 7.5）
     - _Requirements: 7.1, 7.2, 7.3, 7.5_
-  - [x]* 7.3 编写 `recover` 同步恢复单元测试
+  - [x] 7.3 编写 `recover` 同步恢复单元测试
     - 硬失败后同步到 `sync` 之后继续解析（R7.4 示例，服务 R11.4）
     - _Requirements: 7.4_
 
@@ -118,14 +118,14 @@
   - [x] 8.1 实现 `packrat.mbt`
     - 新建 `src/parser_combinator/packrat.mbt`，定义 `priv MemoKey{node_id, offset}`（derive Eq/Hash）、`priv MemoEntry`（`Cached`/`Evaluating`）；实现 `memoize(g)`（构造期分配唯一 `node_id`，运行期以 `MemoKey` 查 `ctx.memo`：命中返回缓存 `Outcome`、未命中求值后写回，每键至多算一次）；缓存生命周期随 `PCtx` 新建/释放，不同输入互不污染
     - _Requirements: 8.1, 8.2, 8.5_
-  - [x]* 8.2 编写 Property 23 属性测试（packrat 与朴素差分一致性）
+  - [x] 8.2 编写 Property 23 属性测试（packrat 与朴素差分一致性）
     - **Property 23：packrat 与朴素差分一致性**
     - 以 `run_packrat` 与 `run_naive` 互为差分参照，≥100 迭代
     - **Validates: Requirements 8.1, 8.2, 8.3**
-  - [x]* 8.3 编写 Property 24 属性测试（packrat 缓存隔离）
+  - [x] 8.3 编写 Property 24 属性测试（packrat 缓存隔离）
     - **Property 24：packrat 缓存隔离**
     - **Validates: Requirements 8.5**
-  - [x]* 8.4 编写 packrat 入口 smoke 测试
+  - [x] 8.4 编写 packrat 入口 smoke 测试
     - 验证调用方无需改文法即可在 `run_packrat`/`run_naive` 间切换（R8.4）
     - _Requirements: 8.4_
 
@@ -133,11 +133,11 @@
   - [x] 9.1 实现 `left_recursion.mbt`
     - 新建 `src/parser_combinator/left_recursion.mbt`，定义 `priv LRHead{seed, growing}`；实现 `left_recursive(name, body)`：以 `Evaluating` 占位 + 失败种子打破最左递归无限下钻，迭代增长（新结果消费更多输入则更新种子并重复，否则停止返回最长匹配），基础情形无匹配则返回起始位置失败且不消费；与 packrat 协作（Warth 2008 直接左递归）
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
-  - [x]* 9.2 编写 Property 25 属性测试（左递归与 chainl1 差分一致）
+  - [x] 9.2 编写 Property 25 属性测试（左递归与 chainl1 差分一致）
     - **Property 25：左递归与 chainl1 差分一致**
     - 以 `chainl1` 为参照实现做差分校验，≥100 迭代
     - **Validates: Requirements 9.1, 9.2, 9.3, 9.5**
-  - [x]* 9.3 编写左递归无基础情形边界单元测试
+  - [x] 9.3 编写左递归无基础情形边界单元测试
     - 起始位置无可匹配基础情形 → 返回携带起始位置与期望的失败且不消费（R9.4）
     - _Requirements: 9.4_
 
@@ -145,14 +145,14 @@
   - [x] 10.1 实现 `streaming.mbt`
     - 新建 `src/parser_combinator/streaming.mbt`，定义 `priv StreamSource{chunks, closed}`、`Cursor{source, pos}`（推进返回新游标）、`Step[T]`（`Done(ParseResult)`/`NeedMore((String) -> Step)`）；实现 `Grammar::run_incremental`（已到达数据上推进，不足且未 closed 返回 `NeedMore` 续延；closed 且不满足返回 `Done(Fail)`）与便捷驱动 `drive`
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
-  - [x]* 10.2 编写 Property 26 属性测试（流式分段无关性）
+  - [x] 10.2 编写 Property 26 属性测试（流式分段无关性）
     - **Property 26：流式分段无关性**
     - 配套实现分段方式生成器（对完整输入采样随机切点），以一次性喂入为参照，≥100 迭代
     - **Validates: Requirements 10.1, 10.3, 10.5**
-  - [x]* 10.3 编写 Property 27 属性测试（需要更多输入而非误报失败）
+  - [x] 10.3 编写 Property 27 属性测试（需要更多输入而非误报失败）
     - **Property 27：需要更多输入而非误报失败**
     - **Validates: Requirements 10.2**
-  - [x]* 10.4 编写流式 EOF 失败边界单元测试
+  - [x] 10.4 编写流式 EOF 失败边界单元测试
     - closed 且不满足解析器 → `Done(Fail(pos, expected))`，不误报 NeedMore（R10.4）
     - _Requirements: 10.4_
 
@@ -166,14 +166,14 @@
   - [x] 12.2 实现 JSON 引擎版与错误恢复
     - 实现 `json_value_grammar`（引擎版，支持 packrat）与 `parse_json_recover`（以 `commit`+`recover`，数组/对象元素硬失败时同步到下一个 `,` 或闭括号继续）
     - _Requirements: 11.4_
-  - [x]* 12.3 编写 Property 28 属性测试（JSON 往返）
+  - [x] 12.3 编写 Property 28 属性测试（JSON 往返）
     - **Property 28：JSON 往返**
     - 配套实现 `gen_json` 生成器（深度受限、字符串含随机转义、数值限定可精确往返区间）；以 `@infra_pbt.round_trip` 实现（沿用既有 `prop_roundtrip_test.mbt` 桥接模式），≥100 迭代
     - **Validates: Requirements 11.1, 11.7**
-  - [x]* 12.4 编写 Property 29 属性测试（JSON 转义解码）
+  - [x] 12.4 编写 Property 29 属性测试（JSON 转义解码）
     - **Property 29：JSON 转义解码**
     - **Validates: Requirements 11.2**
-  - [x]* 12.5 编写 Property 30 属性测试（JSON 语法错误诊断且不产半成品）
+  - [x] 12.5 编写 Property 30 属性测试（JSON 语法错误诊断且不产半成品）
     - **Property 30：JSON 语法错误诊断且不产半成品**
     - **Validates: Requirements 11.3**
 
@@ -182,11 +182,11 @@
     - 新建 `src/parser_combinator/arith.mbt`，定义 `Expr` 枚举（derive Eq）；分层文法 `expr := term (('+'|'-') term)*`、`term := factor (('*'|'/') factor)*`、`factor := base ('^' factor)?`、`base := number | '(' expr ')'`，`+ -`/`* /` 用 `chainl1`（左结合）、`^` 用 `chainr1`（右结合）；实现 `expr_parser`、参照求值器 `eval_expr`、规范 `print_expr`、顶层 `parse_and_eval`
     - 另以 `left_recursive` 表达同一加减层，供 R9.5 差分
     - _Requirements: 11.5, 11.6_
-  - [x]* 13.2 编写 Property 31 属性测试（算术求值一致性）
+  - [x] 13.2 编写 Property 31 属性测试（算术求值一致性）
     - **Property 31：算术求值一致性**
     - 配套实现 `gen_expr` 生成器（深度受限、数值限定可精确区间、避免除零）；`parse_and_eval(print_expr(x))` 与 `eval_expr(x)` 一致，≥100 迭代
     - **Validates: Requirements 11.5, 11.6, 11.8**
-  - [x]* 13.3 编写算术优先级与结合性黄金样例单元测试
+  - [x] 13.3 编写算术优先级与结合性黄金样例单元测试
     - 代表性样例：`8-3-2==3`、`2^3^2==512`、`2+3*4==14`（R11.6）
     - _Requirements: 11.6_
 
@@ -202,7 +202,7 @@
     - 新建 `benches/parser_arith_bench/moon.pkg` 与 `parser_arith_bench.mbt`，对算术求值按递增规模（表达式长度几何增长）分别以 `run_packrat` 与 `run_naive` 计时，输出工件同上
     - native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`
     - _Requirements: 12.1, 12.2, 12.3, 12.5_
-  - [x]* 15.3 接入回归基线 guard 比较
+  - [x] 15.3 接入回归基线 guard 比较
     - 将新运行与已记基线中位数比较，超出声明容差给出可审计失败报告（沿用既有 guard 模式）。已落地基线工件 `benches/results/latest-parser-combinator.{json,md}` 并记录可复现运行命令；与既有 PowerShell guard 脚本模式对齐
     - _Requirements: 12.4_
 
@@ -219,7 +219,7 @@
     - 在 `src/parser_combinator/release.mbt` 将版本推进至 `0.2.0`（minor，因 `alt` 失败诊断精化为唯一可观察行为变化，属严格信息增益）；在 `src/parser_combinator/CHANGELOG.md` 追加本次旗舰深化条目并显式声明 `alt` 失败位置/期望精化
     - 确认 `release_info_with_gates` 在测试/文档门禁未全绿时令 `release_ready=false`
     - _Requirements: 15.5, 15.6_
-  - [x]* 17.2 编写向后兼容回归测试与 mbti 快照校验
+  - [x] 17.2 编写向后兼容回归测试与 mbti 快照校验
     - 验证既有 `Parser[T]`/`ParseResult[T]`/`Input`/`Pos` 及原语/组合子签名与行为不变；更新/校验 `pkg.generated.mbti` 快照（R14.1/14.2/14.5）
     - _Requirements: 14.1, 14.2, 14.5_
 

@@ -2,31 +2,84 @@
 package "Suquster/moonbit-pathfinding/src/build_tool"
 
 import {
+  "Suquster/moonbit-pathfinding/src/parser_combinator",
   "Suquster/moonbit-pathfinding/src/release_meta",
 }
 
 // Values
+pub fn action_fingerprint(Recipe) -> String
+
+pub fn add_dynamic_deps(BuildGraph, Target, Array[Target]) -> BuildGraph
+
 pub let build_tool_name : String
 
 pub let build_tool_version : String
 
+pub fn cache_eq(BuildCache, BuildCache) -> Bool
+
+pub fn cache_key(String, Array[String], String) -> String
+
+pub fn content_hash(String) -> String
+
+pub fn critical_path_length(BuildGraph) -> Int
+
+pub fn demo_graph() -> BuildGraph
+
+pub fn demo_rules() -> String
+
+pub fn derive_output_hash(Array[String], String) -> String
+
+pub fn deserialize_cache(String) -> Result[BuildCache, ParseError]
+
 pub fn detect_cycle(BuildGraph) -> Array[Target]?
+
+pub fn dirty_targets(BuildGraph, BuildCache) -> Array[Target]
 
 pub fn is_dirty(Target, BuildCache) -> Bool
 
+pub fn min_layers(BuildGraph) -> Int
+
+pub fn minimal_rebuild_set(BuildGraph, Array[Target]) -> Array[Target]
+
+pub fn needs_rebuild_by_key(ActionCache, String, Array[String], String) -> Bool
+
 pub fn parse_rules(String) -> Result[BuildGraph, ParseError]
+
+pub fn parse_rules_full(String) -> Result[RuleSet, GrammarError]
+
+pub fn parse_rules_full_with_includes(String, (String) -> String?) -> Result[RuleSet, GrammarError]
+
+pub fn print_rules(RuleSet) -> String
+
+pub fn propagate_dirty(BuildGraph, Array[Target]) -> Array[Target]
+
+pub fn rebuild_schedule(BuildGraph, Array[Target], Int) -> Array[Array[Target]]
+
+pub fn record_provenance(String, Array[String], Recipe) -> Provenance
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
 
+pub fn reschedule_with_dynamic(BuildGraph, Target, Array[Target], Int) -> Result[Array[Array[Target]], Cycle]
+
 pub fn schedule(BuildGraph, Int) -> Array[Array[Target]]
+
+pub fn serialize_cache(BuildCache) -> String
 
 pub fn topo_order(BuildGraph) -> Result[Array[Target], Cycle]
 
 // Errors
 
 // Types and methods
+pub(all) struct ActionCache {
+  entries : Map[String, String]
+}
+pub fn ActionCache::get(Self, String) -> String?
+pub fn ActionCache::hit(Self, String) -> Bool
+pub fn ActionCache::new() -> Self
+pub fn ActionCache::record(Self, String, String) -> Unit
+
 pub struct BuildCache {
   recorded_mtimes : Map[String, Int64]
   recorded_hashes : Map[String, String]
@@ -48,11 +101,53 @@ pub struct Cycle {
 }
 pub fn Cycle::new(Array[Target]) -> Self
 
+pub(all) struct GrammarError {
+  pos : @parser_combinator.Pos
+  expected : Array[String]
+  message : String
+} derive(Eq, Show)
+pub fn GrammarError::to_legacy(Self) -> ParseError
+
 pub struct ParseError {
   message : String
   line : Int
 } derive(Eq)
 pub fn ParseError::new(String, Int) -> Self
+
+pub(all) struct PatternRule {
+  target_pattern : String
+  dep_patterns : Array[String]
+  recipe : Recipe
+} derive(Eq, Show)
+pub fn PatternRule::instantiate(Self, String) -> Rule
+
+pub(all) struct Provenance {
+  target : String
+  input_hashes : Array[String]
+  action_fp : String
+  output_hash : String
+} derive(Eq, Show)
+
+pub(all) struct Recipe {
+  lines : Array[String]
+} derive(Eq, Show)
+
+pub(all) struct Rule {
+  target : String
+  deps : Array[String]
+  recipe : Recipe
+} derive(Eq, Show)
+
+pub(all) struct RuleSet {
+  rules : Array[Rule]
+  pattern_rules : Array[PatternRule]
+  variables : Map[String, String]
+  phony : Array[String]
+} derive(Eq, Show)
+pub fn RuleSet::is_phony(Self, String) -> Bool
+pub fn RuleSet::match_pattern(Self, String) -> Rule?
+pub fn RuleSet::recipe_of(Self, String) -> Recipe?
+pub fn RuleSet::to_graph(Self) -> BuildGraph
 
 pub struct Target {
   name : String

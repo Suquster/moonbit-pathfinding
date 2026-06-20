@@ -21,7 +21,7 @@
     - 实现 `round_trip`（往返断言模板）与 `holds_for_all`（不变量断言模板，默认 `iters~ : Int = 100`）
     - 约定测试注释统一标注 `Feature: moonbit-infra-suite, Property {n}: {text}`
     - _Requirements: 11.2, 11.3_
-  - [x]* 1.2 为 infra_pbt 自身编写属性测试
+  - [x] 1.2 为 infra_pbt 自身编写属性测试
     - 验证 `Rng` 同种子产生逐位一致序列（确定性，三后端一致）
     - 验证 `holds_for_all` 默认达到 100 次迭代
     - _Requirements: 11.1, 11.2_
@@ -60,13 +60,13 @@
     - 实现 `seq`、`alt`、`many`、`many1`、`optional`
     - 实现回溯模式：择一分支失败时恢复到分支起始位置；失败时不消费输入并返回含位置与期望符号的错误
     - _Requirements: 4.2, 4.3, 4.4_
-  - [x]* 5.3 编写解析器契约不变量属性测试
+  - [x] 5.3 编写解析器契约不变量属性测试
     - **Property 9：解析器组合子契约不变量**
     - **Validates: Requirements 4.2, 4.3, 4.4**
-  - [x]* 5.4 编写语法结构往返属性测试
+  - [x] 5.4 编写语法结构往返属性测试
     - **Property 10：解析器组合子语法结构往返**
     - **Validates: Requirements 4.5**
-  - [x]* 5.5 编写 `*.mbt.md` 端到端可执行文档（≥3 个解析样例）
+  - [x] 5.5 编写 `*.mbt.md` 端到端可执行文档（≥3 个解析样例）
     - 覆盖序列、择一、重复三类组合子的端到端解析样例
     - _Requirements: 4.7, 11.4_
   - [x] 5.6 建立 Parser_Combinator 独立 SemVer 0.1.0 与 changelog
@@ -82,16 +82,16 @@
   - [x] 6.2 实现 NFA/DFA 构造与匹配执行
     - `build_nfa`（Thompson 构造）、`to_dfa`（子集构造确定化）、`find`（返回是否匹配 + 匹配区间）
     - _Requirements: 2.4, 2.5_
-  - [x]* 6.3 编写正则语法树往返属性测试
+  - [x] 6.3 编写正则语法树往返属性测试
     - **Property 4：Regex 语法树往返**
     - **Validates: Requirements 2.2, 2.7**
-  - [x]* 6.4 编写 NFA/DFA 差分一致性属性测试
+  - [x] 6.4 编写 NFA/DFA 差分一致性属性测试
     - **Property 5：Regex NFA/DFA 差分一致性**
     - **Validates: Requirements 2.6**
-  - [x]* 6.5 编写非法表达式错误条件属性测试
+  - [x] 6.5 编写非法表达式错误条件属性测试
     - **Property 6：Regex 非法表达式错误条件**
     - **Validates: Requirements 2.3**
-  - [x]* 6.6 编写 `*.mbt.md` 可执行文档示例
+  - [x] 6.6 编写 `*.mbt.md` 可执行文档示例
     - 展示解析、匹配与匹配区间返回
     - _Requirements: 11.4_
   - [x] 6.7 建立 Regex_Engine 独立 SemVer 0.1.0 与 changelog
@@ -106,13 +106,13 @@
   - [x] 7.2 实现 protobuf wire format 编解码
     - 实现 `encode`（内存对象 → wire format）与 `decode`（字节 + 模式 → 消息对象）
     - _Requirements: 9.1, 9.2_
-  - [x]* 7.3 编写编解码往返属性测试
+  - [x] 7.3 编写编解码往返属性测试
     - **Property 20：Protobuf 编解码往返**
     - **Validates: Requirements 9.3**
-  - [x]* 7.4 编写非法字节错误条件属性测试
+  - [x] 7.4 编写非法字节错误条件属性测试
     - **Property 21：Protobuf 非法字节错误条件**
     - **Validates: Requirements 9.4**
-  - [x]* 7.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 7.5 编写 `*.mbt.md` 可执行文档示例
     - 展示编码再解码的往返用法
     - _Requirements: 11.4_
   - [x] 7.6 建立 Serialization 独立 SemVer 0.1.0 与 changelog
@@ -135,14 +135,14 @@
     - `topo_order` 复用 `@directed.topo_sort`；`schedule` 产出无依赖任务并行批次
     - `is_dirty` 基于 mtime 与内容哈希；实现增量空操作（输入未变 → 零重建）
     - _Requirements: 6.2, 6.3, 6.4, 6.5, 6.6_
-  - [x]* 9.3 编写构建调度拓扑不变量属性测试
+  - [x] 9.3 编写构建调度拓扑不变量属性测试
     - **Property 14：构建调度拓扑不变量**
     - **Validates: Requirements 6.7**
-  - [x]* 9.4 编写环检测与增量幂等属性测试
+  - [x] 9.4 编写环检测与增量幂等属性测试
     - **Property 13：构建图环检测错误条件**
     - **Property 15：增量构建幂等（空操作）**
     - **Validates: Requirements 6.2, 6.6**
-  - [x]* 9.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 9.5 编写 `*.mbt.md` 可执行文档示例
     - 展示构建图解析与拓扑调度
     - _Requirements: 11.4_
   - [x] 9.6 建立 Build_Tool 独立 SemVer 0.1.0 与 changelog
@@ -157,14 +157,14 @@
     - `log` 丢弃低于阈值的事件；`enter_span` 关联父 span 形成 span 树；`exit_span` 记录时长
     - 跨异步任务边界传播 trace 标识；`format_json` 产出可解析结构化输出
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
-  - [x]* 10.3 编写级别过滤与 span/trace 不变量属性测试
+  - [x] 10.3 编写级别过滤与 span/trace 不变量属性测试
     - **Property 16：日志级别阈值过滤**
     - **Property 17：Span 树与 trace 上下文传播不变量**
     - **Validates: Requirements 7.2, 7.3, 7.4, 7.6**
-  - [x]* 10.4 编写结构化日志往返属性测试
+  - [x] 10.4 编写结构化日志往返属性测试
     - **Property 18：结构化日志往返**
     - **Validates: Requirements 7.7**
-  - [x]* 10.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 10.5 编写 `*.mbt.md` 可执行文档示例
     - 展示结构化字段记录与 span 进入/退出
     - _Requirements: 11.4_
   - [x] 10.6 建立 Logging_Library 独立 SemVer 0.1.0 与 changelog
@@ -180,14 +180,14 @@
     - `build_ssa`（含 φ 函数插入）；`run_passes` 按声明顺序执行并保持 SSA 不变量
     - `select` 提供指令选择 DSL
     - _Requirements: 3.1, 3.2, 3.4, 3.6, 3.7_
-  - [x]* 11.3 编写寄存器分配干涉不变量属性测试
+  - [x] 11.3 编写寄存器分配干涉不变量属性测试
     - **Property 7：寄存器分配干涉不变量**
     - **Validates: Requirements 3.3**
-  - [x]* 11.4 编写 SSA 单赋值不变量属性测试与证明谓词
+  - [x] 11.4 编写 SSA 单赋值不变量属性测试与证明谓词
     - **Property 8：SSA 单赋值不变量（建立与保持）**
     - 在 `src/proofs/codegen_infra_proof.mbt` 实现 `ssa_single_assignment` 谓词
     - **Validates: Requirements 3.5, 3.6**
-  - [x]* 11.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 11.5 编写 `*.mbt.md` 可执行文档示例
     - 展示干涉图着色分配与 SSA 构造
     - _Requirements: 11.4_
   - [x] 11.6 建立 Codegen_Infra 独立 SemVer 0.1.0 与 changelog
@@ -208,10 +208,10 @@
     - `step` 依确定性随机源选择下一任务；`inject_fault` 在指示注入点触发故障
     - `run` 保证同种子 → 同调度序列 + 同终态；失败输出可重放种子与事件轨迹；`replay` 复现相同失败
     - _Requirements: 8.3, 8.4, 8.5, 8.6_
-  - [x]* 13.3 编写确定性可重放不变量属性测试
+  - [x] 13.3 编写确定性可重放不变量属性测试
     - **Property 19：DST 确定性可重放不变量**
     - **Validates: Requirements 8.2, 8.6**
-  - [x]* 13.4 编写 `*.mbt.md` 可执行文档示例
+  - [x] 13.4 编写 `*.mbt.md` 可执行文档示例
     - 展示同种子两次运行产生一致调度序列
     - _Requirements: 11.4_
   - [x] 13.5 建立 DST_Framework 独立 SemVer 0.1.0 与 changelog
@@ -226,13 +226,13 @@
   - [x] 14.2 创建 `src/lsp_server` 子包与能力处理器桩
     - 实现 `on_initialize`（在 capabilities 声明诊断/补全/定义/悬停）、`on_did_change`（重分析 + publishDiagnostics）、`on_completion`、`on_definition`、`on_hover` 桩，针对某通用 DSL
     - _Requirements: 5.4, 5.5, 5.6, 5.7, 5.8_
-  - [x]* 14.3 编写 JSON-RPC 消息往返属性测试
+  - [x] 14.3 编写 JSON-RPC 消息往返属性测试
     - **Property 11：JSON-RPC 消息往返**
     - **Validates: Requirements 5.9**
-  - [x]* 14.4 编写非法消息错误条件属性测试
+  - [x] 14.4 编写非法消息错误条件属性测试
     - **Property 12：LSP_Server 非法消息错误条件**
     - **Validates: Requirements 5.3**
-  - [x]* 14.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 14.5 编写 `*.mbt.md` 可执行文档示例
     - 展示 JSON-RPC 请求解码、分发与编码响应
     - _Requirements: 11.4_
   - [x] 14.6 建立 LSP_Binding / LSP_Server 独立 SemVer 0.1.0 与 changelog
@@ -248,17 +248,17 @@
     - `eval` 产生与语义规范一致的运行结果；`print_ast` 配套打印器支撑往返性质
     - `check` 对类型不一致返回含冲突类型与节点位置的类型错误
     - _Requirements: 1.4, 1.5, 1.6_
-  - [x]* 15.3 编写 AST 往返属性测试
+  - [x] 15.3 编写 AST 往返属性测试
     - **Property 1：Mini_Compiler AST 往返**
     - **Validates: Requirements 1.2, 1.8**
-  - [x]* 15.4 编写词法/语法错误条件属性测试
+  - [x] 15.4 编写词法/语法错误条件属性测试
     - **Property 2：Mini_Compiler 词法/语法错误条件**
     - **Validates: Requirements 1.3**
-  - [x]* 15.5 编写求值确定性与作用域不变量属性测试及证明谓词
+  - [x] 15.5 编写求值确定性与作用域不变量属性测试及证明谓词
     - **Property 3：Mini_Compiler 求值确定性与作用域不变量**
     - 在 `src/proofs/mini_compiler_proof.mbt` 实现作用域绑定一致性谓词
     - **Validates: Requirements 1.9**
-  - [x]* 15.6 编写 `*.mbt.md` 可执行文档示例
+  - [x] 15.6 编写 `*.mbt.md` 可执行文档示例
     - 展示源码 → AST → 求值的端到端流程
     - _Requirements: 11.4_
   - [x] 15.7 建立 Mini_Compiler 独立 SemVer 0.1.0 与 changelog
@@ -273,13 +273,13 @@
     - `send` 追加到邮箱队列；保证单 actor 一次仅处理一条消息；空邮箱时挂起不占资源
     - 未捕获错误终止该 actor 并通知 supervisor，不影响其他 actor；`stop` 处理完当前消息后停止
     - _Requirements: 10.2, 10.3, 10.5, 10.6, 10.7_
-  - [x]* 16.3 编写串行与 FIFO 顺序不变量属性测试
+  - [x] 16.3 编写串行与 FIFO 顺序不变量属性测试
     - **Property 22：Actor 串行与 FIFO 顺序不变量**
     - **Validates: Requirements 10.3, 10.4**
-  - [x]* 16.4 编写错误隔离不变量属性测试
+  - [x] 16.4 编写错误隔离不变量属性测试
     - **Property 23：Actor 错误隔离不变量**
     - **Validates: Requirements 10.6**
-  - [x]* 16.5 编写 `*.mbt.md` 可执行文档示例
+  - [x] 16.5 编写 `*.mbt.md` 可执行文档示例
     - 展示 spawn / send / stop 的消息传递用法
     - _Requirements: 11.4_
   - [x] 16.6 建立 Actor_Framework 独立 SemVer 0.1.0 与 changelog
@@ -297,7 +297,7 @@
     - 将各方向纳入 `matrix.backend = [wasm-gc, js, native]` 同一测试套件，任一后端分歧判定为构建失败
     - 将各方向 `DirectionRelease` 聚合到 release-ready 门禁
     - _Requirements: 11.1, 11.6_
-  - [x]* 18.2 编写全方向三后端差分一致性属性测试
+  - [x] 18.2 编写全方向三后端差分一致性属性测试
     - **Property 24：三后端差分一致性（横切）**
     - **Validates: Requirements 1.10, 2.9, 3.8, 4.8, 6.8, 8.7, 9.9, 11.1**
 

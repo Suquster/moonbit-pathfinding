@@ -55,6 +55,12 @@ $benchmarks = @(
         package = "Suquster/moonbit-pathfinding/benches/regex_bench"
         file = "benches/regex_bench/regex_bench.mbt"
         scenario = "NFA / DFA / Pike VM on a?{n}a{n} pathological input plus demo real workloads"
+    },
+    [ordered]@{
+        algorithm = "MiniCompiler"
+        package = "Suquster/moonbit-pathfinding/benches/mini_compiler_bench"
+        file = "benches/mini_compiler_bench/mini_compiler_bench.mbt"
+        scenario = "MiniML lex/parse/infer/eval/compile+VM over increasing arith-chain (16/64/256), let-nest & app-depth (8/16/32) programs"
     }
 )
 

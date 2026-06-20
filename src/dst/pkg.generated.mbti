@@ -6,6 +6,8 @@ import {
 }
 
 // Values
+pub fn check_invariant_over(Array[SimEvent], name~ : String, (Array[SimEvent]) -> Bool) -> String?
+
 pub fn default_fails(DesResult) -> Bool
 
 pub fn demo_partition_crash_scenario() -> DesScenario
@@ -21,6 +23,8 @@ pub let dst_name : String
 pub let dst_version : String
 
 pub fn eval_invariants(World) -> String?
+
+pub fn eventually(Array[SimEvent], (Array[SimEvent]) -> Bool) -> EventuallyResult
 
 pub fn explore_bounded(UInt64, DesScenario, Int) -> ExploreReport
 
@@ -55,6 +59,8 @@ pub fn run(UInt64, Scenario) -> SimResult
 pub fn run_des(UInt64, DesScenario) -> DesResult
 
 pub fn run_des_with_order(UInt64, DesScenario, Array[Int]) -> DesResult
+
+pub fn run_executable(UInt64, Array[ExecutableTask], max_steps~ : Int) -> Array[SimEvent]
 
 pub fn serialize_result(DesResult) -> String
 
@@ -111,6 +117,19 @@ pub fn EventQueue::new() -> Self
 pub fn EventQueue::pop_min(Self) -> (QueuedEvent, Self)?
 pub fn EventQueue::push(Self, QueuedEvent) -> Self
 pub fn EventQueue::size(Self) -> Int
+
+pub(all) enum EventuallyResult {
+  EHolds(step~ : Int)
+  ENeverHeld
+} derive(Eq)
+pub impl Show for EventuallyResult
+
+pub struct ExecutableTask {
+  id : Int
+  name : String
+  body : (SimContext) -> TaskResult
+}
+pub fn ExecutableTask::new(Int, String, (SimContext) -> TaskResult) -> Self
 
 pub(all) struct ExploreReport {
   explored : Int
@@ -252,6 +271,16 @@ pub fn Sim::inject_fault(Self, FaultPolicy) -> Self
 pub fn Sim::new(UInt64, Array[Task]) -> Self
 pub fn Sim::step(Self) -> Self
 
+pub struct SimContext {
+  node_id : Int
+  clock : UInt64
+  sends : Array[(Int, Int, UInt64)]
+  appends : Array[Int]
+}
+pub fn SimContext::append(Self, value~ : Int) -> Unit
+pub fn SimContext::new(node_id~ : Int, clock~ : UInt64) -> Self
+pub fn SimContext::send(Self, to~ : Int, payload~ : Int, after~ : UInt64) -> Unit
+
 pub(all) enum SimEvent {
   EvScheduled(time~ : UInt64, task_id~ : Int)
   EvCompleted(time~ : UInt64, task_id~ : Int)
@@ -278,6 +307,13 @@ pub(all) struct Task {
   name : String
 } derive(Eq, Show)
 pub fn Task::new(Int, String) -> Self
+
+pub(all) enum TaskResult {
+  TDone
+  TYield
+  TFailed(reason~ : String)
+} derive(Eq)
+pub impl Show for TaskResult
 
 pub struct World {
   seed : UInt64

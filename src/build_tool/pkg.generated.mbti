@@ -11,6 +11,8 @@ pub fn action_fingerprint(Recipe) -> String
 
 pub fn add_dynamic_deps(BuildGraph, Target, Array[Target]) -> BuildGraph
 
+pub fn build_parallel_schedule(Array[Action], Array[(String, String)]) -> ParallelSchedule
+
 pub let build_tool_name : String
 
 pub let build_tool_version : String
@@ -63,6 +65,8 @@ pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.Dire
 
 pub fn reschedule_with_dynamic(BuildGraph, Target, Array[Target], Int) -> Result[Array[Array[Target]], Cycle]
 
+pub fn run_actions(ParallelSchedule, &Executor, BuildLog) -> BuildLog
+
 pub fn schedule(BuildGraph, Int) -> Array[Array[Target]]
 
 pub fn serialize_cache(BuildCache) -> String
@@ -72,6 +76,15 @@ pub fn topo_order(BuildGraph) -> Result[Array[Target], Cycle]
 // Errors
 
 // Types and methods
+pub(all) struct Action {
+  id : String
+  inputs : Array[String]
+  outputs : Array[String]
+  command : String
+} derive(Eq)
+pub fn Action::fingerprint(Self) -> String
+pub impl Show for Action
+
 pub(all) struct ActionCache {
   entries : Map[String, String]
 }
@@ -79,6 +92,12 @@ pub fn ActionCache::get(Self, String) -> String?
 pub fn ActionCache::hit(Self, String) -> Bool
 pub fn ActionCache::new() -> Self
 pub fn ActionCache::record(Self, String, String) -> Unit
+
+pub(all) enum ActionResult {
+  Executed(output_hash~ : String)
+  Skipped
+} derive(Eq)
+pub impl Show for ActionResult
 
 pub struct BuildCache {
   recorded_mtimes : Map[String, Int64]
@@ -96,10 +115,30 @@ pub struct BuildGraph {
 }
 pub fn BuildGraph::new(Array[Target], Array[(Target, Target)]) -> Self
 
+pub struct BuildLog {
+  entries : Map[String, (String, ActionResult)]
+}
+pub fn BuildLog::is_up_to_date(Self, Action) -> Bool
+pub fn BuildLog::new() -> Self
+pub fn BuildLog::record(Self, Action, ActionResult) -> Unit
+
+pub struct CallbackExecutor {
+  cb : (Action) -> String
+}
+pub fn CallbackExecutor::new((Action) -> String) -> Self
+pub impl Executor for CallbackExecutor
+
 pub struct Cycle {
   nodes : Array[Target]
 }
 pub fn Cycle::new(Array[Target]) -> Self
+
+pub struct DryRunExecutor {
+  log : Array[Action]
+}
+pub fn DryRunExecutor::new() -> Self
+pub fn DryRunExecutor::recorded(Self) -> Array[Action]
+pub impl Executor for DryRunExecutor
 
 pub(all) struct GrammarError {
   pos : @parser_combinator.Pos
@@ -107,6 +146,10 @@ pub(all) struct GrammarError {
   message : String
 } derive(Eq, Show)
 pub fn GrammarError::to_legacy(Self) -> ParseError
+
+pub(all) struct ParallelSchedule {
+  waves : Array[Array[Action]]
+}
 
 pub struct ParseError {
   message : String
@@ -158,4 +201,7 @@ pub impl Show for Target
 // Type aliases
 
 // Traits
+pub trait Executor {
+  fn execute(Self, Action) -> ActionResult
+}
 

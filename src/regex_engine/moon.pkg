@@ -19,6 +19,10 @@
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
   "Suquster/moonbit-pathfinding/src/release_meta",
+  // @infra_text —— 共享高效文本构建叶子包（不依赖任何方向）。api_ext.mbt 的
+  // `Pattern::replace_fn` 以其 `TextBuilder` 物化替换结果，消除循环内字符串
+  // `+` 的 O(n²) 拼接（Requirement 1.5 / 5.5 / 质量门禁）。
+  "Suquster/moonbit-pathfinding/src/infra_text",
 }
 
 // 属性测试（task 6.3 / 6.4 / 6.5）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /

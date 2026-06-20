@@ -26,6 +26,10 @@ import {
   "Suquster/moonbit-pathfinding/src/directed",
   "Suquster/moonbit-pathfinding/src/release_meta",
   "Suquster/moonbit-pathfinding/src/parser_combinator",
+  // @infra_text —— 共享高效文本构建叶子包（不依赖任何方向）。executor.mbt 的
+  // 动作指纹拼接（Action::fingerprint）以其 `TextBuilder` 物化，消除循环内
+  // 字符串 `+` 的 O(n²) 拼接（Requirement 1.5 / 质量门禁）。
+  "Suquster/moonbit-pathfinding/src/infra_text",
 }
 
 // 属性测试（task 9.3 拓扑不变量、9.4 环检测错误条件 + 增量幂等空操作）

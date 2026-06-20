@@ -8,6 +8,8 @@ import {
 // Values
 pub fn build_nfa(Regex) -> Nfa
 
+pub fn category_charset(GeneralCategory) -> CharSet
+
 pub fn compile_program(Ast, flags? : Flags) -> Program
 
 pub fn demo_cases() -> Array[(String, String)]
@@ -27,6 +29,8 @@ pub fn is_match(Regex, String) -> Bool
 pub fn parse_pattern(String, flags? : Flags) -> Result[Ast, ParseError]
 
 pub fn parse_regex(String) -> Result[Regex, ParseError]
+
+pub fn parse_unicode_class(String) -> CharSet?
 
 pub fn predef_digit() -> CharSet
 
@@ -53,6 +57,8 @@ pub fn release_info() -> @release_meta.DirectionRelease
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
 
 pub fn to_dfa(Nfa) -> Dfa
+
+pub fn unicode_category(Int) -> GeneralCategory
 
 // Errors
 
@@ -103,6 +109,7 @@ pub(all) struct CharSet {
 pub fn CharSet::case_fold(Self) -> Self
 pub fn CharSet::complement(Self) -> Self
 pub fn CharSet::contains(Self, Int) -> Bool
+pub fn CharSet::contains_binary(Self, Int) -> Bool
 pub fn CharSet::union(Self, Self) -> Self
 
 pub(all) enum ClassItem {
@@ -128,6 +135,32 @@ pub(all) struct Flags {
 pub fn Flags::default() -> Self
 pub fn Flags::dot_set(Self) -> CharSet
 pub fn Flags::parse(String) -> Self
+
+pub enum GeneralCategory {
+  Lu
+  Ll
+  Lt
+  Lm
+  Lo
+  Nd
+  Nl
+  No
+  Pc
+  Pd
+  Ps
+  Pe
+  Po
+  Zs
+  Cc
+  Cn
+} derive(Eq)
+
+pub struct HybridMatcher {
+  nfa : Nfa
+  cache_cap : Int
+}
+pub fn HybridMatcher::find(Self, String) -> Match?
+pub fn HybridMatcher::new(Nfa, cap~ : Int) -> Self
 
 pub enum Inst {
   IChar(Char)
@@ -187,11 +220,14 @@ pub fn Pattern::captures_all(Self, String) -> Array[Captures]
 pub fn Pattern::compile(String, flags? : Flags, kind? : MatchKind) -> Result[Self, ParseError]
 pub fn Pattern::find(Self, String) -> Match?
 pub fn Pattern::find_all(Self, String) -> Array[Match]
+pub fn Pattern::find_at(Self, String, Int) -> Match?
 pub fn Pattern::find_iter(Self, String) -> Array[Match]
 pub fn Pattern::is_match(Self, String) -> Bool
 pub fn Pattern::replace(Self, String, String) -> String
 pub fn Pattern::replace_all(Self, String, String) -> String
+pub fn Pattern::replace_fn(Self, String, (Match) -> String) -> String
 pub fn Pattern::split(Self, String) -> Array[String]
+pub fn Pattern::split_n(Self, String, Int) -> Array[String]
 
 pub struct Program {
   insts : Array[Inst]

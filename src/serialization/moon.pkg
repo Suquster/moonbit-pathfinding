@@ -22,6 +22,11 @@
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  // @infra_text —— 共享高效文本构建工具 `TextBuilder`（横切叶子包，不依赖任何
+  // 方向）。结构化代码生成路径（codegen_ast.mbt 的 `render_code`，Requirement
+  // 4.3 / 1.5）以其顺序追加片段并一次性 `build` 物化目标源码，禁止循环内字符串
+  // `+`，对总输出长度线性。作为运行时依赖引入不破坏既有 API。
+  "Suquster/moonbit-pathfinding/src/infra_text",
 }
 
 // 属性测试（task 7.3 / 7.4）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
@@ -31,3 +36,12 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
 } for "test"
+
+// 任务 7.4 的「序列化增强属性测试」需在包内构造只读 `pub struct`
+// （`AnyValue` / `ProtoFile` / `ServiceDef` / `RpcDef` / `ImportDecl` —— 其字段
+// 对黑盒测试只读、不可创建），故置于白盒测试文件
+// `serialization_ext_prop_wbtest.mbt`，并对 @infra_pbt 追加白盒测试期依赖
+// （`for "wbtest"`）；同样不进入运行时产物。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "wbtest"

@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_text"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct TextBuilder {
+  chunks : Array[String]
+  char_buf : Array[Char]
+  mut total_len : Int
+}
+pub fn TextBuilder::build(Self) -> String
+pub fn TextBuilder::is_empty(Self) -> Bool
+pub fn TextBuilder::len(Self) -> Int
+pub fn TextBuilder::new() -> Self
+pub fn TextBuilder::push_char(Self, Char) -> Unit
+pub fn TextBuilder::push_str(Self, String) -> Unit
+pub fn TextBuilder::reset(Self) -> Unit
+pub fn TextBuilder::with_capacity(Int) -> Self
+
+// Type aliases
+
+// Traits
+

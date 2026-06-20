@@ -25,3 +25,11 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
 } for "test"
+
+// 白盒属性测试（task 6.3 的 Property 6d：BoundedCache 容量上限不变量）需在
+// 包内构造引擎内部只读类型 `Outcome[T]`（`OOk` 对黑盒测试只读、不可创建），
+// 故置于 `parser_ext_prop_wbtest.mbt`，并对 @infra_pbt 追加白盒测试期依赖
+// （`for "wbtest"`）；同样不进入运行时产物。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "wbtest"

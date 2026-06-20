@@ -21,11 +21,15 @@ pub fn code_units(Int, PositionEncoding) -> Int
 
 pub fn convert_position(String, Position, from~ : PositionEncoding, to~ : PositionEncoding) -> Position?
 
+pub fn decode_frame(String) -> Result[(String, String), FrameError]
+
 pub fn diagnostic_to_json(Diagnostic) -> @lsp_binding.Json
 
 pub fn document_highlights(Analysis, Position) -> Array[Range]
 
 pub fn document_symbols(Analysis) -> Array[DocumentSymbol]
+
+pub fn encode_frame(String) -> String
 
 pub fn folding_ranges(TextDocument) -> Array[Range]
 
@@ -76,6 +80,8 @@ pub fn semantic_tokens(Analysis) -> Array[Int]
 pub fn signature_help(Analysis, Position) -> SignatureInfo?
 
 pub fn step(LifecycleState, Bool, LifecycleEvent, @lsp_binding.Id) -> StepResult
+
+pub fn validate_jsonrpc(@lsp_binding.Json) -> Result[Unit, JsonRpcError]
 
 pub fn workspace_symbols(Array[Analysis], String) -> Array[Location]
 
@@ -129,6 +135,12 @@ pub(all) struct DocumentSymbol {
   range : Range
 } derive(Eq)
 
+pub enum FrameError {
+  MissingContentLength
+  InvalidContentLength(raw~ : String)
+  IncompleteBody(need~ : Int, got~ : Int)
+} derive(Eq, Show)
+
 pub(all) struct Hover {
   contents : String
   range : Range?
@@ -144,6 +156,14 @@ pub(all) struct InitializeParamsExt {
 } derive(Eq, Show)
 pub fn InitializeParamsExt::empty() -> Self
 pub fn InitializeParamsExt::new(Array[String], Array[String]) -> Self
+
+pub enum JsonRpcError {
+  ParseErr
+  InvalidRequest
+  MethodNotFound
+  InvalidParams
+  InternalErr
+} derive(Eq, Show)
 
 pub(all) enum LifecycleEvent {
   EvInitialize(InitializeParamsExt)

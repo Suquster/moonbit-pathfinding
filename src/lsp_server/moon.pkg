@@ -37,6 +37,9 @@
 import {
   "Suquster/moonbit-pathfinding/src/lsp_binding",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  // 任务 11.1：JSON-RPC 成帧的头部构建复用共享高效文本构建工具 TextBuilder
+  // （叶子基础设施包，避免循环内字符串 + 的 O(n²) 拼接）。
+  "Suquster/moonbit-pathfinding/src/infra_text",
 }
 
 // 属性测试（任务 5.4 Property 4：生命周期合法转移等）复用共享 PBT 包

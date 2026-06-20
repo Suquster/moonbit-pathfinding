@@ -60,6 +60,8 @@ pub fn interference_components(InterferenceGraph) -> Array[Array[Var]]
 
 pub fn interference_from_intervals(Array[LiveInterval]) -> InterferenceGraph
 
+pub fn interp_ir(TypedFunction, args~ : Map[Int, Int]) -> IrEvalResult
+
 pub fn liveness_step(Array[BasicBlock], LivenessResult) -> LivenessResult
 
 pub fn max_munch(Array[CostRule], IrNode) -> Array[TargetInstr]
@@ -85,6 +87,8 @@ pub fn sequentialize_parallel_copy(Array[(Var, Var)]) -> Array[(Var, Var)]
 pub fn spill_cost(InterferenceGraph, Array[LiveInterval]) -> SpillCost
 
 pub fn tiling_cost(Array[CostRule], IrNode) -> Int
+
+pub fn validate_ir(TypedFunction) -> Result[Unit, Array[IrError]]
 
 // Errors
 
@@ -124,6 +128,19 @@ pub(all) struct InterferenceGraph {
   edges : Array[(Var, Var)]
 } derive(Show)
 
+pub enum IrError {
+  SsaViolation(reg~ : Int)
+  TypeMismatch(instr~ : String, detail~ : String)
+  ControlFlowError(block~ : String, detail~ : String)
+} derive(Eq)
+pub impl Show for IrError
+
+pub struct IrEvalResult {
+  regs : Map[Int, Int]
+  returned : Int?
+} derive(Eq)
+pub impl Show for IrEvalResult
+
 pub(all) enum IrNode {
   Const(Int)
   VarRef(Var)
@@ -160,6 +177,13 @@ pub(all) enum Location {
 pub(all) struct MoveSet {
   moves : Array[(Var, Var)]
 } derive(Show)
+
+pub(all) enum Operand {
+  Reg(Int)
+  Imm(Int)
+  Mem(Int)
+} derive(Eq)
+pub impl Show for Operand
 
 pub(all) enum OptPass {
   ConstFold
@@ -206,6 +230,36 @@ pub(all) struct TargetInstr {
   op : String
   operands : Array[String]
 } derive(Eq, Show)
+
+pub(all) struct TypedBlock {
+  label : String
+  instrs : Array[TypedInstr]
+  terminator : TypedInstr?
+} derive(Eq)
+pub impl Show for TypedBlock
+
+pub(all) struct TypedFunction {
+  entry : String
+  blocks : Array[TypedBlock]
+} derive(Eq)
+pub fn TypedFunction::block_labels(Self) -> Array[String]
+pub impl Show for TypedFunction
+
+pub(all) enum TypedInstr {
+  Add(dst~ : Int, lhs~ : Operand, rhs~ : Operand)
+  Sub(dst~ : Int, lhs~ : Operand, rhs~ : Operand)
+  Mul(dst~ : Int, lhs~ : Operand, rhs~ : Operand)
+  Load(dst~ : Int, addr~ : Operand)
+  Store(addr~ : Operand, value~ : Operand)
+  Call(dst~ : Int, callee~ : String, args~ : Array[Operand])
+  Ret(value~ : Operand?)
+  Br(target~ : String)
+  CondBr(cond~ : Operand, then_~ : String, else_~ : String)
+  Phi(dst~ : Int, args~ : Array[(String, Operand)])
+} derive(Eq)
+pub fn TypedInstr::defined_reg(Self) -> Int?
+pub fn TypedInstr::is_terminator(Self) -> Bool
+pub impl Show for TypedInstr
 
 pub(all) struct Var {
   id : Int

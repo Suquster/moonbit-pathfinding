@@ -1,0 +1,21 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_text
+//
+// 共享的高效文本构建基础设施（Shared_Text_Builder）。
+//
+// 设计依据（production-hardening/design.md §「Shared_Text_Builder 设计」，
+// Requirement 1）：MoonBit 中 `String + String` 每次都分配新串，循环内累积
+// 拼接的总代价为 O(n²)。本包提供 `TextBuilder`，以 `Array[String]` 片段缓冲
+// 配合 `Array[Char]` 字符缓冲实现摊还 O(1) 追加、O(n) 物化，用于在各方向中
+// 替换 `out = out + ...` 反模式。
+//
+// 本包是「叶子基础设施包」：生产代码不依赖任何方向包，亦不依赖 `infra_pbt`，
+// 以保持职责单一、避免引入循环依赖；各方向包可单向依赖本包。
+//
+// 属性测试（任务 1.2 Property 1：文本构建等价 / 再追加保持 / len 一致）复用
+// 共享 PBT 包 @infra_pbt 的 Gen / Rng / holds_for_all 模板（每条属性 ≥100 次
+// 迭代）。该依赖仅作用于黑盒测试驱动（`for "test"`），不进入运行时产物，
+// 从而保持本包生产代码的叶子性，符合 design.md「infra_pbt 为横切测试期
+// 共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

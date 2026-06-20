@@ -173,6 +173,25 @@ pub(all) struct Sink {
 }
 pub fn Sink::new(String, Formatter, route? : (Event) -> Bool) -> Self
 
+pub struct SinkHandle {
+  target : SinkTarget
+  formatter : Formatter
+  mut buffer : Array[Event]
+  mut level : Level
+}
+pub fn SinkHandle::buffered(Int, Self, formatter? : Formatter, level? : Level) -> Self
+pub fn SinkHandle::callback((Event) -> Unit, formatter? : Formatter, level? : Level) -> Self
+pub fn SinkHandle::console(Formatter, level? : Level) -> Self
+pub fn SinkHandle::emit(Self, Event) -> Unit
+pub fn SinkHandle::flush(Self) -> Unit
+pub fn SinkHandle::set_level(Self, Level) -> Unit
+
+pub enum SinkTarget {
+  TConsole
+  TCallback((Event) -> Unit)
+  TBuffered(threshold~ : Int, down~ : SinkHandle)
+}
+
 pub(all) struct Span {
   id : SpanId
   parent : SpanId?

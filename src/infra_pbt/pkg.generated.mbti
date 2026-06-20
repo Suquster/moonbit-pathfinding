@@ -2,7 +2,11 @@
 package "Suquster/moonbit-pathfinding/src/infra_pbt"
 
 // Values
+pub fn[T] check_with_shrink(Gen[T], (T) -> Bool, (T) -> Array[T], iters? : Int) -> CheckResult[T]
+
 pub let default_iters : Int
+
+pub fn[T] frequency(Array[(Int, Gen[T])]) -> Gen[T]
 
 pub fn gen_bool() -> Gen[Bool]
 
@@ -10,13 +14,28 @@ pub fn gen_int_range(Int, Int) -> Gen[Int]
 
 pub fn[T] holds_for_all(Gen[T], (T) -> Bool, iters? : Int) -> Bool
 
+pub fn[T] holds_for_all_stats(Gen[T], (T) -> Bool, (T) -> String, iters? : Int) -> (Bool, Stats)
+
+pub fn[T] one_of(Array[Gen[T]]) -> Gen[T]
+
 pub fn rng_new(UInt64) -> Rng
 
 pub fn[T : Eq] round_trip(Gen[T], (T) -> Bytes, (Bytes) -> T?) -> Bool
 
+pub fn[T] shrink_array(Array[T], (T) -> Array[T]) -> Array[Array[T]]
+
+pub fn shrink_int(Int) -> Array[Int]
+
+pub fn[T] sized((Int) -> Gen[T]) -> Gen[T]
+
 // Errors
 
 // Types and methods
+pub struct CheckResult[T] {
+  passed : Bool
+  counterexample : T?
+}
+
 pub struct Gen[T] {
   sample : (Rng) -> T
 }
@@ -31,6 +50,22 @@ pub fn Rng::next(Self) -> UInt64
 pub fn Rng::next_below(Self, Int) -> Int
 pub fn Rng::next_bool(Self) -> Bool
 pub fn Rng::next_range(Self, Int, Int) -> Int
+
+pub struct Shrinkable[T] {
+  value : T
+  shrinks : () -> Array[T]
+}
+pub fn[T] Shrinkable::candidates(Self[T]) -> Array[T]
+pub fn[T] Shrinkable::new(T, () -> Array[T]) -> Self[T]
+
+pub struct Stats {
+  counts : Map[String, Int]
+}
+pub fn Stats::count(Self, String) -> Int
+pub fn Stats::new() -> Self
+pub fn Stats::ratio(Self, String) -> Double
+pub fn Stats::record(Self, String) -> Unit
+pub fn Stats::total(Self) -> Int
 
 // Type aliases
 

@@ -35,14 +35,13 @@
 // 运行时依赖（design.md §「数据模型 → 发布元数据模型」）：
 //   * @release_meta —— 共享发布元数据模型（横切叶子包，不依赖任何方向）；
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 16.6）。
+//   * @infra_pbt —— 共享 PBT 基础设施包；其确定性随机源 `Rng`（rng_new / next_below）
+//     被 `ActorSystem` 的种子驱动调度复用（R10.1），故在运行时（非仅测试）依赖。
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
 }
 
 // 属性测试（task 16.3 Property 22：Actor 串行与 FIFO 顺序不变量）复用共享 PBT 包
 // @infra_pbt 的 Gen / Rng / holds_for_all 模板（每条属性 ≥100 次迭代，三后端
-// 逐位一致、可重放）。该依赖仅作用于黑盒测试驱动（`for "test"`），不进入运行时
-// 产物，符合 design.md「infra_pbt 为横切测试期共享约定」的定位。
-import {
-  "Suquster/moonbit-pathfinding/src/infra_pbt",
-} for "test"
+// 逐位一致、可重放）。该依赖已在上方运行时 import 中登记，测试期同样可用。

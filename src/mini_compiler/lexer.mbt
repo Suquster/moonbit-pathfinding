@@ -81,12 +81,12 @@ fn scan_int(input : @pc.Input) -> (Int, @pc.Input) {
 /// 进入时已知首字符为字母。
 fn scan_ident(input : @pc.Input) -> (String, @pc.Input) {
   let mut cur = input
-  let mut name = ""
+  let name = StringBuilder::new()
   while true {
     match cur.peek() {
       Some(c) =>
         if is_alpha(c) || is_digit(c) || c == '_' {
-          name = name + c.to_string()
+          name.write_char(c)
           cur = cur.advance()
         } else {
           break
@@ -94,7 +94,7 @@ fn scan_ident(input : @pc.Input) -> (String, @pc.Input) {
       None => break
     }
   }
-  (name, cur)
+  (name.to_string(), cur)
 }
 
 ///|

@@ -70,11 +70,11 @@ fn split_versioned(tok : String) -> (String, Int)? {
     }
     j = j + 1
   }
-  let mut name = ""
+  let name = StringBuilder::new()
   for i in 0..<hash {
-    name = name + cs[i].to_string()
+    name.write_char(cs[i])
   }
-  Some((name, n))
+  Some((name.to_string(), n))
 }
 
 ///|

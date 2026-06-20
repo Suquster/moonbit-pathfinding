@@ -82,19 +82,19 @@ fn span(li : Int, start_col : Int, end_col : Int) -> Range {
 /// 将全文按 '\n' 拆分为行（保留空行；不含换行符）。'\r' 被剔除以兼容 CRLF。
 fn split_lines(text : String) -> Array[String] {
   let lines : Array[String] = []
-  let mut cur = ""
+  let mut cur = StringBuilder::new()
   for c in text {
     if c == '\n' {
-      lines.push(cur)
-      cur = ""
+      lines.push(cur.to_string())
+      cur = StringBuilder::new()
     } else if c == '\r' {
       // 跳过回车（CRLF → LF 归一化）。
       continue
     } else {
-      cur = cur + c.to_string()
+      cur.write_char(c)
     }
   }
-  lines.push(cur)
+  lines.push(cur.to_string())
   lines
 }
 
@@ -148,13 +148,13 @@ fn scan_references(
 ///|
 /// 取字符数组的 `[from, to)` 子串。
 fn chars_slice(cs : Array[Char], from : Int, to : Int) -> String {
-  let mut s = ""
+  let sb = StringBuilder::new()
   let mut i = from
   while i < to {
-    s = s + cs[i].to_string()
+    sb.write_char(cs[i])
     i = i + 1
   }
-  s
+  sb.to_string()
 }
 
 ///|

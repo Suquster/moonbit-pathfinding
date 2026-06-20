@@ -535,19 +535,22 @@ fn pick_free_register(
 /// 以空格切分指令为记号序列（忽略连续空格产生的空记号）。
 fn tokenize(s : String) -> Array[String] {
   let toks : Array[String] = []
-  let mut cur = ""
+  let cur = StringBuilder::new()
+  let mut has = false
   for c in s {
     if c == ' ' {
-      if cur != "" {
-        toks.push(cur)
-        cur = ""
+      if has {
+        toks.push(cur.to_string())
+        cur.reset()
+        has = false
       }
     } else {
-      cur = cur + c.to_string()
+      cur.write_char(c)
+      has = true
     }
   }
-  if cur != "" {
-    toks.push(cur)
+  if has {
+    toks.push(cur.to_string())
   }
   toks
 }
@@ -555,14 +558,14 @@ fn tokenize(s : String) -> Array[String] {
 ///|
 /// 以单空格拼接记号序列为指令字符串。
 fn join_tokens(toks : Array[String]) -> String {
-  let mut s = ""
+  let sb = StringBuilder::new()
   for i, t in toks {
     if i > 0 {
-      s = s + " "
+      sb.write_char(' ')
     }
-    s = s + t
+    sb.write_string(t)
   }
-  s
+  sb.to_string()
 }
 
 ///|

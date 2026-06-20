@@ -45,14 +45,14 @@ pub fn parse(tokens : Array[Token]) -> Result[Ast, Diagnostic] {
 ///|
 /// 将词法单元序列还原为以单空格分隔的规范源串（供 @pc.Input 递归下降）。
 fn tokens_to_source(tokens : Array[Token]) -> String {
-  let mut acc = ""
+  let sb = StringBuilder::new()
   for i, t in tokens {
     if i > 0 {
-      acc = acc + " "
+      sb.write_char(' ')
     }
-    acc = acc + token_lexeme(t)
+    sb.write_string(token_lexeme(t))
   }
-  acc
+  sb.to_string()
 }
 
 ///|

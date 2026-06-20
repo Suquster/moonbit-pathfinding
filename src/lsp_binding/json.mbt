@@ -40,14 +40,15 @@ fn json_obj_get(fields : Array[(String, Json)], key : String) -> Json? {
 /// `Bytes` → 文本：逐字节还原为字符（ASCII 无损；与既有方向 round-trip 测试中
 /// 的字节↔文本约定一致）。JSON-RPC 控制结构均为 ASCII，骨架以此为前提。
 fn bytes_to_text(b : Bytes) -> String {
-  let mut s = ""
+  // 以 StringBuilder 摊还 O(1) 追加、O(n) 物化，规避循环内 `s = s + ...`
+  // 的 O(n²) 拼接（quality-enforcement / anti-patterns 约束）。
+  let sb = StringBuilder::new()
   let mut i = 0
   while i < b.length() {
-    let c = b[i].to_int().unsafe_to_char()
-    s = s + c.to_string()
+    sb.write_char(b[i].to_int().unsafe_to_char())
     i = i + 1
   }
-  s
+  sb.to_string()
 }
 
 ///|
@@ -203,13 +204,13 @@ fn JParser::parse_number(self : JParser) -> Json? {
     }
     _ => ()
   }
-  let mut s = ""
+  let sb = StringBuilder::new()
   let mut i = start
   while i < self.pos {
-    s = s + self.chars[i].to_string()
+    sb.write_char(self.chars[i])
     i = i + 1
   }
-  Some(JNum(s))
+  Some(JNum(sb.to_string()))
 }
 
 ///|
@@ -220,13 +221,13 @@ fn JParser::parse_string_lit(self : JParser) -> String? {
     return None
   }
   self.pos = self.pos + 1
-  let mut s = ""
+  let sb = StringBuilder::new()
   while true {
     match self.peek() {
       None => return None // 未闭合。
       Some('"') => {
         self.pos = self.pos + 1
-        return Some(s)
+        return Some(sb.to_string())
       }
       Some('\\') => {
         self.pos = self.pos + 1
@@ -235,17 +236,17 @@ fn JParser::parse_string_lit(self : JParser) -> String? {
           Some(e) => {
             self.pos = self.pos + 1
             match e {
-              '"' => s = s + "\""
-              '\\' => s = s + "\\"
-              '/' => s = s + "/"
-              'n' => s = s + "\n"
-              't' => s = s + "\t"
-              'r' => s = s + "\r"
-              'b' => s = s + (0x08).unsafe_to_char().to_string()
-              'f' => s = s + (0x0C).unsafe_to_char().to_string()
+              '"' => sb.write_char('"')
+              '\\' => sb.write_char('\\')
+              '/' => sb.write_char('/')
+              'n' => sb.write_char('\n')
+              't' => sb.write_char('\t')
+              'r' => sb.write_char('\r')
+              'b' => sb.write_char((0x08).unsafe_to_char())
+              'f' => sb.write_char((0x0C).unsafe_to_char())
               'u' =>
                 match self.parse_hex4() {
-                  Some(code) => s = s + code.unsafe_to_char().to_string()
+                  Some(code) => sb.write_char(code.unsafe_to_char())
                   None => return None
                 }
               _ => return None // 非法转义。
@@ -255,7 +256,7 @@ fn JParser::parse_string_lit(self : JParser) -> String? {
       }
       Some(c) => {
         self.pos = self.pos + 1
-        s = s + c.to_string()
+        sb.write_char(c)
       }
     }
   }
@@ -372,69 +373,81 @@ fn JParser::parse_array(self : JParser) -> Json? {
 ///|
 /// 将 JSON 值打印为紧凑（无多余空白）文本，与 `parse_json` 往返配套。
 fn print_json(j : Json) -> String {
+  let sb = StringBuilder::new()
+  write_json(sb, j)
+  sb.to_string()
+}
+
+///|
+/// 将 JSON 值写入共享的 `StringBuilder`（摊还 O(1) 追加），规避递归打印时
+/// 每层 `out = out + ...` 造成的 O(n²) 拼接。
+fn write_json(sb : StringBuilder, j : Json) -> Unit {
   match j {
-    JNull => "null"
-    JBool(true) => "true"
-    JBool(false) => "false"
-    JNum(s) => s
-    JStr(s) => print_json_string(s)
+    JNull => sb.write_string("null")
+    JBool(true) => sb.write_string("true")
+    JBool(false) => sb.write_string("false")
+    JNum(s) => sb.write_string(s)
+    JStr(s) => write_json_string(sb, s)
     JArr(items) => {
-      let mut out = "["
+      sb.write_char('[')
       let mut first = true
       for it in items {
         if first {
           first = false
         } else {
-          out = out + ","
+          sb.write_char(',')
         }
-        out = out + print_json(it)
+        write_json(sb, it)
       }
-      out + "]"
+      sb.write_char(']')
     }
     JObj(fields) => {
-      let mut out = "{"
+      sb.write_char('{')
       let mut first = true
       for kv in fields {
         let (k, v) = kv
         if first {
           first = false
         } else {
-          out = out + ","
+          sb.write_char(',')
         }
-        out = out + print_json_string(k) + ":" + print_json(v)
+        write_json_string(sb, k)
+        sb.write_char(':')
+        write_json(sb, v)
       }
-      out + "}"
+      sb.write_char('}')
     }
   }
 }
 
 ///|
-/// 打印一个带引号、按 JSON 规则转义的字符串。
-fn print_json_string(s : String) -> String {
-  let mut out = "\""
+/// 将带引号、按 JSON 规则转义的字符串写入 `StringBuilder`（摊还 O(1)）。
+fn write_json_string(sb : StringBuilder, s : String) -> Unit {
+  sb.write_char('"')
   for c in s {
     let code = c.to_int()
     if c == '"' {
-      out = out + "\\\""
+      sb.write_string("\\\"")
     } else if c == '\\' {
-      out = out + "\\\\"
+      sb.write_string("\\\\")
     } else if c == '\n' {
-      out = out + "\\n"
+      sb.write_string("\\n")
     } else if c == '\t' {
-      out = out + "\\t"
+      sb.write_string("\\t")
     } else if c == '\r' {
-      out = out + "\\r"
+      sb.write_string("\\r")
     } else if code == 0x08 {
-      out = out + "\\b"
+      sb.write_string("\\b")
     } else if code == 0x0C {
-      out = out + "\\f"
+      sb.write_string("\\f")
     } else if code < 0x20 {
-      out = out + "\\u" + hex4(code)
+      sb.write_string("\\u")
+      sb.write_string(hex4(code))
     } else {
-      out = out + c.to_string()
+      sb.write_char(c)
     }
   }
-  out + "\""
+  sb.write_char('"')
 }
 
 ///|

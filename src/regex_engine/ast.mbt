@@ -97,21 +97,24 @@ pub fn print_ast(a : Ast) -> String {
     Lit(c) => escape_char(c)
     Set(cs) => print_ast_set(cs)
     Concat(parts) => {
-      let mut acc = ""
+      // 以 TextBuilder 顺序追加子节点打印结果，避免循环内字符串 `+` 的
+      // O(n²) 拼接（Requirement 1.5 / 1.6）；输出与逐段 `+` 逐字符一致。
+      let acc = @infra_text.TextBuilder::new()
       for p in parts {
-        acc = acc + print_ast(p)
+        acc.push_str(print_ast(p))
       }
-      acc
+      acc.build()
     }
     Alt(branches) => {
-      let mut acc = ""
+      // 分支以 `|` 分隔，经 TextBuilder 物化（同上，消除循环内 `+`）。
+      let acc = @infra_text.TextBuilder::new()
       for i, b in branches {
         if i > 0 {
-          acc = acc + "|"
+          acc.push_char('|')
         }
-        acc = acc + print_ast(b)
+        acc.push_str(print_ast(b))
       }
-      acc
+      acc.build()
     }
     Repeat(node~, min~, max~, greedy~) => {
       let body = print_ast_operand(node)
@@ -179,20 +182,21 @@ fn print_ast_set(cs : CharSet) -> String {
       return escape_char(lo.unsafe_to_char())
     }
   }
-  let mut s = "["
+  let acc = @infra_text.TextBuilder::new()
+  acc.push_char('[')
   for iv in cs.intervals {
     let (lo, hi) = iv
     if hi >= 0x10000 {
       // 覆盖到高码点的大区间，以省略号占位（调试可读性）。
-      s = s + "\u{2026}"
+      acc.push_str("\u{2026}")
     } else if lo == hi {
-      s = s + lo.unsafe_to_char().to_string()
+      acc.push_char(lo.unsafe_to_char())
     } else {
-      s = s +
-        lo.unsafe_to_char().to_string() +
-        "-" +
-        hi.unsafe_to_char().to_string()
+      acc.push_char(lo.unsafe_to_char())
+      acc.push_char('-')
+      acc.push_char(hi.unsafe_to_char())
     }
   }
-  s + "]"
+  acc.push_char(']')
+  acc.build()
 }

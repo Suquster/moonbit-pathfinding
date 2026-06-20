@@ -317,20 +317,23 @@ pub fn format_json(e : Event) -> String {
   let entries : Array[(String, Value)] = []
   e.fields.each(fn(k, v) { entries.push((k, v)) })
   sort_entries(entries)
-  let mut body = ""
+  let body = @infra_text.TextBuilder::new()
   for i = 0; i < entries.length(); i = i + 1 {
     if i > 0 {
-      body = body + ","
+      body.push_str(",")
     }
     let (k, v) = entries[i]
-    body = body + "\"" + json_escape(k) + "\":" + value_to_json(v)
+    body.push_str("\"")
+    body.push_str(json_escape(k))
+    body.push_str("\":")
+    body.push_str(value_to_json(v))
   }
   "{\"ts\":" +
   e.ts.to_string() +
   ",\"level\":\"" +
   e.level.label() +
   "\",\"fields\":{" +
-  body +
+  body.build() +
   "}}"
 }
 
@@ -369,25 +372,28 @@ fn value_to_json(v : Value) -> String {
       let entries : Array[(String, Value)] = []
       m.each(fn(k, vv) { entries.push((k, vv)) })
       sort_entries(entries)
-      let mut body = ""
+      let body = @infra_text.TextBuilder::new()
       for i = 0; i < entries.length(); i = i + 1 {
         if i > 0 {
-          body = body + ","
+          body.push_str(",")
         }
         let (k, vv) = entries[i]
-        body = body + "\"" + json_escape(k) + "\":" + value_to_json(vv)
+        body.push_str("\"")
+        body.push_str(json_escape(k))
+        body.push_str("\":")
+        body.push_str(value_to_json(vv))
       }
-      "{" + body + "}"
+      "{" + body.build() + "}"
     }
     VList(xs) => {
-      let mut body = ""
+      let body = @infra_text.TextBuilder::new()
       for i = 0; i < xs.length(); i = i + 1 {
         if i > 0 {
-          body = body + ","
+          body.push_str(",")
         }
-        body = body + value_to_json(xs[i])
+        body.push_str(value_to_json(xs[i]))
       }
-      "[" + body + "]"
+      "[" + body.build() + "]"
     }
   }
 }
@@ -396,11 +402,11 @@ fn value_to_json(v : Value) -> String {
 /// JSON 字符串转义：处理双引号、反斜杠、常见控制字符（\n \r \t \b \f），
 /// 其余 < 0x20 的控制字符转义为 \u00XX。其余字符原样输出。
 fn json_escape(s : String) -> String {
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   for c in s {
     let code = c.to_int()
-    out = out +
-      (match c {
+    out.push_str(
+      match c {
         '"' => "\\\""
         '\\' => "\\\\"
         '\n' => "\\n"
@@ -416,9 +422,10 @@ fn json_escape(s : String) -> String {
           } else {
             c.to_string()
           }
-      })
+      },
+    )
   }
-  out
+  out.build()
 }
 
 ///|
@@ -755,12 +762,12 @@ fn parse_object(r : JsonReader) -> JVal? {
 fn parse_string(r : JsonReader) -> String? {
   // 已确认当前为 '"'。
   r.pos = r.pos + 1
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   while r.pos < r.chars.length() {
     let c = r.chars[r.pos]
     r.pos = r.pos + 1
     if c == '"' {
-      return Some(out)
+      return Some(out.build())
     } else if c == '\\' {
       if r.pos >= r.chars.length() {
         return None
@@ -768,27 +775,27 @@ fn parse_string(r : JsonReader) -> String? {
       let esc = r.chars[r.pos]
       r.pos = r.pos + 1
       match esc {
-        '"' => out = out + "\""
-        '\\' => out = out + "\\"
-        '/' => out = out + "/"
-        'n' => out = out + "\n"
-        'r' => out = out + "\r"
-        't' => out = out + "\t"
-        'b' => out = out + "\u{08}"
-        'f' => out = out + "\u{0C}"
+        '"' => out.push_str("\"")
+        '\\' => out.push_str("\\")
+        '/' => out.push_str("/")
+        'n' => out.push_str("\n")
+        'r' => out.push_str("\r")
+        't' => out.push_str("\t")
+        'b' => out.push_str("\u{08}")
+        'f' => out.push_str("\u{0C}")
         'u' => {
           if r.pos + 4 > r.chars.length() {
             return None
           }
           match parse_hex4(r) {
-            Some(code) => out = out + code.unsafe_to_char().to_string()
+            Some(code) => out.push_str(code.unsafe_to_char().to_string())
             None => return None
           }
         }
         _ => return None
       }
     } else {
-      out = out + c.to_string()
+      out.push_char(c)
     }
   }
   // 未遇到收尾双引号。
@@ -839,11 +846,11 @@ fn parse_num(r : JsonReader) -> JVal? {
   if not(seen_digit) {
     return None
   }
-  let mut num = ""
+  let num = @infra_text.TextBuilder::new()
   for i = start; i < r.pos; i = i + 1 {
-    num = num + r.chars[i].to_string()
+    num.push_char(r.chars[i])
   }
-  Some(JNum(num))
+  Some(JNum(num.build()))
 }
 
 ///|

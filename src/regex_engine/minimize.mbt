@@ -20,11 +20,12 @@
 ///|
 /// 把状态的四元接受向量编码为可作哈希键的字符串。
 fn accept_signature(acc : Array[Bool]) -> String {
-  let mut s = ""
+  // 以 TextBuilder 物化二进制签名，消除循环内字符串 `+`（Requirement 1.5）。
+  let tb = @infra_text.TextBuilder::new()
   for b in acc {
-    s = s + (if b { "1" } else { "0" })
+    tb.push_char(if b { '1' } else { '0' })
   }
-  s
+  tb.build()
 }
 
 ///|
@@ -61,14 +62,18 @@ pub fn Dfa::minimize(self : Dfa) -> Dfa {
     let mut nid = 0
     for s in 0..<n {
       // 签名：当前块 + 每个 (锚点标志, 字符类) 的目标块（-1 死路保留为常量）。
-      let mut key = block_of[s].to_string()
+      // 以 TextBuilder 物化，消除循环内字符串 `+`（Requirement 1.5）。
+      let key_buf = @infra_text.TextBuilder::new()
+      key_buf.push_str(block_of[s].to_string())
       for f in 0..<4 {
         for k in 0..<num_classes {
           let t = self.trans[s][f][k]
           let tb = if t < 0 { -1 } else { block_of[t] }
-          key = key + "|" + tb.to_string()
+          key_buf.push_char('|')
+          key_buf.push_str(tb.to_string())
         }
       }
+      let key = key_buf.build()
       let id = match sig_ids.get(key) {
         Some(i) => i
         None => {

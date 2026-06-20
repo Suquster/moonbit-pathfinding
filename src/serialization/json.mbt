@@ -306,15 +306,19 @@ fn encode_json_message(
 
 ///|
 /// 以逗号连接 JSON 片段。
+///
+/// 以共享高效缓冲 `@infra_text.TextBuilder` 顺序追加片段、最终一次性 `build`，
+/// 消除原 `s = s + ...` 的循环内 O(n²) 字符串拼接（R1.5），对总输出长度线性。
+/// 输出与逐次 `+` 拼接逐字符相等。
 fn json_join(parts : Array[String]) -> String {
-  let mut s = ""
+  let sb = @infra_text.TextBuilder::new()
   for i in 0..<parts.length() {
     if i > 0 {
-      s = s + ","
+      sb.push_str(",")
     }
-    s = s + parts[i]
+    sb.push_str(parts[i])
   }
-  s
+  sb.build()
 }
 
 ///|

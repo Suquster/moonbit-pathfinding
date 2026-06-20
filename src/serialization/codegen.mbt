@@ -26,15 +26,20 @@ fn moonbit_type_name(ftype : FieldType) -> String {
 /// 骨架阶段：为每个 `MessageDef` 生成一个带已知字段（若有）的 `pub struct`
 /// 声明骨架。完整的字段类型推导与编解码代码生成在后续迭代补全。
 pub fn gen_moonbit(schema : Schema) -> String {
-  let mut out = "// 由 gen_moonbit 生成（骨架）—— 请勿手工编辑\n"
+  // 以共享高效缓冲 `@infra_text.TextBuilder` 顺序追加片段，消除循环内
+  // `out = out + ...` 的 O(n²) 字符串拼接（R1.5）；输出与逐次 `+` 逐字符相等。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(
+    "// 由 gen_moonbit 生成（骨架）—— 请勿手工编辑\n",
+  )
   for msg in schema.messages {
-    out = out + "\npub struct \{msg.name} {\n"
+    out.push_str("\npub struct \{msg.name} {\n")
     for field in msg.fields {
       let base = moonbit_type_name(field.ftype)
       let ty = if field.repeated { "Array[\{base}]" } else { base }
-      out = out + "  \{field.name} : \{ty}\n"
+      out.push_str("  \{field.name} : \{ty}\n")
     }
-    out = out + "} derive(Eq, Show)\n"
+    out.push_str("} derive(Eq, Show)\n")
   }
-  out
+  out.build()
 }

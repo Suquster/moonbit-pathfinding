@@ -140,7 +140,8 @@ pub fn Pattern::replace_all(
 ) -> String {
   let chars = input.iter().to_array()
   let n = chars.length()
-  let mut out = ""
+  // 以 TextBuilder 顺序物化输出，消除循环内字符串 `+`（Requirement 1.5）。
+  let out = @infra_text.TextBuilder::new()
   let mut pos = 0
   let mut last = 0
   while pos <= n {
@@ -150,15 +151,16 @@ pub fn Pattern::replace_all(
         match caps.group(0) {
           None => break
           Some(m) => {
-            out = out + slice_chars(chars, last, m.start)
-            out = out + expand_repl(repl, caps, chars)
+            out.push_str(slice_chars(chars, last, m.start))
+            out.push_str(expand_repl(repl, caps, chars))
             last = m.end
             pos = if m.end > m.start { m.end } else { m.end + 1 }
           }
         }
     }
   }
-  out + slice_chars(chars, last, n)
+  out.push_str(slice_chars(chars, last, n))
+  out.build()
 }
 
 ///|
@@ -181,13 +183,14 @@ pub fn Pattern::split(self : Pattern, input : String) -> Array[String] {
 ///|
 /// 取字符数组的 `[a, b)` 切片为字符串。
 fn slice_chars(chars : Array[Char], a : Int, b : Int) -> String {
-  let mut s = ""
+  // 以 TextBuilder 逐字符物化切片，消除循环内字符串 `+`（Requirement 1.5）。
+  let tb = @infra_text.TextBuilder::new()
   let lo = if a < 0 { 0 } else { a }
   let hi = if b > chars.length() { chars.length() } else { b }
   for k in lo..<hi {
-    s = s + chars[k].to_string()
+    tb.push_char(chars[k])
   }
-  s
+  tb.build()
 }
 
 ///|
@@ -217,43 +220,44 @@ fn group_text_named(
 fn expand_repl(repl : String, caps : Captures, chars : Array[Char]) -> String {
   let r = repl.iter().to_array()
   let len = r.length()
-  let mut out = ""
+  // 以 TextBuilder 物化展开结果，消除循环内字符串 `+`（Requirement 1.5）。
+  let out = @infra_text.TextBuilder::new()
   let mut i = 0
   while i < len {
     let c = r[i]
     if c == '$' && i + 1 < len {
       let nx = r[i + 1]
       if nx == '$' {
-        out = out + "$"
+        out.push_char('$')
         i = i + 2
       } else if nx == '{' {
         // ${name}
         let mut j = i + 2
-        let mut name = ""
+        let name = @infra_text.TextBuilder::new()
         while j < len && r[j] != '}' {
-          name = name + r[j].to_string()
+          name.push_char(r[j])
           j = j + 1
         }
         if j < len && r[j] == '}' {
-          out = out + group_text_named(caps, name, chars)
+          out.push_str(group_text_named(caps, name.build(), chars))
           i = j + 1
         } else {
           // 无闭合 '}'：'$' 当字面处理。
-          out = out + "$"
+          out.push_char('$')
           i = i + 1
         }
       } else if nx >= '0' && nx <= '9' {
         let g = nx.to_int() - '0'.to_int()
-        out = out + group_text(caps, g, chars)
+        out.push_str(group_text(caps, g, chars))
         i = i + 2
       } else {
-        out = out + "$"
+        out.push_char('$')
         i = i + 1
       }
     } else {
-      out = out + c.to_string()
+      out.push_char(c)
       i = i + 1
     }
   }
-  out
+  out.build()
 }

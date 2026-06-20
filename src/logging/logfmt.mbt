@@ -29,12 +29,19 @@ pub fn format_logfmt(e : Event) -> String {
   let entries : Array[(String, Value)] = []
   e.fields.each(fn(k, v) { entries.push((k, v)) })
   sort_entries(entries)
-  let mut out = "ts=" + e.ts.to_string() + " level=" + e.level.label()
+  let out = @infra_text.TextBuilder::new()
+  out.push_str("ts=")
+  out.push_str(e.ts.to_string())
+  out.push_str(" level=")
+  out.push_str(e.level.label())
   for i = 0; i < entries.length(); i = i + 1 {
     let (k, v) = entries[i]
-    out = out + " " + k + "=" + value_to_json(v)
+    out.push_str(" ")
+    out.push_str(k)
+    out.push_str("=")
+    out.push_str(value_to_json(v))
   }
-  out
+  out.build()
 }
 
 ///|
@@ -55,7 +62,7 @@ pub fn parse_logfmt(s : String) -> Event? {
   reader.skip_ws()
   while reader.pos < reader.chars.length() {
     // 读取键：到 '=' 为止；键中不得含空格（裸键约定）。
-    let mut key = ""
+    let key_buf = @infra_text.TextBuilder::new()
     let mut saw_eq = false
     while reader.pos < reader.chars.length() {
       let c = reader.chars[reader.pos]
@@ -67,9 +74,10 @@ pub fn parse_logfmt(s : String) -> Event? {
       if c == ' ' {
         break
       }
-      key = key + c.to_string()
+      key_buf.push_char(c)
       reader.pos = reader.pos + 1
     }
+    let key = key_buf.build()
     if not(saw_eq) || key == "" {
       return None
     }
@@ -114,14 +122,14 @@ pub fn parse_logfmt(s : String) -> Event? {
 ///|
 /// 读取一个裸 token（到空格或行尾为止），用于 `ts` / `level` 保留头的值。
 fn logfmt_read_bare(r : JsonReader) -> String {
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   while r.pos < r.chars.length() {
     let c = r.chars[r.pos]
     if c == ' ' {
       break
     }
-    out = out + c.to_string()
+    out.push_char(c)
     r.pos = r.pos + 1
   }
-  out
+  out.build()
 }

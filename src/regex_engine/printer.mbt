@@ -20,21 +20,24 @@ pub fn print_regex(r : Regex) -> String {
     Opt(inner) => print_operand(inner) + "?"
     Repeat(inner, m, hi) => print_operand(inner) + print_repeat_suffix(m, hi)
     Concat(parts) => {
-      let mut acc = ""
+      // 以 TextBuilder 顺序物化子节点打印结果，消除循环内字符串 `+` 的
+      // O(n²) 拼接（Requirement 1.5 / 1.6）；输出与逐段 `+` 逐字符一致。
+      let acc = @infra_text.TextBuilder::new()
       for p in parts {
-        acc = acc + print_regex(p)
+        acc.push_str(print_regex(p))
       }
-      acc
+      acc.build()
     }
     Alt(branches) => {
-      let mut acc = ""
+      // 分支以 `|` 分隔，经 TextBuilder 物化（同上，消除循环内 `+`）。
+      let acc = @infra_text.TextBuilder::new()
       for i, b in branches {
         if i > 0 {
-          acc = acc + "|"
+          acc.push_char('|')
         }
-        acc = acc + print_regex(b)
+        acc.push_str(print_regex(b))
       }
-      acc
+      acc.build()
     }
     Anchor(Start) => "^"
     Anchor(End) => "$"
@@ -69,18 +72,24 @@ fn print_repeat_suffix(m : Int, hi : Int?) -> String {
 ///|
 /// 打印字符类 `[...]` / `[^...]`，对类内特殊字符（`] \ - ^`）做转义。
 fn print_class(cc : CharClass) -> String {
-  let mut acc = "["
+  // 以 TextBuilder 物化字符类，消除循环内字符串 `+`（Requirement 1.5 / 1.6）。
+  let acc = @infra_text.TextBuilder::new()
+  acc.push_char('[')
   if cc.negated {
-    acc = acc + "^"
+    acc.push_char('^')
   }
   for item in cc.items {
     match item {
-      Single(c) => acc = acc + escape_class_char(c)
-      Range(lo, hi) =>
-        acc = acc + escape_class_char(lo) + "-" + escape_class_char(hi)
+      Single(c) => acc.push_str(escape_class_char(c))
+      Range(lo, hi) => {
+        acc.push_str(escape_class_char(lo))
+        acc.push_char('-')
+        acc.push_str(escape_class_char(hi))
+      }
     }
   }
-  acc + "]"
+  acc.push_char(']')
+  acc.build()
 }
 
 ///|

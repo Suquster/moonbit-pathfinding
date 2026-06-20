@@ -56,16 +56,16 @@ pub fn extract_traceparent(s : String) -> W3CContext? {
   }
   // 按 '-' 切分为分量。
   let parts : Array[String] = []
-  let mut cur = ""
+  let cur = @infra_text.TextBuilder::new()
   for c in chars {
     if c == '-' {
-      parts.push(cur)
-      cur = ""
+      parts.push(cur.build())
+      cur.reset()
     } else {
-      cur = cur + c.to_string()
+      cur.push_char(c)
     }
   }
-  parts.push(cur)
+  parts.push(cur.build())
   // 恰 4 个分量（3 个 '-'）。
   if parts.length() != 4 {
     return None
@@ -121,12 +121,12 @@ pub fn W3CContext::to_trace_context(self : W3CContext) -> TraceContext {
 ///|
 /// 将 `Int64` 渲染为 16 位小写十六进制（低位在右）。
 fn hex16(n : Int64) -> String {
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   for i = 15; i >= 0; i = i - 1 {
     let nibble = ((n >> (i * 4)) & 0xFL).to_int()
-    out = out + hex_digit(nibble)
+    out.push_str(hex_digit(nibble))
   }
-  out
+  out.build()
 }
 
 ///|
@@ -194,9 +194,9 @@ fn low16_chars(s : String) -> String {
   }
   let n = chars.length()
   let start = if n >= 16 { n - 16 } else { 0 }
-  let mut out = ""
+  let out = @infra_text.TextBuilder::new()
   for i = start; i < n; i = i + 1 {
-    out = out + chars[i].to_string()
+    out.push_char(chars[i])
   }
-  out
+  out.build()
 }

@@ -11,6 +11,8 @@ pub fn analyze(TextDocument) -> Analysis
 
 pub fn apply_changes(String, Array[ContentChange], PositionEncoding) -> Result[String, @lsp_binding.RpcError]
 
+pub fn apply_incremental(String, ContentChange, PositionEncoding) -> Result[String, @lsp_binding.RpcError]
+
 pub fn apply_workspace_edit(String, Array[TextEdit]) -> String
 
 pub fn capabilities_to_json(ServerCapabilities) -> @lsp_binding.Json
@@ -135,11 +137,12 @@ pub(all) struct DocumentSymbol {
   range : Range
 } derive(Eq)
 
-pub enum FrameError {
+pub(all) enum FrameError {
   MissingContentLength
   InvalidContentLength(raw~ : String)
   IncompleteBody(need~ : Int, got~ : Int)
-} derive(Eq, Show)
+} derive(Eq)
+pub impl Show for FrameError
 
 pub(all) struct Hover {
   contents : String
@@ -157,13 +160,14 @@ pub(all) struct InitializeParamsExt {
 pub fn InitializeParamsExt::empty() -> Self
 pub fn InitializeParamsExt::new(Array[String], Array[String]) -> Self
 
-pub enum JsonRpcError {
+pub(all) enum JsonRpcError {
   ParseErr
   InvalidRequest
   MethodNotFound
   InvalidParams
   InternalErr
-} derive(Eq, Show)
+} derive(Eq)
+pub impl Show for JsonRpcError
 
 pub(all) enum LifecycleEvent {
   EvInitialize(InitializeParamsExt)

@@ -146,13 +146,17 @@ pub fn[T] ParseResult::to_path_error(self : ParseResult[T]) -> @core.PathError? 
   match self {
     Ok(_, _) => None
     Fail(pos, expected~) => {
-      let mut exp = ""
+      // 以 `TextBuilder` 顺序物化期望符号集合，消除循环内 `exp = exp + ...`
+      // 的 O(n²) 拼接（Requirement 1.5 / 1.6）；逗号分隔与原顺序 `+` 拼接
+      // 逐字符相等，错误描述不变。
+      let exp_buf = @infra_text.TextBuilder::new()
       for i, e in expected {
         if i > 0 {
-          exp = exp + ", "
+          exp_buf.push_str(", ")
         }
-        exp = exp + e
+        exp_buf.push_str(e)
       }
+      let exp = exp_buf.build()
       Some(
         @core.PathError::InvalidInput(
           "解析失败于 \{pos}（offset \{pos.offset}），期望 \{exp}",

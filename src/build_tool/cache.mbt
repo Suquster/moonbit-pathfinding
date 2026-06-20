@@ -39,11 +39,14 @@ fn lp(s : String) -> String {
 ///|
 /// 动作指纹：对 recipe 全部命令行做长度前缀编码后取内容哈希（R1.2 动作维度）。
 pub fn action_fingerprint(recipe : Recipe) -> String {
-  let mut enc = ""
+  // 循环内逐条 recipe 命令行的长度前缀编码经 `TextBuilder` 物化，消除
+  // `enc = enc + ...` 的 O(n²) 拼接（Requirement 1.5 / 1.6）；`build()`
+  // 与等价顺序 `+` 拼接逐字符相等，故内容哈希输入不变。
+  let enc = @infra_text.TextBuilder::new()
   for line in recipe.lines {
-    enc = enc + lp(line)
+    enc.push_str(lp(line))
   }
-  content_hash(enc)
+  content_hash(enc.build())
 }
 
 ///|
@@ -55,11 +58,17 @@ pub fn cache_key(
   input_hashes : Array[String],
   action_fp : String,
 ) -> String {
-  let mut out = lp(target) + lp(input_hashes.length().to_string())
+  // 目标名、输入数、各输入哈希与动作指纹的长度前缀单射编码经 `TextBuilder`
+  // 物化，消除循环内 `out = out + lp(h)` 的 O(n²) 拼接（Requirement 1.5 /
+  // 1.6）；逐片段 `push_str` 与原顺序 `+` 拼接逐字符相等，缓存键不变。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str(lp(target))
+  out.push_str(lp(input_hashes.length().to_string()))
   for h in input_hashes {
-    out = out + lp(h)
+    out.push_str(lp(h))
   }
-  out + lp(action_fp)
+  out.push_str(lp(action_fp))
+  out.build()
 }
 
 // ───────────────────────────── 动作缓存 ─────────────────────────────
@@ -145,43 +154,43 @@ fn sorted_keys_str(m : Map[String, String]) -> Array[String] {
 /// h name hash
 /// ```
 pub fn serialize_cache(cache : BuildCache) -> String {
-  let mut out = "# recorded_mtimes\n"
+  // 四张指纹映射逐行序列化经 `TextBuilder` 物化，消除四个循环内
+  // `out = out + ...` 的 O(n²) 拼接（Requirement 1.5 / 1.6）；逐片段
+  // `push_str` 与原顺序 `+` 拼接逐字符相等，行式输出与键序均不变。
+  let out = @infra_text.TextBuilder::new()
+  out.push_str("# recorded_mtimes\n")
   for name in sorted_keys_i64(cache.recorded_mtimes) {
-    out = out +
-      "M " +
-      name +
-      " " +
-      cache.recorded_mtimes.get(name).unwrap_or(0L).to_string() +
-      "\n"
+    out.push_str("M ")
+    out.push_str(name)
+    out.push_str(" ")
+    out.push_str(cache.recorded_mtimes.get(name).unwrap_or(0L).to_string())
+    out.push_str("\n")
   }
-  out = out + "# recorded_hashes\n"
+  out.push_str("# recorded_hashes\n")
   for name in sorted_keys_str(cache.recorded_hashes) {
-    out = out +
-      "H " +
-      name +
-      " " +
-      cache.recorded_hashes.get(name).unwrap_or("") +
-      "\n"
+    out.push_str("H ")
+    out.push_str(name)
+    out.push_str(" ")
+    out.push_str(cache.recorded_hashes.get(name).unwrap_or(""))
+    out.push_str("\n")
   }
-  out = out + "# current_mtimes\n"
+  out.push_str("# current_mtimes\n")
   for name in sorted_keys_i64(cache.current_mtimes) {
-    out = out +
-      "m " +
-      name +
-      " " +
-      cache.current_mtimes.get(name).unwrap_or(0L).to_string() +
-      "\n"
+    out.push_str("m ")
+    out.push_str(name)
+    out.push_str(" ")
+    out.push_str(cache.current_mtimes.get(name).unwrap_or(0L).to_string())
+    out.push_str("\n")
   }
-  out = out + "# current_hashes\n"
+  out.push_str("# current_hashes\n")
   for name in sorted_keys_str(cache.current_hashes) {
-    out = out +
-      "h " +
-      name +
-      " " +
-      cache.current_hashes.get(name).unwrap_or("") +
-      "\n"
+    out.push_str("h ")
+    out.push_str(name)
+    out.push_str(" ")
+    out.push_str(cache.current_hashes.get(name).unwrap_or(""))
+    out.push_str("\n")
   }
-  out
+  out.build()
 }
 
 ///|

@@ -45,12 +45,20 @@ pub fn format_pretty(e : Event) -> String {
   let entries : Array[(String, Value)] = []
   e.fields.each(fn(k, v) { entries.push((k, v)) })
   sort_entries(entries)
-  let mut out = "ts=" + e.ts.to_string() + " [" + e.level.label() + "]"
+  let out = @infra_text.TextBuilder::new()
+  out.push_str("ts=")
+  out.push_str(e.ts.to_string())
+  out.push_str(" [")
+  out.push_str(e.level.label())
+  out.push_str("]")
   for i = 0; i < entries.length(); i = i + 1 {
     let (k, v) = entries[i]
-    out = out + " " + k + "=" + value_to_pretty(v)
+    out.push_str(" ")
+    out.push_str(k)
+    out.push_str("=")
+    out.push_str(value_to_pretty(v))
   }
-  out
+  out.build()
 }
 
 ///|

@@ -17,6 +17,8 @@ pub fn beta_reduce(Expr) -> Expr
 
 pub fn check(Ast) -> Result[TypedAst, Diagnostic]
 
+pub fn check_x(ExprX) -> Result[TyX, TypeMismatch]
+
 pub fn compile(TypedAst, Backend) -> Bytes
 
 pub fn compile_ml(TExpr) -> Bytecode
@@ -40,6 +42,8 @@ pub fn erase_span(Expr) -> Expr
 pub fn eval(TypedAst) -> Value
 
 pub fn eval_ml(TExpr) -> Val
+
+pub fn eval_x(ExprX) -> ValX
 
 pub fn ftv(Ty) -> @sorted_set.SortedSet[Int]
 
@@ -71,6 +75,8 @@ pub fn parse(Array[Token]) -> Result[Ast, Diagnostic]
 
 pub fn parse_ml(Array[MlToken]) -> Result[Expr, Diagnostic]
 
+pub fn peephole_opt(Bytecode) -> Bytecode
+
 pub fn print_ast(Ast) -> String
 
 pub fn print_expr(Expr) -> String
@@ -85,11 +91,17 @@ pub fn run_demo(String) -> DemoTrace
 
 pub fn run_interp(String, optimize? : Bool) -> PipelineResult
 
+pub fn run_tco(Bytecode, Env) -> Val
+
+pub fn run_tco_with_depth(Bytecode, Env) -> (Val, Int)
+
 pub fn scope_check_ml(Expr) -> Result[Unit, Diagnostic]
 
 pub fn subst_empty() -> Subst
 
 pub fn subst_single(Int, Ty) -> Subst
+
+pub fn tco_opt(Bytecode) -> Bytecode
 
 pub fn type_of(TExpr) -> Ty
 
@@ -170,6 +182,12 @@ pub(all) enum Expr {
   ETuple(Array[Expr], Span)
 } derive(Eq)
 
+pub(all) enum ExprX {
+  XBase(Expr)
+  XMatch(ExprX, Array[(Pattern, ExprX)], Span)
+  XList(Array[ExprX], Span)
+}
+
 pub struct Frame {
   bc : Bytecode
   mut pc : Int
@@ -212,6 +230,17 @@ pub(all) enum MlToken {
   TkLParen(Span)
   TkRParen(Span)
 } derive(Eq)
+
+pub(all) enum Pattern {
+  PWild
+  PVar(String)
+  PInt(Int)
+  PBool(Bool)
+  PTuple(Array[Pattern])
+  PCons(Pattern, Pattern)
+  PNil
+} derive(Eq)
+pub impl Show for Pattern
 
 pub(all) enum PipelineResult {
   Produced(Val)
@@ -281,9 +310,25 @@ pub(all) struct TyEnv {
   schemes : @list.List[(String, Scheme)]
 } derive(Eq)
 
+pub(all) enum TyX {
+  TXInt
+  TXBool
+  TXTuple(Array[TyX])
+  TXList(TyX)
+  TXFun(TyX, TyX)
+} derive(Eq)
+pub impl Show for TyX
+
 pub(all) enum Type {
   IntT
 } derive(Eq)
+
+pub(all) struct TypeMismatch {
+  expected : TyX
+  actual : TyX
+  span : Span
+} derive(Eq)
+pub impl Show for TypeMismatch
 
 pub(all) enum TypedAst {
   TInt(Int)
@@ -304,6 +349,14 @@ pub(all) enum Val {
   VClosure(String, TExpr, Env)
   VTuple(Array[Val])
 } derive(Eq)
+
+pub(all) enum ValX {
+  VXInt(Int)
+  VXBool(Bool)
+  VXTuple(Array[ValX])
+  VXList(Array[ValX])
+} derive(Eq)
+pub impl Show for ValX
 
 pub(all) enum Value {
   IntV(Int)

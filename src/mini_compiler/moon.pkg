@@ -66,3 +66,12 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
 } for "test"
+
+// 白盒属性测试（task 10.3 Property 9：编译器增强—优化等价 / TCO 帧深 / 类型错误
+// 含 expected+actual）置于 `*_wbtest.mbt`（需在包内直接构造扩展语法树 `ExprX` /
+// `Pattern` 与字节码 `Bytecode` / `Instr` 等结构）。故对 @infra_pbt 追加白盒测试期
+// 依赖（`for "wbtest"`）；同样不进入运行时产物，符合「infra_pbt 为横切测试期共享
+// 约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "wbtest"

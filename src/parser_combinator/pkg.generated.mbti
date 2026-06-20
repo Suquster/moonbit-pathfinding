@@ -101,9 +101,23 @@ pub fn[T, S] sep_by1(Parser[T], Parser[S]) -> Parser[Array[T]]
 
 pub fn[A, B] seq(Parser[A], Parser[B]) -> Parser[(A, B)]
 
+pub fn[T] with_recovery(Grammar[T], RecoveryStrategy, T) -> Grammar[T]
+
 // Errors
 
 // Types and methods
+pub struct BoundedCache[T] {
+  cap : Int
+  entries : Map[Int, Outcome[T]]
+  order : Array[Int]
+}
+pub fn[T] BoundedCache::capacity(Self[T]) -> Int
+pub fn[T] BoundedCache::contains(Self[T], Int) -> Bool
+pub fn[T] BoundedCache::get(Self[T], Int) -> Outcome[T]?
+pub fn[T] BoundedCache::len(Self[T]) -> Int
+pub fn[T] BoundedCache::new(Int) -> Self[T]
+pub fn[T] BoundedCache::put(Self[T], Int, Outcome[T]) -> Unit
+
 pub(all) enum Expr {
   Num(Double)
   Add(Expr, Expr)
@@ -123,6 +137,8 @@ pub fn[T] Grammar::run_incremental(Self[T], String) -> Step[T]
 pub fn[T] Grammar::run_naive(Self[T], Input) -> ParseResult[T]
 pub fn[T] Grammar::run_naive_string(Self[T], String) -> ParseResult[T]
 pub fn[T] Grammar::run_packrat(Self[T], Input) -> ParseResult[T]
+pub fn[T] Grammar::run_packrat_bounded(Self[T], Input, cap~ : Int) -> ParseResult[T]
+pub fn[T] Grammar::run_packrat_bounded_string(Self[T], String, cap~ : Int) -> ParseResult[T]
 pub fn[T] Grammar::run_packrat_string(Self[T], String) -> ParseResult[T]
 
 pub struct Input {
@@ -176,6 +192,12 @@ pub struct Pos {
 } derive(Eq)
 pub fn Pos::start() -> Self
 pub impl Show for Pos
+
+pub enum RecoveryStrategy {
+  SkipUntil(Char)
+  SyncTo(Array[Char])
+} derive(Eq)
+pub impl Show for RecoveryStrategy
 
 pub(all) enum Step[T] {
   Done(ParseResult[T])

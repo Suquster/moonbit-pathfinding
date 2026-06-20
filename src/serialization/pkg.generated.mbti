@@ -19,6 +19,10 @@ pub fn canonicalize_wire(Message) -> Bytes
 
 pub fn decode(Bytes, Schema) -> Result[Message, DecodeError]
 
+pub fn decode_any(Bytes) -> Result[AnyValue, DecodeError]
+
+pub fn decode_from(ByteSource, ProtoSchema, String) -> Result[TypedMessage, DecodeError]
+
 pub fn decode_json(ProtoSchema, String, String) -> Result[TypedMessage, ParseError]
 
 pub fn decode_typed(ProtoSchema, String, Bytes) -> Result[TypedMessage, DecodeError]
@@ -33,9 +37,13 @@ pub fn double_to_bits(Double) -> UInt64
 
 pub fn encode(Message) -> Bytes
 
+pub fn encode_any(AnyValue) -> Bytes
+
 pub fn encode_canonical(ProtoSchema, String, TypedMessage) -> Result[Bytes, DecodeError]
 
 pub fn encode_json(ProtoSchema, String, TypedMessage) -> Result[String, DecodeError]
+
+pub fn encode_to(ByteSink, ProtoSchema, String, TypedMessage) -> Result[Unit, DecodeError]
 
 pub fn encode_typed(ProtoSchema, String, TypedMessage) -> Result[Bytes, DecodeError]
 
@@ -43,17 +51,27 @@ pub fn float_to_bits(Float) -> UInt
 
 pub fn gen_moonbit(Schema) -> String
 
+pub fn gen_moonbit_ast(ProtoSchema) -> CodeNode
+
 pub fn gen_moonbit_full(ProtoSchema) -> String
 
+pub fn gen_moonbit_structured(ProtoSchema) -> String
+
 pub fn parse_proto(String) -> Result[Schema, ParseError]
+
+pub fn parse_proto_file(String) -> Result[ProtoFile, ParseError]
 
 pub fn parse_proto_full(String) -> Result[ProtoSchema, ParseError]
 
 pub fn print_proto(ProtoSchema) -> String
 
+pub fn print_proto_file(ProtoFile) -> String
+
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn render_code(CodeNode, indent_unit? : String) -> String
 
 pub let serialization_name : String
 
@@ -72,6 +90,34 @@ pub fn zigzag_encode_64(Int64) -> UInt64
 // Errors
 
 // Types and methods
+pub struct AnyValue {
+  type_url : String
+  value : Bytes
+} derive(Eq, Show)
+
+pub struct ByteSink {
+  buf : Array[Byte]
+}
+pub fn ByteSink::len(Self) -> Int
+pub fn ByteSink::new() -> Self
+pub fn ByteSink::to_bytes(Self) -> Bytes
+
+pub struct ByteSource {
+  data : Bytes
+  mut pos : Int
+}
+pub fn ByteSource::is_exhausted(Self) -> Bool
+pub fn ByteSource::new(Bytes) -> Self
+pub fn ByteSource::position(Self) -> Int
+
+pub enum CodeNode {
+  CRaw(String)
+  CLine(String)
+  CBlock(header~ : String, body~ : Array[CodeNode], close~ : String)
+  CSeq(Array[CodeNode])
+  CIndent(CodeNode)
+} derive(Eq, Show)
+
 pub(all) enum DecodeError {
   UnexpectedEof(offset~ : Int)
   MalformedVarint(offset~ : Int)
@@ -133,6 +179,11 @@ pub fn FieldValue::i64(UInt64) -> Self
 pub fn FieldValue::varint(UInt64) -> Self
 pub fn FieldValue::wire_type(Self) -> WireType
 
+pub struct ImportDecl {
+  path : String
+  public : Bool
+} derive(Eq, Show)
+
 pub(all) struct MapEntry {
   name : String
   number : Int
@@ -171,6 +222,13 @@ pub(all) struct ProtoField {
   ptype : ProtoType
   label : FieldLabel
   options : Array[FieldOption]
+} derive(Eq, Show)
+
+pub struct ProtoFile {
+  package_name : String
+  imports : Array[ImportDecl]
+  schema : ProtoSchema
+  services : Array[ServiceDef]
 } derive(Eq, Show)
 
 pub(all) struct ProtoMessage {
@@ -218,6 +276,14 @@ pub(all) struct ReservedRange {
   hi : Int
 } derive(Eq, Show)
 
+pub struct RpcDef {
+  name : String
+  input_type : String
+  output_type : String
+  client_stream : Bool
+  server_stream : Bool
+} derive(Eq, Show)
+
 pub(all) struct Schema {
   messages : Array[MessageDef]
   enums : Array[EnumDef]
@@ -230,6 +296,11 @@ pub enum SchemaError {
   ReservedConflict(message~ : String, which~ : String)
   UnresolvedTypeRef(message~ : String, field~ : String, ref_~ : String)
   EnumFirstValueNonZero(enum_~ : String, first~ : Int)
+} derive(Eq, Show)
+
+pub struct ServiceDef {
+  name : String
+  rpcs : Array[RpcDef]
 } derive(Eq, Show)
 
 pub(all) struct TypedMessage {

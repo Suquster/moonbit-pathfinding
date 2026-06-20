@@ -29,11 +29,15 @@ fn program_signature(p : SsaProgram) -> String {
     }
   }
   for phi in p.phis {
-    let mut a = "PHI:" + phi.dest.id.to_string() + "<-"
+    let a = StringBuilder::new()
+    a.write_string("PHI:")
+    a.write_string(phi.dest.id.to_string())
+    a.write_string("<-")
     for arg in phi.args {
-      a = a + arg.id.to_string() + ","
+      a.write_string(arg.id.to_string())
+      a.write_char(',')
     }
-    parts.push(a)
+    parts.push(a.to_string())
   }
   join_tokens(parts)
 }

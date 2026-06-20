@@ -58,13 +58,13 @@ fn frame_concat_bytes(a : Bytes, b : Bytes) -> Bytes {
 /// 字节切片 `[start, end)` → ASCII 文本（逐字节还原为字符；与 json.mbt 的
 /// `bytes_to_text` 等价，仅作用于 ASCII 头部区）。
 fn frame_slice_to_text(b : Bytes, start : Int, end : Int) -> String {
-  let mut s = ""
+  let sb = StringBuilder::new()
   let mut i = start
   while i < end {
-    s = s + b[i].to_int().unsafe_to_char().to_string()
+    sb.write_char(b[i].to_int().unsafe_to_char())
     i = i + 1
   }
-  s
+  sb.to_string()
 }
 
 ///|
@@ -107,19 +107,19 @@ fn frame_split_crlf(s : String) -> Array[String] {
   }
   let lines : Array[String] = []
   let n = chars.length()
-  let mut cur = ""
+  let mut cur = StringBuilder::new()
   let mut i = 0
   while i < n {
     if i + 1 < n && chars[i] == '\r' && chars[i + 1] == '\n' {
-      lines.push(cur)
-      cur = ""
+      lines.push(cur.to_string())
+      cur = StringBuilder::new()
       i = i + 2
     } else {
-      cur = cur + chars[i].to_string()
+      cur.write_char(chars[i])
       i = i + 1
     }
   }
-  lines.push(cur)
+  lines.push(cur.to_string())
   lines
 }
 
@@ -143,33 +143,33 @@ fn frame_split_first_colon(s : String) -> (String, String)? {
   if idx < 0 {
     return None
   }
-  let mut name = ""
+  let name = StringBuilder::new()
   let mut j = 0
   while j < idx {
-    name = name + chars[j].to_string()
+    name.write_char(chars[j])
     j = j + 1
   }
-  let mut value = ""
+  let value = StringBuilder::new()
   j = idx + 1
   while j < n {
-    value = value + chars[j].to_string()
+    value.write_char(chars[j])
     j = j + 1
   }
-  Some((name, value))
+  Some((name.to_string(), value.to_string()))
 }
 
 ///|
 /// ASCII 小写化（用于头部字段名大小写不敏感比较）。
 fn frame_ascii_lower(s : String) -> String {
-  let mut out = ""
+  let sb = StringBuilder::new()
   for c in s {
     if c >= 'A' && c <= 'Z' {
-      out = out + (c.to_int() + 32).unsafe_to_char().to_string()
+      sb.write_char((c.to_int() + 32).unsafe_to_char())
     } else {
-      out = out + c.to_string()
+      sb.write_char(c)
     }
   }
-  out
+  sb.to_string()
 }
 
 ///|
@@ -188,13 +188,13 @@ fn frame_trim_spaces(s : String) -> String {
   while end > start && (chars[end - 1] == ' ' || chars[end - 1] == '\t') {
     end = end - 1
   }
-  let mut out = ""
+  let sb = StringBuilder::new()
   let mut i = start
   while i < end {
-    out = out + chars[i].to_string()
+    sb.write_char(chars[i])
     i = i + 1
   }
-  out
+  sb.to_string()
 }
 
 ///|

@@ -138,17 +138,20 @@ pub fn apply_workspace_edit(text : String, edits : Array[TextEdit]) -> String {
     resolved[j + 1] = cur
     i = i + 1
   }
-  // 顺序拼接：原样区间 + 替换文本。
-  let mut out = ""
+  // 顺序拼接：原样区间 + 替换文本（以 StringBuilder 摊还 O(1) 追加，规避
+  // 循环内 `out = out + ...` 的 O(n²) 拼接）。
+  let out = StringBuilder::new()
   let mut pos = 0
   for item in resolved {
     let si = item.0
     let ei = item.1
     let nt = item.2
     if si >= pos {
-      out = out + rebuild(cps, pos, si) + nt
+      out.write_string(rebuild(cps, pos, si))
+      out.write_string(nt)
       pos = ei
     }
   }
-  out + rebuild(cps, pos, total)
+  out.write_string(rebuild(cps, pos, total))
+  out.to_string()
 }

@@ -7,13 +7,49 @@ import {
 }
 
 // Values
+pub fn base64_decode(String) -> Bytes?
+
+pub fn base64_encode(Bytes) -> String
+
+pub fn bits_to_double(UInt64) -> Double
+
+pub fn bits_to_float(UInt) -> Float
+
+pub fn canonicalize_wire(Message) -> Bytes
+
 pub fn decode(Bytes, Schema) -> Result[Message, DecodeError]
+
+pub fn decode_json(ProtoSchema, String, String) -> Result[TypedMessage, ParseError]
+
+pub fn decode_typed(ProtoSchema, String, Bytes) -> Result[TypedMessage, DecodeError]
+
+pub fn demo_message() -> TypedMessage
+
+pub let demo_message_name : String
+
+pub fn demo_proto() -> String
+
+pub fn double_to_bits(Double) -> UInt64
 
 pub fn encode(Message) -> Bytes
 
+pub fn encode_canonical(ProtoSchema, String, TypedMessage) -> Result[Bytes, DecodeError]
+
+pub fn encode_json(ProtoSchema, String, TypedMessage) -> Result[String, DecodeError]
+
+pub fn encode_typed(ProtoSchema, String, TypedMessage) -> Result[Bytes, DecodeError]
+
+pub fn float_to_bits(Float) -> UInt
+
 pub fn gen_moonbit(Schema) -> String
 
+pub fn gen_moonbit_full(ProtoSchema) -> String
+
 pub fn parse_proto(String) -> Result[Schema, ParseError]
+
+pub fn parse_proto_full(String) -> Result[ProtoSchema, ParseError]
+
+pub fn print_proto(ProtoSchema) -> String
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
@@ -22,6 +58,16 @@ pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.Dire
 pub let serialization_name : String
 
 pub let serialization_version : String
+
+pub fn validate_schema(ProtoSchema) -> Result[Unit, Array[SchemaError]]
+
+pub fn zigzag_decode_32(UInt) -> Int
+
+pub fn zigzag_decode_64(UInt64) -> Int64
+
+pub fn zigzag_encode_32(Int) -> UInt
+
+pub fn zigzag_encode_64(Int64) -> UInt64
 
 // Errors
 
@@ -52,6 +98,17 @@ pub(all) struct FieldEntry {
 } derive(Eq, Show)
 pub fn FieldEntry::new(Int, FieldValue) -> Self
 
+pub(all) enum FieldLabel {
+  LSingular
+  LRepeated(packed~ : Bool)
+  LOneof(group~ : String)
+} derive(Eq, Show)
+
+pub(all) struct FieldOption {
+  name : String
+  value : String
+} derive(Eq, Show)
+
 pub(all) enum FieldType {
   TInt32
   TInt64
@@ -76,6 +133,13 @@ pub fn FieldValue::i64(UInt64) -> Self
 pub fn FieldValue::varint(UInt64) -> Self
 pub fn FieldValue::wire_type(Self) -> WireType
 
+pub(all) struct MapEntry {
+  name : String
+  number : Int
+  key : ProtoType
+  value : ProtoType
+} derive(Eq, Show)
+
 pub(all) struct Message {
   fields : Array[FieldEntry]
 } derive(Eq, Show)
@@ -87,6 +151,11 @@ pub(all) struct MessageDef {
   fields : Array[FieldDef]
 } derive(Eq, Show)
 
+pub(all) struct OneofDef {
+  name : String
+  members : Array[Int]
+} derive(Eq, Show)
+
 pub(all) struct ParseError {
   line : Int
   col : Int
@@ -96,11 +165,95 @@ pub(all) struct ParseError {
 pub fn ParseError::at(@parser_combinator.Pos, String) -> Self
 pub fn ParseError::new(Int, Int, Int, String) -> Self
 
+pub(all) struct ProtoField {
+  name : String
+  number : Int
+  ptype : ProtoType
+  label : FieldLabel
+  options : Array[FieldOption]
+} derive(Eq, Show)
+
+pub(all) struct ProtoMessage {
+  name : String
+  fields : Array[ProtoField]
+  maps : Array[MapEntry]
+  oneofs : Array[OneofDef]
+  reserved_numbers : Array[ReservedRange]
+  reserved_names : Array[String]
+  nested_messages : Array[String]
+  nested_enums : Array[String]
+} derive(Eq, Show)
+
+pub(all) struct ProtoSchema {
+  messages : Array[ProtoMessage]
+  enums : Array[EnumDef]
+} derive(Eq, Show)
+pub fn ProtoSchema::empty() -> Self
+pub fn ProtoSchema::enum_def(Self, String) -> EnumDef?
+pub fn ProtoSchema::message(Self, String) -> ProtoMessage?
+pub fn ProtoSchema::to_legacy(Self) -> Schema
+
+pub(all) enum ProtoType {
+  PInt32
+  PInt64
+  PUInt32
+  PUInt64
+  PSInt32
+  PSInt64
+  PFixed32
+  PFixed64
+  PSFixed32
+  PSFixed64
+  PFloat
+  PDouble
+  PBool
+  PString
+  PBytes
+  PMessage(String)
+  PEnum(String)
+} derive(Eq, Show)
+
+pub(all) struct ReservedRange {
+  lo : Int
+  hi : Int
+} derive(Eq, Show)
+
 pub(all) struct Schema {
   messages : Array[MessageDef]
   enums : Array[EnumDef]
 } derive(Eq, Show)
 pub fn Schema::empty() -> Self
+
+pub enum SchemaError {
+  FieldNumberOutOfRange(message~ : String, field~ : String, number~ : Int)
+  DuplicateFieldNumber(message~ : String, number~ : Int)
+  ReservedConflict(message~ : String, which~ : String)
+  UnresolvedTypeRef(message~ : String, field~ : String, ref_~ : String)
+  EnumFirstValueNonZero(enum_~ : String, first~ : Int)
+} derive(Eq, Show)
+
+pub(all) struct TypedMessage {
+  fields : Map[Int, TypedValue]
+  unknown : Array[FieldEntry]
+} derive(Eq, Show)
+pub fn TypedMessage::get(Self, Int) -> TypedValue?
+pub fn TypedMessage::get_or_default(Self, ProtoMessage, Int) -> TypedValue
+pub fn TypedMessage::new() -> Self
+pub fn TypedMessage::set(Self, Int, TypedValue) -> Self
+
+pub(all) enum TypedValue {
+  TInt(Int64)
+  TUInt(UInt64)
+  TBoolV(Bool)
+  TEnumV(Int)
+  TFloatV(Float)
+  TDoubleV(Double)
+  TStringV(String)
+  TBytesV(Bytes)
+  TMsg(TypedMessage)
+  TList(Array[TypedValue])
+  TMap(Array[(TypedValue, TypedValue)])
+} derive(Eq, Show)
 
 pub(all) enum WireType {
   Varint

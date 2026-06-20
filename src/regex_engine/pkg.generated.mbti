@@ -8,11 +8,39 @@ import {
 // Values
 pub fn build_nfa(Regex) -> Nfa
 
+pub fn compile_program(Ast, flags? : Flags) -> Program
+
+pub fn demo_cases() -> Array[(String, String)]
+
+pub fn demo_email() -> String
+
+pub fn demo_ipv4() -> String
+
+pub fn demo_iso_date() -> String
+
+pub fn demo_number() -> String
+
 pub fn find(Regex, String) -> Match?
 
 pub fn is_match(Regex, String) -> Bool
 
+pub fn parse_pattern(String, flags? : Flags) -> Result[Ast, ParseError]
+
 pub fn parse_regex(String) -> Result[Regex, ParseError]
+
+pub fn predef_digit() -> CharSet
+
+pub fn predef_non_digit() -> CharSet
+
+pub fn predef_non_space() -> CharSet
+
+pub fn predef_non_word() -> CharSet
+
+pub fn predef_space() -> CharSet
+
+pub fn predef_word() -> CharSet
+
+pub fn print_ast(Ast) -> String
 
 pub fn print_regex(Regex) -> String
 
@@ -34,6 +62,36 @@ pub(all) enum AnchorKind {
   End
 } derive(Eq)
 
+pub(all) enum AssertKind {
+  TextStart
+  TextEnd
+  LineStart
+  LineEnd
+  WordBoundary
+  NotWordBoundary
+} derive(Eq)
+
+pub(all) enum Ast {
+  Empty
+  Lit(Char)
+  Set(CharSet)
+  Concat(Array[Ast])
+  Alt(Array[Ast])
+  Repeat(node~ : Ast, min~ : Int, max~ : Int?, greedy~ : Bool)
+  Group(body~ : Ast, index~ : Int?, name~ : String?)
+  Assert(AssertKind)
+  Look(positive~ : Bool, body~ : Ast)
+} derive(Eq)
+pub fn Ast::of_regex(Regex) -> Self
+
+pub struct Captures {
+  slots : Array[Int]
+  names : Map[String, Int]
+}
+pub fn Captures::group(Self, Int) -> Match?
+pub fn Captures::group_count(Self) -> Int
+pub fn Captures::name(Self, String) -> Match?
+
 pub(all) struct CharClass {
   negated : Bool
   items : Array[ClassItem]
@@ -42,7 +100,10 @@ pub(all) struct CharClass {
 pub(all) struct CharSet {
   intervals : Array[(Int, Int)]
 } derive(Eq)
+pub fn CharSet::case_fold(Self) -> Self
+pub fn CharSet::complement(Self) -> Self
 pub fn CharSet::contains(Self, Int) -> Bool
+pub fn CharSet::union(Self, Self) -> Self
 
 pub(all) enum ClassItem {
   Single(Char)
@@ -57,10 +118,44 @@ pub struct Dfa {
   trans : Array[Array[Array[Int]]]
 }
 pub fn Dfa::find(Self, String) -> Match?
+pub fn Dfa::minimize(Self) -> Self
+
+pub(all) struct Flags {
+  ignore_case : Bool
+  multiline : Bool
+  dotall : Bool
+} derive(Eq)
+pub fn Flags::default() -> Self
+pub fn Flags::dot_set(Self) -> CharSet
+pub fn Flags::parse(String) -> Self
+
+pub enum Inst {
+  IChar(Char)
+  ISet(CharSet)
+  ISplit(Int, Int)
+  IJmp(Int)
+  ISave(Int)
+  IAssert(AssertKind)
+  ILook(positive~ : Bool, prog~ : Program)
+  IMatch
+}
+
+pub struct LazyDfa {
+  nfa : Nfa
+  cache : Map[String, Int]
+  cores : Array[Array[Int]]
+}
+pub fn LazyDfa::find(Self, String) -> Match?
+pub fn LazyDfa::new(Nfa) -> Self
 
 pub(all) struct Match {
   start : Int
   end : Int
+} derive(Eq)
+
+pub(all) enum MatchKind {
+  LeftmostFirst
+  LeftmostLongest
 } derive(Eq)
 
 pub struct Nfa {
@@ -82,6 +177,31 @@ pub(all) enum ParseError {
   TrailingInput(pos~ : Int)
 } derive(Eq)
 pub fn ParseError::pos(Self) -> Int
+
+pub struct Pattern {
+  prog : Program
+  kind : MatchKind
+}
+pub fn Pattern::captures(Self, String) -> Captures?
+pub fn Pattern::captures_all(Self, String) -> Array[Captures]
+pub fn Pattern::compile(String, flags? : Flags, kind? : MatchKind) -> Result[Self, ParseError]
+pub fn Pattern::find(Self, String) -> Match?
+pub fn Pattern::find_all(Self, String) -> Array[Match]
+pub fn Pattern::find_iter(Self, String) -> Array[Match]
+pub fn Pattern::is_match(Self, String) -> Bool
+pub fn Pattern::replace(Self, String, String) -> String
+pub fn Pattern::replace_all(Self, String, String) -> String
+pub fn Pattern::split(Self, String) -> Array[String]
+
+pub struct Program {
+  insts : Array[Inst]
+  num_groups : Int
+  names : Map[String, Int]
+  flags : Flags
+}
+pub fn Program::exec(Self, String, start? : Int, kind? : MatchKind) -> Captures?
+pub fn Program::exec_steps(Self, String) -> Int
+pub fn Program::is_match(Self, String) -> Bool
 
 pub(all) enum Regex {
   Char(Char)

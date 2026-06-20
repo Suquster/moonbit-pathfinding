@@ -3,28 +3,97 @@ package "Suquster/moonbit-pathfinding/src/mini_compiler"
 
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/immut/sorted_map",
+  "moonbitlang/core/immut/sorted_set",
+  "moonbitlang/core/list",
 }
 
 // Values
+pub fn apply_scheme(Subst, Scheme) -> Scheme
+
+pub fn apply_subst(Subst, Ty) -> Ty
+
+pub fn beta_reduce(Expr) -> Expr
+
 pub fn check(Ast) -> Result[TypedAst, Diagnostic]
 
 pub fn compile(TypedAst, Backend) -> Bytes
 
+pub fn compile_ml(TExpr) -> Bytecode
+
+pub fn compose(Subst, Subst) -> Subst
+
+pub fn const_fold(Expr) -> Expr
+
+pub fn dead_let_elim(Expr) -> Expr
+
+pub let demo_factorial_src : String
+
+pub let demo_fib_src : String
+
+pub fn emit_js(TExpr) -> String
+
+pub fn emit_wat(TExpr) -> String
+
+pub fn erase_span(Expr) -> Expr
+
 pub fn eval(TypedAst) -> Value
 
+pub fn eval_ml(TExpr) -> Val
+
+pub fn ftv(Ty) -> @sorted_set.SortedSet[Int]
+
+pub fn generalize(TyEnv, Ty) -> Scheme
+
+pub fn infer(Expr) -> Result[(TExpr, Ty), Diagnostic]
+
+pub fn instantiate(Scheme, FreshGen) -> Ty
+
 pub fn lex(String) -> Result[Array[Token], Diagnostic]
+
+pub fn lex_ml(String) -> Result[Array[MlToken], Diagnostic]
 
 pub let mini_compiler_name : String
 
 pub let mini_compiler_version : String
 
+pub fn ml_env_empty() -> Env
+
+pub fn ml_env_extend(Env, String, Val) -> Env
+
+pub fn occurs(Int, Ty) -> Bool
+
+pub fn of_minilet(Ast) -> Expr
+
+pub fn optimize(Expr) -> Expr
+
 pub fn parse(Array[Token]) -> Result[Ast, Diagnostic]
 
+pub fn parse_ml(Array[MlToken]) -> Result[Expr, Diagnostic]
+
 pub fn print_ast(Ast) -> String
+
+pub fn print_expr(Expr) -> String
 
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn run_compiled(String, optimize? : Bool) -> PipelineResult
+
+pub fn run_demo(String) -> DemoTrace
+
+pub fn run_interp(String, optimize? : Bool) -> PipelineResult
+
+pub fn scope_check_ml(Expr) -> Result[Unit, Diagnostic]
+
+pub fn subst_empty() -> Subst
+
+pub fn subst_single(Int, Ty) -> Subst
+
+pub fn type_of(TExpr) -> Ty
+
+pub fn unify(Ty, Ty) -> Result[Subst, Diagnostic]
 
 // Errors
 
@@ -48,6 +117,26 @@ pub(all) enum BinOp {
   Div
 } derive(Eq)
 
+pub(all) struct Bytecode {
+  instrs : Array[Instr]
+} derive(Eq)
+
+pub(all) enum CmpOp {
+  Lt
+  Le
+  Gt
+  Ge
+  Eq_
+  Ne
+} derive(Eq, Show)
+
+pub(all) struct DemoTrace {
+  principal_type : Ty
+  optimized_form : String
+  interp_result : Val
+  vm_result : Val
+} derive(Eq)
+
 pub(all) enum DiagKind {
   LexError
   SyntaxError
@@ -61,6 +150,110 @@ pub(all) struct Diagnostic {
   msg : String
 } derive(Eq)
 pub fn Diagnostic::new(DiagKind, Int, Int, String) -> Self
+
+pub(all) struct Env {
+  bindings : @list.List[(String, Val)]
+} derive(Eq)
+
+pub(all) enum Expr {
+  EInt(Int, Span)
+  EBool(Bool, Span)
+  EVar(String, Span)
+  EArith(BinOp, Expr, Expr, Span)
+  ECmp(CmpOp, Expr, Expr, Span)
+  ELogic(LogicOp, Expr, Expr, Span)
+  EIf(Expr, Expr, Expr, Span)
+  ELam(String, Expr, Span)
+  EApp(Expr, Expr, Span)
+  ELet(String, Expr, Expr, Span)
+  ELetRec(String, Expr, Expr, Span)
+  ETuple(Array[Expr], Span)
+} derive(Eq)
+
+pub struct Frame {
+  bc : Bytecode
+  mut pc : Int
+  env : @list.List[(String, SVal)]
+}
+
+pub struct FreshGen {
+  mut counter : Int
+}
+pub fn FreshGen::fresh(Self) -> Ty
+pub fn FreshGen::new() -> Self
+
+pub(all) enum Instr {
+  PushInt(Int)
+  PushBool(Bool)
+  LoadVar(String)
+  Arith(BinOp)
+  Cmp(CmpOp)
+  Logic(LogicOp)
+  JumpIfFalse(Int)
+  Jump(Int)
+  MkClosure(String, Bytecode)
+  MkRecClosure(String, String, Bytecode)
+  Call
+  Ret
+  MkTuple(Int)
+} derive(Eq)
+
+pub(all) enum LogicOp {
+  And
+  Or
+} derive(Eq, Show)
+
+pub(all) enum MlToken {
+  TkInt(Int, Span)
+  TkBool(Bool, Span)
+  TkIdent(String, Span)
+  TkKw(String, Span)
+  TkOp(String, Span)
+  TkLParen(Span)
+  TkRParen(Span)
+} derive(Eq)
+
+pub(all) enum PipelineResult {
+  Produced(Val)
+  Failed(Diagnostic)
+} derive(Eq)
+
+pub enum SVal {
+  SInt(Int)
+  SBool(Bool)
+  SClosure(String, Bytecode, @list.List[(String, SVal)])
+  SRecClosure(String, String, Bytecode, @list.List[(String, SVal)])
+  STuple(Array[SVal])
+}
+
+pub(all) struct Scheme {
+  vars : Array[Int]
+  body : Ty
+} derive(Eq)
+
+pub(all) struct Span {
+  line : Int
+  col : Int
+} derive(Eq, Show)
+
+pub(all) struct Subst {
+  map : @sorted_map.SortedMap[Int, Ty]
+} derive(Eq)
+
+pub(all) enum TExpr {
+  TEInt(Int, Ty, Span)
+  TEBool(Bool, Ty, Span)
+  TEVar(String, Ty, Span)
+  TEArith(BinOp, TExpr, TExpr, Ty, Span)
+  TECmp(CmpOp, TExpr, TExpr, Ty, Span)
+  TELogic(LogicOp, TExpr, TExpr, Ty, Span)
+  TEIf(TExpr, TExpr, TExpr, Ty, Span)
+  TELam(String, TExpr, Ty, Span)
+  TEApp(TExpr, TExpr, Ty, Span)
+  TELet(String, TExpr, TExpr, Ty, Span)
+  TELetRec(String, TExpr, TExpr, Ty, Span)
+  TETuple(Array[TExpr], Ty, Span)
+} derive(Eq)
 
 pub(all) enum Token {
   IntLit(Int)
@@ -76,6 +269,18 @@ pub(all) enum Token {
   Assign
 } derive(Eq)
 
+pub(all) enum Ty {
+  TyInt
+  TyBool
+  TyVar(Int)
+  TyFun(Ty, Ty)
+  TyTuple(Array[Ty])
+} derive(Eq, Show)
+
+pub(all) struct TyEnv {
+  schemes : @list.List[(String, Scheme)]
+} derive(Eq)
+
 pub(all) enum Type {
   IntT
 } derive(Eq)
@@ -85,6 +290,19 @@ pub(all) enum TypedAst {
   TVar(String, Type)
   TBin(BinOp, TypedAst, TypedAst, Type)
   TLet(String, TypedAst, TypedAst, Type)
+} derive(Eq)
+
+pub struct VM {
+  stack : Array[SVal]
+  frames : Array[Frame]
+}
+pub fn VM::run(Bytecode, Env) -> Val
+
+pub(all) enum Val {
+  VInt(Int)
+  VBool(Bool)
+  VClosure(String, TExpr, Env)
+  VTuple(Array[Val])
 } derive(Eq)
 
 pub(all) enum Value {

@@ -19,10 +19,15 @@ pub(all) enum RoutingStrategy {
 
 ///|
 /// 路由器（router）—— 以一组 worker 与策略构造。
+///
+/// `ring_cache` 为一致性哈希环的惰性缓存：环仅由（构造后不可变的）worker 集合
+/// 决定，故只需计算一次并复用，避免每次路由都重建并重排序（消除 O(消息数 ×
+/// worker 数²) 的热路径）。
 pub struct Router[M] {
   strategy : RoutingStrategy
   workers : Array[ActorRef[M]]
   mut cursor : Int
+  mut ring_cache : Array[RingNode]?
 }
 
 ///|
@@ -31,7 +36,7 @@ pub fn[M] Router::new(
   strategy : RoutingStrategy,
   workers : Array[ActorRef[M]],
 ) -> Router[M] {
-  { strategy, workers, cursor: 0 }
+  { strategy, workers, cursor: 0, ring_cache: None }
 }
 
 ///|
@@ -69,7 +74,14 @@ struct RingNode {
 ///|
 /// 构造排序后的哈希环：每个 worker 以其 id 派生一个环节点，按 (hash, index) 升序
 /// 全序排序（消除并列歧义，保证三后端一致）。
+///
+/// 结果按 worker 集合缓存（`ring_cache`）：worker 集合在构造后不可变，故环只需
+/// 计算一次，后续路由直接复用，避免每条消息都重建并重排序（O(worker 数²)）。
 fn[M] Router::ring(self : Router[M]) -> Array[RingNode] {
+  match self.ring_cache {
+    Some(cached) => return cached
+    None => ()
+  }
   let nodes : Array[RingNode] = []
   for i in 0..<self.workers.length() {
     let h = fnv1a_hash("worker#\{self.workers[i].id.value}")
@@ -89,6 +101,7 @@ fn[M] Router::ring(self : Router[M]) -> Array[RingNode] {
     }
     nodes[j + 1] = cur
   }
+  self.ring_cache = Some(nodes)
   nodes
 }
 
@@ -139,19 +152,32 @@ pub fn[M] Router::route_keyed(self : Router[M], key : String, msg : M) -> Unit {
 
 ///|
 /// 计算某 key 在哈希环上命中的 worker 下标（纯函数，可观测）。
+///
+/// 环按 hash 升序排序，故以**二分查找**定位首个 `hash >= key_hash` 的节点
+/// （顺时针），无则回绕到环首。复杂度 O(log W)，优于线性扫描 O(W)。
 fn[M] Router::index_for_key(self : Router[M], key : String) -> Int {
   let ring = self.ring()
   if ring.is_empty() {
     return 0
   }
   let kh = fnv1a_hash(key)
-  for node in ring {
-    if node.hash >= kh {
-      return node.index
+  // 二分求最左的 `ring[i].hash >= kh`。
+  let mut lo = 0
+  let mut hi = ring.length() // 半开区间 [lo, hi)
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if ring[mid].hash >= kh {
+      hi = mid
+    } else {
+      lo = mid + 1
     }
   }
-  // 回绕到环首。
-  ring[0].index
+  // lo == ring.length() 表示无 `hash >= kh` 的节点：回绕到环首。
+  if lo >= ring.length() {
+    ring[0].index
+  } else {
+    ring[lo].index
+  }
 }
 
 ///|

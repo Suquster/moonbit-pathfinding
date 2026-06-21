@@ -223,6 +223,7 @@ pub struct Router[M] {
   strategy : RoutingStrategy
   workers : Array[ActorRef[M]]
   mut cursor : Int
+  mut ring_cache : Array[RingNode]?
 }
 pub fn[M] Router::new(RoutingStrategy, Array[ActorRef[M]]) -> Self[M]
 pub fn[M] Router::route(Self[M], M) -> Unit

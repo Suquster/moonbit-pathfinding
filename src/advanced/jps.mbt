@@ -272,11 +272,17 @@ pub fn jps(
   }
   let g_cost : Map[(Int, Int), Double] = Map([])
   let parents : Map[(Int, Int), (Int, Int)] = Map([])
-  let pq : @core.PQueue[(Int, Int), Double] = @core.PQueue::new()
+  // Payload carries the `g` recorded at push time so stale (superseded)
+  // entries can be skipped on pop, avoiding redundant jump-point expansions.
+  let pq : @core.PQueue[((Int, Int), Double), Double] = @core.PQueue::new()
   g_cost[start] = 0.0
-  pq.push(octile(start, goal), start)
+  pq.push(octile(start, goal), (start, 0.0))
   while !pq.is_empty() {
-    let (_, u) = pq.pop().unwrap()
+    let (_, (u, gu_entry)) = pq.pop().unwrap()
+    match g_cost.get(u) {
+      Some(best) => if gu_entry > best { continue }
+      None => continue
+    }
     if u == goal {
       // Reconstruct path by walking parents back to start.
       let path = [u]
@@ -296,7 +302,7 @@ pub fn jps(
     }
     let parent_of_u = parents.get(u)
     let successors = grid.identify_successors(u, parent_of_u, goal)
-    let gu = g_cost.get(u).unwrap()
+    let gu = gu_entry
     for pair in successors {
       let (v, w) = pair
       let tentative = gu + w
@@ -308,7 +314,7 @@ pub fn jps(
         g_cost[v] = tentative
         parents[v] = u
         let f = tentative + octile(v, goal)
-        pq.push(f, v)
+        pq.push(f, (v, tentative))
       }
     }
   }

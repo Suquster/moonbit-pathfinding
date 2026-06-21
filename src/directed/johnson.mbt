@@ -79,6 +79,21 @@ pub fn[N : Eq + Hash] johnson(
   }
   // One Dijkstra per source on the non-negative reweighted graph.
   let out : Map[(N, N), Int] = Map([])
+  //
+  // 循环不变式（R10.1 · Johnson 逐源 Dijkstra 主循环 · 谓词见 @proofs.johnson_post）:
+  //
+  //   (布尔陈述) 已处理的源点 u 在 out 中为「out[(u,v)] = 重标号最短距 d'(u,v) - h[u] + h[v]」
+  //       即原图真实最短距离；势函数 h 满足 w + h[x] - h[y] >= 0（由前置 Bellman-Ford 保证），
+  //       故每次 dijkstra_all 都跑在非负权图上、结果可信。
+  //
+  //   (初始化成立) 进入循环前 out 为空：无源点已处理，命题平凡成立；h 与重标号邻接 adj 已
+  //       构造完毕且所有重标号边权非负。
+  //
+  //   (迭代保持) 对源点 u 跑一次 dijkstra_all 得重标号最短距 d'(u,·)，再以 -h[u]+h[v] 抵消
+  //       重标号偏移还原真实距离写入 out。由于重标号保持「最短路集合不变」（路径权整体平移
+  //       h[start]-h[end]），还原后的 out[(u,v)] 等于原图最短距离。每个源点恰处理一次，循环
+  //       终止后 out 覆盖所有可达点对。
+  //
   for u in nodes {
     let tree = dijkstra_all(u, fn(x : N) -> Array[(N, Int)] {
       adj.get(x).unwrap_or([])

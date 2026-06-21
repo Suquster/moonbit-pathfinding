@@ -69,6 +69,23 @@ pub fn[N : Eq + Hash] bridges_and_articulation_points(
     timer += 1
     stack.push((root, None, neighbors(root), 0, false))
     let mut root_children = 0
+    //
+    // 循环不变式（R10.1 · 桥与割点迭代 DFS 主循环 · 谓词见 @proofs.bridges_post / edge_is_bridge）:
+    //
+    //   (布尔陈述) 对每个已发现节点 x，disc[x] 为其 DFS 发现时间戳；low[x] 是「x 经其
+    //       已处理子树与已检视回边可达的最小 disc」的当前下界（low[x] <= disc[x]）；已
+    //       记入 bridge_edges / points 的边与点，其判定条件（树边 (p,u) 且 low[u]>disc[p]
+    //       为桥；非根 p 有子 u 满足 low[u]>=disc[p] 为割点）在记录时已成立。
+    //
+    //   (初始化成立) 进入循环前仅 root 被发现，disc[root]=low[root]=当前 timer，显式栈含
+    //       root 帧：单节点 low<=disc 成立，尚无桥/割点被记录，命题平凡满足。
+    //
+    //   (迭代保持) 每步要么前进到 u 的下一邻居 v：v 未发现则作为树边压栈递归（建立 disc/low）；
+    //       v 已发现且非「回到父的那条树边（仅跳过一次以兼容平行边）」则用 disc[v] 收紧 low[u]。
+    //       要么在 u 邻居耗尽时做后序处理：用 low[u] 收紧父 low[p]，并据 low[u] 与 disc[p]
+    //       关系判定桥与割点。故 disc/low 语义与判定条件在每次迭代后保持；root 的割点性由
+    //       其 DFS 子树数 root_children>1 在循环后单独判定。
+    //
     while stack.length() > 0 {
       let (u, parent, adj, idx, parent_skipped) = stack.pop().unwrap()
       if idx < adj.length() {

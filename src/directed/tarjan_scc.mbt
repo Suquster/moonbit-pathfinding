@@ -40,6 +40,23 @@ pub fn[N : Eq + Hash] tarjan_scc(
     idx += 1
     stack.push(v)
     on_stack[v] = true
+    //
+    // 循环不变式（R10.1 · Tarjan 迭代 DFS 主循环 · 谓词见 @proofs.scc_partition_post）:
+    //
+    //   (布尔陈述) 对栈上每个节点 u，index_map[u] 为其 DFS 发现序号、lowlink[u] 不大于
+    //       index_map[u] 且等于「u 经其 DFS 子树及至多一条回边可达的最小发现序号」的当前
+    //       下界；on_stack[w]==true 当且仅当 w 已被发现但其所属 SCC 尚未输出；tarjan 栈
+    //       中节点的发现序号自底向上严格递增。
+    //
+    //   (初始化成立) 进入循环前 call_stack=[(v,0)]，index_map[v]=lowlink[v]=当前 idx，
+    //       v 已压入 tarjan 栈且 on_stack[v]=true：单节点平凡满足 lowlink≤index 与栈序递增。
+    //
+    //   (迭代保持) 处理 u 的下一条边 (u,w)：若 w 未发现则压栈递归（建立 w 的序号并维持
+    //       栈序递增）；若 w 在 tarjan 栈上则用 index_map[w] 收紧 lowlink[u]。某帧子节点
+    //       全部处理完后，若 lowlink[u]==index_map[u]，则 u 为 SCC 根，弹出 tarjan 栈直至
+    //       u 构成一个完整 SCC（其成员 on_stack 置 false 并移出），否则把 lowlink[u] 上传
+    //       父节点。故 lowlink 与栈序不变式在每次迭代后保持，且每节点恰被输出到一个 SCC。
+    //
     while call_stack.length() > 0 {
       let (u, i) = call_stack[call_stack.length() - 1]
       let neighbors = succ_stack[succ_stack.length() - 1]

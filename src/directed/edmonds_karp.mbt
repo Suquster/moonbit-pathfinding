@@ -57,6 +57,21 @@ pub fn[N : Eq + Hash] edmonds_karp(
   }
   ignore(nodes)
   let mut total_flow = 0
+  //
+  // 循环不变式（R10.1 · Edmonds-Karp 增广主循环 · 谓词见 @proofs.max_flow_valid / max_flow_equals_min_cut）:
+  //
+  //   (布尔陈述) total_flow 等于当前残量网络所对应的可行 s-t 流值；对每条原边 (u,v)，
+  //       residual[(u,v)] + residual[(v,u)] 守恒等于其总容量，故 residual 始终编码一个
+  //       满足容量约束与流量守恒的合法流。
+  //
+  //   (初始化成立) 进入循环前 total_flow=0、residual 等于初始容量（反向边为 0）：零流
+  //       平凡可行，容量守恒等式按构造成立。
+  //
+  //   (迭代保持) 每轮用 BFS 在残量网络中找一条最短增广路（保证 Edmonds-Karp 的 O(VE²)
+  //       界）。沿路取瓶颈 bottleneck>0，正向减、反向加该值：流量守恒与容量约束保持，
+  //       total_flow 增加 bottleneck 仍等于新流值。BFS 找不到增广路（!found）时，
+  //       由最大流最小割定理当前流即最大流，循环退出。每轮至少使一条边饱和，循环终止。
+  //
   while true {
     // BFS to find an augmenting path from source to sink.
     let parent : Map[N, N] = Map([])

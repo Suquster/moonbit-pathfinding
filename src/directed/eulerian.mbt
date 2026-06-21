@@ -80,6 +80,21 @@ pub fn[N : Eq + Hash] eulerian_path(
   let cursor : Array[Int] = Array::make(n, 0)
   let stack : Array[Int] = [start]
   let circuit : Array[Int] = []
+  //
+  // 循环不变式（R10.1 · Hierholzer 欧拉路主循环 · 谓词见 @proofs.eulerian_trail_valid）:
+  //
+  //   (布尔陈述) cursor[u] 记录节点 u 已消费的出边数，故每条有向边至多被消费一次；显式栈
+  //       stack 自底向上构成一条「未走完的当前路径」，而 circuit（逆序）累积的是已封闭的
+  //       子回路节点序列，二者合起来恰覆盖所有已消费的边。
+  //
+  //   (初始化成立) 进入循环前 stack=[start]、circuit=[]、所有 cursor=0：尚未消费任何边，
+  //       当前路径仅含起点，已封闭序列为空，命题平凡成立。
+  //
+  //   (迭代保持) 每步看栈顶 u：若其仍有未消费出边 (cursor[u] < 出度)，则消费一条边推进到 v
+  //       并压栈（延长当前路径，cursor[u] 自增保证该边不再被走）；否则 u 无出边可走，弹栈并
+  //       追加到 circuit（封闭一段子回路）。因每条边恰消费一次，循环至多迭代 O(V+E) 次后栈空
+  //       终止；若最终 circuit 长度 ≠ |E|+1 说明图不连通、无欧拉路，逆转 circuit 即为所求路径。
+  //
   while stack.length() > 0 {
     let u = stack[stack.length() - 1]
     if cursor[u] < adj[u].length() {

@@ -62,6 +62,20 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall_paths(
       _ => ()
     }
   }
+  //
+  // 循环不变式（R10.1 · Floyd-Warshall 带路径三重主循环 · 谓词见 @proofs.floyd_warshall_post）:
+  //
+  //   (布尔陈述) 外层进入第 k 轮前，dist[i*n+j] 为「仅允许索引 < k 的节点作中间点」时 i 到 j
+  //       的最短距离，next_hop[i*n+j] 为该最短路上 i 之后的首跳（无路则 -1），二者一致。
+  //
+  //   (初始化成立) k=0 时不允许中间点：dist/next_hop 仅由直接边与对角项初始化，恰为「无中间
+  //       点」的最短距离与对应首跳，命题成立。
+  //
+  //   (迭代保持) 第 k 轮以 k 为新允许中间点，对所有 (i,j) 比较 dist[i,k]+dist[k,j]；更新距离
+  //       时令 next_hop[i,j]:=next_hop[i,k]（先走向 i→k 段的首跳）。任意「中间点⊆{0..k}」的
+  //       最短路要么不过 k（沿用旧值与旧首跳），要么过 k 一次（两段中间点⊆{0..k-1}由归纳成立，
+  //       首跳取 i→k 段首跳）。故距离与首跳表在第 k 轮后对 k+1 一致保持，路径可由 next 链重构。
+  //
   for k in 0..<n {
     for i in 0..<n {
       let dik = dist[i * n + k]

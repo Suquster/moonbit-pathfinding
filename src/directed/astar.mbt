@@ -44,6 +44,23 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(
   let zero = @core.Weight::zero()
   g_cost[start] = zero
   pq.push(heuristic(start), (start, zero))
+  //
+  // 循环不变式（R10.1 · A* 主循环 · 谓词见 @proofs.astar_post / dijkstra_pop_monotonic）:
+  //
+  //   (布尔陈述) f 值下界单调 + g 最优见证：在 heuristic 可采纳（不高估）前提下，
+  //       连续两次「非陈旧」弹出的 f = g + h 键单调非降；且对任意 g_cost[v] 有限的
+  //       节点 v，存在一条从 start 到 v、总权恰为 g_cost[v] 的实际游走（由 parents
+  //       链见证）。
+  //
+  //   (初始化成立) 进入循环前仅 (heuristic(start), (start, zero)) 入队，g_cost[start]
+  //       = zero：单元素序列单调非降平凡成立；start 自身即长度为 0 的平凡见证游走。
+  //
+  //   (迭代保持) 最小堆每次弹出当前最小 f 键；可采纳启发式保证后续松弛产生的
+  //       f' = (g+w) + h(v) 不会使「非陈旧弹出」键下降。松弛仅在 tentative < 现有
+  //       g_cost[v] 时更新 g_cost[v]、parents[v]，从而新的有限 g_cost[v] 仍由
+  //       start ⇝ u → v 的具体游走见证。陈旧条目（gu_entry > best）被 continue
+  //       跳过，不破坏单调性。
+  //
   while !pq.is_empty() {
     let (_f, (u, gu_entry)) = pq.pop().unwrap()
     // Skip stale entries: if a strictly better path to `u` was discovered

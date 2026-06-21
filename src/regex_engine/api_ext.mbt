@@ -57,13 +57,14 @@ pub fn CharSet::contains_binary(self : CharSet, code : Int) -> Bool {
 ///   * `k < 0`        —— 规约为自串首（位置 0）查找；
 ///   * `k > 输入长度` —— 不可能存在 start ≥ k 的匹配，直接返回 `None`。
 pub fn Pattern::find_at(self : Pattern, input : String, k : Int) -> Match? {
-  let n = input.iter().to_array().length()
+  let chars = input.iter().to_array()
+  let n = chars.length()
   // 起点钳制到 [0, n]：负起点自串首，越界起点无匹配。
   let start = if k < 0 { 0 } else { k }
   if start > n {
     return None
   }
-  match self.prog.exec(input, start~, kind=self.kind) {
+  match self.prog.exec_chars(chars, n, start, self.kind) {
     Some(caps) => caps.group(0)
     None => None
   }
@@ -122,7 +123,7 @@ pub fn Pattern::replace_fn(
   let mut pos = 0
   let mut last = 0
   while pos <= n {
-    match self.prog.exec(input, start=pos, kind=self.kind) {
+    match self.prog.exec_chars(chars, n, pos, self.kind) {
       None => break
       Some(caps) =>
         match caps.group(0) {

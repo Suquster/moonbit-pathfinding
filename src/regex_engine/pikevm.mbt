@@ -215,7 +215,22 @@ pub fn Program::exec(
   kind? : MatchKind = LeftmostLongest,
 ) -> Captures? {
   let chars = input.iter().to_array()
-  let n = chars.length()
+  self.exec_chars(chars, chars.length(), start, kind)
+}
+
+///|
+/// 在**预转换的字符数组**上执行 Pike VM（包内私有）。高层 API（`find_all` /
+/// `replace_all` / `split` 等）在做不重叠枚举时只需把 `input` 转换为字符数组
+/// **一次**，随后反复以不同 `start` 调用本函数，避免每次 `exec` 都重做
+/// `input.iter().to_array()` 造成的 O(匹配数 × 输入长度) 转换开销（消除
+/// 多匹配输入上的 O(n²) 热路径）。
+fn Program::exec_chars(
+  self : Program,
+  chars : Array[Char],
+  n : Int,
+  start : Int,
+  kind : MatchKind,
+) -> Captures? {
   let ninst = self.insts.length()
   let slots_len = 2 * (self.num_groups + 1)
   let mut clist = ThreadList::new(ninst)

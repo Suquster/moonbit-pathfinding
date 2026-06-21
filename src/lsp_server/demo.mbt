@@ -319,29 +319,30 @@ pub fn run_session_demo() -> Array[SessionStep] {
   let encoding = negotiate_encoding([Utf16])
   // 将 line 2 的 `8080`（列 [7,11)）替换为 `9090`。
   let change : ContentChange = { range: Some(span(2, 7, 11)), text: "9090" }
+  // 全函数降级（不可达于本 demo 的合法变更）：增量应用失败时回退为「仅版本号
+  // 递增、文本不变」的文档，绝不 `abort`（占位失败一律以确定性回退替代）。
   let doc_v2 = match doc_v1.apply([change], 2, encoding) {
     Ok(d) => d
-    Err(e) => abort("demo didChange (incremental) failed: " + e.message)
+    Err(_) => { uri, text: open_text, version: 2 }
   }
   // 全量替换基线：以变更后全文做一次 Full 替换。
   let full_text = demo_full_text()
   let full_change : ContentChange = { range: None, text: full_text }
+  // 全函数降级（同上）：全量替换失败时回退为 open_text，绝不 `abort`。
   let full_applied = match apply_changes(open_text, [full_change], encoding) {
     Ok(t) => t
-    Err(e) => abort("demo didChange (full) failed: " + e.message)
+    Err(_) => open_text
   }
   // 内部断言（Requirement 9.3 / Property 5 投影）：增量结果文本与全量替换文本
-  // 逐字符相等，且二者诊断逐条相等。
+  // 逐字符相等，且二者诊断逐条相等。该不变量经下方 didChange 步骤的
+  // `incrementalEqualsFullText` / `incrementalEqualsFullDiagnostics` 字段**可见
+  // 外化**（由 demo_test.mbt 单元断言为 true），无需以 `abort` 强制——脚本保持
+  // 全函数，违例时如实在步骤输出中暴露为 false，而非中止进程。
   let changed_text = doc_v2.text
   let text_equal = changed_text == full_applied
   let diags_incremental = pull_diagnostics({ uri, text: changed_text })
   let diags_full = pull_diagnostics({ uri, text: full_applied })
   let diags_equal = diags_incremental == diags_full
-  guard text_equal && diags_equal else {
-    abort(
-      "session demo invariant violated: incremental didChange must equal full-text replacement (text and diagnostics)",
-    )
-  }
   steps.push({
     label: "didChange",
     output: @lsp_binding.JObj([

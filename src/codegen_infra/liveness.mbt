@@ -268,41 +268,14 @@ pub fn liveness_step(
 }
 
 ///|
-/// 比较两个活跃性结果是否在所有块的 live-in / live-out 上完全一致。
-fn liveness_equal(
-  blocks : Array[BasicBlock],
-  a : LivenessResult,
-  b : LivenessResult,
-) -> Bool {
-  for blk in blocks {
-    if not(
-        var_arrays_equal(
-          a.live_in.get(blk.label).unwrap_or([]),
-          b.live_in.get(blk.label).unwrap_or([]),
-        ),
-      ) {
-      return false
-    }
-    if not(
-        var_arrays_equal(
-          a.live_out.get(blk.label).unwrap_or([]),
-          b.live_out.get(blk.label).unwrap_or([]),
-        ),
-      ) {
-      return false
-    }
-  }
-  true
-}
-
-///|
-/// 两个（已按 id 升序规范化的）`Var` 数组是否相等。
-fn var_arrays_equal(a : Array[Var], b : Array[Var]) -> Bool {
-  if a.length() != b.length() {
+/// 两个 id 集（`Map` 充当集合）是否相等。
+fn int_set_equal(a : Map[Int, Bool], b : Map[Int, Bool]) -> Bool {
+  if a.size() != b.size() {
     return false
   }
-  for i in 0..<a.length() {
-    if a[i].id != b[i].id {
+  for kv in a {
+    let (k, _) = kv
+    if not(b.contains(k)) {
       return false
     }
   }
@@ -312,29 +285,95 @@ fn var_arrays_equal(a : Array[Var], b : Array[Var]) -> Bool {
 ///|
 /// 活跃变量分析：后向数据流不动点迭代。
 ///
-/// 初始 live_in = live_out = ∅，反复施加 `liveness_step` 直到一轮内所有块集合
-/// 不再变化（或达安全上界），返回最小不动点。集合按 `Var.id` 升序规范化以保证
-/// 三后端确定性。
+/// 初始 live_in = live_out = ∅，反复施加后向传递方程直到所有块集合不再变化
+/// （或达安全上界），返回最小不动点。集合按 `Var.id` 升序规范化以保证三后端
+/// 确定性。
+///
+/// 性能：每块的 use/def 集与变量名映射**只解析一次**（不在不动点每轮重复
+/// tokenize / 解析指令），随后迭代仅做集合运算，并以就地（Gauss-Seidel）更新
+/// 加速收敛到同一最小不动点。这消除了「每轮重新解析全部指令」的 O(B²·V·I)
+/// 重复开销（B 块数、V 变量数、I 指令数）。公开的 `liveness_step` 保留不变，
+/// 仍作为传递算子供属性测试（不动点性质）使用。
 pub fn analyze_liveness(blocks : Array[BasicBlock]) -> LivenessResult {
-  let empty_in : Map[String, Array[Var]] = Map([])
-  let empty_out : Map[String, Array[Var]] = Map([])
+  let names = collect_var_names(blocks)
+  let name2id = name_to_id_map(names)
+  // 预计算每块 use/def 集（仅解析一次）。
+  let use_sets : Map[String, Map[Int, Bool]] = Map([])
+  let def_sets : Map[String, Map[Int, Bool]] = Map([])
   for b in blocks {
-    empty_in[b.label] = []
-    empty_out[b.label] = []
+    let (u, d) = block_use_def(b, name2id)
+    use_sets[b.label] = u
+    def_sets[b.label] = d
   }
-  let mut cur : LivenessResult = { live_in: empty_in, live_out: empty_out }
+  // 当前 live_in（id 集），初始为空。
+  let cur_in : Map[String, Map[Int, Bool]] = Map([])
+  for b in blocks {
+    cur_in[b.label] = Map([])
+  }
   // 安全上界：后向活跃性最多 (块数 * 变量数 + 1) 轮收敛，留足冗余。
-  let limit = blocks.length() * (collect_var_names(blocks).length() + 1) + 2
+  let limit = blocks.length() * (names.length() + 1) + 2
   let mut iter = 0
-  while iter <= limit {
-    let next = liveness_step(blocks, cur)
-    if liveness_equal(blocks, next, cur) {
-      return next
+  let mut changed = true
+  while changed && iter <= limit {
+    changed = false
+    for b in blocks {
+      // live_out = ⋃ succ live_in（就地读取最新 cur_in）。
+      let out_set : Map[Int, Bool] = Map([])
+      for s in b.succs {
+        match cur_in.get(s) {
+          Some(sin) =>
+            for kv in sin {
+              let (id, _) = kv
+              out_set[id] = true
+            }
+          None => ()
+        }
+      }
+      // live_in = use ∪ (live_out \ def)。
+      let def_set = def_sets.get(b.label).unwrap_or(Map([]))
+      let new_in : Map[Int, Bool] = Map([])
+      match use_sets.get(b.label) {
+        Some(us) =>
+          for kv in us {
+            let (id, _) = kv
+            new_in[id] = true
+          }
+        None => ()
+      }
+      for kv in out_set {
+        let (id, _) = kv
+        if not(def_set.contains(id)) {
+          new_in[id] = true
+        }
+      }
+      let old_in = cur_in.get(b.label).unwrap_or(Map([]))
+      if not(int_set_equal(old_in, new_in)) {
+        changed = true
+        cur_in[b.label] = new_in
+      }
     }
-    cur = next
     iter = iter + 1
   }
-  cur
+  // 物化为规范化结果：live_in 取收敛集；live_out 由收敛后的 live_in 重算。
+  let new_in : Map[String, Array[Var]] = Map([])
+  let new_out : Map[String, Array[Var]] = Map([])
+  for b in blocks {
+    let in_s = cur_in.get(b.label).unwrap_or(Map([]))
+    new_in[b.label] = ids_to_vars(id_set_to_sorted(in_s))
+    let out_set : Map[Int, Bool] = Map([])
+    for s in b.succs {
+      match cur_in.get(s) {
+        Some(sin) =>
+          for kv in sin {
+            let (id, _) = kv
+            out_set[id] = true
+          }
+        None => ()
+      }
+    }
+    new_out[b.label] = ids_to_vars(id_set_to_sorted(out_set))
+  }
+  { live_in: new_in, live_out: new_out }
 }
 
 // ---------------------------------------------------------------------------

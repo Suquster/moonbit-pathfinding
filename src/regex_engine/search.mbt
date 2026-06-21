@@ -65,7 +65,7 @@ pub fn Pattern::find_all(self : Pattern, input : String) -> Array[Match] {
   let out : Array[Match] = []
   let mut pos = 0
   while pos <= n {
-    match self.prog.exec(input, start=pos, kind=self.kind) {
+    match self.prog.exec_chars(chars, n, pos, self.kind) {
       None => break
       Some(caps) =>
         match caps.group(0) {
@@ -94,7 +94,7 @@ pub fn Pattern::captures_all(self : Pattern, input : String) -> Array[Captures] 
   let out : Array[Captures] = []
   let mut pos = 0
   while pos <= n {
-    match self.prog.exec(input, start=pos, kind=self.kind) {
+    match self.prog.exec_chars(chars, n, pos, self.kind) {
       None => break
       Some(caps) =>
         match caps.group(0) {
@@ -118,7 +118,7 @@ pub fn Pattern::replace(
 ) -> String {
   let chars = input.iter().to_array()
   let n = chars.length()
-  match self.prog.exec(input, kind=self.kind) {
+  match self.prog.exec_chars(chars, n, 0, self.kind) {
     None => input
     Some(caps) =>
       match caps.group(0) {
@@ -145,7 +145,7 @@ pub fn Pattern::replace_all(
   let mut pos = 0
   let mut last = 0
   while pos <= n {
-    match self.prog.exec(input, start=pos, kind=self.kind) {
+    match self.prog.exec_chars(chars, n, pos, self.kind) {
       None => break
       Some(caps) =>
         match caps.group(0) {

@@ -49,6 +49,20 @@ pub fn[N : Eq + Hash, W : @core.Weight] dag_shortest_path(
   let dist : Map[N, W] = Map([])
   let parents : Map[N, N] = Map([])
   dist[start] = @core.Weight::zero()
+  //
+  // 循环不变式（R10.1 · DAG 最短路松弛主循环 · 谓词见 @proofs.dag_sp_post）:
+  //
+  //   (布尔陈述) 按拓扑序处理到节点 u 之前，凡拓扑序不晚于 u 的节点 x，dist[x]（若有限）
+  //       已等于 start 到 x 的最终最短距离，并由 parents 链见证一条对应游走。
+  //
+  //   (初始化成立) 处理首个节点前 dist 仅含 dist[start]=zero：start 到自身距离为 0 已
+  //       最终确定，其余尚未触及，命题对「空前缀」成立。
+  //
+  //   (迭代保持) 拓扑序保证 u 的所有前驱均已在 u 之前被处理并定稿，故 dist[u] 此时已是
+  //       最终最短值；以 du 松弛每条出边 (u,v) 更新 dist[v]=min(dist[v], du+w)（允许负权，
+  //       因无环且按拓扑序）。当处理到 v 时其全部前驱已定稿，dist[v] 随之定稿。故不变式
+  //       对下一个节点保持。
+  //
   for u in order {
     let du = match dist.get(u) {
       Some(d) => d

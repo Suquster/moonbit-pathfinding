@@ -36,6 +36,25 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(
   let zero = @core.Weight::zero()
   dist[start] = zero
   pq.push(zero, start)
+  //
+  // Loop invariant (R10.1 · 弹出单调性 · 谓词见 @proofs.dijkstra_pop_monotonic):
+  //
+  //   (布尔陈述) Pop-monotonicity:
+  //       令 popped = [d_0, d_1, ..., d_k] 为「按弹出顺序记录的已确定距离」
+  //       序列（每次成功出队且非陈旧时追加的 d）。则该序列单调非降：
+  //         forall i, popped[i] <= popped[i+1]
+  //       等价地 @proofs.dijkstra_pop_monotonic(popped) == true。
+  //
+  //   (初始化成立) 循环首次进入时 popped 为空序列，单调非降平凡成立；
+  //       唯一入队元素为 (zero, start)，首个弹出值 d_0 = zero 也满足。
+  //
+  //   (迭代保持) 最小堆每次弹出当前最小键 d，且边权非负使得任何后续松弛产生
+  //       的新键 new_dist = d + w >= d；因此后续入队键不小于当前弹出键，
+  //       下一次弹出的非陈旧键 d_{k+1} >= d_k。陈旧条目（d > dist[u]）被
+  //       `continue` 跳过、不追加到 popped，不破坏单调性。故不变式在每次
+  //       迭代后保持。该不变式是「已弹出节点距离最终确定」定理的核心见证，
+  //       由 12.2 的 prop_loop_invariant_test.mbt 以 ≥100 随机图驱动验证。
+  //
   while !pq.is_empty() {
     let (d, u) = pq.pop().unwrap()
     // Skip stale entries: the popped distance may be worse than a later update.

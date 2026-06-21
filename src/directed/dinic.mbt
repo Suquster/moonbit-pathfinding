@@ -82,6 +82,22 @@ pub fn[N : Eq + Hash] dinic(
   let level : Array[Int] = Array::make(n, -1)
   let iter : Array[Int] = Array::make(n, 0)
   let mut total_flow = 0
+  //
+  // 循环不变式（R10.1 · Dinic 阶段主循环 · 谓词见 @proofs.max_flow_valid / max_flow_equals_min_cut）:
+  //
+  //   (布尔陈述) total_flow 等于残量图 graph 当前编码的可行 s-t 流值；每对正/反向边
+  //       (e.cap 与其 rev 的 cap) 之和守恒等于原始容量，故残量图始终表示满足容量约束与
+  //       流量守恒的合法流；每个阶段的 level[] 给出 BFS 分层（s 到各点的残量最短边数）。
+  //
+  //   (初始化成立) 进入循环前 total_flow=0、graph 为初始容量的残量表（反向边 cap=0）：
+  //       零流平凡可行，容量守恒按 add_edge 构造成立。
+  //
+  //   (迭代保持) 每个阶段先用 BFS 在残量图上建分层 level；若 sink 不可达（level[t]<0）则
+  //       当前流即最大流（由最大流最小割定理），退出。否则用迭代 DFS 沿「层级恰 +1」的
+  //       admissible 边反复增广出阻塞流，每条增广路按瓶颈更新正反向 cap：流量守恒与容量
+  //       约束保持，total_flow 增加且仍等于新流值。每阶段 s-t 最短残量距离严格增大，故至多
+  //       V 个阶段，循环终止。
+  //
   while true {
     // BFS: build the level graph on residual capacity.
     for i in 0..<n {

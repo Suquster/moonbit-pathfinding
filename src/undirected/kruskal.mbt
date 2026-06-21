@@ -40,6 +40,21 @@ pub fn[N : Eq + Hash, W : @core.Weight] kruskal_mst(
     dsu.make_set(n)
   }
   let result : Array[(N, N, W)] = []
+  //
+  // 循环不变式（R10.1 · Kruskal 主循环 · 谓词见 @proofs.mst_post）:
+  //
+  //   (布尔陈述) 已按权升序处理前若干条边后，result 中的边构成原图的一个无环子集
+  //       （森林），且是某棵最小生成树（森林）的子集；DSU 的连通分量恰为 result
+  //       所诱导的顶点划分。
+  //
+  //   (初始化成立) 进入循环前 result 为空、DSU 中每个节点自成一集：空边集平凡无环，
+  //       且是任意 MST 的子集；划分为全体单点集，与空 result 一致。
+  //
+  //   (迭代保持) 边已按权非降枚举。对当前最轻的跨分量边 (u,v)（dsu.union 返回 true）
+  //       由 Cut Property（割性质）知其属于某棵包含当前森林的 MST，加入后仍无环、
+  //       仍是 MST 子集，并合并两分量保持划分一致；同分量边（union 返回 false）会成环，
+  //       被跳过。集满 |V|-1 条边即生成树完成，提前 break。
+  //
   for edge in sorted_edges {
     let (u, v, _w) = edge
     if dsu.union(u, v) {

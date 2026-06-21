@@ -60,6 +60,19 @@ pub fn[N : Eq + Hash] min_cut(
     add_neighbor(v, u)
   }
   let mut total_flow = 0
+  //
+  // 循环不变式（R10.1 · 最小割（最大流增广）主循环 · 谓词见 @proofs.max_flow_equals_min_cut）:
+  //
+  //   (布尔陈述) total_flow 等于残量图当前编码的可行 s-t 流值；对每条原边 (u,v)，
+  //       residual[(u,v)]+residual[(v,u)] 守恒等于其容量，故 residual 始终是合法流的残量表示。
+  //
+  //   (初始化成立) 进入循环前 total_flow=0、residual 等于初始容量（反向边 0）：零流平凡可行。
+  //
+  //   (迭代保持) 每轮 BFS 在残量图找一条 s-t 增广路；沿路取瓶颈 bottleneck>0，正向减反向加，
+  //       保持流量守恒与容量约束，total_flow 增加 bottleneck 仍等于新流值。BFS 找不到增广路时
+  //       退出——此时从 source 在残量图可达的节点集 reachable 与其补集构成一个 s-t 割，由最大流
+  //       最小割定理其容量恰等于 total_flow，即最小割；割边为 reachable→非 reachable 的原边。
+  //
   while true {
     let parent : Map[N, N] = Map([])
     let visited : Map[N, Bool] = Map([])

@@ -94,6 +94,23 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] bidirectional_dijkstra(
     }
   }
 
+  //
+  // 循环不变式（R10.1 · 双向 Dijkstra 主循环 · 谓词见 @proofs.bidirectional_dijkstra_post）:
+  //
+  //   (布尔陈述) 两侧各维持 Dijkstra 不变式：已 settled 的节点其 dist 为该侧到/自源点的
+  //       最终最短距离，且两侧弹出键分别单调非降；best 是「已发现的任一相遇节点 v 的
+  //       dist_f[v]+dist_b[v]」的当前最小值，meeting 为取得该最小值的节点（或 None）。
+  //
+  //   (初始化成立) 进入循环前 dist_f[start]=dist_b[goal]=zero，两 pq 各含一个零键项，
+  //       settled 均空，best=+∞、meeting=None：尚无 settled 节点，单元素键序列单调非降，
+  //       无相遇平凡成立（start≠goal 已在函数开头处理）。
+  //
+  //   (迭代保持) 每轮扩展堆顶键较小的一侧一个节点：settle 之并松弛其边（非负权保证弹出
+  //       键单调，settled 距离最终化）；若某邻居已在对侧 dist 中出现，则用 dist_f+dist_b
+  //       更新 best/meeting。终止判据 top_f+top_b >= best 成立且已有相遇时退出——此时不存在
+  //       更短的跨界路径，best 即 start→goal 最短距离，路径由 parent_f / parent_b 在 m 处
+  //       拼接重构。
+  //
   while !pq_f.is_empty() || !pq_b.is_empty() {
     // Stop once neither frontier can possibly improve the best meeting.
     let top_f = match pq_f.peek() {

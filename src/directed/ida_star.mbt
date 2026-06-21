@@ -66,6 +66,21 @@ pub fn[N : Eq + Hash, W : @core.Weight] ida_star(
     Some(min_exceeded)
   }
 
+  //
+  // 循环不变式（R10.1 · IDA* 迭代加深主循环 · 谓词见 @proofs.ida_star_post）:
+  //
+  //   (布尔陈述) bound 是一个 f=g+h 阈值的下界：在可采纳启发式下，任何总代价小于
+  //       bound 的解都不存在；每一轮有界 DFS 要么找到代价恰为 found_cost 的最优解，
+  //       要么返回「本轮超过 bound 的最小 f 值」作为下一轮的新 bound。
+  //
+  //   (初始化成立) 进入循环前 bound = heuristic(start) = f(start)：由可采纳性，最优解
+  //       代价不小于 f(start)，故「代价 < bound 无解」平凡成立。
+  //
+  //   (迭代保持) 每轮以当前 bound 调用 search：若返回 None 则已找到 f≤bound 的目标，
+  //       由阈值单调递增与可采纳性该解最优，返回 (path, found_cost)；否则返回值是所有
+  //       「被 bound 剪枝」分支的最小超限 f，严格大于旧 bound（除非为 inf 表示无解），
+  //       据此抬高 bound 进入下一轮，保持「代价 < bound 无解」。阈值严格递增保证终止。
+  //
   while true {
     match search(start, zero, bound) {
       None => return Some((path, found_cost))

@@ -42,6 +42,20 @@ pub fn[N : Eq + Hash] condensation(
   }
   let seen : Map[(Int, Int), Bool] = Map([])
   let dag_edges : Array[(Int, Int)] = []
+  //
+  // 循环不变式（R10.1 · SCC 缩点 DAG 构造主循环 · 谓词见 @proofs.condensation_is_dag）:
+  //
+  //   (布尔陈述) 已扫描前若干节点后，dag_edges 恰为「已见到的、连接两个不同 SCC 的有序对
+  //       (cu,cv)」去重集合；seen 与 dag_edges 内容一致（seen[(cu,cv)]==true 当且仅当该对
+  //       已入 dag_edges）。component_of 给出每个节点到其 SCC 下标的映射。
+  //
+  //   (初始化成立) 进入循环前 dag_edges 为空、seen 为空：无跨分量边被记录，二者平凡一致。
+  //
+  //   (迭代保持) 对节点 node（属 SCC cu）的每条出边 (node,v)（v 属 SCC cv），仅当 cu≠cv 且
+  //       (cu,cv) 未见过时记入 dag_edges 并标记 seen，保证去重与一致性。同一 SCC 内的边
+  //       (cu==cv) 被跳过，故结果不含自环；又因 SCC 是极大强连通子图，缩点后不可能有环
+  //       （否则两 SCC 应合并），所得 dag_edges 必为 DAG。每节点恰扫描一次，循环终止。
+  //
   for node in nodes {
     match component_of.get(node) {
       Some(cu) =>

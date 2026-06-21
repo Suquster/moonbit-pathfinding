@@ -74,6 +74,22 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
       let accepted : Array[(Array[N], W)] = [p_and_c]
       let candidates : Array[(Array[N], W)] = []
       let mut ki = 1
+      //
+      // 循环不变式（R10.1 · Yen K-最短路主循环 · 谓词见 @proofs.yen_post）:
+      //
+      //   (布尔陈述) accepted 恰为按代价非降排列的前 ki 条无环 s-t 路径，且互不相同；
+      //       candidates 是「以某 accepted 路径前缀为根、在被禁边/禁点约束下经 Dijkstra
+      //       求得」的待选偏离路径池，其中任一候选代价不小于已接受路径的末条。
+      //
+      //   (初始化成立) 进入循环前 ki=1，accepted=[最短路]，candidates=[]：单条最短路
+      //       平凡有序且无环；空候选池平凡满足下界条件。
+      //
+      //   (迭代保持) 对第 ki-1 条路径的每个 spur 节点，禁掉「与已接受路径共享根前缀」的
+      //       后继边及根上其余节点（保证无环），用 Dijkstra 求 spur→goal，与根前缀拼接、
+      //       去重后入 candidates。随后线性扫描取代价最小的候选加入 accepted、移出候选池，
+      //       ki 递增：新接受路径代价不小于上一条（候选下界 + 取最小），故 accepted 始终
+      //       有序。候选池空则提前结束。最多产出 k 条，循环终止。
+      //
       while ki < k {
         let prev_path = accepted[ki - 1].0
         let mut i = 0

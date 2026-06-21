@@ -71,6 +71,21 @@ pub fn[N : Eq + Hash] min_cost_max_flow(
   }
   let mut total_flow = 0
   let mut total_cost = 0
+  //
+  // 循环不变式（R10.1 · 最小费用最大流 SSP 主循环 · 谓词见 @proofs.min_cost_flow_valid）:
+  //
+  //   (布尔陈述) (total_flow, total_cost) 恰为「流值为 total_flow 时的最小费用可行流」；
+  //       残量图 graph 编码该合法流（正/反向 cap 守恒、反向边费用取负），且不含负费用环
+  //       （SSP 沿最短费用路增广可保证此不变量）。
+  //
+  //   (初始化成立) 进入循环前 total_flow=total_cost=0、graph 为初始容量残量表（反向 cap=0）：
+  //       零流平凡是费用为 0 的最小费用 0-流，无负环。
+  //
+  //   (迭代保持) 每轮用 SPFA 求 s→t 的最小费用增广路（dist[t] 为单位增广费用）；沿路取瓶颈
+  //       增广，正向减反向加，total_flow += bottleneck、total_cost += bottleneck*dist[t]。因每次
+  //       选「当前最便宜」的增广路，结果对每个流值都是费用最小，故不变式保持；dist[t]=+∞ 即无
+  //       增广路、已达最大流，退出。每轮至少饱和一条边，循环终止。
+  //
   while true {
     // SPFA: cheapest path from s to t in the residual network.
     let dist : Array[Int] = Array::make(n, EK_INT_MAX)

@@ -41,6 +41,21 @@ pub fn kuhn_munkres(
   let v : Array[Double] = Array::make(n + 1, 0.0)
   let p : Array[Int] = Array::make(n + 1, 0) // p[j] = worker assigned to job j (0 = unassigned)
   let way : Array[Int] = Array::make(n + 1, 0)
+  //
+  // 循环不变式（R10.1 · Kuhn-Munkres 主循环 · 谓词见 @proofs.perfect_matching_weight）:
+  //
+  //   (布尔陈述) 处理完前 i-1 个工人后，对偶标号满足可行性 u[a]+v[b] <= cost[a][b]
+  //       （对所有 a,b），且 p[] 编码的部分匹配恰覆盖前 i-1 个工人，在当前标号下每条
+  //       匹配边都「紧」（等号成立），即匹配为当前对偶下的最优部分指派。
+  //
+  //   (初始化成立) i=1 时所有 u、v 为 0，p[] 全未指派：0+0 <= cost[a][b]（成本非负
+  //       前提）满足可行性；空匹配平凡最优。
+  //
+  //   (迭代保持) 第 i 轮以工人 i 为根，重复扩展交错树并按 delta 调整对偶标号（保持
+  //       u[a]+v[b] <= cost[a][b] 且已匹配边维持紧），直至触达一个未匹配工作 j0；沿
+  //       way[] 回溯增广，使匹配规模 +1 仍全部为紧边。故每轮恰新增一条最优匹配边，n 轮
+  //       后得到 n 个工人的最小总成本完美指派。
+  //
   for i in 1..<=n {
     p[0] = i
     let mut j0 = 0

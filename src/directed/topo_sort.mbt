@@ -42,6 +42,21 @@ pub fn[N : Eq + Hash] topological_sort(
   }
   let result : Array[N] = []
   let mut head = 0
+  //
+  // 循环不变式（R10.1 · Kahn 拓扑排序主循环 · 谓词见 @proofs.topo_order_post）:
+  //
+  //   (布尔陈述) result 是已确定的合法前缀：其中节点互不重复，且对每个已出队节点 u，
+  //       其所有「在 result 中的前驱」都排在 u 之前；in_degree[w] 恒等于 w 尚未在
+  //       result 中的前驱数目；queue[head..] 恰为当前 in_degree 为 0 且未入 result 的节点。
+  //
+  //   (初始化成立) 进入循环前 result 为空、head=0，queue 恰含所有入度为 0 的节点，
+  //       in_degree[w] 等于 w 的全部前驱数：空前缀平凡合法，队列与计数定义自洽。
+  //
+  //   (迭代保持) 出队 cur（其 in_degree 已为 0，即所有前驱已在 result 中）并追加到
+  //       result，保持「前驱先于后继」；随后对每条出边 (cur,next) 将 in_degree[next]
+  //       减一，减到 0 时入队。每个节点至多入队/出队一次，故循环终止；若结束时
+  //       result 未覆盖全部节点，说明存在环（剩余节点入度恒 >0）。
+  //
   while head < queue.length() {
     let cur = queue[head]
     head += 1

@@ -51,6 +51,20 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] floyd_warshall(
     }
   }
   // Classic triple loop: k is the allowed intermediate node.
+  //
+  // 循环不变式（R10.1 · Floyd-Warshall 三重主循环 · 谓词见 @proofs.floyd_warshall_post）:
+  //
+  //   (布尔陈述) 外层进入第 k 轮前，dist[i*n+j] 等于「仅允许以索引 < k 的节点作为
+  //       中间点」时从 i 到 j 的最短距离（不可达记为 +∞，自身为 zero）。
+  //
+  //   (初始化成立) k = 0 时不允许任何中间点：dist 仅由直接边与对角 zero 初始化，
+  //       恰为「无中间点」的最短距离，命题成立。
+  //
+  //   (迭代保持) 第 k 轮以 k 为新允许中间点，对所有 (i,j) 取
+  //       min(dist[i,j], dist[i,k] + dist[k,j])。任意「中间点 ⊆ {0..k}」的最短路要么
+  //       不经过 k（被旧值覆盖），要么经过 k 恰一次（被 dist[i,k]+dist[k,j] 覆盖，
+  //       两段中间点均 ⊆ {0..k-1} 由归纳成立）；故第 k 轮后命题对 k+1 成立。
+  //
   for k in 0..<n {
     for i in 0..<n {
       let dik = dist[i * n + k]

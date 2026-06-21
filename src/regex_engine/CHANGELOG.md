@@ -17,6 +17,15 @@
 
 ## [Unreleased]
 
+### Performance
+- `Pattern` 高层搜索 API（`find_all`/`find_iter`/`captures_all`/`replace`/
+  `replace_all`/`replace_fn`/`split`/`split_n`/`find_at`）重构为复用**一次性**
+  转换的字符数组：新增包内私有 `Program::exec_chars`（在预转换字符数组上执行
+  Pike VM）与 `Pattern::find_all_on`，使不重叠枚举不再对每个匹配重复执行
+  `input.iter().to_array()`。消除了多匹配输入上 O(匹配数 × 输入长度) 的转换
+  热路径（此前 `find_all` 在含 M 个匹配、长度 N 的输入上为 O(M·N)）。公开 API
+  签名与匹配语义完全冻结，三后端（wasm-gc/js/native）逐位一致。
+
 ## [0.2.0] - 2026-06-12
 
 旗舰深化（flagship deepening）：在 `0.1.0` 骨架之上做**严格向后兼容、旁路扩展**

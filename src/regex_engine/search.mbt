@@ -61,7 +61,17 @@ pub fn Pattern::captures(self : Pattern, input : String) -> Captures? {
 /// 一字符以保证终止（R8.3）。
 pub fn Pattern::find_all(self : Pattern, input : String) -> Array[Match] {
   let chars = input.iter().to_array()
-  let n = chars.length()
+  self.find_all_on(chars, chars.length())
+}
+
+///|
+/// 在**预转换的字符数组**上枚举全部不重叠匹配（包内私有）。`find_all` /
+/// `split` / `split_n` 共用本实现，避免各自重复 `input.iter().to_array()`。
+fn Pattern::find_all_on(
+  self : Pattern,
+  chars : Array[Char],
+  n : Int,
+) -> Array[Match] {
   let out : Array[Match] = []
   let mut pos = 0
   while pos <= n {
@@ -169,7 +179,7 @@ pub fn Pattern::replace_all(
 pub fn Pattern::split(self : Pattern, input : String) -> Array[String] {
   let chars = input.iter().to_array()
   let n = chars.length()
-  let matches = self.find_all(input)
+  let matches = self.find_all_on(chars, n)
   let out : Array[String] = []
   let mut last = 0
   for m in matches {

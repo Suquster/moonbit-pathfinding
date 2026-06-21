@@ -85,7 +85,7 @@ pub fn Pattern::split_n(
 ) -> Array[String] {
   let chars = input.iter().to_array()
   let total = chars.length()
-  let matches = self.find_all(input)
+  let matches = self.find_all_on(chars, total)
   let out : Array[String] = []
   let mut last = 0
   let mut count = 0

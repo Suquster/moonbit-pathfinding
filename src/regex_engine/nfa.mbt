@@ -33,10 +33,22 @@ pub(all) struct CharSet {
 
 ///|
 /// 判定码点 `code` 是否落入字符集合。
+///
+/// `intervals` 满足「归一化、不相交、升序」不变量（由 `normalize_intervals`
+/// 保证），故以二分查找定位可能覆盖 `code` 的区间：O(log k)（k 为区间数），
+/// 替代原线性扫描 O(k)（旗舰深化：CharSet 二分查找性能，R5）。
 pub fn CharSet::contains(self : CharSet, code : Int) -> Bool {
-  for iv in self.intervals {
-    let (lo, hi) = iv
-    if code >= lo && code <= hi {
+  let ivs = self.intervals
+  let mut lo = 0
+  let mut hi = ivs.length() - 1
+  while lo <= hi {
+    let mid = lo + (hi - lo) / 2
+    let (l, h) = ivs[mid]
+    if code < l {
+      hi = mid - 1
+    } else if code > h {
+      lo = mid + 1
+    } else {
       return true
     }
   }

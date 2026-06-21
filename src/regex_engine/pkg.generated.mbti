@@ -179,6 +179,7 @@ pub struct LazyDfa {
   cores : Array[Array[Int]]
 }
 pub fn LazyDfa::find(Self, String) -> Match?
+pub fn LazyDfa::find_with_limit(Self, String, Int) -> Match?
 pub fn LazyDfa::new(Nfa) -> Self
 
 pub(all) struct Match {

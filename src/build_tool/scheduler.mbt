@@ -19,6 +19,15 @@ pub fn critical_path_length(g : BuildGraph) -> Int {
   match topo_order(g) {
     Err(_) => 0
     Ok(order) => {
+      // 预建邻接表（source → 后继列表）一次，避免对每个节点都全扫描整个边集
+      // （消除 O(V·E)，降为 O(V+E)）。
+      let adj : Map[Target, Array[Target]] = Map([])
+      for edge in g.edges {
+        let (a, b) = edge
+        let lst = adj.get(a).unwrap_or([])
+        lst.push(b)
+        adj[a] = lst
+      }
       let longest : Map[Target, Int] = Map([])
       for n in g.nodes {
         longest[n] = 1
@@ -26,13 +35,10 @@ pub fn critical_path_length(g : BuildGraph) -> Int {
       // 拓扑序保证前驱先于后继处理：对每条边 (u, v) 用 longest[u]+1 松弛 v。
       for u in order {
         let lu = longest.get(u).unwrap_or(1)
-        for edge in g.edges {
-          let (a, b) = edge
-          if a == u {
-            let lb = longest.get(b).unwrap_or(1)
-            if lu + 1 > lb {
-              longest[b] = lu + 1
-            }
+        for b in adj.get(u).unwrap_or([]) {
+          let lb = longest.get(b).unwrap_or(1)
+          if lu + 1 > lb {
+            longest[b] = lu + 1
           }
         }
       }

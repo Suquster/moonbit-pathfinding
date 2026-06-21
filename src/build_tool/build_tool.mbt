@@ -231,63 +231,82 @@ pub fn is_dirty(t : Target, cache : BuildCache) -> Bool {
 /// 构建图存在依赖环时无法完成调度（剩余目标入度恒大于 0），此处停止并返回
 /// 已能调度的批次前缀；环的报告由 `detect_cycle` 负责（Requirement 6.2）。
 pub fn schedule(g : BuildGraph, jobs : Int) -> Array[Array[Target]] {
-  // 计算入度：依赖边 (u, v) 表示 v 依赖 u，故 v 的入度 +1。
+  // 计算入度：依赖边 (u, v) 表示 v 依赖 u，故 v 的入度 +1。同时预建邻接表
+  // （source → 后继列表）与节点原序索引，使整个调度为 O(V+E+V·logV)，消除
+  // 原「每层全扫节点 + 每节点全扫边集」的 O(V·E + V²) 热路径。
   let in_degree : Map[Target, Int] = Map([])
   for n in g.nodes {
     in_degree[n] = 0
   }
+  let adj : Map[Target, Array[Target]] = Map([])
+  let index_of : Map[Target, Int] = Map([])
+  for i in 0..<g.nodes.length() {
+    index_of[g.nodes[i]] = i
+  }
   for edge in g.edges {
-    let (_, v) = edge
+    let (u, v) = edge
     match in_degree.get(v) {
-      Some(d) => in_degree[v] = d + 1
-      None => () // 指向未登记节点的边忽略
+      Some(d) => {
+        // 仅当 v 已登记时计入度并入邻接（与原行为一致：指向未登记节点的边忽略）。
+        in_degree[v] = d + 1
+        let lst = adj.get(u).unwrap_or([])
+        lst.push(v)
+        adj[u] = lst
+      }
+      None => ()
     }
   }
-  let removed : Map[Target, Bool] = Map([])
   let batches : Array[Array[Target]] = []
-  let mut remaining = g.nodes.length()
-  while remaining > 0 {
-    // 收集当前无依赖（入度 0 且未移除）目标，保持 nodes 原序以稳定输出。
-    let ready : Array[Target] = []
-    for n in g.nodes {
-      if !removed.get(n).unwrap_or(false) && in_degree.get(n).unwrap_or(0) == 0 {
-        ready.push(n)
-      }
+  // 初始前沿：入度为 0 的目标，保持 g.nodes 原序（已天然有序）。
+  let mut layer : Array[Target] = []
+  for n in g.nodes {
+    if in_degree.get(n).unwrap_or(0) == 0 {
+      layer.push(n)
     }
-    if ready.length() == 0 {
-      // 剩余目标构成依赖环，无法继续调度；停止。
-      break
-    }
-    // 剥离本层目标并更新其后继入度。
-    for n in ready {
-      removed[n] = true
-      remaining -= 1
-      for edge in g.edges {
-        let (u, v) = edge
-        if u == n {
-          match in_degree.get(v) {
-            Some(d) => in_degree[v] = d - 1
-            None => ()
-          }
-        }
-      }
-    }
+  }
+  // 逐层（wave）剥离：每一波即一个调度层；存在依赖环时前沿会变空，自然停止并
+  // 返回已调度的批次前缀（环的报告由 detect_cycle 负责，Requirement 6.2）。
+  while layer.length() > 0 {
     // 并行度约束：jobs > 0 时按批宽 jobs 切分本层；否则整层一批。
-    if jobs > 0 && ready.length() > jobs {
+    if jobs > 0 && layer.length() > jobs {
       let mut i = 0
-      while i < ready.length() {
+      while i < layer.length() {
         let chunk : Array[Target] = []
         let mut k = 0
-        while k < jobs && i < ready.length() {
-          chunk.push(ready[i])
+        while k < jobs && i < layer.length() {
+          chunk.push(layer[i])
           i += 1
           k += 1
         }
         batches.push(chunk)
       }
     } else {
-      batches.push(ready)
+      batches.push(layer)
     }
+    // 剥离本层并更新后继入度，收集本波新就绪（入度归零）的目标。
+    let next_raw : Array[Target] = []
+    for n in layer {
+      for v in adj.get(n).unwrap_or([]) {
+        let d = in_degree.get(v).unwrap_or(0)
+        in_degree[v] = d - 1
+        if d - 1 == 0 {
+          next_raw.push(v)
+        }
+      }
+    }
+    // 按 g.nodes 原序排序下一层，保持层内输出稳定（与原「扫 nodes 原序」一致）。
+    next_raw.sort_by(fn(a, b) {
+      let ia = index_of.get(a).unwrap_or(0)
+      let ib = index_of.get(b).unwrap_or(0)
+      if ia < ib {
+        -1
+      } else if ia > ib {
+        1
+      } else {
+        0
+      }
+    })
+    layer = next_raw
   }
   batches
 }

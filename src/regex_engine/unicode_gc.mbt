@@ -83,23 +83,45 @@ let gc_lm_intervals : Array[(Int, Int)] = [
 ]
 
 ///|
-/// Lo（其他字母）：序数指示符、假名、CJK 统一表意文字、谚文音节。
+/// Lo（其他字母）：序数指示符、希伯来/阿拉伯/泰文字母、假名、CJK 统一表意
+/// 文字（含扩展 A）、谚文音节。所列区块类别精确为 Lo（已规避其中的修饰符
+/// `Lm`、组合记号 `Mn`、标点 `Po` 等非 Lo 码点）。
 let gc_lo_intervals : Array[(Int, Int)] = [
   (0x00AA, 0x00AA), // ª FEMININE ORDINAL INDICATOR
   (0x00BA, 0x00BA), // º MASCULINE ORDINAL INDICATOR
+  (0x05D0, 0x05EA), // א–ת Hebrew letters
+  (0x0621, 0x063A), // Arabic letters（排除 0x0640 Tatweel=Lm）
+  (0x0641, 0x064A), // Arabic letters（续）
+  (0x0E01, 0x0E2E), // ก–ฮ Thai consonants（排除 0x0E2F Po 与其后 Mn 元音符）
   (0x3041, 0x3096), // ぁ–ゖ Hiragana
   (0x30A1, 0x30FA), // ァ–ヺ Katakana
+  (0x3400, 0x4DBF), // CJK Unified Ideographs Extension A
   (0x4E00, 0x9FFF), // 一–鿿 CJK Unified Ideographs
   (0xAC00, 0xD7A3), // 가–힣 Hangul Syllables
 ]
 
 ///|
-/// Nd（十进制数字）：ASCII 0–9 及若干常见 Unicode 数字块。
+/// Nd（十进制数字）：ASCII 0–9 及多语言十进制数字块（每块为连续 10 码点，
+/// 类别精确为 Nd）。
 let gc_nd_intervals : Array[(Int, Int)] = [
   (0x0030, 0x0039), // 0–9（Basic Latin）
   (0x0660, 0x0669), // ٠–٩ Arabic-Indic digits
   (0x06F0, 0x06F9), // ۰–۹ Extended Arabic-Indic digits
   (0x0966, 0x096F), // ०–९ Devanagari digits
+  (0x09E6, 0x09EF), // Bengali digits
+  (0x0A66, 0x0A6F), // Gurmukhi digits
+  (0x0AE6, 0x0AEF), // Gujarati digits
+  (0x0B66, 0x0B6F), // Oriya digits
+  (0x0BE6, 0x0BEF), // Tamil digits
+  (0x0C66, 0x0C6F), // Telugu digits
+  (0x0CE6, 0x0CEF), // Kannada digits
+  (0x0D66, 0x0D6F), // Malayalam digits
+  (0x0E50, 0x0E59), // Thai digits
+  (0x0ED0, 0x0ED9), // Lao digits
+  (0x0F20, 0x0F29), // Tibetan digits
+  (0x1040, 0x1049), // Myanmar digits
+  (0x17E0, 0x17E9), // Khmer digits
+  (0x1810, 0x1819), // Mongolian digits
   (0xFF10, 0xFF19), // ０–９ Fullwidth digits
 ]
 
@@ -368,4 +390,40 @@ test "unicode_gc smoke" {
   // 未识别记法返回 None。
   assert_true(parse_unicode_class("\\p{Xx}") is None)
   assert_true(parse_unicode_class("L") is None)
+}
+
+///|
+/// 扩展覆盖核验：新增的多语言 Nd 数字块与 Lo 字母块类别精确，且不与既有区块
+/// 冲突（旗舰深化：Unicode GC 表广度扩展，R5）。
+test "unicode_gc extended coverage" {
+  // 多语言十进制数字（Nd）。
+  assert_true(unicode_category(0x09E6) == Nd) // Bengali 0
+  assert_true(unicode_category(0x0E50) == Nd) // Thai 0
+  assert_true(unicode_category(0x0F29) == Nd) // Tibetan 9
+  assert_true(unicode_category(0x1819) == Nd) // Mongolian 9
+  // 多语言字母（Lo）。
+  assert_true(unicode_category(0x05D0) == Lo) // Hebrew Alef
+  assert_true(unicode_category(0x0621) == Lo) // Arabic Hamza
+  assert_true(unicode_category(0x0E01) == Lo) // Thai Ko Kai
+  assert_true(unicode_category(0x3400) == Lo) // CJK Ext A 起点
+  // 规避的非 Lo 码点：阿拉伯 Tatweel(0x0640) 为修饰字母 Lm，不应误判为 Lo。
+  assert_false(unicode_category(0x0640) == Lo)
+  // \p{Nd} 现含多语言数字；\p{L} 现含希伯来/阿拉伯/泰文字母。
+  match parse_unicode_class("\\p{Nd}") {
+    Some(cs) => {
+      assert_true(cs.contains(0x09EF)) // Bengali 9
+      assert_true(cs.contains(0x0E59)) // Thai 9
+    }
+    None => assert_true(false)
+  }
+  match parse_unicode_class("\\p{L}") {
+    Some(cs) => {
+      assert_true(cs.contains(0x05D0)) // Hebrew Alef ∈ L
+      assert_true(cs.contains(0x3400)) // CJK Ext A ∈ L
+      // Tatweel(0x0640) 既未登记入核心 Lm 表、也已被排除出阿拉伯 Lo 区块，
+      // 故归入兜底 Cn，不属 \p{L}。
+      assert_false(cs.contains(0x0640))
+    }
+    None => assert_true(false)
+  }
 }

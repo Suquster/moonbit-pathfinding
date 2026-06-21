@@ -155,19 +155,21 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] yen_k_shortest(
         if candidates.length() == 0 {
           break
         }
-        // Pick the cheapest candidate.
-        candidates.sort_by(fn(a, b) {
-          if a.1 < b.1 {
-            -1
-          } else if a.1 > b.1 {
-            1
-          } else {
-            0
+        // Pick the cheapest candidate via a single linear scan (O(C)) rather
+        // than re-sorting the whole growing candidate list every iteration
+        // (which would be O(C log C) per round). Ties keep the earliest
+        // candidate for deterministic output.
+        let mut best_idx = 0
+        let mut bi = 1
+        while bi < candidates.length() {
+          if candidates[bi].1 < candidates[best_idx].1 {
+            best_idx = bi
           }
-        })
-        let chosen = candidates[0]
+          bi += 1
+        }
+        let chosen = candidates[best_idx]
         accepted.push(chosen)
-        candidates.remove(0) |> ignore
+        candidates.remove(best_idx) |> ignore
         ki += 1
       }
       Ok(accepted)

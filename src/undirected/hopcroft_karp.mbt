@@ -79,16 +79,62 @@ pub fn[L : Eq + Hash, R : Eq + Hash] hopcroft_karp(
     found
   }
 
-  fn dfs(u : Int) -> Bool {
-    for j in adj[u] {
-      let w = match_r[j]
-      if w < 0 || (level[w] == level[u] + 1 && dfs(w)) {
-        match_l[u] = j
-        match_r[j] = u
-        return true
+  // Iterative augmenting-path search with an explicit call stack, mirroring
+  // the recursive DFS exactly but without risking native-stack overflow on
+  // long alternating paths (which can reach depth O(V) on large graphs).
+  // This matches the codebase convention of keeping graph DFS non-recursive
+  // (cf. `tarjan_scc`, `directed/dfs`).
+  //
+  // Each frame is `cs_node[k]` (a left vertex) with `cs_pos[k]` its current
+  // scan offset into `adj`. `cs_j[k]` records the right vertex chosen to
+  // descend from frame `k` to frame `k+1`; on success the whole alternating
+  // path is re-matched in one upward pass.
+  let cs_node : Array[Int] = []
+  let cs_pos : Array[Int] = []
+  let cs_j : Array[Int] = []
+  fn dfs(u0 : Int) -> Bool {
+    cs_node.clear()
+    cs_pos.clear()
+    cs_j.clear()
+    cs_node.push(u0)
+    cs_pos.push(0)
+    while cs_node.length() > 0 {
+      let top = cs_node.length() - 1
+      let u = cs_node[top]
+      let mut advanced = false
+      while cs_pos[top] < adj[u].length() {
+        let j = adj[u][cs_pos[top]]
+        cs_pos[top] += 1
+        let w = match_r[j]
+        if w < 0 {
+          // Free right vertex reached: augment along the whole path.
+          match_l[u] = j
+          match_r[j] = u
+          let mut k = top - 1
+          while k >= 0 {
+            match_l[cs_node[k]] = cs_j[k]
+            match_r[cs_j[k]] = cs_node[k]
+            k -= 1
+          }
+          return true
+        } else if level[w] == level[u] + 1 {
+          cs_j.push(j)
+          cs_node.push(w)
+          cs_pos.push(0)
+          advanced = true
+          break
+        }
+      }
+      if !advanced {
+        // `u` exhausted with no augmenting edge: mark dead and backtrack.
+        level[u] = HK_INF
+        ignore(cs_node.pop())
+        ignore(cs_pos.pop())
+        if cs_node.length() > 0 {
+          ignore(cs_j.pop())
+        }
       }
     }
-    level[u] = HK_INF
     false
   }
 

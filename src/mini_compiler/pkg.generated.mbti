@@ -103,6 +103,8 @@ pub fn subst_single(Int, Ty) -> Subst
 
 pub fn tco_opt(Bytecode) -> Bytecode
 
+pub fn try_run_demo(String) -> Result[DemoTrace, Diagnostic]
+
 pub fn type_of(TExpr) -> Ty
 
 pub fn unify(Ty, Ty) -> Result[Subst, Diagnostic]

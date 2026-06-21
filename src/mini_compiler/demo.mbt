@@ -50,29 +50,27 @@ pub(all) struct DemoTrace {
 } derive(Eq)
 
 ///|
-/// 跑通示例源串并返回各阶段产物（R9.2 / R9.3 / R9.4）。
+/// 跑通示例源串并返回各阶段产物（R9.2 / R9.3 / R9.4）的**可失败**版本。
 ///
-/// 链路：`lex_ml → parse_ml → infer`（取主类型）→ `optimize` →
-/// `infer`（对优化后程序重新标注类型）→ `eval_ml`（解释）与
-/// `compile_ml → VM::run`（编译执行）。
-///
-/// 两示例均为合法良类型程序，故各阶段假定成功；遇意外失败以 `abort` 携带阶段信
-/// 息中止（防止静默吞错，便于回归定位）。
-pub fn run_demo(src : String) -> DemoTrace {
+/// 链路与 `run_demo` 相同，但任一阶段失败时返回 `Err(Diagnostic)`，**绝不**
+/// 以 `abort` 中止进程（遵循 quality-enforcement / anti-patterns：占位失败一律
+/// 改为 `Result` 返回）。这是消除原 `run_demo` 内 `abort` 的合规主 API；
+/// `run_demo` 为其在「两个规范合法输入」上的便捷封装（见下）。
+pub fn try_run_demo(src : String) -> Result[DemoTrace, Diagnostic] {
   // 阶段 1：词法分析。
   let tokens = match lex_ml(src) {
     Ok(ts) => ts
-    Err(d) => abort("run_demo: lex_ml failed: " + d.msg)
+    Err(d) => return Err(d)
   }
   // 阶段 2：语法分析。
   let e = match parse_ml(tokens) {
     Ok(expr) => expr
-    Err(d) => abort("run_demo: parse_ml failed: " + d.msg)
+    Err(d) => return Err(d)
   }
   // 阶段 3：对原始程序推断主类型（R9.4）。
   let principal_type = match infer(e) {
     Ok((_te, ty)) => ty
-    Err(d) => abort("run_demo: infer failed: " + d.msg)
+    Err(d) => return Err(d)
   }
   // 阶段 4：优化，并记录优化后形态（R9.2）。
   let optimized = optimize(e)
@@ -80,11 +78,38 @@ pub fn run_demo(src : String) -> DemoTrace {
   // 阶段 5：对优化后程序重新推断以获得良类型 `TExpr`（供两路消费）。
   let te_opt = match infer(optimized) {
     Ok((te, _ty)) => te
-    Err(d) => abort("run_demo: infer(optimize) failed: " + d.msg)
+    Err(d) => return Err(d)
   }
   // 阶段 6：解释路径求值（R9.2）。
   let interp_result = eval_ml(te_opt)
   // 阶段 7：编译—执行路径（R9.3）。
   let vm_result = VM::run(compile_ml(te_opt), ml_env_empty())
-  DemoTrace::{ principal_type, optimized_form, interp_result, vm_result }
+  Ok(DemoTrace::{ principal_type, optimized_form, interp_result, vm_result })
+}
+
+///|
+/// 跑通示例源串并返回各阶段产物（R9.2 / R9.3 / R9.4）。
+///
+/// 链路：`lex_ml → parse_ml → infer`（取主类型）→ `optimize` →
+/// `infer`（对优化后程序重新标注类型）→ `eval_ml`（解释）与
+/// `compile_ml → VM::run`（编译执行）。
+///
+/// 本函数为 `try_run_demo` 在「两段规范合法示例」上的便捷封装：对合法良类型
+/// 程序恒返回成功产物。为保持**全函数**且**绝不 `abort`**，对退化输入返回一个
+/// 把错误诊断**可见地**编码进 `optimized_form` 的降级 trace（与本仓
+/// codegen_infra 解释器「遇非法形态安全停机」的先例一致），而非中止进程或静默
+/// 吞错。需要严格错误处理的调用方应使用 `try_run_demo`。
+pub fn run_demo(src : String) -> DemoTrace {
+  match try_run_demo(src) {
+    Ok(trace) => trace
+    Err(d) =>
+      // 降级（不可达于两段规范合法示例）：把诊断可见编码进 optimized_form，
+      // 其余字段取确定性哨兵值，保持全函数且三后端一致。
+      DemoTrace::{
+        principal_type: TyInt,
+        optimized_form: "<demo error: " + d.msg + ">",
+        interp_result: VInt(0),
+        vm_result: VInt(0),
+      }
+  }
 }

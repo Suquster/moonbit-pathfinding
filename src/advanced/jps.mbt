@@ -183,10 +183,21 @@ fn JPSGrid::identify_successors(
       let dc = sign(nc - pc)
       let out : Array[(Int, Int)] = []
       if dr != 0 && dc != 0 {
-        // Natural neighbours for diagonal: (dr, 0), (0, dc), (dr, dc).
+        // 对角到达：先压入自然邻居 (dr, 0)、(0, dc)、(dr, dc)。
         out.push((dr, 0))
         out.push((0, dc))
         out.push((dr, dc))
+        // 受迫邻居（与 `jump` 中 diag_forced_a/diag_forced_b 同口径）：
+        // 当「竖直方向身后」格 (nr-dr, nc) 被阻挡时，方向 (-dr, dc) 的
+        // 对角格只能经由本节点最优到达，必须展开。
+        if !self.walkable(nr - dr, nc) {
+          out.push((-dr, dc))
+        }
+        // 当「水平方向身后」格 (nr, nc-dc) 被阻挡时，方向 (dr, -dc) 的
+        // 对角格同理受迫，必须展开。
+        if !self.walkable(nr, nc - dc) {
+          out.push((dr, -dc))
+        }
       } else if dr != 0 {
         out.push((dr, 0))
         // Forced neighbours: blocked perpendicular opens a diagonal.

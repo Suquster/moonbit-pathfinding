@@ -372,7 +372,7 @@
     - `src/playground/exports_test.mbt`
     - _Requirements: 1.2, 1.3_
 
-- [ ] 27. 宿主页面、体积门禁与 GitHub Pages 部署
+- [x] 27. 宿主页面、体积门禁与 GitHub Pages 部署
   - [x] 27.1 实现宿主静态资源
     - 新建 `playground/web/index.html`、`app.js`（Canvas 渲染 + 拖拽 + 滚动 1s 帧率计数 + 每 500ms 刷新 fps/网格规模/算法名 + <60fps 警告不中断）、`style.css`
     - 全部同源、不请求外部网络服务（R4.3）
@@ -384,14 +384,14 @@
     - 推送主干 → 安装 MoonBit → release 构建 → `wasm_size_guard.ps1`（超限中止保留上一版本）→ 组装 `playground/web` → 发布 Pages，600s 预算内；任一步非零退出即中止并保留上一版本 + 诊断
     - _Requirements: 4.1, 4.2, 4.4, 4.5_
 
-- [-] 28. 收尾校验 E（Playground）
+- [x] 28. 收尾校验 E（Playground）
   - 运行 `moon info && moon fmt && moon test`，三后端一致；运行 `wasm_size_guard.ps1` 确认 `.wasm` ≤100KB
   - Ensure all tests pass, ask the user if questions arise.
   - _Requirements: 1.1, 22.2, 22.10_
 
 ### 方向 6 · 文档卓越
 
-- [ ] 29. 文档生成接入、ASCII 可视化、Cookbook 与文档门禁
+- [x] 29. 文档生成接入、ASCII 可视化、Cookbook 与文档门禁
   - [x] 29.1 将复杂度表接入 README
     - 在 `README.mbt.md` 以 `@docgen.complexity_table(@docgen.algorithm_metadata())` 生成 33 行复杂度表（文档即测试）
     - _Requirements: 19.1, 19.2, 19.3_
@@ -401,14 +401,14 @@
   - [x] 29.3 编写 Cookbook（≥20 用例）
     - 在 `README.mbt.md` 增补覆盖网格寻路/网络路由/任务调度/最大流/匹配五类、每类 ≥1、共 ≥20 个用例，每例含可执行命令与预期输出，三后端均成功
     - _Requirements: 21.1, 21.2, 21.5_
-  - [-] 29.4 实现 `scripts/doc_api_guard.ps1`
+  - [x] 29.4 实现 `scripts/doc_api_guard.ps1`
     - 扩展 `audit_doc.ps1`：扫描全部 `pub` API 的 `///` 注释，非空注释行 <5 即门禁失败并报告 API 标识与实际行数
     - _Requirements: 21.3, 21.4_
-  - [-] 29.5 落地 `scripts/examples_guard.ps1` 文档即测试校验
+  - [x] 29.5 落地 `scripts/examples_guard.ps1` 文档即测试校验
     - 运行 `moon test README.mbt.md`：示例编译失败或结果不符即构建失败并输出定位诊断；Cookbook 输出与预期不符即可重现性校验失败并报告差异位置
     - _Requirements: 20.4, 20.5, 21.6_
 
-- [~] 30. 最终收尾校验（全量门禁）
+- [x] 30. 最终收尾校验（全量门禁）
   - 运行 `moon info`（`.mbti` 只增不减）、`moon fmt`（零差异）、`moon test`（三后端一致）
   - 依次运行 `wasm_size_guard` / `regression_guard` / `proof_pipeline` / `coverage_guard` / `doc_api_guard` / `examples_guard` 全部门禁
   - grep 全量扫描确认无 `abort`/`todo!`/`panic` 占位、无循环内字符串 `+` 拼接、无字符串模拟结构化数据

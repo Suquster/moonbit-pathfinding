@@ -1,0 +1,89 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/graph"
+
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+}
+
+// Values
+pub fn load_osm_or_synthetic(String?, Int) -> OsmLoadOutcome
+
+pub fn synthetic_grid_csr(Int, Int, Double) -> Result[CsrGraph[Double], PathError]
+
+pub fn[N : Eq + Hash] typed_bfs_path(Array[N], N, N, (N) -> Array[N]) -> Result[(Array[N], Int), PathError]
+
+pub fn[N : Eq + Hash, W : @core.Weight] typed_shortest_path(Array[N], N, N, (N) -> Array[(N, W)]) -> Result[(Array[N], W), PathError]
+
+// Errors
+
+// Types and methods
+pub(all) struct CsrGraph[W] {
+  n : Int
+  row_ptr : Array[Int]
+  col_idx : Array[Int]
+  weights : Array[W]
+}
+pub fn CsrGraph::from_osm_edge_list(String) -> Result[Self[Double], PathError]
+
+pub struct Graph[N, W] {
+  nodes : Array[N]
+  adj : Map[N, Array[(N, W)]]
+}
+pub fn[N : Eq + Hash, W] Graph::edge_count(Self[N, W]) -> Int
+pub fn[N : Eq + Hash, W] Graph::node_count(Self[N, W]) -> Int
+pub fn[N : Eq + Hash, W] Graph::successors(Self[N, W]) -> (N) -> Array[(N, W)]
+
+pub struct GraphBuilder[N, W] {
+  order : Array[N]
+  declared : Map[N, Unit]
+  edges : Map[(N, N), W]
+}
+pub fn[N : Eq + Hash, W] GraphBuilder::add_edge(Self[N, W], N, N, W) -> Self[N, W]
+pub fn[N : Eq + Hash, W] GraphBuilder::add_node(Self[N, W], N) -> Self[N, W]
+pub fn[N : Eq + Hash, W] GraphBuilder::add_undirected_edge(Self[N, W], N, N, W) -> Self[N, W]
+pub fn[N : Eq + Hash, W] GraphBuilder::build(Self[N, W]) -> Result[Graph[N, W], PathError]
+pub fn[N : Eq + Hash, W] GraphBuilder::new() -> Self[N, W]
+
+pub(all) enum GraphRepr[W] {
+  AdjMatrix(Int, Array[Array[W?]])
+  EdgeList(Int, Array[(Int, Int, W)])
+  Csr(CsrGraph[W])
+}
+pub fn[W] GraphRepr::neighbors(Self[W], Int) -> Result[Array[(Int, W)], PathError]
+pub fn[W] GraphRepr::node_count(Self[W]) -> Int
+pub fn[W] GraphRepr::to_successors(Self[W]) -> (Int) -> Array[(Int, W)]
+
+pub struct LazyPath[N] {
+  nodes : Array[N]
+  mut pos : Int
+}
+pub fn[N] LazyPath::empty() -> Self[N]
+pub fn[N] LazyPath::from_path(Array[N]) -> Self[N]
+pub fn[N] LazyPath::next(Self[N]) -> N?
+
+pub(all) enum OsmDataSource {
+  RealOsm
+  SyntheticFallback
+} derive(Eq, Show)
+
+pub(all) struct OsmLoadOutcome {
+  graph : CsrGraph[Double]
+  source : OsmDataSource
+  node_count : Int
+  edge_count : Int
+  diagnostic : String
+}
+
+pub(all) enum PathError {
+  SourceNotFound
+  TargetNotFound
+  Unreachable
+  NegativeCycle
+  InvalidArgument(String)
+} derive(Eq, Show)
+pub fn PathError::message(Self) -> String
+
+// Type aliases
+
+// Traits
+

@@ -1,0 +1,48 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_fuzz
+//
+// 方向 5（差分测试与模糊测试）的基础包 `@infra_fuzz`。
+// 本包提供结构化随机图模型 `FuzzGraph` 与确定性图生成器，作为差分测试
+// （Differential_Tester）与模糊测试（Fuzz_Generator）的统一输入来源。
+//
+// 设计依据（design.md §5.1 Fuzz_Generator / Requirement 16–18）：
+//   * `fuzz_graph_gen`        —— 多样图生成器，覆盖空图 / 单节点 / 稠密 /
+//     稀疏 / 自环 / 平行边 / 多连通分量等结构类别（R17.1）。
+//   * `fuzz_graph_nonneg_gen` —— 仅非负权图生成器，供 Dijkstra / BFS /
+//     Bellman-Ford 差分对比使用（R16.6）。
+//
+// 依赖约定（design.md §「基础设施下沉」/ Requirement 22 包依赖控制）：
+//   * @core      —— 提供 `Weight` 数值抽象与图基础数据结构；供本包内差分
+//     比较器（diff.mbt）接入既有算法做结果等价性校验。
+//   * @infra_pbt —— 复用统一的 `Gen` / `Rng` 与 `frequency`/`one_of`/`sized`
+//     组合子。生成器完全由其 `Rng`（`UInt64` 种子，xorshift64，三后端逐位
+//     一致）驱动，从而保证「同种子 → 逐元素相同的图」之可复现性（R17.7）。
+//
+// 本包生产代码仅依赖上述基础设施包，不依赖任何具体算法方向包，符合包依赖
+// 控制约束（严禁跨方向包互相直接依赖）。注意：此处 @infra_pbt 用于生产代码
+// （生成器即运行时能力），而非仅测试期依赖。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+}
+
+// 模糊测试「驱动逻辑」（task 16.1）与差分测试器 Differential_Tester 的支撑
+// 逻辑（task 15.1）分别放在本包的黑盒测试文件 `fuzz_driver_test.mbt` /
+// `differential_test.mbt` 中：它们需要把 `FuzzGraph` 喂给**具体算法包**逐一
+// 运行，做鲁棒性校验（R17.2~R17.5）与跨算法差分比对（R16.1~R16.7），而生产
+// 代码受「严禁跨方向包直接依赖」约束（design.md §包依赖控制），故这些算法包
+// 仅以 `for "test"` 引入，作用于测试驱动、不进入运行时产物：
+//   * @directed（@dir）   —— Dijkstra（含 dijkstra_all）/ Bellman-Ford /
+//                           Floyd-Warshall / Johnson 等带权最短路算法。
+//   * @unweighted（@uw）  —— BFS（含 bfs_all），差分单位权基准。
+//   * @advanced（@adv）   —— ALT / CH（高级加速算法）。
+//   * @graph             —— 结构化错误入口 typed_shortest_path / typed_bfs
+//                           及 PathError（R13 / R17.5 非法参数结构化处理）。
+//   * @infra_text        —— 失败/差分报告文本构建（TextBuilder，禁止循环内
+//                           `+` 拼接 · R22.4）。
+import {
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/advanced" @adv,
+  "Suquster/moonbit-pathfinding/src/graph",
+  "Suquster/moonbit-pathfinding/src/infra_text",
+} for "test"

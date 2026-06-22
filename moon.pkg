@@ -4,8 +4,8 @@
 // files: every ```mbt check code block is compiled, executed and validated by
 // `moon test`.  Imports listed under `for "test"` are scoped to the blackbox
 // test driver, so the README examples can call the library under the aliases
-// `@uw`, `@dir`, `@und`, `@proofs` without polluting any runtime artifact the root
-// package might grow later.
+// `@uw`, `@dir`, `@und`, `@proofs`, `@docgen` without polluting any runtime artifact
+// the root package might grow later.
 //
 // To run just the README examples:
 //   moon test README.mbt.md
@@ -14,5 +14,7 @@ import {
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/undirected" @und,
+  "Suquster/moonbit-pathfinding/src/advanced",
   "Suquster/moonbit-pathfinding/src/proofs",
+  "Suquster/moonbit-pathfinding/src/docgen",
 } for "test"

@@ -1,0 +1,88 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/playground"
+
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/graph",
+}
+
+// Values
+pub fn pg_compute() -> Int
+
+pub fn pg_final_path_at(Int) -> Int
+
+pub fn pg_final_path_len() -> Int
+
+pub fn pg_last_error() -> Int
+
+pub fn pg_reset(Int, Int) -> Int
+
+pub fn pg_select_algo(Int) -> Int
+
+pub fn pg_set_goal(Int) -> Int
+
+pub fn pg_set_obstacle(Int, Int) -> Int
+
+pub fn pg_set_start(Int) -> Int
+
+pub fn pg_step_current(Int) -> Int
+
+pub fn pg_step_flags(Int) -> Int
+
+pub fn pg_step_frontier_at(Int, Int) -> Int
+
+pub fn pg_step_frontier_len(Int) -> Int
+
+pub fn pg_step_visited_at(Int, Int) -> Int
+
+pub fn pg_step_visited_len(Int) -> Int
+
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] trace_search(PlaygroundAlgo, N, N, (N) -> Array[(N, W)], (N) -> W) -> StepTrace[N]
+
+// Errors
+
+// Types and methods
+pub(all) struct Grid {
+  rows : Int
+  cols : Int
+  blocked : Array[Bool]
+  start : Int
+  goal : Int
+} derive(Eq, Show)
+pub fn Grid::cell_count(Self) -> Int
+pub fn Grid::manhattan(Self, Int) -> (Int) -> Int
+pub fn Grid::new(Int, Int) -> Result[Self, @graph.PathError]
+pub fn Grid::set_goal(Self, Int) -> Result[Self, @graph.PathError]
+pub fn Grid::set_start(Self, Int) -> Result[Self, @graph.PathError]
+pub fn Grid::to_successors(Self) -> (Int) -> Array[(Int, Int)]
+pub fn Grid::toggle_obstacle(Self, Int) -> Result[Self, @graph.PathError]
+
+type PgSession
+
+pub(all) enum PlaygroundAlgo {
+  BFS
+  DFS
+  Dijkstra
+  AStar
+  JPS
+} derive(Eq, Show)
+
+pub struct StepState[N] {
+  visited : Array[N]
+  frontier : Array[N]
+  current : N?
+  done : Bool
+  found : Bool
+} derive(Eq, Show)
+
+pub struct StepTrace[N] {
+  algo : PlaygroundAlgo
+  steps : Array[StepState[N]]
+  final_path : Array[N]?
+  reachable : Bool
+} derive(Eq, Show)
+
+// Type aliases
+
+// Traits
+

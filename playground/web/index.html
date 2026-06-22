@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MoonBit Pathfinding · WASM Playground</title>
+    <!--
+      宿主页面（任务 27.1）。设计依据：design.md §「方向 1 · 1.4 宿主页面与
+      GitHub Pages 部署」。全部资源同源：本页仅引用同目录下的 style.css、
+      app.js 以及由部署流水线（任务 27.3）组装进来的 playground.wasm 与
+      MoonBit JS glue，不请求任何外部网络服务、字体或 CDN（Requirement 4.3）。
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>MoonBit Pathfinding</h1>
+      <p class="subtitle">
+        WASM 交互式寻路可视化 · BFS / DFS / Dijkstra / A* / JPS
+      </p>
+    </header>
+
+    <main class="app-main">
+      <!-- 控制面板 -->
+      <section class="panel" aria-label="控制面板">
+        <div class="control-group">
+          <label for="algo-select">算法</label>
+          <select id="algo-select" aria-label="选择寻路算法">
+            <option value="0">BFS（广度优先）</option>
+            <option value="1">DFS（深度优先）</option>
+            <option value="2">Dijkstra</option>
+            <option value="3">A*（A 星）</option>
+            <option value="4">JPS（跳点搜索）</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="rows-input">行数</label>
+          <input id="rows-input" type="number" min="2" max="120" value="24" />
+          <label for="cols-input">列数</label>
+          <input id="cols-input" type="number" min="2" max="120" value="36" />
+          <button id="reset-btn" type="button">重置网格</button>
+        </div>
+
+        <div class="control-group">
+          <button id="play-btn" type="button">▶ 播放</button>
+          <button id="pause-btn" type="button">⏸ 暂停</button>
+          <button id="step-btn" type="button">⏭ 单步</button>
+          <button id="restart-btn" type="button">⟲ 从头</button>
+        </div>
+
+        <div class="control-group">
+          <label for="speed-input">速度（步/秒）</label>
+          <input
+            id="speed-input"
+            type="range"
+            min="1"
+            max="600"
+            value="120"
+            aria-label="动画播放速度"
+          />
+          <span id="speed-value" class="mono">120</span>
+        </div>
+
+        <div class="control-group">
+          <button id="clear-obstacles-btn" type="button">清除障碍</button>
+        </div>
+      </section>
+
+      <!-- 实时仪表盘（帧率 / 网格规模 / 算法名 / 状态）· R3.5 / R3.6 -->
+      <section class="hud" aria-label="运行状态" aria-live="polite">
+        <div class="hud-item">
+          <span class="hud-label">帧率</span>
+          <span id="hud-fps" class="hud-value mono">—</span>
+          <span class="hud-unit">fps</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">网格规模</span>
+          <span id="hud-size" class="hud-value mono">—</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">算法</span>
+          <span id="hud-algo" class="hud-value">—</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">进度</span>
+          <span id="hud-progress" class="hud-value mono">—</span>
+        </div>
+        <div class="hud-item hud-status">
+          <span class="hud-label">状态</span>
+          <span id="hud-state" class="hud-value">就绪</span>
+        </div>
+        <div id="hud-fps-warning" class="hud-warning" hidden>
+          ⚠ 帧率低于 60fps
+        </div>
+      </section>
+
+      <!-- 画布 -->
+      <section class="canvas-wrap">
+        <canvas id="grid-canvas" width="720" height="480">
+          您的浏览器不支持 Canvas，无法显示寻路可视化。
+        </canvas>
+        <p id="status-line" class="status-line" role="status"></p>
+      </section>
+
+      <!-- 图例 -->
+      <section class="legend" aria-label="图例">
+        <span class="legend-item"><i class="sw sw-start"></i>起点 S</span>
+        <span class="legend-item"><i class="sw sw-goal"></i>终点 G</span>
+        <span class="legend-item"><i class="sw sw-wall"></i>障碍</span>
+        <span class="legend-item"><i class="sw sw-visited"></i>已访问</span>
+        <span class="legend-item"><i class="sw sw-frontier"></i>边界</span>
+        <span class="legend-item"><i class="sw sw-current"></i>当前</span>
+        <span class="legend-item"><i class="sw sw-path"></i>最终路径</span>
+      </section>
+
+      <p class="hint">
+        操作：拖拽 <b>S</b>/<b>G</b> 移动起点/终点；在空白格点击或拖动以切换障碍；
+        非法放置会被拒绝并恢复到上一个有效位置（红色闪烁提示）。
+      </p>
+    </main>
+
+    <footer class="app-footer">
+      <span id="engine-state" class="mono">引擎加载中…</span>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

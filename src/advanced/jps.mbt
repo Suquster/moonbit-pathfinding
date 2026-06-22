@@ -268,6 +268,20 @@ fn sign(x : Int) -> Int {
 /// Complexity: O(N log N) where N is the number of jump-points, which is
 /// typically O(√area) on uniform grids — much less than the full A*
 /// O(area).
+///
+/// ## ASCII 示意（6×6 网格，8 向跳点）
+/// JPS 在均匀代价网格上沿直线 / 对角线「跳跃」，跳过无强迫邻居的中间格。
+/// 下图 `*` 标出对角主路径上的若干跳点（中间普通格按等价省略），障碍 `#`
+/// 位于路径之外：
+///
+///     S.....
+///     .*.#..
+///     ..*...
+///     ...*..
+///     .#..*.
+///     .....G
+///
+/// 图例：S=起点 G=终点 #=障碍 *=路径 .=空闲
 pub fn jps(
   grid : JPSGrid,
   start : (Int, Int),

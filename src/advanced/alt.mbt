@@ -146,27 +146,18 @@ fn[N : Eq + Hash, W : @core.Weight + Compare] pick_landmarks(
 }
 
 ///|
-/// Preprocess a graph for ALT by selecting `num_landmarks` landmarks and
-/// computing distance tables **in both directions** (needed for
-/// correctness on directed graphs).
-///
-/// For each landmark `l`:
-///   * `dist_from[l][n]` = dist(l, n) via forward Dijkstra.
-///   * `dist_to[l][n]`   = dist(n, l) via reverse-graph Dijkstra.
-///
-/// Both tables are essential: the triangle-inequality heuristic for
-/// ALT uses `max_l max( dist_to[l][target] - dist_to[l][node],
-///                      dist_from[l][node] - dist_from[l][target] )`,
-/// which is admissible on directed graphs (see
-/// docs/zh/algorithms/alt.md).
-pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(
+/// Helper: build the `dist_from` / `dist_to` landmark distance tables for a
+/// fixed landmark set. `dist_from[l]` is single-source Dijkstra from `l` on
+/// the original graph; `dist_to[l]` is Dijkstra from `l` on the reverse
+/// graph (= distances *into* `l`). The reverse edge map is materialised
+/// once (linear scan, no in-loop array `+`). Shared by `alt_preprocess`
+/// (farthest-first landmarks) and `alt_preprocess_with_landmarks`
+/// (caller-supplied landmarks) so both paths stay consistent.
+fn[N : Eq + Hash, W : @core.Weight + Compare] alt_build_tables(
   nodes : Array[N],
   successors : (N) -> Array[(N, W)],
-  num_landmarks : Int,
-) -> Landmark[N, W] {
-  let landmarks = pick_landmarks(nodes, successors, num_landmarks)
-  // Build the reverse-edge map once so we can compute dist_to via
-  // Dijkstra on the reverse graph.
+  landmarks : Array[N],
+) -> (Map[N, Map[N, W]], Map[N, Map[N, W]]) {
   let rev_map : Map[N, Array[(N, W)]] = Map([])
   for n in nodes {
     rev_map[n] = []
@@ -188,6 +179,30 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(
     // dist_to[l][n] = dist(n, l) = dist(l, n) on the reverse graph
     dist_to[l] = dijkstra_from(l, reverse_succ)
   }
+  (dist_from, dist_to)
+}
+
+///|
+/// Preprocess a graph for ALT by selecting `num_landmarks` landmarks and
+/// computing distance tables **in both directions** (needed for
+/// correctness on directed graphs).
+///
+/// For each landmark `l`:
+///   * `dist_from[l][n]` = dist(l, n) via forward Dijkstra.
+///   * `dist_to[l][n]`   = dist(n, l) via reverse-graph Dijkstra.
+///
+/// Both tables are essential: the triangle-inequality heuristic for
+/// ALT uses `max_l max( dist_to[l][target] - dist_to[l][node],
+///                      dist_from[l][node] - dist_from[l][target] )`,
+/// which is admissible on directed graphs (see
+/// docs/zh/algorithms/alt.md).
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(
+  nodes : Array[N],
+  successors : (N) -> Array[(N, W)],
+  num_landmarks : Int,
+) -> Landmark[N, W] {
+  let landmarks = pick_landmarks(nodes, successors, num_landmarks)
+  let (dist_from, dist_to) = alt_build_tables(nodes, successors, landmarks)
   { nodes, landmarks, dist_from, dist_to }
 }
 

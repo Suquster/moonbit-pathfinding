@@ -1,0 +1,184 @@
+﻿{
+  "schema": "moonbit-pathfinding.proof.v1",
+  "backends": [
+    "wasm-gc"
+  ],
+  "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "generated_at": "2026-06-21T10:35:08Z",
+  "entries": [
+    {
+      "algorithm": "BFS",
+      "property": "无权最短路后置条件（合法性/可达/最小性）",
+      "passed": true,
+      "evidence": "src/proofs/bfs_proof.mbt::bfs_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "BFS-All",
+      "property": "多源/全分量 BFS 后置条件",
+      "passed": true,
+      "evidence": "src/proofs/unweighted_family_proof.mbt::bfs_all_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "DFS",
+      "property": "DFS 路径合法性与可达一致",
+      "passed": true,
+      "evidence": "src/proofs/unweighted_family_proof.mbt::dfs_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Bidirectional-BFS",
+      "property": "双向 BFS 与单向 BFS 等价",
+      "passed": true,
+      "evidence": "src/proofs/unweighted_family_proof.mbt::bidirectional_bfs_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Dijkstra",
+      "property": "非负权最短路后置条件（合法/代价一致/非负）",
+      "passed": true,
+      "evidence": "src/proofs/dijkstra_proof.mbt::dijkstra_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "A-Star",
+      "property": "A* 最短路后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::astar_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Bellman-Ford",
+      "property": "含负权最短路后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::bellman_ford_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "DAG-SP",
+      "property": "DAG 最短路后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::dag_sp_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Bidirectional-Dijkstra",
+      "property": "双向 Dijkstra 与单向等价",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::bidirectional_dijkstra_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "IDA-Star",
+      "property": "IDA* 最短路后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::ida_star_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Yen",
+      "property": "K 最短路逐条合法且非降序",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::yen_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Johnson",
+      "property": "全对最短路（Johnson）后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::johnson_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Floyd-Warshall",
+      "property": "全对最短路矩阵后置条件",
+      "passed": true,
+      "evidence": "src/proofs/shortest_path_family_proof.mbt::floyd_warshall_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Kruskal",
+      "property": "最小生成树不变量与最小性",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::mst_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Prim",
+      "property": "最小生成树不变量",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::mst_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Connected-Components",
+      "property": "连通分量等价类划分正确",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::components_partition_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Tarjan-SCC",
+      "property": "强连通分量划分正确",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::scc_partition_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Bridges",
+      "property": "报告的每条桥确为桥（删后两端不连通）",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::bridges_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Condensation",
+      "property": "缩点后必为 DAG",
+      "passed": true,
+      "evidence": "src/proofs/spanning_connectivity_proof.mbt::condensation_is_dag · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Edmonds-Karp",
+      "property": "最大流合法（守恒/容量约束）",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_valid · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Dinic",
+      "property": "最大流合法（守恒/容量约束）",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_valid · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Min-Cut",
+      "property": "最大流 = 最小割",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_equals_min_cut · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Min-Cost-Flow",
+      "property": "最小费用流合法且费用一致",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::min_cost_flow_valid · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Hopcroft-Karp",
+      "property": "匹配合法（无公共端点）",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::matching_valid · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Kuhn-Munkres",
+      "property": "完美匹配权重一致",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::perfect_matching_weight · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Eulerian",
+      "property": "欧拉迹合法（逐边消耗、含重边）",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::eulerian_trail_valid · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Topo-Sort",
+      "property": "拓扑序合法（无重复、边方向一致）",
+      "passed": true,
+      "evidence": "src/proofs/flow_matching_proof.mbt::topo_order_post · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "Dijkstra-Loop",
+      "property": "弹出键单调不减不变式",
+      "passed": true,
+      "evidence": "src/proofs/loop_invariants.mbt::dijkstra_pop_monotonic · moon test src/proofs (wasm-gc) 通过"
+    },
+    {
+      "algorithm": "BFS-Loop",
+      "property": "层级单调（相邻层差 ≤ 1）不变式",
+      "passed": true,
+      "evidence": "src/proofs/loop_invariants.mbt::bfs_level_invariant · moon test src/proofs (wasm-gc) 通过"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_bench
+//
+// 方向 2（性能冠军）的基础设施包 `@infra_bench`。
+// 本包以「冻结既有公开 API + bypass 新增」为纲领，提供可复现基准框架的
+// **纯函数核心**：汇总统计量 `BenchStats` 与 `compute_stats`、基准报告
+// `BenchReport`/`BenchCase` 的 MD+JSON 序列化、回归判定 `regression_check`。
+// 计时采集与机器信息收集由脚本层完成，二者通过 JSON 工件衔接；本包只负责
+// 把原始计时样本转换为可审计的统计量与报告（强 PBT 目标）。
+//
+// 依赖约定（design.md §「包依赖控制」/ Requirement 22）：
+//   * @core —— 提供 `Weight` 数值抽象与基础数据结构。
+//   * @infra_text —— 共享高效文本构建叶子包；报告/诊断串的构建统一走其
+//     `TextBuilder`，禁止循环内字符串 `+` 拼接（Requirement 5.2 / 22.4）。
+//   * @graph —— 复用其结构化错误类型 `@graph.PathError`；空样本等非法输入
+//     以 `Err(@graph.PathError::InvalidArgument(...))` 报告（Requirement 5.2）。
+// 本包生产代码仅依赖上述基础设施包，不依赖任何具体算法方向包。
+//   * @strconv —— `report.mbt` 的 JSON 反序列化（`from_json` / `parse_report`）
+//     需把数值字面量文本逐位还原为 `Int` / `UInt64` / `Double`。复用标准库
+//     `moonbitlang/core/strconv`（与本仓库 @logging 解析 JSON 日志数值字段的做法
+//     一致）保证 `parse(to_string(x)) == x` 的往返无损与 `wasm-gc` / `js` /
+//     `native` 三后端行为一致；JSON 的**结构**解析仍在包内自包含实现（递归下降），
+//     不引入任何跨方向（算法方向包）依赖。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/infra_text",
+  "Suquster/moonbit-pathfinding/src/graph",
+  "moonbitlang/core/strconv",
+}
+
+// 属性测试（任务 6.2 起的 Property 5/6/8）复用共享 PBT 包 @infra_pbt 的
+// Gen / Rng / holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖仅作用于
+// 黑盒测试驱动（`for "test"`），不进入运行时产物。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

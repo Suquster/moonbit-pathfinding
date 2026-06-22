@@ -1,0 +1,55 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/benches/stress_bench"
+
+// Values
+pub fn run_stress_suite(Int) -> StressReport
+
+pub let smoke_grid_side : Int
+
+pub let stress_cost_epsilon : Double
+
+pub let stress_grid_side : Int
+
+pub let stress_max_weight : Int
+
+pub let stress_seed : Int
+
+pub let stress_timeout_ns : Double
+
+// Errors
+
+// Types and methods
+pub(all) enum StressAlgo {
+  Bfs
+  Dijkstra
+  Astar
+} derive(Eq, Show)
+pub fn StressAlgo::name(Self) -> String
+
+pub(all) struct StressOutcome {
+  algo : StressAlgo
+  source : Int
+  target : Int
+  graph_size : Int
+  expect_reachable : Bool
+  reachable : Bool
+  terminated_in_budget : Bool
+  elapsed_ns : Double
+  path_valid : Bool
+  cost_consistent : Bool
+  graph_unmodified : Bool
+  passed : Bool
+}
+pub fn StressOutcome::diagnostic(Self) -> String
+
+pub(all) struct StressReport {
+  grid_side : Int
+  cases : Array[StressOutcome]
+}
+pub fn StressReport::all_passed(Self) -> Bool
+pub fn StressReport::failure_diagnostics(Self) -> String
+
+// Type aliases
+
+// Traits
+

@@ -8,13 +8,23 @@ import {
 // Values
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess(Array[N], (N) -> Array[(N, W)], Int) -> Landmark[N, W]
 
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess_with_landmarks(Array[N], (N) -> Array[(N, W)], Array[N]) -> Landmark[N, W]
+
 pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(Landmark[N, W], N, N, (N) -> Array[(N, W)]) -> (Array[N], W)?
+
+pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query_batch(Landmark[N, W], Array[(N, N)], (N) -> Array[(N, W)]) -> Array[(Array[N], W)?]
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(Array[N], (N) -> Array[(N, W)]) -> CHGraph[N, W]
 
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess_with_order(Array[N], (N) -> Array[(N, W)], Array[N]) -> CHGraph[N, W]
+
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_query(CHGraph[N, W], N, N) -> (Array[N], W)?
 
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_query_batch(CHGraph[N, W], Array[(N, N)]) -> Array[(Array[N], W)?]
+
 pub fn jps(JPSGrid, (Int, Int), (Int, Int)) -> (Array[(Int, Int)], Double)?
+
+pub fn jps_batch(JPSGrid, Array[((Int, Int), (Int, Int))]) -> Array[(Array[(Int, Int)], Double)?]
 
 // Errors
 

@@ -1,0 +1,28 @@
+// Package: benches/advanced_bench
+//
+// 方向 2（性能冠军）的「前沿算法基准采集」原生工件采集器（任务 21.1）。
+//
+// 本包是脚本 `scripts/benchmark_native.ps1` 的 MoonBit 侧采集后端：它在
+// 可复现的合成图 / 网格上，为 Contraction_Hierarchies（CH）、Jump_Point_Search
+// （JPS）、ALT 以及基准 Dijkstra 采集**原始查询计时样本**（预热 ≥3、采样 ≥10），
+// 经 `moonbitlang/core/bench` 的单调时钟测量，再统一调用
+// `@infra_bench.compute_stats` 计算汇总统计量（min/max/median/mean/p95/stddev），
+// 并以 `@infra_bench.BenchReport`（schema `moonbit-pathfinding.benchmark.v1`）
+// 序列化为 JSON。CH/JPS/ALT 的预处理耗时、数据集标识、相对 Dijkstra 的中位
+// 加速比与「平均耗时不更高」判定作为附加证据单独输出，由脚本层组装为 MD+JSON
+// 双产物。
+//
+// 依赖约定：
+//   * moonbitlang/core/bench —— 单调时钟 `monotonic_clock_start/end`（与既有
+//     原生基准一致的时间源）。
+//   * @advanced —— 被测前沿算法 CH/JPS/ALT（仅读取，不修改）。
+//   * @directed —— 基准 Dijkstra（加速比基线）。
+//   * @infra_bench —— 统计量 `compute_stats` 与报告 `BenchReport`/`BenchCase`。
+//   * @infra_text —— 附加证据 JSON 的高效文本构建（禁止循环内 `+` 拼接）。
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/advanced",
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/infra_bench",
+  "Suquster/moonbit-pathfinding/src/infra_text",
+}

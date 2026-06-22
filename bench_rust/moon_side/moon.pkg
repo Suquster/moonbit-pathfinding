@@ -1,0 +1,27 @@
+// bench_rust/moon_side —— MoonBit 侧对比采集器（Requirement 6）。
+//
+// 本包是 `scripts/rust_comparison.ps1` 的 MoonBit（「本库」）侧采集器，与 Rust
+// 侧 `bench_rust/src/main.rs` 共享 **逐位一致** 的 xorshift64 随机源与 **完全
+// 相同** 的确定性图/查询生成算法，从而保证「相同 64 位种子 → 逐元素相同的图
+// 与查询集」（R6.2）。两种模式：
+//   * golden —— 输出黄金 JSON 图样本供两侧逐元素交叉校验。
+//   * bench  —— 在 BFS / Dijkstra / A* × 规模 × 出度 × 查询 工作负载矩阵上采集
+//     计时（≥5 预热 + ≥30 采样，R6.3）并记录每条查询的结果签名（R6.7）。
+//
+// 计时使用 `@bench.monotonic_clock_*`（纳秒量级单调时钟）；命令行参数经
+// `@env.args()` 读取；A* 在一般图上用零启发式（admissible，与 Rust 侧一致）。
+//
+// 仅依赖既有库公开包（@unweighted / @directed）与 core 基础设施（@env / @bench）；
+// 不修改任何既有包（API 冻结 · bypass 新增）。
+import {
+  "moonbitlang/core/bench",
+  "moonbitlang/core/env",
+  "moonbitlang/core/string",
+  "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+  "Suquster/moonbit-pathfinding/src/unweighted",
+  "Suquster/moonbit-pathfinding/src/directed",
+}
+
+options(
+  "is-main": true,
+)

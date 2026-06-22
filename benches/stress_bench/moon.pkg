@@ -1,0 +1,35 @@
+// Package: benches/stress_bench
+//
+// 方向 2（性能冠军）的「10k 节点大规模压力测试驱动」（任务 20.1）。
+//
+// 本包在确定性生成的 10000 节点网格图上运行 BFS / Dijkstra / A\*，逐项校验
+// requirements R7.1–R7.5：
+//   * R7.1：每种算法在 60s 超时上界内终止、返回有效结果、不修改输入图、不 panic。
+//   * R7.2：返回非空路径时，每条相邻节点对在输入图中存在对应边。
+//   * R7.3：目标可达时，路径首节点 = 源、末节点 = 目标，返回代价与沿路径权重和
+//     的偏差 ≤ 1e-9。
+//   * R7.4：目标不可达时，返回明确的无解结果（空路径 / None）。
+//   * R7.5：算法超出 60s 超时上界时，将用例标记为失败并记录结构化诊断，而非挂起。
+//
+// 执行约定（与 `benches/advanced_bench` 一致）：完整 10k 规模采集放在 `@bench.T`
+// 基准块中，仅由 `moon bench` 执行；普通 `moon test` 仅运行较小规模 smoke 用例以
+// 验证驱动结构正确，避免在 debug / wasm-gc 解释执行下拖垮项目级测试门禁。
+//
+// 依赖约定：
+//   * moonbitlang/core/bench —— 单调时钟 `monotonic_clock_start/end`（超时测量）。
+//   * @unweighted —— 被测无权算法 BFS（仅读取，不修改）。
+//   * @directed —— 被测带权算法 Dijkstra / A\*（仅读取，不修改）。
+//   * @infra_text —— 结构化诊断的高效文本构建（禁止循环内 `+` 拼接）。
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
+  "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/infra_text",
+}
+
+// 属性测试依赖（task 20.2，Property 9）：仅测试期引入统一的 `Gen` / `Rng` /
+// `holds_for_all` 组合子，用于驱动 ≥100 次随机网格图与查询实例。生产驱动逻辑
+// （stress_bench.mbt）不依赖 PBT 框架，故以 `for "test"` 作用域引入、不进入产物。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

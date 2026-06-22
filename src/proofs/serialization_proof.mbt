@@ -8,7 +8,9 @@
 /// 解码失败不产生部分对象（占位）。
 ///
 /// 当且仅当：解码成功（`decode_ok`），或解码失败时未产生任何部分构造对象
-/// （`!produced_object`）时成立。
+/// （`!produced_object`）时成立。实现为 `decode_ok || !produced_object`，即
+/// 蕴含「解码失败 ⇒ 不产出半成品对象」，保证失败的原子性（R9 错误契约）。
+/// 纯、全函数，对任意两布尔输入恒返回 `Bool`。
 pub fn decode_failure_no_partial(
   decode_ok : Bool,
   produced_object : Bool,

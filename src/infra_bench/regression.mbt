@@ -25,6 +25,9 @@
 ///|
 /// 默认回归容差（百分比）。当前中位计时相对基线中位回归超过该百分比即判失败。
 /// 以命名常量替代散落字面量，避免 magic number（quality-enforcement 规则）。
+/// 取值 `10.0` 表示允许 10% 的中位计时劣化，超过即标记 `failed=true`。该默认
+/// 值可由 `regression_check` 的 `tol_pct` 参数覆盖，以适配不同噪声水平的环境。
+/// 判定采用严格大于：恰好等于容差上界不算回归（见 `RegressionVerdict.failed`）。
 pub let default_tol_pct : Double = 10.0
 
 ///|
@@ -59,6 +62,7 @@ pub(all) struct RegressionVerdict {
 /// 口径：以中位计时计算。`>1` 表示当前比基线更快（加速），`<1` 表示更慢。
 /// 当 `current_median == 0` 时无法定义比值，返回 `None`（由调用方/脚本层按
 /// 「不计入加速比聚合」处理，Requirement 6.7），避免除零产生非有限值。
+/// 返回 `Some(ratio)` 时 `ratio` 恒为有限正数，可安全用于跨算法加速比聚合。
 pub fn RegressionVerdict::speedup(self : RegressionVerdict) -> Double? {
   if self.current_median == 0.0 {
     None

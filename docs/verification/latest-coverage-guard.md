@@ -1,26 +1,26 @@
 # Coverage Guard Report
 
-- Generated at: 2026-06-21T13:18:24Z
+- Generated at: 2026-06-22T05:19:04Z
 - Script: scripts/coverage_guard.ps1
 - Backend: wasm-gc
-- Line coverage: 83.0% （covered 11717 / total 14123）
+- Line coverage: 83.0% （covered 11919 / total 14353）
 - Threshold: 95.0%
 - Status: FAILED
-- Included source files: 263
+- Included source files: 266
 - Exclude globs: *_test.mbt, *_wbtest.mbt, benches/*, tests/*
-- Uncovered lines: 2406
+- Uncovered lines: 2434
 
 ## 覆盖率最低的文件（Top 15）
 
 | 文件 | 已覆盖 | 可执行 | 覆盖率 |
 | --- | ---: | ---: | ---: |
-| examples/eight_puzzle/eight_puzzle.mbt | 0 | 70 | 0.0% |
-| examples/maze_solver/maze_solver.mbt | 0 | 57 | 0.0% |
-| src/proofs/build_tool_proof.mbt | 0 | 5 | 0.0% |
 | cmd/main/main.mbt | 0 | 1 | 0.0% |
-| bench_rust/moon_side/main.mbt | 0 | 183 | 0.0% |
-| src/mini_compiler/text_backend.mbt | 0 | 69 | 0.0% |
 | examples/network_routing/network_routing.mbt | 0 | 63 | 0.0% |
+| examples/maze_solver/maze_solver.mbt | 0 | 57 | 0.0% |
+| bench_rust/moon_side/main.mbt | 0 | 183 | 0.0% |
+| examples/eight_puzzle/eight_puzzle.mbt | 0 | 70 | 0.0% |
+| src/mini_compiler/text_backend.mbt | 0 | 69 | 0.0% |
+| src/proofs/build_tool_proof.mbt | 0 | 5 | 0.0% |
 | src/serialization/schema_model.mbt | 7 | 26 | 26.9% |
 | src/proofs/loop_invariants.mbt | 9 | 22 | 40.9% |
 | src/mini_compiler/match_ext.mbt | 136 | 310 | 43.9% |
@@ -32,8 +32,8 @@
 
 ## 未覆盖代码位置（文件路径 + 行号 · R18.3）
 
-- src/advanced/jps.mbt:295
-- src/advanced/jps.mbt:307
+- src/advanced/jps.mbt:309
+- src/advanced/jps.mbt:321
 - examples/network_routing/network_routing.mbt:45
 - examples/network_routing/network_routing.mbt:61
 - examples/network_routing/network_routing.mbt:62
@@ -495,8 +495,8 @@
 - src/mini_compiler/ml_printer.mbt:112
 - src/mini_compiler/lexer.mbt:24
 - src/graph/builder.mbt:118
-- src/directed/dijkstra.mbt:63
-- src/directed/dijkstra.mbt:79
+- src/directed/dijkstra.mbt:75
+- src/directed/dijkstra.mbt:91
 - src/codegen_infra/sccp.mbt:35
 - src/codegen_infra/sccp.mbt:84
 - src/codegen_infra/sccp.mbt:88
@@ -923,7 +923,7 @@
 - src/actor/demo.mbt:107
 - src/actor/demo.mbt:108
 - src/actor/demo.mbt:135
-- src/directed/dfs.mbt:69
+- src/directed/dfs.mbt:81
 - src/codegen_infra/coalescing.mbt:56
 - src/codegen_infra/coalescing.mbt:58
 - src/codegen_infra/coalescing.mbt:59
@@ -944,8 +944,8 @@
 - src/mini_compiler/demo.mbt:73
 - src/mini_compiler/demo.mbt:81
 - src/mini_compiler/demo.mbt:108
-- src/directed/astar.mbt:71
-- src/directed/astar.mbt:82
+- src/directed/astar.mbt:83
+- src/directed/astar.mbt:94
 - src/build_tool/rule_grammar.mbt:152
 - src/build_tool/rule_grammar.mbt:196
 - src/build_tool/rule_grammar.mbt:241
@@ -1693,6 +1693,31 @@
 - src/serialization/typed.mbt:704
 - src/serialization/typed.mbt:717
 - src/serialization/typed.mbt:724
+- src/playground/exports.mbt:137
+- src/playground/exports.mbt:138
+- src/playground/exports.mbt:139
+- src/playground/exports.mbt:140
+- src/playground/exports.mbt:151
+- src/playground/exports.mbt:153
+- src/playground/exports.mbt:155
+- src/playground/exports.mbt:157
+- src/playground/exports.mbt:175
+- src/playground/exports.mbt:218
+- src/playground/exports.mbt:228
+- src/playground/exports.mbt:229
+- src/playground/exports.mbt:244
+- src/playground/exports.mbt:266
+- src/playground/exports.mbt:349
+- src/playground/exports.mbt:365
+- src/playground/exports.mbt:379
+- src/playground/exports.mbt:385
+- src/playground/exports.mbt:401
+- src/playground/exports.mbt:404
+- src/playground/exports.mbt:429
+- src/playground/exports.mbt:454
+- src/playground/exports.mbt:474
+- src/playground/exports.mbt:477
+- src/playground/exports.mbt:482
 - src/mini_compiler/infer.mbt:148
 - src/mini_compiler/infer.mbt:207
 - src/mini_compiler/infer.mbt:214
@@ -2006,7 +2031,7 @@
 - src/advanced/alt.mbt:136
 - src/advanced/alt.mbt:296
 - src/advanced/alt.mbt:307
-- src/unweighted/bfs.mbt:96
+- src/unweighted/bfs.mbt:108
 - src/mini_compiler/text_backend.mbt:33
 - src/mini_compiler/text_backend.mbt:34
 - src/mini_compiler/text_backend.mbt:35
@@ -2381,13 +2406,16 @@
 - src/proofs/loop_invariants.mbt:126
 - src/proofs/loop_invariants.mbt:129
 - src/advanced/ch.mbt:85
-- src/advanced/ch.mbt:292
-- src/advanced/ch.mbt:336
-- src/advanced/ch.mbt:344
-- src/advanced/ch.mbt:348
-- src/advanced/ch.mbt:415
-- src/advanced/ch.mbt:430
-- src/advanced/ch.mbt:464
+- src/advanced/ch.mbt:303
+- src/advanced/ch.mbt:347
+- src/advanced/ch.mbt:355
+- src/advanced/ch.mbt:359
+- src/advanced/ch.mbt:426
+- src/advanced/ch.mbt:441
+- src/advanced/ch.mbt:475
+- src/playground/stepper.mbt:153
+- src/playground/stepper.mbt:223
+- src/playground/stepper.mbt:350
 - src/actor/bounded_mailbox.mbt:122
 - src/codegen_infra/evaluate.mbt:60
 - src/codegen_infra/evaluate.mbt:69

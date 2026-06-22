@@ -55,7 +55,10 @@ pub fn[N] LazyPath::from_path(path : Array[N]) -> LazyPath[N] {
 /// 构造表示「无解」的空惰性迭代器。
 ///
 /// 用于查询无解的场景（Requirement 14.6）：底层路径为空，游标为 `0`，
-/// 因此首次调用 `next()` 即返回不含任何节点的终止值 `None`。
+/// 因此首次调用 `next()` 即返回不含任何节点的终止值 `None`。该实现仅持
+/// O(1) 游标状态，不分配路径存储。与 `from_path([])` 行为一致，但语义上
+/// 显式表达「不存在路径」而非「长度为零的路径」，便于调用方区分两类结果。
+/// 后续对耗尽迭代器重复调用 `next()` 幂等返回 `None`（R14.7）。
 pub fn[N] LazyPath::empty() -> LazyPath[N] {
   { nodes: [], pos: 0 }
 }

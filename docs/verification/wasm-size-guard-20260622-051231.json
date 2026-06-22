@@ -1,6 +1,6 @@
 {
   "schema": "moonbit-pathfinding.wasm-size-guard.v1",
-  "generated_at": "2026-06-22T05:18:10Z",
+  "generated_at": "2026-06-22T05:12:31Z",
   "generated_by": "scripts/wasm_size_guard.ps1",
   "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
   "package": "src/playground",

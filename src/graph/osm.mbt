@@ -30,6 +30,9 @@ let osm_min_fallback_dim : Int = 1
 ///
 /// - `RealOsm`：成功解析了非空的真实 OSM 路网子集。
 /// - `SyntheticFallback`：OSM 数据缺失 / 为空 / 解析失败，已降级为合成网格。
+///
+/// 调用方可据此在基准报告中标注数据出处，使「真实路网」与「合成回退」的
+/// 结果不被混淆（R8.7）。
 pub(all) enum OsmDataSource {
   /// 来自真实 OSM 路网子集（解析成功且非空）。
   RealOsm

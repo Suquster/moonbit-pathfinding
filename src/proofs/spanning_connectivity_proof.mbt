@@ -392,6 +392,8 @@ pub fn edge_is_bridge(
 /// `bridges_post(n, edges, bridge_edges)` —— **桥集合后置条件谓词**：校验
 /// `bridge_edges` 中报告的每一条边都确实是桥（删除后两端不连通）。任一条不满足
 /// 桥定义即返回 `false`。用于验证 `bridges` 算法输出的合法性（充分性）。
+/// 对每条报告的桥，临时从图中删去该边后判定其两端是否仍连通：仍连通则说明
+/// 该边非桥，谓词判 false。纯、全函数，对任意输入恒返回 `Bool`。
 pub fn bridges_post(
   n : Int,
   edges : Array[(Int, Int)],

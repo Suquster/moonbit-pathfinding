@@ -7,6 +7,9 @@
 /// 确定性可重放（占位）。
 ///
 /// 同一种子的两次运行应产生逐元素一致的调度序列。直接复用 `seq_eq`。
+/// 参数 `run1` / `run2` 为两次运行记录的调度事件序列；二者完全相等即返回
+/// `true`，任一位置不同即返回 `false`（如实暴露不确定性反例）。纯、全函数，
+/// 对任意长度组合恒返回 `Bool`，可被 ≥100 次随机种子的属性测试驱动。
 pub fn deterministic_replay(run1 : Array[Int], run2 : Array[Int]) -> Bool {
   seq_eq(run1, run2)
 }

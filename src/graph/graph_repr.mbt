@@ -61,6 +61,9 @@ pub(all) enum GraphRepr[W] {
 /// 返回该表示的节点数量 `N`（有效节点标识范围为 `0..N-1`）。
 ///
 /// 三种变体的节点数分别取自其携带的 `n` 字段，保持只读、不触碰底层存储。
+/// 对邻接矩阵 `AdjMatrix(n, _)` 与边表 `EdgeList(n, _)` 直接返回 `n`，对
+/// 压缩稀疏行 `Csr(g)` 返回 `g.n`。该值是 `neighbors` 越界判定的依据：
+/// 标识 `< 0` 或 `>= node_count()` 即视为非法。复杂度 O(1)。
 pub fn[W] GraphRepr::node_count(self : GraphRepr[W]) -> Int {
   match self {
     AdjMatrix(n, _) => n
@@ -171,6 +174,7 @@ pub fn[W] GraphRepr::neighbors(
 /// 闭包内部复用 `neighbors`：合法节点返回其升序邻居数组；越界节点产出空数组
 /// （越界判定与「不改底层图」保证均由 `neighbors` 承担）。该形式让任意底层表示
 /// 无缝接入以 `(Int) -> Array[(Int, W)]` 为 successor 抽象的算法（R15.1 / R15.6）。
+/// 返回的闭包持有 `self` 的只读视图，多次调用同一节点产出顺序一致。
 pub fn[W] GraphRepr::to_successors(
   self : GraphRepr[W],
 ) -> (Int) -> Array[(Int, W)] {

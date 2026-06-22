@@ -1,6 +1,6 @@
 # WASM Size Guard Report
 
-- Generated at: 2026-06-21T15:37:32Z
+- Generated at: 2026-06-22T05:18:10Z
 - Script: scripts/wasm_size_guard.ps1
 - MoonBit: moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg
 - Package: src/playground

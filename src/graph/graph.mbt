@@ -65,7 +65,9 @@ pub fn[N : Eq + Hash, W] Graph::successors(
 /// 返回图中节点总数（含孤立节点），即 `nodes` 的长度。
 ///
 /// 该计数以节点全集为准，不依赖 `adj` 是否为某节点登记了出边；因此孤立节点
-/// （无任何出边）同样计入。复杂度 O(1)。
+/// （无任何出边）同样计入。复杂度 O(1)。该值是节点遍历的合法上界，常用于
+/// 为基于下标的辅助结构（如 distance / visited 数组）预分配容量。纯查询，
+/// 不修改图的任何字段，可安全地重复调用。
 pub fn[N : Eq + Hash, W] Graph::node_count(self : Graph[N, W]) -> Int {
   self.nodes.length()
 }

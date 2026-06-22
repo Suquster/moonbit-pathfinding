@@ -72,7 +72,10 @@ pub(all) struct ProofReport {
 
 ///|
 /// 失败聚合（Requirement 11.4）：当且仅当存在 `passed == false` 的条目时返回真。
-/// 空报告（无任何条目）视为未失败，返回假。
+/// 空报告（无任何条目）视为未失败，返回假。该方法供 `proof_pipeline` 门禁脚本
+/// 决定退出码：任一证明条目失败即聚合为真，脚本据此以非零状态退出。
+/// 线性扫描 `entries`，遇首个失败即短路返回。纯查询，不修改报告状态。
+/// 复杂度 O(n)，`n` 为证明条目数；可在任意时刻安全地重复调用。
 pub fn ProofReport::any_failed(self : ProofReport) -> Bool {
   for e in self.entries {
     if not(e.passed) {
@@ -716,6 +719,9 @@ pub fn ProofReport::from_json(json : String) -> Result[ProofReport, String] {
 ///|
 /// `parse_proof_report` —— `from_json` 的 `Option` 版入口（解析失败返回 `None`）。
 /// 便于调用方以 `Option` 语义处理；行为与 `from_json` 的成功 / 失败判定一致。
+/// 入参 `json` 为 `ProofReport::to_json` 产出的报告文本；成功时还原出逐字段
+/// 等值的报告（往返一致，见 Property 16），失败时返回 `None` 而非抛异常。
+/// 适用于不关心具体错误原因、只需「成功/失败」二分的调用场景。
 pub fn parse_proof_report(json : String) -> ProofReport? {
   match ProofReport::from_json(json) {
     Ok(r) => Some(r)

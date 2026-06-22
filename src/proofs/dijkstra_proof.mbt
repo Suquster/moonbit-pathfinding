@@ -25,7 +25,8 @@
 /// PRE-1 · "All edges have non-negative weights" — the pre-condition that
 /// guarantees Dijkstra's correctness. Encoded as a thin alias over
 /// `all_edges_non_negative` from `predicates.mbt` so that `moon prove`
-/// annotations can refer to it by name.
+/// annotations can refer to it by name. Returns `true` for an empty edge
+/// set (vacuously). Pure and total.
 pub fn[N, W : @core.Weight] require_non_negative_edges(
   edges : Array[(N, N)],
   edge_weight : (N, N) -> W?,
@@ -80,6 +81,7 @@ pub fn[N] check_termination_measure(
 /// Dijkstra's weighted successor shape. We strip the weight component
 /// before delegating to the unweighted structural predicate, because
 /// "which edges exist" is the question being asked, regardless of cost.
+/// A `None` result is vacuously true. Pure and total.
 pub fn[N : Eq, W] check_edges_valid_weighted(
   result : (Array[N], W)?,
   start : N,

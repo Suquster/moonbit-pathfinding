@@ -254,6 +254,7 @@ pub fn perfect_matching_weight(
 /// 当且仅当对每条有向边 (u, v)，u 在序中严格先于 v 时判定为真。
 ///
 /// 序中出现重复节点、边端点不在序中均视为非法，判 false。
+/// 纯、全函数，对任意排列与任意边集恒返回 `Bool`（不 abort）。
 pub fn topo_order_post(order : Array[Int], edges : Array[(Int, Int)]) -> Bool {
   // 建立 节点 → 位置 的映射，重复节点判非法。
   let pos : Map[Int, Int] = Map([])

@@ -1,0 +1,10 @@
+{
+  "schema": "moonbit-pathfinding.regression-guard.v1",
+  "generated_at": "2026-06-22T05:18:17Z",
+  "generated_by": "scripts/regression_guard.ps1",
+  "baseline": "/home/ubuntu/repos/moonbit-pathfinding/benches/results/baseline-native.json",
+  "current": "/home/ubuntu/repos/moonbit-pathfinding/benches/results/latest-native.json",
+  "tol_pct": 10.0,
+  "status": "error",
+  "reason": "基线 JSON 文件不存在：/home/ubuntu/repos/moonbit-pathfinding/benches/results/baseline-native.json"
+}

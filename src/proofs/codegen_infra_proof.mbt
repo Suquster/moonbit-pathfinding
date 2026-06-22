@@ -15,7 +15,9 @@
 /// SSA 单赋值不变量（占位）。
 ///
 /// 给定各 SSA 变量的「定义次数」列表 `def_counts`，当且仅当每个变量恰好被
-/// 定义一次（计数为 1）时成立。这是 SSA 形式的核心不变量。
+/// 定义一次（计数为 1）时成立。这是 SSA 形式的核心不变量。任一计数不等于 1
+/// （0 表示未定义、>1 表示多重定义）即返回 `false`。空列表平凡为真。
+/// 纯、全函数，对任意整数列表恒返回 `Bool`。
 pub fn ssa_single_assignment_counts(def_counts : Array[Int]) -> Bool {
   let mut i = 0
   while i < def_counts.length() {
@@ -56,7 +58,9 @@ pub fn ssa_single_assignment(def_ids : Array[Int]) -> Bool {
 /// 寄存器分配干涉不变量（占位）。
 ///
 /// 给定每条干涉边两端变量被分配到的寄存器编号对 `colored_edges`，当且仅当
-/// 每条边两端寄存器互不相同时成立——即相邻（冲突）变量不共享寄存器。
+/// 每条边两端寄存器互不相同时成立——即相邻（冲突）变量不共享寄存器。任一边
+/// 两端寄存器相同即返回 `false`（暴露非法着色反例）。空边集平凡为真。
+/// 纯、全函数，对任意整数对列表恒返回 `Bool`。
 pub fn interference_distinct(colored_edges : Array[(Int, Int)]) -> Bool {
   let mut i = 0
   while i < colored_edges.length() {

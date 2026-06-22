@@ -24,7 +24,9 @@
 ///
 /// Trivial pointwise check, but isolated so that `moon prove` sees it as
 /// a **named** post-condition — we want the proof tree to carry the same
-/// vocabulary as the English comment in `bfs.mbt`.
+/// vocabulary as the English comment in `bfs.mbt`. A `None` result is
+/// treated as vacuously true (no path ⇒ nothing to check); a `Some(path)`
+/// must be non-empty and have `path[0] == start`. Pure and total.
 pub fn[N : Eq] check_starts_at_start(result : Array[N]?, start : N) -> Bool {
   match result {
     Some(path) => path.length() > 0 && path[0] == start
@@ -34,6 +36,12 @@ pub fn[N : Eq] check_starts_at_start(result : Array[N]?, start : N) -> Bool {
 
 ///|
 /// POST-2 · Path ends at a node satisfying `goal`.
+///
+/// The `goal` argument is a predicate `(N) -> Bool` so the check supports
+/// both single-target and multi-target queries. A `None` result is
+/// vacuously true; a `Some(path)` must be non-empty and have its last
+/// element satisfy `goal`. Pure and total; mirrors the future `#ensures`
+/// vocabulary referenced from `bfs.mbt`.
 pub fn[N] check_ends_at_goal(result : Array[N]?, goal : (N) -> Bool) -> Bool {
   match result {
     Some(path) => path.length() > 0 && goal(path[path.length() - 1])
@@ -46,7 +54,8 @@ pub fn[N] check_ends_at_goal(result : Array[N]?, goal : (N) -> Bool) -> Bool {
 ///
 /// Wires through `is_valid_path` from `predicates.mbt`, the shared
 /// structural predicate. When `moon prove` matures, this same predicate
-/// is what the `#ensures` annotation will reference.
+/// is what the `#ensures` annotation will reference. A `None` result is
+/// vacuously true. Pure and total.
 pub fn[N : Eq] check_edges_valid(
   result : Array[N]?,
   start : N,

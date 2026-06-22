@@ -23,6 +23,7 @@
 /// A* 在可采纳（admissible）启发式下与 Dijkstra 同样给出最短路，其返回结果
 /// 形如 `(Array[N], W)?`，后置条件与最短路族一致：A 路径合法 + B 代价一致 +
 /// C none-witness。本谓词为 `shortest_path_post` 的语义特化薄封装。
+/// 纯、全函数，对任意结果与图输入恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] astar_post(
   result : (Array[N], W)?,
   start : N,
@@ -40,6 +41,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] astar_post(
 /// Bellman–Ford 支持负权边（但要求无负环），其「找到一条最短路」的后置条件
 /// 同样可由 path-validity + cost-consistency + none-witness 表述。注意可达性
 /// 预言机 `is_reachable` 不依赖边权符号，故负权场景下 C 分量依然成立。
+/// 纯、全函数，对任意结果与图输入恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_post(
   result : (Array[N], W)?,
   start : N,
@@ -57,6 +59,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_post(
 /// 有向无环图最短路同样返回 `(Array[N], W)?`，后置条件与最短路族一致。
 /// 本谓词不校验输入图的无环性（那是前提条件，由专门的前置谓词或测试承担），
 /// 只对返回结果做 A+B+C 验证。
+/// 纯、全函数，对任意结果与图输入恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] dag_sp_post(
   result : (Array[N], W)?,
   start : N,
@@ -74,6 +77,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] dag_sp_post(
 /// 双向搜索从源与目标两侧同时扩展并在中点相遇，但其对外契约仍是「返回一条
 /// 合法且代价自洽的最短路」，故后置条件与单向版本一致。中点相遇/停止判据属
 /// 实现内部不变量，不在结果级后置条件内表达。
+/// 纯、全函数，对任意结果与图输入恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] bidirectional_dijkstra_post(
   result : (Array[N], W)?,
   start : N,
@@ -91,6 +95,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] bidirectional_dijkstra_post(
 /// IDA* 用代价阈值迭代加深替代优先队列，但其返回结果与 A* 同形
 /// `(Array[N], W)?`，后置条件一致。迭代加深的阈值单调递增属内部终止度量，
 /// 不在结果级后置条件内表达。
+/// 纯、全函数，对任意结果与图输入恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] ida_star_post(
   result : (Array[N], W)?,
   start : N,
@@ -180,6 +185,7 @@ pub fn[N : Eq + Hash, W : @core.Weight] johnson_post(
 /// Floyd–Warshall 以三重松弛求全对最短路，结果同样以 `lookup` 闭包表达。
 /// 后置条件与 `johnson_post` 一致：逐对化归为单源单目标问题并调用
 /// `shortest_path_post`。两者共用 `all_pairs_post` 聚合骨架，避免重复。
+/// 纯、全函数，对任意 `pairs` 与 `lookup` 恒返回 `Bool`。
 pub fn[N : Eq + Hash, W : @core.Weight] floyd_warshall_post(
   pairs : Array[(N, N)],
   lookup : (N, N) -> (Array[N], W)?,

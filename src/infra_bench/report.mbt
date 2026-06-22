@@ -844,6 +844,10 @@ pub fn BenchReport::from_json(
 ///|
 /// `parse_report` —— `from_json` 的别名入口（更贴近脚本层「解析报告」语义）。
 /// 返回 `Result[BenchReport, @graph.PathError]`，行为与 `from_json` 完全一致。
+/// 入参 `json` 为 `to_json` 产出的报告文本；成功时还原出逐字段等值的
+/// `BenchReport`（往返一致，见 Property 6）。当 JSON 结构非法、缺字段或类型
+/// 不符时返回 `Err(@graph.PathError::InvalidArgument)` 并附诊断，不抛异常。
+/// 该别名供门禁脚本以语义化名称调用，便于阅读。
 pub fn parse_report(json : String) -> Result[BenchReport, @graph.PathError] {
   BenchReport::from_json(json)
 }

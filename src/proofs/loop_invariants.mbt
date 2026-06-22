@@ -92,7 +92,8 @@ pub fn bfs_level_invariant(levels : Array[Int]) -> Bool {
 ///
 /// 当且仅当 `xs` 中对所有相邻下标 `i` 有 `xs[i] <= xs[i + 1]` 时成立。
 /// `dijkstra_pop_monotonic` 即其在 `W : @core.Weight` 上的特化语义；此泛型
-/// 版本可服务任意 `Compare` 类型（如 BFS 层级序列单调非降）。
+/// 版本可服务任意 `Compare` 类型（如 BFS 层级序列单调非降）。长度 ≤1 的
+/// 序列平凡为真。纯、全函数，对任意序列恒返回 `Bool`。
 pub fn[T : Compare] is_monotonic_nondecreasing(xs : Array[T]) -> Bool {
   if xs.length() <= 1 {
     return true
@@ -112,7 +113,8 @@ pub fn[T : Compare] is_monotonic_nondecreasing(xs : Array[T]) -> Bool {
 ///
 /// 当且仅当 `max(levels) - min(levels) <= bound` 时成立，即队列内任意两元素
 /// 差绝对值不超过 `bound`。`bfs_level_invariant` 即其 `bound = 1` 的特化。
-/// `bound < 0` 时仅空/单元素序列可能平凡成立。
+/// `bound < 0` 时仅空/单元素序列可能平凡成立。实现单趟求最小/最大值，复杂度
+/// O(n)。纯、全函数，对任意整数序列与任意 `bound` 恒返回 `Bool`。
 pub fn pairwise_diff_within(levels : Array[Int], bound : Int) -> Bool {
   if levels.length() <= 1 {
     return true

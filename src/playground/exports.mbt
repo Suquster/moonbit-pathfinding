@@ -179,8 +179,10 @@ fn step_at(step : Int) -> StepState[Int]? {
 ///|
 /// 重建一个 `rows`×`cols` 的全通行网格并重置会话（R1.2）。
 ///
-/// 成功返回 `0` 并清空旧轨迹；当行列非正或单元格不足 2 时，`Grid::new`
-/// 返回 `InvalidArgument`，本函数据此返回对应错误码且不改动既有网格。
+/// 起点默认置于左上角、终点置于右下角，所有障碍清空，旧轨迹一并丢弃。
+/// 成功返回 `0`；当行列非正或单元格不足 2 时，`Grid::new` 返回
+/// `InvalidArgument`，本函数据此返回对应错误码且不改动既有网格（失败原子性）。
+/// 该函数是宿主初始化或「重新开始」按钮的统一入口。
 pub fn pg_reset(rows : Int, cols : Int) -> Int {
   let s = current()
   match Grid::new(rows, cols) {
@@ -201,9 +203,10 @@ pub fn pg_reset(rows : Int, cols : Int) -> Int {
 ///|
 /// 设置 `cell` 的障碍状态：`on != 0` 置为障碍、`on == 0` 置为可通行。
 ///
-/// 返回 `0` 表示成功（含「目标状态已满足、无需改动」的幂等情形）；越界、
-/// 或在起点/终点格上设障碍返回 `InvalidArgument` 码且不改动布局。任何成功
-/// 的状态变更都会清空旧轨迹以强制重算。
+/// 参数 `cell` 为目标单元的行主序线性下标。返回 `0` 表示成功（含「目标状态
+/// 已满足、无需改动」的幂等情形）；越界、或在起点/终点格上设障碍返回
+/// `InvalidArgument` 码且不改动布局。任何成功的状态变更都会清空旧轨迹以
+/// 强制下一次 `pg_compute` 重算，保证可视化与布局一致。
 pub fn pg_set_obstacle(cell : Int, on : Int) -> Int {
   let s = current()
   let g = s.grid
@@ -236,8 +239,10 @@ pub fn pg_set_obstacle(cell : Int, on : Int) -> Int {
 ///|
 /// 将起点移动到 `cell`。
 ///
-/// 成功返回 `0` 并清空旧轨迹；越界、落在障碍上或与终点重叠返回
-/// `InvalidArgument` 码且不改动布局（值语义由 `Grid::set_start` 保证）。
+/// 参数 `cell` 为目标单元的行主序线性下标。成功返回 `0` 并清空旧轨迹；
+/// 越界、落在障碍上或与终点重叠返回 `InvalidArgument` 码且不改动布局
+/// （值语义由 `Grid::set_start` 保证，失败时入参网格逐字段不变）。
+/// 宿主拖拽起点标记时调用本函数提交新位置。
 pub fn pg_set_start(cell : Int) -> Int {
   let s = current()
   match s.grid.set_start(cell) {
@@ -258,8 +263,10 @@ pub fn pg_set_start(cell : Int) -> Int {
 ///|
 /// 将终点移动到 `cell`。
 ///
-/// 成功返回 `0` 并清空旧轨迹；越界、落在障碍上或与起点重叠返回
-/// `InvalidArgument` 码且不改动布局。
+/// 参数 `cell` 为目标单元的行主序线性下标。成功返回 `0` 并清空旧轨迹；
+/// 越界、落在障碍上或与起点重叠返回 `InvalidArgument` 码且不改动布局
+/// （值语义由 `Grid::set_goal` 保证）。宿主拖拽终点标记时调用本函数
+/// 提交新位置，随后需重新 `pg_compute` 以刷新轨迹。
 pub fn pg_set_goal(cell : Int) -> Int {
   let s = current()
   match s.grid.set_goal(cell) {
@@ -280,8 +287,10 @@ pub fn pg_set_goal(cell : Int) -> Int {
 ///|
 /// 选择可视化算法（`0=BFS`、`1=DFS`、`2=Dijkstra`、`3=A*`、`4=JPS`）。
 ///
-/// 成功返回 `0` 并清空旧轨迹；算法码非法（缺失算法入口）返回
-/// `InvalidArgument` 码而非静默落空（R1.3）。
+/// 参数 `algo_code` 为算法码；成功返回 `0` 并清空旧轨迹，使下一次
+/// `pg_compute` 以新算法重新搜索。算法码非法（缺失算法入口）返回
+/// `InvalidArgument` 码而非静默落空（R1.3），宿主据此提示用户选择无效。
+/// 该映射与 `algo_from_code` 单一事实源保持一致。
 pub fn pg_select_algo(algo_code : Int) -> Int {
   let s = current()
   match algo_from_code(algo_code) {
@@ -318,7 +327,12 @@ pub fn pg_compute() -> Int {
 }
 
 ///|
-/// 第 `step` 帧已访问（closed）节点的数量；轨迹缺失或帧越界返回 `-1`。
+/// 读取第 `step` 帧已访问（closed）集合的节点数量。
+///
+/// 参数 `step` 为帧序号，合法取值范围为 `0 ..< pg_compute()` 返回的步数。
+/// 返回值为该帧 closed 集合大小（非负整数），供宿主渲染「已探索」着色层。
+/// 当尚未调用 `pg_compute` 物化轨迹、或 `step` 越界时返回哨兵值 `-1`，
+/// 并置 `last_error = InvalidArgument` 以与合法的零计数明确区分（R1.2）。
 pub fn pg_step_visited_len(step : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -334,7 +348,12 @@ pub fn pg_step_visited_len(step : Int) -> Int {
 }
 
 ///|
-/// 第 `step` 帧已访问列表中下标 `i` 的节点（线性下标）；越界返回 `-1`。
+/// 读取第 `step` 帧已访问列表中线性下标 `i` 处的节点编号。
+///
+/// 节点编号为网格单元的行主序线性下标（`row * cols + col`）。配合
+/// `pg_step_visited_len` 可逐项遍历该帧的 closed 集合。参数 `step` 与 `i`
+/// 任一越界、或轨迹尚未物化时返回哨兵值 `-1`，并置
+/// `last_error = InvalidArgument`，使宿主能稳定地检测边界而不读到脏数据。
 pub fn pg_step_visited_at(step : Int, i : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -354,7 +373,12 @@ pub fn pg_step_visited_at(step : Int, i : Int) -> Int {
 }
 
 ///|
-/// 第 `step` 帧待扩展边界（open set）的节点数量；轨迹缺失或帧越界返回 `-1`。
+/// 读取第 `step` 帧待扩展边界（open set / frontier）的节点数量。
+///
+/// 参数 `step` 为帧序号，合法取值范围为 `0 ..< pg_compute()` 返回的步数。
+/// 返回值为该帧 open 集合大小（非负整数），供宿主渲染「待探索」着色层，
+/// 直观呈现搜索波前的扩张过程。当尚未物化轨迹、或 `step` 越界时返回哨兵值
+/// `-1`，并置 `last_error = InvalidArgument` 以与合法的零计数区分（R1.2）。
 pub fn pg_step_frontier_len(step : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -370,7 +394,12 @@ pub fn pg_step_frontier_len(step : Int) -> Int {
 }
 
 ///|
-/// 第 `step` 帧边界列表中下标 `i` 的节点（线性下标）；越界返回 `-1`。
+/// 读取第 `step` 帧边界（frontier）列表中线性下标 `i` 处的节点编号。
+///
+/// 节点编号为网格单元的行主序线性下标（`row * cols + col`）。配合
+/// `pg_step_frontier_len` 可逐项遍历该帧的 open 集合。参数 `step` 与 `i`
+/// 任一越界、或轨迹尚未物化时返回哨兵值 `-1`，并置
+/// `last_error = InvalidArgument`，保证宿主侧边界检测的确定性。
 pub fn pg_step_frontier_at(step : Int, i : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -390,7 +419,12 @@ pub fn pg_step_frontier_at(step : Int, i : Int) -> Int {
 }
 
 ///|
-/// 第 `step` 帧正在扩展的当前节点；`None`（未开始/已终止）或帧越界返回 `-1`。
+/// 读取第 `step` 帧正在扩展的当前节点编号。
+///
+/// 节点编号为网格单元的行主序线性下标（`row * cols + col`）。当该帧处于
+/// 「未开始」或「已终止」状态、其 `current` 为 `None` 时返回哨兵值 `-1`
+/// （此为合法状态，`last_error` 置 0）。当轨迹尚未物化、或 `step` 越界时
+/// 同样返回 `-1`，但置 `last_error = InvalidArgument` 以区分错误与无当前节点。
 pub fn pg_step_current(step : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -409,9 +443,12 @@ pub fn pg_step_current(step : Int) -> Int {
 }
 
 ///|
-/// 第 `step` 帧的位标志：bit0 = done（终止帧）、bit1 = found（命中目标帧）。
+/// 读取第 `step` 帧的位标志：bit0 = done（终止帧）、bit1 = found（命中目标帧）。
 ///
-/// 轨迹缺失或帧越界返回 `-1`（合法标志取值为 0..3，与 `-1` 无歧义）。
+/// 合法返回取值为 `0..3` 的位掩码：`0` 表示进行中、`1` 表示已终止但未命中、
+/// `3` 表示已终止且命中目标。宿主可据此驱动「播放/暂停/完成」UI 状态机。
+/// 轨迹缺失或帧越界时返回哨兵值 `-1`（与合法的 0..3 取值无歧义），并置
+/// `last_error = InvalidArgument`。
 pub fn pg_step_flags(step : Int) -> Int {
   let s = current()
   match step_at(step) {
@@ -434,8 +471,12 @@ pub fn pg_step_flags(step : Int) -> Int {
 }
 
 ///|
-/// 最终路径的节点数；目标不可达返回 `-1`（R3.4，此为合法结果，`last_error`
-/// 仍为 0）。尚未计算轨迹时返回 `-1` 并置 `InvalidArgument` 错误码以资区分。
+/// 返回最终路径的节点数（含起点与终点）。
+///
+/// 当轨迹已物化且目标可达时返回路径长度（正整数），`last_error` 置 0。
+/// 当目标不可达时返回哨兵值 `-1`（R3.4，此为合法计算结果，`last_error`
+/// 仍为 0）。当尚未调用 `pg_compute` 物化轨迹时同样返回 `-1`，但置
+/// `last_error = InvalidArgument` 以与「不可达」这一合法结果明确区分。
 pub fn pg_final_path_len() -> Int {
   let s = current()
   match s.trace {
@@ -459,8 +500,12 @@ pub fn pg_final_path_len() -> Int {
 }
 
 ///|
-/// 最终路径中下标 `i` 的节点（线性下标，含起点与终点）；无路径或越界返回
-/// `-1` 并置 `InvalidArgument` 错误码。
+/// 读取最终路径中线性下标 `i` 处的节点编号（含起点与终点）。
+///
+/// 节点编号为网格单元的行主序线性下标（`row * cols + col`）。配合
+/// `pg_final_path_len` 可按 `start → … → goal` 的顺序逐点回放最优路径。
+/// 当目标不可达、`i` 越界、或轨迹尚未物化时返回哨兵值 `-1`，并置
+/// `last_error = InvalidArgument`，保证宿主遍历的边界安全。
 pub fn pg_final_path_at(i : Int) -> Int {
   let s = current()
   match s.trace {
@@ -490,7 +535,9 @@ pub fn pg_final_path_at(i : Int) -> Int {
 /// 返回最近一次操作的错误码（`0` 表示成功）。
 ///
 /// 错误码由 `@graph.PathError` 变体稳定映射而来（见 `error_code`），供宿主在
-/// 不依赖结构化异常的前提下诊断失败原因（R1.3）。
+/// 不依赖结构化异常的前提下诊断失败原因（R1.3）。该函数为纯读取，不修改
+/// 任何会话状态，可在任意 `pg_*` 调用之后立即查询。约定：合法但「无结果」
+/// 的情形（如目标不可达）不算错误，此时仍返回 `0`。
 pub fn pg_last_error() -> Int {
   current().last_error
 }

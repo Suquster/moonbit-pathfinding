@@ -164,7 +164,9 @@ pub fn[W : @core.Weight] is_non_negative(w : W) -> Bool {
 /// used as a *precondition* by Dijkstra's proof (Requirement R8.2a).
 ///
 /// Iterates edge list explicitly; this avoids the need for `moon prove`
-/// to reason about successor closures directly.
+/// to reason about successor closures directly. Edges whose `edge_weight`
+/// returns `None` (absent) are skipped rather than failing. Returns `true`
+/// for an empty edge list (vacuously). Pure and total.
 pub fn[N, W : @core.Weight] all_edges_non_negative(
   edges : Array[(N, N)],
   edge_weight : (N, N) -> W?,
@@ -198,7 +200,8 @@ pub fn[N, W : @core.Weight] all_edges_non_negative(
 ///
 /// 当且仅当 `decode(encode(x))` 还原出与 `x` 相等的值时成立；解码失败（`None`）
 /// 视为往返破坏，返回 `false`。各方向的「打印/解析」「编码/解码」往返性质均可
-/// 以此谓词表述，避免在每个 `*_proof.mbt` 中重复编写往返骨架。
+/// 以此谓词表述，避免在每个 `*_proof.mbt` 中重复编写往返骨架。要求 `T : Eq`
+/// 以比较还原值；`S` 为中间编码类型。纯、全函数，对任意 `x` 恒返回 `Bool`。
 pub fn[T : Eq, S] round_trip_eq(
   x : T,
   encode : (T) -> S,
@@ -213,7 +216,10 @@ pub fn[T : Eq, S] round_trip_eq(
 ///|
 /// `is_idempotent(x, f)` —— 幂等谓词：`f(f(x)) == f(x)`。
 ///
-/// 用于 Build_Tool「输入未变 → 零重建」等空操作不变量。
+/// 用于 Build_Tool「输入未变 → 零重建」等空操作不变量。先计算 `once = f(x)`，
+/// 再比较 `f(once)` 是否与 `once` 相等：相等即说明二次施加 `f` 不再改变结果。
+/// 要求 `T : Eq`。纯、全函数，对任意 `x` 与任意 `f` 恒返回 `Bool`，可被
+/// ≥100 次随机输入的属性测试驱动而不会 abort。
 pub fn[T : Eq] is_idempotent(x : T, f : (T) -> T) -> Bool {
   let once = f(x)
   f(once) == once
@@ -224,6 +230,8 @@ pub fn[T : Eq] is_idempotent(x : T, f : (T) -> T) -> Bool {
 ///
 /// 当 `x` 满足不变量 `inv` 时，要求 `transform(x)` 仍满足；`x` 本不满足时
 /// 视为前提不成立，平凡为真。用于「SSA pass 保持单赋值不变量」一类性质。
+/// 逻辑实现为 `!inv(x) || inv(transform(x))`，即蕴含 `inv(x) ⇒ inv(transform(x))`。
+/// 纯、全函数，对任意 `x` / `transform` / `inv` 恒返回 `Bool`。
 pub fn[T] preserves(x : T, transform : (T) -> T, inv : (T) -> Bool) -> Bool {
   !inv(x) || inv(transform(x))
 }
@@ -232,7 +240,9 @@ pub fn[T] preserves(x : T, transform : (T) -> T, inv : (T) -> Bool) -> Bool {
 /// `seq_eq(xs, ys)` —— 序列逐元素相等谓词。
 ///
 /// 显式逐元素比较（不依赖 `Array::==`），保持谓词总且易于证明。用于
-/// DST「同种子 → 同调度序列」与 Actor「发送序 == 处理序」等性质。
+/// DST「同种子 → 同调度序列」与 Actor「发送序 == 处理序」等性质。先比较
+/// 长度，不等即返回 `false`；再逐位比较，任一位置不同即返回 `false`。
+/// 要求 `T : Eq`。纯、全函数，对任意两序列恒返回 `Bool`。
 pub fn[T : Eq] seq_eq(xs : Array[T], ys : Array[T]) -> Bool {
   if xs.length() != ys.length() {
     return false

@@ -74,7 +74,12 @@ pub fn Grid::new(rows : Int, cols : Int) -> Result[Grid, @graph.PathError] {
 }
 
 ///|
-/// 单元格总数 = `rows * cols`。
+/// 返回网格单元格总数，等于 `rows * cols`。
+///
+/// 该值同时是合法线性下标的上界：任意单元下标 `cell` 满足
+/// `0 <= cell < cell_count()`。常用于编辑接口（`set_start` / `set_goal` /
+/// `toggle_obstacle`）的越界校验，以及导出层 `pg_*` 的下标范围检查。
+/// 纯查询，不修改网格状态。
 pub fn Grid::cell_count(self : Grid) -> Int {
   self.rows * self.cols
 }

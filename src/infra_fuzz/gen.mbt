@@ -82,7 +82,9 @@ let freq_special : Int = 3
 /// 允许自环（源 == 目标）与平行边（同一 `(源, 目标)` 多次出现）。
 ///
 /// 作为差分 / 模糊测试的统一输入模型；`derive(Eq, Show)` 使「同种子确定性」
-/// 等性质可直接以相等性断言与快照校验（R17.7）。
+/// 等性质可直接以相等性断言与快照校验（R17.7）。字段 `n` 为节点数，`edges`
+/// 以三元组数组精确表达每条有向边的源、目标与浮点权重（禁止字符串模拟结构化
+/// 数据，R22.6）。该模型可经 `to_successors` 等适配后接入各算法入口。
 pub(all) struct FuzzGraph {
   n : Int
   edges : Array[(Int, Int, Double)]
@@ -361,7 +363,8 @@ fn build_fuzz_graph_gen(
 /// 稠密 / 稀疏 / 自环 / 平行边 / 多连通分量等结构类别。权重可正可负。
 ///
 /// 完全由 `@infra_pbt.Rng`（`UInt64` 种子）驱动：以相同种子构造的 `Rng`
-/// 两次生成产出逐元素相同的图（R17.7 可复现）。
+/// 两次生成产出逐元素相同的图（R17.7 可复现）。参数 `max_n` / `max_edges`
+/// 为节点数与边数上界，实际规模由种子在 `[0, 上界]` 内派生。
 pub fn fuzz_graph_gen(
   max_n : Int,
   max_edges : Int,
@@ -375,6 +378,8 @@ pub fn fuzz_graph_gen(
 /// （这些算法在非负权前提下结果应一致）。
 ///
 /// 同样完全由 `@infra_pbt.Rng`（`UInt64` 种子）驱动，保证可复现（R17.7）。
+/// 与 `fuzz_graph_gen` 仅在权重符号约束上不同：本生成器保证 `edges` 中每条
+/// 边权落在 `[0.01, 1e6]`，从而满足非负权算法的前置条件。
 pub fn fuzz_graph_nonneg_gen(
   max_n : Int,
   max_edges : Int,

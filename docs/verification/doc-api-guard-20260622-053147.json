@@ -1,6 +1,6 @@
 {
   "schema": "moonbit-pathfinding.doc-api-guard.v1",
-  "generated_at": "2026-06-22T05:32:06Z",
+  "generated_at": "2026-06-22T05:31:47Z",
   "generated_by": "scripts/doc_api_guard.ps1",
   "min_lines": 5,
   "src_dir": "src",
@@ -10,7 +10,7 @@
   ],
   "scanned_files": 260,
   "total_apis": 1269,
-  "violation_count": 854,
+  "violation_count": 855,
   "status": "failed",
   "violations": [
     {
@@ -4176,6 +4176,11 @@
     {
       "api": "struct Parser",
       "location": "src/parser_combinator/types.mbt:175",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn ProofReport::any_failed",
+      "location": "src/proofs/proof_report.mbt:78",
       "doc_lines": 4
     },
     {

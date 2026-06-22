@@ -1,6 +1,6 @@
 # Examples Guard Report
 
-- Generated at: 2026-06-21T15:38:27Z
+- Generated at: 2026-06-22T05:20:50Z
 - Script: scripts/examples_guard.ps1
 - Doc file: README.mbt.md（文档即测试 · R20.4/R20.5/R21.6）
 - MoonBit: moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg

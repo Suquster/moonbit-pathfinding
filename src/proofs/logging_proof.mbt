@@ -8,7 +8,9 @@
 /// 日志级别阈值过滤（占位）。
 ///
 /// 当且仅当：事件被输出（`emitted`）⇔ 其级别不低于阈值（`event_level >= threshold`）
-/// 时成立。级别以整数序数表示，数值越大级别越高。
+/// 时成立。级别以整数序数表示，数值越大级别越高。实现为 `emitted == (event_level
+/// >= threshold)`，双向蕴含。纯、全函数：对任意整数级别与任意布尔输出恒返回
+/// `Bool`，可被 ≥100 次随机组合的属性测试驱动而不会 abort。
 pub fn level_threshold_filter(
   event_level : Int,
   threshold : Int,

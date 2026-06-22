@@ -1,6 +1,6 @@
 {
   "schema": "moonbit-pathfinding.doc-api-guard.v1",
-  "generated_at": "2026-06-22T05:32:06Z",
+  "generated_at": "2026-06-22T05:10:08Z",
   "generated_by": "scripts/doc_api_guard.ps1",
   "min_lines": 5,
   "src_dir": "src",
@@ -10,7 +10,7 @@
   ],
   "scanned_files": 260,
   "total_apis": 1269,
-  "violation_count": 854,
+  "violation_count": 915,
   "status": "failed",
   "violations": [
     {
@@ -1574,6 +1574,41 @@
       "doc_lines": 1
     },
     {
+      "api": "fn pg_step_visited_len",
+      "location": "src/playground/exports.mbt:322",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_visited_at",
+      "location": "src/playground/exports.mbt:338",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_frontier_len",
+      "location": "src/playground/exports.mbt:358",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_frontier_at",
+      "location": "src/playground/exports.mbt:374",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_current",
+      "location": "src/playground/exports.mbt:394",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grid::cell_count",
+      "location": "src/playground/grid.mbt:78",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn check_ends_at_goal",
+      "location": "src/proofs/bfs_proof.mbt:37",
+      "doc_lines": 1
+    },
+    {
       "api": "fn Captures::group_count",
       "location": "src/regex_engine/captures.mbt:50",
       "doc_lines": 1
@@ -2214,6 +2249,11 @@
       "doc_lines": 2
     },
     {
+      "api": "let algorithm_count",
+      "location": "src/docgen/complexity.mbt:18",
+      "doc_lines": 2
+    },
+    {
       "api": "fn violates_consistency",
       "location": "src/dst/demo.mbt:162",
       "doc_lines": 2
@@ -2326,6 +2366,26 @@
     {
       "api": "fn deserialize_result",
       "location": "src/dst/trace_codec.mbt:507",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn GraphBuilder::new",
+      "location": "src/graph/builder.mbt:51",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn GraphRepr::node_count",
+      "location": "src/graph/graph_repr.mbt:64",
+      "doc_lines": 2
+    },
+    {
+      "api": "let default_tol_pct",
+      "location": "src/infra_bench/regression.mbt:28",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_report",
+      "location": "src/infra_bench/report.mbt:847",
       "doc_lines": 2
     },
     {
@@ -2756,6 +2816,46 @@
     {
       "api": "fn pchar",
       "location": "src/parser_combinator/primitives.mbt:38",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_step_flags",
+      "location": "src/playground/exports.mbt:415",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_final_path_len",
+      "location": "src/playground/exports.mbt:439",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_final_path_at",
+      "location": "src/playground/exports.mbt:464",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn fifo_order_preserved",
+      "location": "src/proofs/actor_proof.mbt:11",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn deterministic_replay",
+      "location": "src/proofs/dst_proof.mbt:10",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn is_idempotent",
+      "location": "src/proofs/predicates.mbt:217",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_proof_report",
+      "location": "src/proofs/proof_report.mbt:719",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ProofReport::any_failed",
+      "location": "src/proofs/proof_report.mbt:76",
       "doc_lines": 2
     },
     {
@@ -3229,6 +3329,21 @@
       "doc_lines": 3
     },
     {
+      "api": "fn Graph::node_count",
+      "location": "src/graph/graph.mbt:69",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn LazyPath::empty",
+      "location": "src/graph/lazy_path.mbt:59",
+      "doc_lines": 3
+    },
+    {
+      "api": "let default_eps",
+      "location": "src/infra_fuzz/diff.mbt:31",
+      "doc_lines": 3
+    },
+    {
       "api": "fn holds_for_all",
       "location": "src/infra_pbt/pbt.mbt:158",
       "doc_lines": 3
@@ -3541,6 +3656,86 @@
     {
       "api": "fn Input::advance",
       "location": "src/parser_combinator/types.mbt:79",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_reset",
+      "location": "src/playground/exports.mbt:184",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_set_start",
+      "location": "src/playground/exports.mbt:241",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_set_goal",
+      "location": "src/playground/exports.mbt:263",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_select_algo",
+      "location": "src/playground/exports.mbt:285",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_last_error",
+      "location": "src/playground/exports.mbt:494",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn error_isolation",
+      "location": "src/proofs/actor_proof.mbt:20",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ssa_single_assignment_counts",
+      "location": "src/proofs/codegen_infra_proof.mbt:19",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn interference_distinct",
+      "location": "src/proofs/codegen_infra_proof.mbt:60",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn level_threshold_filter",
+      "location": "src/proofs/logging_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn illegal_message_keeps_alive",
+      "location": "src/proofs/lsp_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn fail_does_not_consume",
+      "location": "src/proofs/parser_combinator_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn preserves",
+      "location": "src/proofs/predicates.mbt:227",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn seq_eq",
+      "location": "src/proofs/predicates.mbt:236",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn nfa_dfa_consistent",
+      "location": "src/proofs/regex_engine_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn decode_failure_no_partial",
+      "location": "src/proofs/serialization_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn bridges_post",
+      "location": "src/proofs/spanning_connectivity_proof.mbt:395",
       "doc_lines": 3
     },
     {
@@ -3919,6 +4114,36 @@
       "doc_lines": 4
     },
     {
+      "api": "fn GraphRepr::to_successors",
+      "location": "src/graph/graph_repr.mbt:174",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum OsmDataSource",
+      "location": "src/graph/osm.mbt:33",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn RegressionVerdict::speedup",
+      "location": "src/infra_bench/regression.mbt:62",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn fuzz_graph_gen",
+      "location": "src/infra_fuzz/gen.mbt:365",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn fuzz_graph_nonneg_gen",
+      "location": "src/infra_fuzz/gen.mbt:378",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct FuzzGraph",
+      "location": "src/infra_fuzz/gen.mbt:86",
+      "doc_lines": 4
+    },
+    {
       "api": "fn sized",
       "location": "src/infra_pbt/combinators.mbt:105",
       "doc_lines": 4
@@ -4176,6 +4401,86 @@
     {
       "api": "struct Parser",
       "location": "src/parser_combinator/types.mbt:175",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pg_set_obstacle",
+      "location": "src/playground/exports.mbt:207",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_starts_at_start",
+      "location": "src/proofs/bfs_proof.mbt:28",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_edges_valid",
+      "location": "src/proofs/bfs_proof.mbt:50",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn require_non_negative_edges",
+      "location": "src/proofs/dijkstra_proof.mbt:29",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_edges_valid_weighted",
+      "location": "src/proofs/dijkstra_proof.mbt:83",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn topo_order_post",
+      "location": "src/proofs/flow_matching_proof.mbt:257",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pairwise_diff_within",
+      "location": "src/proofs/loop_invariants.mbt:116",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn is_monotonic_nondecreasing",
+      "location": "src/proofs/loop_invariants.mbt:96",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn all_edges_non_negative",
+      "location": "src/proofs/predicates.mbt:168",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn round_trip_eq",
+      "location": "src/proofs/predicates.mbt:202",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn floyd_warshall_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:183",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn astar_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:26",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn bellman_ford_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:43",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn dag_sp_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:60",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn bidirectional_dijkstra_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:77",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn ida_star_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:94",
       "doc_lines": 4
     },
     {

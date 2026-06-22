@@ -1,13 +1,13 @@
 # Doc API Guard Report
 
-- Generated at: 2026-06-21T15:37:02Z
+- Generated at: 2026-06-22T05:32:06Z
 - Script: scripts/doc_api_guard.ps1
 - Min non-empty doc lines per Pub_Api: 5
 - Scanned source dir: src
 - Exclude globs: *_test.mbt, *_wbtest.mbt
 - Scanned files: 260
 - Total Pub_Api: 1269
-- Violations (< 5 lines): 915
+- Violations (< 5 lines): 854
 - Status: FAILED
 
 ## 文档不达标的 Pub_Api（API 标识 + 实际非空注释行数 · R21.4）
@@ -326,13 +326,6 @@
 | fn Input::from_string | src/parser_combinator/types.mbt:54 | 1 | 4 |
 | fn Input::is_eof | src/parser_combinator/types.mbt:60 | 1 | 4 |
 | fn Input::peek | src/parser_combinator/types.mbt:66 | 1 | 4 |
-| fn pg_step_visited_len | src/playground/exports.mbt:322 | 1 | 4 |
-| fn pg_step_visited_at | src/playground/exports.mbt:338 | 1 | 4 |
-| fn pg_step_frontier_len | src/playground/exports.mbt:358 | 1 | 4 |
-| fn pg_step_frontier_at | src/playground/exports.mbt:374 | 1 | 4 |
-| fn pg_step_current | src/playground/exports.mbt:394 | 1 | 4 |
-| fn Grid::cell_count | src/playground/grid.mbt:78 | 1 | 4 |
-| fn check_ends_at_goal | src/proofs/bfs_proof.mbt:37 | 1 | 4 |
 | fn Captures::group_count | src/regex_engine/captures.mbt:50 | 1 | 4 |
 | fn CharSet::union | src/regex_engine/charset_ext.mbt:16 | 1 | 4 |
 | fn demo_cases | src/regex_engine/demo.mbt:46 | 1 | 4 |
@@ -461,7 +454,6 @@
 | fn ShortestPathTree::distance_to | src/directed/dijkstra_all.mbt:114 | 2 | 3 |
 | struct ShortestPathTree | src/directed/dijkstra_all.mbt:13 | 2 | 3 |
 | fn AllPairs::distance | src/directed/floyd_warshall_paths.mbt:142 | 2 | 3 |
-| let algorithm_count | src/docgen/complexity.mbt:18 | 2 | 3 |
 | fn violates_consistency | src/dst/demo.mbt:162 | 2 | 3 |
 | fn replication_protocol | src/dst/demo.mbt:52 | 2 | 3 |
 | fn demo_replication_scenario | src/dst/demo.mbt:79 | 2 | 3 |
@@ -485,10 +477,6 @@
 | fn SimContext::append | src/dst/task_body.mbt:68 | 2 | 3 |
 | impl Show for TaskResult::output | src/dst/task_body.mbt:87 | 2 | 3 |
 | fn deserialize_result | src/dst/trace_codec.mbt:507 | 2 | 3 |
-| fn GraphBuilder::new | src/graph/builder.mbt:51 | 2 | 3 |
-| fn GraphRepr::node_count | src/graph/graph_repr.mbt:64 | 2 | 3 |
-| let default_tol_pct | src/infra_bench/regression.mbt:28 | 2 | 3 |
-| fn parse_report | src/infra_bench/report.mbt:847 | 2 | 3 |
 | let default_iters | src/infra_pbt/pbt.mbt:22 | 2 | 3 |
 | fn Rng::next | src/infra_pbt/pbt.mbt:58 | 2 | 3 |
 | fn Stats::record | src/infra_pbt/stats.mbt:58 | 2 | 3 |
@@ -575,14 +563,6 @@
 | fn Grammar::run_packrat | src/parser_combinator/engine.mbt:155 | 2 | 3 |
 | fn op_as_label | src/parser_combinator/error_model.mbt:107 | 2 | 3 |
 | fn pchar | src/parser_combinator/primitives.mbt:38 | 2 | 3 |
-| fn pg_step_flags | src/playground/exports.mbt:415 | 2 | 3 |
-| fn pg_final_path_len | src/playground/exports.mbt:439 | 2 | 3 |
-| fn pg_final_path_at | src/playground/exports.mbt:464 | 2 | 3 |
-| fn fifo_order_preserved | src/proofs/actor_proof.mbt:11 | 2 | 3 |
-| fn deterministic_replay | src/proofs/dst_proof.mbt:10 | 2 | 3 |
-| fn is_idempotent | src/proofs/predicates.mbt:217 | 2 | 3 |
-| fn parse_proof_report | src/proofs/proof_report.mbt:719 | 2 | 3 |
-| fn ProofReport::any_failed | src/proofs/proof_report.mbt:76 | 2 | 3 |
 | fn print_ast | src/regex_engine/ast.mbt:94 | 2 | 3 |
 | fn Captures::group | src/regex_engine/captures.mbt:23 | 2 | 3 |
 | fn Captures::name | src/regex_engine/captures.mbt:41 | 2 | 3 |
@@ -677,9 +657,6 @@
 | fn rng_new | src/dst/rng.mbt:41 | 3 | 2 |
 | fn shrink | src/dst/shrink.mbt:106 | 3 | 2 |
 | struct Task | src/dst/types.mbt:35 | 3 | 2 |
-| fn Graph::node_count | src/graph/graph.mbt:69 | 3 | 2 |
-| fn LazyPath::empty | src/graph/lazy_path.mbt:59 | 3 | 2 |
-| let default_eps | src/infra_fuzz/diff.mbt:31 | 3 | 2 |
 | fn holds_for_all | src/infra_pbt/pbt.mbt:158 | 3 | 2 |
 | fn rng_new | src/infra_pbt/pbt.mbt:49 | 3 | 2 |
 | struct Gen | src/infra_pbt/pbt.mbt:99 | 3 | 2 |
@@ -743,22 +720,6 @@
 | fn release_info_with_gates | src/parser_combinator/release.mbt:55 | 3 | 2 |
 | fn Grammar::run_incremental | src/parser_combinator/streaming.mbt:79 | 3 | 2 |
 | fn Input::advance | src/parser_combinator/types.mbt:79 | 3 | 2 |
-| fn pg_reset | src/playground/exports.mbt:184 | 3 | 2 |
-| fn pg_set_start | src/playground/exports.mbt:241 | 3 | 2 |
-| fn pg_set_goal | src/playground/exports.mbt:263 | 3 | 2 |
-| fn pg_select_algo | src/playground/exports.mbt:285 | 3 | 2 |
-| fn pg_last_error | src/playground/exports.mbt:494 | 3 | 2 |
-| fn error_isolation | src/proofs/actor_proof.mbt:20 | 3 | 2 |
-| fn ssa_single_assignment_counts | src/proofs/codegen_infra_proof.mbt:19 | 3 | 2 |
-| fn interference_distinct | src/proofs/codegen_infra_proof.mbt:60 | 3 | 2 |
-| fn level_threshold_filter | src/proofs/logging_proof.mbt:12 | 3 | 2 |
-| fn illegal_message_keeps_alive | src/proofs/lsp_proof.mbt:12 | 3 | 2 |
-| fn fail_does_not_consume | src/proofs/parser_combinator_proof.mbt:12 | 3 | 2 |
-| fn preserves | src/proofs/predicates.mbt:227 | 3 | 2 |
-| fn seq_eq | src/proofs/predicates.mbt:236 | 3 | 2 |
-| fn nfa_dfa_consistent | src/proofs/regex_engine_proof.mbt:12 | 3 | 2 |
-| fn decode_failure_no_partial | src/proofs/serialization_proof.mbt:12 | 3 | 2 |
-| fn bridges_post | src/proofs/spanning_connectivity_proof.mbt:395 | 3 | 2 |
 | fn demo_email | src/regex_engine/demo.mbt:16 | 3 | 2 |
 | fn HybridMatcher::find | src/regex_engine/hybrid.mbt:238 | 3 | 2 |
 | fn LazyDfa::find | src/regex_engine/lazy_dfa.mbt:75 | 3 | 2 |
@@ -834,12 +795,6 @@
 | enum Event | src/dst/types.mbt:52 | 4 | 1 |
 | struct FaultPolicy | src/dst/types.mbt:67 | 4 | 1 |
 | struct Scenario | src/dst/types.mbt:89 | 4 | 1 |
-| fn GraphRepr::to_successors | src/graph/graph_repr.mbt:174 | 4 | 1 |
-| enum OsmDataSource | src/graph/osm.mbt:33 | 4 | 1 |
-| fn RegressionVerdict::speedup | src/infra_bench/regression.mbt:62 | 4 | 1 |
-| fn fuzz_graph_gen | src/infra_fuzz/gen.mbt:365 | 4 | 1 |
-| fn fuzz_graph_nonneg_gen | src/infra_fuzz/gen.mbt:378 | 4 | 1 |
-| struct FuzzGraph | src/infra_fuzz/gen.mbt:86 | 4 | 1 |
 | fn sized | src/infra_pbt/combinators.mbt:105 | 4 | 1 |
 | struct Shrinkable | src/infra_pbt/shrink.mbt:37 | 4 | 1 |
 | fn TextBuilder::with_capacity | src/infra_text/text_builder.mbt:63 | 4 | 1 |
@@ -892,22 +847,6 @@
 | enum Step | src/parser_combinator/streaming.mbt:25 | 4 | 1 |
 | fn drive | src/parser_combinator/streaming.mbt:93 | 4 | 1 |
 | struct Parser | src/parser_combinator/types.mbt:175 | 4 | 1 |
-| fn pg_set_obstacle | src/playground/exports.mbt:207 | 4 | 1 |
-| fn check_starts_at_start | src/proofs/bfs_proof.mbt:28 | 4 | 1 |
-| fn check_edges_valid | src/proofs/bfs_proof.mbt:50 | 4 | 1 |
-| fn require_non_negative_edges | src/proofs/dijkstra_proof.mbt:29 | 4 | 1 |
-| fn check_edges_valid_weighted | src/proofs/dijkstra_proof.mbt:83 | 4 | 1 |
-| fn topo_order_post | src/proofs/flow_matching_proof.mbt:257 | 4 | 1 |
-| fn pairwise_diff_within | src/proofs/loop_invariants.mbt:116 | 4 | 1 |
-| fn is_monotonic_nondecreasing | src/proofs/loop_invariants.mbt:96 | 4 | 1 |
-| fn all_edges_non_negative | src/proofs/predicates.mbt:168 | 4 | 1 |
-| fn round_trip_eq | src/proofs/predicates.mbt:202 | 4 | 1 |
-| fn floyd_warshall_post | src/proofs/shortest_path_family_proof.mbt:183 | 4 | 1 |
-| fn astar_post | src/proofs/shortest_path_family_proof.mbt:26 | 4 | 1 |
-| fn bellman_ford_post | src/proofs/shortest_path_family_proof.mbt:43 | 4 | 1 |
-| fn dag_sp_post | src/proofs/shortest_path_family_proof.mbt:60 | 4 | 1 |
-| fn bidirectional_dijkstra_post | src/proofs/shortest_path_family_proof.mbt:77 | 4 | 1 |
-| fn ida_star_post | src/proofs/shortest_path_family_proof.mbt:94 | 4 | 1 |
 | enum AssertKind | src/regex_engine/ast.mbt:20 | 4 | 1 |
 | struct Captures | src/regex_engine/captures.mbt:15 | 4 | 1 |
 | fn CharSet::case_fold | src/regex_engine/charset_ext.mbt:40 | 4 | 1 |

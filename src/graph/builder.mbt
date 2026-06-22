@@ -48,6 +48,10 @@ pub struct GraphBuilder[N, W] {
 /// 新建一个空的链式构造器：节点声明顺序为空、节点集为空、边集为空。
 ///
 /// 由此构造器直接 `build` 将物化为「有效空图」（R12.4），而非失败。
+/// 后续可通过 `add_node` / `add_edge` / `add_undirected_edge` 链式追加元素，
+/// 每个方法返回 `self` 以支持流式书写（R12.6）。节点合法性延迟到 `build`
+/// 阶段统一校验，构造期间不拒绝悬挂边的声明。类型参数 `N` 为节点标识
+/// （要求 `Eq + Hash`），`W` 为边权类型。
 pub fn[N : Eq + Hash, W] GraphBuilder::new() -> GraphBuilder[N, W] {
   GraphBuilder::{ order: [], declared: Map::new(), edges: Map::new() }
 }

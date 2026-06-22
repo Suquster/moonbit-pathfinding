@@ -1,0 +1,33 @@
+// 包：Suquster/moonbit-pathfinding/src/graph
+//
+// 方向 4（API 人机工程学与类型安全）的基础包 `@graph`。
+// 本包以「冻结既有公开 API + bypass 新增」为纲领，提供面向应用集成的
+// 高层 API：结构化错误类型 `PathError`、流式 `GraphBuilder`、惰性路径
+// 迭代器 `LazyPath` 与通用图适配器 `GraphRepr`（邻接矩阵 / 边表 / CSR）。
+//
+// 依赖约定（design.md §「包依赖控制」/ Requirement 22）：
+//   * @core —— 提供 `Weight` 数值抽象与 `PQueue`/`DSU` 等基础数据结构；
+//     注意：本包新增的 `@graph.PathError` 与既有 `@core.PathError`
+//     命名空间隔离、互不影响（bypass 新增 · Requirement 13.8）。
+//   * @infra_text —— 共享高效文本构建叶子包；`PathError::message()` 等
+//     诊断串的构建统一走其 `TextBuilder`，禁止循环内字符串 `+` 拼接
+//     （Requirement 13.7 / 22.4）。
+// 本包生产代码仅依赖上述基础设施包，不依赖任何具体算法方向包；与既有
+// 算法的「结果等价性」仅在 `*_test.mbt` 中交叉验证（测试期依赖）。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/infra_text",
+  // @string —— 解析 OSM 边表 TSV 中的边权（`length_m` 列，Double）。
+  // 属 moonbitlang/core 标准库，三后端（wasm-gc / js / native）行为一致。
+  // 仅用于 osm.mbt 的路网子集解析（Requirement 8.7）。
+  "moonbitlang/core/string",
+}
+
+// 属性测试（任务 1.2 起的 Property 17–25）复用共享 PBT 包 @infra_pbt 的
+// Gen / Rng / holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖仅作用于
+// 黑盒测试驱动（`for "test"`），不进入运行时产物，符合 design.md
+// 「infra_pbt 为横切测试期共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "Suquster/moonbit-pathfinding/src/directed",
+} for "test"

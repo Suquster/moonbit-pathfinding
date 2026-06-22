@@ -12,7 +12,11 @@ import {
   "Suquster/moonbit-pathfinding/src/core",
 }
 
-// Blackbox tests compare CH/ALT against baseline Dijkstra.
+// Blackbox tests compare CH/ALT against baseline Dijkstra, and the
+// bypass-entry property tests (task 19.1) drive ≥100 random graphs via the
+// shared PBT facilities (@infra_pbt: Gen / Rng / holds_for_all). Both are
+// test-only dependencies and never enter the runtime artefact.
 import {
   "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
 } for "test"

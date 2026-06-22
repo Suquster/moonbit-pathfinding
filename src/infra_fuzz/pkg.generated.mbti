@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_fuzz"
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+}
+
+// Values
+pub fn approx_eq(Double, Double, Double) -> Bool
+
+pub let default_eps : Double
+
+pub fn fuzz_graph_gen(Int, Int) -> @infra_pbt.Gen[FuzzGraph]
+
+pub fn fuzz_graph_nonneg_gen(Int, Int) -> @infra_pbt.Gen[FuzzGraph]
+
+pub fn shrink_fuzz_graph(FuzzGraph) -> Array[FuzzGraph]
+
+pub let shrink_iters_max : Int
+
+// Errors
+
+// Types and methods
+pub(all) enum EquivClass {
+  BfsVsDijkstraUnit
+  DijkstraVsBellmanFord
+  FloydWarshallVsJohnson
+} derive(Eq, Show)
+
+pub(all) struct FuzzGraph {
+  n : Int
+  edges : Array[(Int, Int, Double)]
+} derive(Eq, Show)
+
+// Type aliases
+
+// Traits
+

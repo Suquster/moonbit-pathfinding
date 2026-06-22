@@ -25,6 +25,18 @@
 ///
 /// ## Complexity
 /// Time: O((V + E) log V). Space: O(V).
+///
+/// ## ASCII 示意（5×5 网格，非负权最短路径）
+/// Dijkstra 以非负边权扩展，返回总权重最小的路径。将每步移动视为单位
+/// 权重时，下图 `*` 标出一条绕过障碍 `#` 的最小代价路径：
+///
+///     S*...
+///     .*#..
+///     .***.
+///     ##.*.
+///     ...*G
+///
+/// 图例：S=起点 G=终点 #=障碍 *=路径 .=空闲
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(
   start : N,
   successors : (N) -> Array[(N, W)],

@@ -1,0 +1,266 @@
+/*
+ * 宿主页面样式（任务 27.1）。
+ *
+ * 全部同源、零外部依赖（Requirement 4.3）：不 @import 任何远端样式、不引用
+ * 任何外部字体或 CDN。字体一律使用浏览器内置的 system-ui / 等宽字体栈。
+ * 配色为深色主题，与可视化色板（已访问/边界/当前/路径）保持高对比。
+ */
+
+:root {
+  --bg: #0f1419;
+  --panel-bg: #1a212b;
+  --panel-border: #2b3543;
+  --text: #e6edf3;
+  --text-dim: #93a1b0;
+  --accent: #4cc2ff;
+  --warning: #ffb454;
+  --danger: #ff5f56;
+
+  /* 可视化色板：与 app.js 中的常量一一对应 */
+  --c-cell: #243140;
+  --c-wall: #0a0e13;
+  --c-visited: #2f5d8a;
+  --c-frontier: #c9a227;
+  --c-current: #ff5f56;
+  --c-path: #3fb950;
+  --c-start: #58d68d;
+  --c-goal: #ec5f67;
+  --c-grid-line: #1b2430;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas,
+    monospace;
+}
+
+.app-header {
+  padding: 18px 24px 8px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.app-main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 12px 24px 32px;
+}
+
+/* ---- 控制面板 ---- */
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-group label {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+select,
+input[type="number"],
+button {
+  background: #0e151d;
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+input[type="number"] {
+  width: 64px;
+  cursor: text;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input[type="range"] {
+  cursor: pointer;
+}
+
+/* ---- HUD ---- */
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.hud-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.hud-label {
+  color: var(--text-dim);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hud-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.hud-unit {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.hud-warning {
+  color: var(--warning);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 2px 10px;
+  border: 1px solid var(--warning);
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+/* ---- 画布 ---- */
+.canvas-wrap {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+#grid-canvas {
+  display: block;
+  margin: 0 auto;
+  background: var(--c-wall);
+  border-radius: 6px;
+  max-width: 100%;
+  touch-action: none;
+}
+
+.status-line {
+  min-height: 18px;
+  margin: 10px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.status-line.error {
+  color: var(--danger);
+}
+
+/* ---- 图例 ---- */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px 2px 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sw {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sw-start {
+  background: var(--c-start);
+}
+.sw-goal {
+  background: var(--c-goal);
+}
+.sw-wall {
+  background: var(--c-wall);
+}
+.sw-visited {
+  background: var(--c-visited);
+}
+.sw-frontier {
+  background: var(--c-frontier);
+}
+.sw-current {
+  background: var(--c-current);
+}
+.sw-path {
+  background: var(--c-path);
+}
+
+.hint {
+  margin-top: 14px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.hint b {
+  color: var(--text);
+}
+
+/* ---- 页脚 ---- */
+.app-footer {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+  color: var(--text-dim);
+  font-size: 12px;
+}

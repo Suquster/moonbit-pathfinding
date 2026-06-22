@@ -1,0 +1,165 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# GitHub Pages 部署流水线 · 对应 task 27.3 + requirements.md R4 + design.md §1.4
+#
+# 触发:  向主干分支 (main) 推送 → 重新构建并发布 WASM Playground (R4.2)
+#        亦支持 workflow_dispatch 手动触发 (便于回滚验证)
+#
+# 流水线 (design.md §1.4):
+#   推送主干 → 安装 MoonBit → `moon build --target wasm-gc --release`
+#     → `scripts/wasm_size_guard.ps1` (.wasm ≤ 102400 字节, 超限非零退出 · R4.5)
+#     → 组装 `playground/web` + wasm 产物 + JS glue 为发布目录
+#     → 发布到 GitHub Pages (configure-pages / upload-pages-artifact / deploy-pages)
+#
+# 失败语义 (R4.4 / R4.5):
+#   任一步以非成功退出码结束 → 步骤 fail-fast 中止整个 job → deploy-pages 不执行
+#   → GitHub Pages 上一个成功发布的版本原样保留 (未被覆盖)。
+#   末尾 `if: failure()` 诊断步骤输出失败上下文 (提交、run、保留旧版本提示)。
+#
+# 时间预算 (R4.2):
+#   构建 + 体积门禁 + 组装 + 发布全流程在单个 job 内完成, job 级 timeout-minutes: 10
+#   (= 600 秒) 作为硬上界, 超时即判定为部署失败并保留上一版本。
+# ─────────────────────────────────────────────────────────────────────────────
+name: pages
+
+on:
+  push:
+    branches: [main]
+  # 允许在 Actions 页手动重跑 (例如验证"保留上一版本"语义或重新发布)
+  workflow_dispatch:
+
+# GitHub Pages 部署所需的最小权限集:
+#   contents: read   —— 检出仓库源码
+#   pages:    write  —— 向 Pages 写入发布产物
+#   id-token: write  —— OIDC 令牌, deploy-pages 验证部署来源所需
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时刻仅允许一个 Pages 发布进行中; 不取消进行中的发布,
+# 让已在途的部署跑完, 避免发布过程被打断而处于半完成状态。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  # 单 job 端到端发布: 构建 → 体积门禁 → 组装 → 发布。
+  # 单 job 设计使 600s 预算 (R4.2) 可由一个 job 级 timeout 精确约束端到端耗时,
+  # 任一前置步骤失败都会在 deploy-pages 之前中止, 从而保留上一成功版本 (R4.4)。
+  # ───────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Build & deploy WASM Playground to GitHub Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # R4.2 · 600 秒端到端预算硬上界
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      # 体积门禁阈值 (命名常量, 非魔数): .wasm 磁盘字节数上限 100KiB (R1.4/R4.5)
+      WASM_SIZE_LIMIT: '102400'
+      # 发布目录: GitHub Pages artifact 约定根目录
+      PUBLISH_DIR: _site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit toolchain
+        uses: hustcer/setup-moonbit@v1
+
+      # 拉取/更新依赖, 与 copilot-setup-steps.yml 保持一致的准备方式
+      - name: Update MoonBit dependencies
+        run: |
+          moon version --all
+          moon update
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # ─── 步骤 1: release 构建 (design.md §1.4 / R1.4) ─────────────────────
+      #   关闭调试信息的 wasm-gc release 构建产出体积优化后的 .wasm;
+      #   同时构建 js 后端产出 MoonBit JS glue (宿主 app.js 的可选回退路径)。
+      #   playground 是独立 module, 故在其目录内构建。
+      - name: moon build --target wasm-gc --release
+        working-directory: playground
+        run: moon build --target wasm-gc --release
+
+      - name: moon build --target js --release (JS glue)
+        working-directory: playground
+        run: moon build --target js --release
+
+      # ─── 步骤 2: 体积门禁 (R4.5) ──────────────────────────────────────────
+      #   pwsh 在 GitHub ubuntu runner 默认可用。脚本读取 .wasm 磁盘字节数,
+      #   与 WASM_SIZE_LIMIT 比较, 超限记录"实测 vs 上限"并以非零退出码中止,
+      #   从而阻断发布、保留上一成功版本 (R4.5)。
+      - name: WASM size guard (.wasm <= 100KiB)
+        shell: pwsh
+        run: pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/wasm_size_guard.ps1
+
+      # ─── 步骤 3: 组装发布目录 (R4.3) ──────────────────────────────────────
+      #   将宿主静态资源 (index.html / app.js / style.css) 与构建产物
+      #   (.wasm + MoonBit 生成的 .js glue) 汇集到 $PUBLISH_DIR, 全部同源,
+      #   不引用任何外部网络服务。
+      - name: Assemble publish directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          publish="${PUBLISH_DIR}"
+          rm -rf "${publish}"
+          mkdir -p "${publish}"
+
+          # 1) 宿主静态资源 (task 27.1 产物)
+          if [ -d playground/web ]; then
+            cp -R playground/web/. "${publish}/"
+          else
+            echo "::error::缺少 playground/web 宿主静态资源目录, 无法组装发布产物"
+            exit 1
+          fi
+
+          # 2) wasm-gc 构建产物 (.wasm) —— 复制到发布根目录, 保留原文件名
+          mapfile -t wasm_files < <(find playground -path '*wasm-gc/release*' -name '*.wasm' 2>/dev/null | sort)
+          if [ "${#wasm_files[@]}" -eq 0 ]; then
+            echo "::error::未找到 wasm-gc release 构建产物 (*.wasm), 无法组装发布产物"
+            exit 1
+          fi
+          for w in "${wasm_files[@]}"; do
+            echo "复制 wasm 产物: ${w}"
+            cp "${w}" "${publish}/"
+          done
+
+          # 3) MoonBit 生成的 JS glue (.js) —— 宿主 app.js 的可选回退路径
+          mapfile -t js_files < <(find playground -path '*js/release*' -name '*.js' 2>/dev/null | sort)
+          for j in "${js_files[@]}"; do
+            echo "复制 JS glue: ${j}"
+            cp "${j}" "${publish}/"
+          done
+
+          # 防止 Jekyll 处理产物 (保留以下划线开头的文件名等)
+          touch "${publish}/.nojekyll"
+
+          echo "── 发布目录内容 (${publish}) ──"
+          ls -alR "${publish}"
+
+      # ─── 步骤 4: 上传 + 发布 GitHub Pages ─────────────────────────────────
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.PUBLISH_DIR }}
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # ─── 失败诊断 (R4.4) ─────────────────────────────────────────────────
+      #   任一前置步骤非零退出时触发: 输出诊断上下文并显式声明上一成功版本被保留
+      #   (deploy-pages 未执行 → Pages 现有发布未被覆盖)。
+      - name: Failure diagnostics (previous version retained)
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          echo "::error::GitHub Pages 部署中止 —— 上一个成功发布的版本已原样保留 (R4.4/R4.5)。"
+          echo "提交 SHA   : ${GITHUB_SHA}"
+          echo "分支 ref   : ${GITHUB_REF}"
+          echo "工作流 run : ${GITHUB_RUN_ID} (attempt ${GITHUB_RUN_ATTEMPT})"
+          echo "诊断指引   : 检查上方失败步骤日志 (release 构建 / 体积门禁 / 组装 / 发布)。"
+          echo "体积门禁阈值: ${WASM_SIZE_LIMIT} 字节 (若为体积门禁失败, 请见 wasm_size_guard 实测字节数)。"

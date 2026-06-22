@@ -8,7 +8,23 @@ import {
 // Values
 pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) -> Bool
 
+pub fn[N : Eq + Hash, W : @core.Weight] all_pairs_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] astar_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash] bfs_all_post(Array[N], N, (N) -> Array[N], Array[N]) -> Bool
+
+pub fn bfs_level_invariant(Array[Int]) -> Bool
+
 pub fn[N : Eq + Hash] bfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash] bidirectional_bfs_post(Array[N]?, N, N, (N) -> Array[N], Array[N]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] bidirectional_dijkstra_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn bridges_post(Int, Array[(Int, Int)], Array[(Int, Int)]) -> Bool
 
 pub fn build_order_respects_deps(Array[Int], Array[(Int, Int)]) -> Bool
 
@@ -20,27 +36,49 @@ pub fn[N : Eq, W] check_edges_valid_weighted((Array[N], W)?, N, (N) -> Array[(N,
 
 pub fn[N] check_ends_at_goal(Array[N]?, (N) -> Bool) -> Bool
 
+pub fn[N, W] check_ends_at_goal_weighted((Array[N], W)?, (N) -> Bool) -> Bool
+
 pub fn[N : Eq + Hash] check_minimality(Array[N]?, N, (N) -> Array[N], (N) -> Bool) -> Bool
 
 pub fn[N, W : @core.Weight] check_non_negativity((Array[N], W)?) -> Bool
 
 pub fn[N : Eq + Hash] check_none_witness(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
 
+pub fn[N : Eq + Hash, W] check_none_witness_weighted((Array[N], W)?, N, (N) -> Array[(N, W)], (N) -> Bool, Array[N]) -> Bool
+
 pub fn[N : Eq] check_starts_at_start(Array[N]?, N) -> Bool
 
 pub fn[N] check_termination_measure(Array[N], Int) -> Bool
+
+pub fn components_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
+
+pub fn condensation_is_dag(Int, Array[(Int, Int)]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] dag_sp_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn decode_failure_no_partial(Bool, Bool) -> Bool
 
 pub fn deterministic_replay(Array[Int], Array[Int]) -> Bool
 
+pub fn[N : Eq + Hash] dfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
+
+pub fn[W : @core.Weight] dijkstra_pop_monotonic(Array[W]) -> Bool
+
 pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(N, W)], (N, N) -> W?) -> Bool
 
+pub fn edge_is_bridge(Int, Array[(Int, Int)], Int, Int) -> Bool
+
 pub fn error_isolation(Array[Int], Int, Array[Int]) -> Bool
+
+pub fn eulerian_trail_valid(Array[Int], Array[(Int, Int)]) -> Bool
 
 pub fn fail_does_not_consume(Bool, Int, Int) -> Bool
 
 pub fn fifo_order_preserved(Array[Int], Array[Int]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] floyd_warshall_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] ida_star_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn illegal_message_keeps_alive(Bool, Bool, Bool) -> Bool
 
@@ -48,17 +86,39 @@ pub fn interference_distinct(Array[(Int, Int)]) -> Bool
 
 pub fn[T : Eq] is_idempotent(T, (T) -> T) -> Bool
 
+pub fn[T : Compare] is_monotonic_nondecreasing(Array[T]) -> Bool
+
 pub fn[W : @core.Weight] is_non_negative(W) -> Bool
 
 pub fn[N : Eq + Hash] is_reachable(N, (N) -> Bool, (N) -> Array[N], Array[N]) -> Bool
 
 pub fn[N : Eq] is_valid_path(Array[N], N, (N) -> Array[N]) -> Bool
 
+pub fn[N : Eq + Hash, W : @core.Weight] johnson_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
 pub fn level_threshold_filter(Int, Int, Bool) -> Bool
+
+pub fn matching_valid(Array[(Int, Int)], Array[(Int, Int)]) -> Bool
+
+pub fn max_flow_equals_min_cut(Int, Array[(Int, Int)], Array[Int], Array[Bool], Int, Int, Int) -> Bool
+
+pub fn max_flow_valid(Int, Array[(Int, Int)], Array[Int], Array[Int], Int, Int, Int) -> Bool
+
+pub fn min_cost_flow_valid(Int, Array[(Int, Int)], Array[Int], Array[Int], Array[Int], Int, Int, Int, Int) -> Bool
+
+pub fn mst_post(Int, Array[(Int, Int, Int)]) -> Bool
+
+pub fn mst_weight_le_post(Int, Array[(Int, Int, Int)], Int) -> Bool
 
 pub fn nfa_dfa_consistent(Bool, Bool) -> Bool
 
+pub fn pairwise_diff_within(Array[Int], Int) -> Bool
+
+pub fn parse_proof_report(String) -> ProofReport?
+
 pub fn[N, W : @core.Weight] path_cost(Array[N], (N, N) -> W?) -> W?
+
+pub fn perfect_matching_weight(Array[(Int, Int)], Array[(Int, Int)], Array[Int], Int, Int) -> Bool
 
 pub fn[T] preserves(T, (T) -> T, (T) -> Bool) -> Bool
 
@@ -66,17 +126,42 @@ pub fn[N, W : @core.Weight] require_non_negative_edges(Array[(N, N)], (N, N) -> 
 
 pub fn[T : Eq, S] round_trip_eq(T, (T) -> S, (S) -> T?) -> Bool
 
+pub fn scc_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
+
 pub fn scope_binding_consistent(Array[String], Array[String]) -> Bool
 
 pub fn[T : Eq] seq_eq(Array[T], Array[T]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] shortest_path_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn ssa_single_assignment(Array[Int]) -> Bool
 
 pub fn ssa_single_assignment_counts(Array[Int]) -> Bool
 
+pub fn topo_order_post(Array[Int], Array[(Int, Int)]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] yen_post(Array[(Array[N], W)], N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
 // Errors
 
 // Types and methods
+pub(all) struct ProofEntry {
+  algorithm : String
+  property : String
+  passed : Bool
+  evidence : String
+} derive(Eq, Show)
+
+pub(all) struct ProofReport {
+  backends : Array[String]
+  moon_version : String
+  generated_at : String
+  entries : Array[ProofEntry]
+} derive(Eq, Show)
+pub fn ProofReport::any_failed(Self) -> Bool
+pub fn ProofReport::from_json(String) -> Result[Self, String]
+pub fn ProofReport::to_json(Self) -> String
+pub fn ProofReport::to_markdown(Self) -> String
 
 // Type aliases
 

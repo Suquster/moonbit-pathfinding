@@ -110,23 +110,14 @@ fn[N : Eq + Hash, W : @core.Weight + Compare] ch_witness(
 }
 
 ///|
-/// CH preprocessing: contract nodes in edge-difference order (lazy
-/// re-evaluation), emitting a shortcut `u -> v` whenever the witness
-/// search does NOT find a `u ~> v` path of equal-or-smaller cost avoiding
-/// the contracted node.
-///
-/// Returns a fully populated `CHGraph` ready for `ch_query`.
-pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
+/// Helper: build the initial residual successor view plus its reverse
+/// mirror from the original graph. The residual grows with each added
+/// shortcut during contraction; `rev_residual` enables O(deg) incoming-edge
+/// lookups. Shared by `ch_preprocess` and `ch_preprocess_with_order`.
+fn[N : Eq + Hash, W] ch_init_residual(
   nodes : Array[N],
   successors : (N) -> Array[(N, W)],
-) -> CHGraph[N, W] {
-  let level : Map[N, Int] = Map([])
-  let up_adj : Map[N, Array[(N, W)]] = Map([])
-  let dn_adj : Map[N, Array[(N, W)]] = Map([])
-  let shortcut : Map[(N, N), N] = Map([])
-  // Residual successor view: starts as the original graph, grows with
-  // each added shortcut. `rev_residual` mirrors it for O(deg) incoming-edge
-  // lookups during contraction.
+) -> (Map[N, Array[(N, W)]], Map[N, Array[(N, W)]]) {
   let residual : Map[N, Array[(N, W)]] = Map([])
   let rev_residual : Map[N, Array[(N, W)]] = Map([])
   for n in nodes {
@@ -140,6 +131,146 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
       rev_residual[v] = lst
     }
   }
+  (residual, rev_residual)
+}
+
+///|
+/// Helper: contract a single node `v` on the residual graph. Enumerates
+/// every `(u -> v -> x)` pair over uncontracted neighbours; when the
+/// witness Dijkstra finds no equal-or-cheaper bypass, a shortcut
+/// `u -> x` (weight `w_uv + w_vx`, middle `v`) is appended to the residual
+/// graph and recorded in `shortcut`. Finally marks `v` contracted.
+///
+/// Shared by both the edge-difference ordering (`ch_preprocess`) and the
+/// caller-supplied ordering (`ch_preprocess_with_order`) so the two entry
+/// points stay behaviourally identical per contraction step.
+fn[N : Eq + Hash, W : @core.Weight + Compare] ch_contract_node(
+  v : N,
+  residual : Map[N, Array[(N, W)]],
+  rev_residual : Map[N, Array[(N, W)]],
+  contracted : Map[N, Bool],
+  shortcut : Map[(N, N), N],
+) -> Unit {
+  // Enumerate (u -> v -> x) pairs on the residual graph via the reverse
+  // adjacency (deduplicating by taking each uncontracted in-neighbour).
+  let incoming : Array[(N, W)] = []
+  for e in rev_residual.get(v).unwrap_or([]) {
+    let (u, w) = e
+    if contracted.get(u).unwrap_or(false) || u == v {
+      continue
+    }
+    incoming.push((u, w))
+  }
+  let outgoing = residual.get(v).unwrap_or([])
+  for in_pair in incoming {
+    let (u, w_uv) = in_pair
+    for out_pair in outgoing {
+      let (x, w_vx) = out_pair
+      if contracted.get(x).unwrap_or(false) {
+        continue
+      }
+      // Skip the contracted node's own self-loop (`x == v`): a `v -> v`
+      // edge is never part of a shortest simple path through `v`, and
+      // admitting it would mint a degenerate shortcut whose middle equals
+      // an endpoint (`shortcut[(u, v)] = v`). Such a record both violates
+      // the contraction hierarchy invariant and can OVERWRITE a legitimate
+      // shortcut for the same key — which previously caused `ch_query` to
+      // emit an unexpanded `[u, v]` path on graphs containing self-loops.
+      if x == v {
+        continue
+      }
+      if u == x {
+        continue
+      }
+      let via_cost = @core.Weight::add(w_uv, w_vx)
+      // Witness search on residual graph, avoiding v itself.
+      let witness = ch_witness(
+        u,
+        x,
+        v,
+        via_cost,
+        fn(n) { residual.get(n).unwrap_or([]) },
+        contracted,
+      )
+      let need_shortcut = match witness {
+        Some(wc) => via_cost < wc
+        None => true
+      }
+      if need_shortcut {
+        // Append the synthetic edge u -> x with weight via_cost to
+        // residual (and its mirror in rev_residual), and record the
+        // middle node for later expansion.
+        let u_list = residual.get(u).unwrap_or([])
+        u_list.push((x, via_cost))
+        residual[u] = u_list
+        let x_list = rev_residual.get(x).unwrap_or([])
+        x_list.push((u, via_cost))
+        rev_residual[x] = x_list
+        shortcut[(u, x)] = v
+      }
+    }
+  }
+  contracted[v] = true
+}
+
+///|
+/// Helper: split the final residual edges into upward / downward adjacency
+/// using the assigned contraction `level`s. An edge `u -> v` is *upward*
+/// when `level[v] > level[u]` (used by the forward query Dijkstra), and is
+/// otherwise stored as a *downward* edge **into** `v` (used by the backward
+/// Dijkstra). Shared by both CH preprocessing entry points.
+fn[N : Eq + Hash, W] ch_build_adjacency(
+  nodes : Array[N],
+  level : Map[N, Int],
+  residual : Map[N, Array[(N, W)]],
+) -> (Map[N, Array[(N, W)]], Map[N, Array[(N, W)]]) {
+  let up_adj : Map[N, Array[(N, W)]] = Map([])
+  let dn_adj : Map[N, Array[(N, W)]] = Map([])
+  for u in nodes {
+    let level_u = level.get(u).unwrap()
+    let out_edges = residual.get(u).unwrap_or([])
+    for e in out_edges {
+      let (v, w) = e
+      let level_v = level.get(v).unwrap()
+      if level_v > level_u {
+        let lst = up_adj.get(u).unwrap_or([])
+        lst.push((v, w))
+        up_adj[u] = lst
+      } else {
+        let lst = dn_adj.get(v).unwrap_or([])
+        lst.push((u, w))
+        dn_adj[v] = lst
+      }
+    }
+  }
+  (up_adj, dn_adj)
+}
+
+///|
+/// CH preprocessing: contract nodes in edge-difference order (lazy
+/// re-evaluation), emitting a shortcut `u -> v` whenever the witness
+/// search does NOT find a `u ~> v` path of equal-or-smaller cost avoiding
+/// the contracted node.
+///
+/// Returns a fully populated `CHGraph` ready for `ch_query`.
+///
+/// ## ASCII 示意（3×3 网格底图，预处理输入）
+/// 预处理按边差（edge-difference）顺序逐个收缩底图的全部节点，并在 witness
+/// 搜索找不到更优旁路时补充捷径。下图以一个 3×3 网格底图为例（`S`/`G` 仅
+/// 标示后续查询的两端，预处理本身遍历全部节点、不产出单条路径）：
+///
+///     S..
+///     .#.
+///     ..G
+///
+/// 图例：S=起点 G=终点 #=障碍 .=空闲（预处理阶段不产生路径字符 `*`）
+pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
+  nodes : Array[N],
+  successors : (N) -> Array[(N, W)],
+) -> CHGraph[N, W] {
+  let level : Map[N, Int] = Map([])
+  let shortcut : Map[(N, N), N] = Map([])
+  let (residual, rev_residual) = ch_init_residual(nodes, successors)
   let contracted : Map[N, Bool] = Map([])
   // Edge-difference estimate for contraction ordering: the number of
   // potential shortcuts (in-degree x out-degree among uncontracted
@@ -180,107 +311,98 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(
     }
     level[v] = next_level
     next_level += 1
-    // Enumerate (u -> v -> w) pairs on the residual graph via the reverse
-    // adjacency (deduplicating by taking each uncontracted in-neighbour).
-    let incoming : Array[(N, W)] = []
-    for e in rev_residual.get(v).unwrap_or([]) {
-      let (u, w) = e
-      if contracted.get(u).unwrap_or(false) || u == v {
-        continue
-      }
-      incoming.push((u, w))
-    }
-    let outgoing = residual.get(v).unwrap_or([])
-    for in_pair in incoming {
-      let (u, w_uv) = in_pair
-      for out_pair in outgoing {
-        let (x, w_vx) = out_pair
-        if contracted.get(x).unwrap_or(false) {
-          continue
-        }
-        if u == x {
-          continue
-        }
-        let via_cost = @core.Weight::add(w_uv, w_vx)
-        // Witness search on residual graph, avoiding v itself.
-        let witness = ch_witness(
-          u,
-          x,
-          v,
-          via_cost,
-          fn(n) { residual.get(n).unwrap_or([]) },
-          contracted,
-        )
-        let need_shortcut = match witness {
-          Some(wc) => via_cost < wc
-          None => true
-        }
-        if need_shortcut {
-          // Append the synthetic edge u -> x with weight via_cost to
-          // residual (and its mirror in rev_residual), and record the
-          // middle node for later expansion.
-          let u_list = residual.get(u).unwrap_or([])
-          u_list.push((x, via_cost))
-          residual[u] = u_list
-          let x_list = rev_residual.get(x).unwrap_or([])
-          x_list.push((u, via_cost))
-          rev_residual[x] = x_list
-          shortcut[(u, x)] = v
-        }
-      }
-    }
-    contracted[v] = true
+    ch_contract_node(v, residual, rev_residual, contracted, shortcut)
   }
   // Build upward / downward adjacency from the final residual graph.
-  for u in nodes {
-    let level_u = level.get(u).unwrap()
-    let out_edges = residual.get(u).unwrap_or([])
-    for e in out_edges {
-      let (v, w) = e
-      let level_v = level.get(v).unwrap()
-      if level_v > level_u {
-        let lst = up_adj.get(u).unwrap_or([])
-        lst.push((v, w))
-        up_adj[u] = lst
-      } else {
-        let lst = dn_adj.get(v).unwrap_or([])
-        lst.push((u, w))
-        dn_adj[v] = lst
-      }
-    }
-  }
+  let (up_adj, dn_adj) = ch_build_adjacency(nodes, level, residual)
   { nodes, level, up_adj, dn_adj, shortcut }
 }
 
 ///|
+/// Helper: decide whether `(a, b)` should be treated as a *shortcut* and,
+/// if so, return its recorded middle node `m`.
+///
+/// **Hierarchy guard (R8.1 production-grade robustness).** A genuine CH
+/// shortcut `(a, b)` is emitted while contracting its middle node `m`, so
+/// the contraction invariant guarantees `level[m] < level[a]` **and**
+/// `level[m] < level[b]` (the middle was contracted strictly earlier than
+/// both endpoints). We re-verify that invariant here before recursing:
+///
+///   * If the recorded `m` violates it (anomalous / overwritten shortcut
+///     reference, or a self/parallel-edge artefact such as `m == a` or
+///     `m == b`), we **refuse** to treat `(a, b)` as a shortcut and fall
+///     back to the direct edge. This is the safe degradation demanded by
+///     R8.1: never crash, never loop — return a well-formed edge instead.
+///   * The guard is also what makes expansion provably terminating: every
+///     decomposition `(a, b) -> (a, m) + (m, b)` strictly *decreases*
+///     `level[·] + level[·]` for both children (because `level[m]` is
+///     below both endpoints), and the sum is a non-negative integer, so
+///     the explicit-stack loop below cannot diverge.
+fn[N : Eq + Hash, W] ch_shortcut_mid(graph : CHGraph[N, W], a : N, b : N) -> N? {
+  match graph.shortcut.get((a, b)) {
+    Some(mid) => {
+      // A shortcut whose middle coincides with an endpoint is degenerate
+      // (would recurse on the same pair) — reject it.
+      if mid == a || mid == b {
+        return None
+      }
+      match (graph.level.get(mid), graph.level.get(a), graph.level.get(b)) {
+        (Some(lm), Some(la), Some(lb)) =>
+          // Contraction invariant: middle ranks below both endpoints.
+          if lm < la && lm < lb {
+            Some(mid)
+          } else {
+            None
+          }
+        // Missing level information ⇒ cannot certify the invariant ⇒
+        // degrade safely to the direct edge rather than risk a cycle.
+        _ => None
+      }
+    }
+    None => None
+  }
+}
+
+///|
 /// Helper: expand a possibly-shortcut edge into the underlying original
-/// path. If `(u, v)` is a shortcut with middle node `m`, recursively
-/// expand `(u, m)` then `(m, v)`. If `(u, v)` is an original edge, return
-/// just `[u, v]`. The final path of `ch_query` is built by concatenating
-/// these expansions pairwise and deduplicating the seam nodes.
+/// path. If `(u, v)` is a shortcut with middle node `m`, the edge unfolds
+/// into `(u, m)` followed by `(m, v)`; original (non-shortcut) edges
+/// contribute themselves. The final path of `ch_query` is built by
+/// concatenating these expansions pairwise and deduplicating the seam
+/// nodes.
+///
+/// **Iterative, stack-safe (R8.1).** Earlier this routine recursed on
+/// `(u, m)` / `(m, v)`, so an anomalous shortcut reference (e.g. a
+/// shortcut cycle produced by overwritten middles on graphs with parallel
+/// edges / self-loops) could blow the native call stack
+/// (`Maximum call stack size exceeded`). We now drive the expansion with
+/// an **explicit stack** of pending `(a, b)` pairs and the
+/// `ch_shortcut_mid` hierarchy guard, which together guarantee the walk
+/// terminates for *any* preprocessed graph and always yields a valid
+/// edge-by-edge node sequence `[u, …, v]`.
 fn[N : Eq + Hash, W] expand_edge(
   graph : CHGraph[N, W],
   u : N,
   v : N,
 ) -> Array[N] {
-  match graph.shortcut.get((u, v)) {
-    Some(mid) => {
-      let left = expand_edge(graph, u, mid)
-      let right = expand_edge(graph, mid, v)
-      let out : Array[N] = []
-      for x in left {
-        out.push(x)
+  // Output begins with the start node; every resolved *direct* edge `(a,b)`
+  // appends its target `b`, yielding `[u, …, v]` in forward order.
+  let out : Array[N] = [u]
+  // Pending pairs to resolve. We push children so that the *left* child is
+  // popped first (LIFO): for a shortcut `(a,b)->m` we push `(m,b)` then
+  // `(a,m)`, so `(a,m)` is processed before `(m,b)` — preserving order.
+  let stack : Array[(N, N)] = [(u, v)]
+  while stack.length() > 0 {
+    let (a, b) = stack.pop().unwrap()
+    match ch_shortcut_mid(graph, a, b) {
+      Some(mid) => {
+        stack.push((mid, b))
+        stack.push((a, mid))
       }
-      // Skip `right[0] == mid`, the seam, to avoid duplication.
-      let mut i = 1
-      while i < right.length() {
-        out.push(right[i])
-        i += 1
-      }
-      out
+      None => out.push(b)
     }
-    None => [u, v]
   }
+  out
 }
 
 ///|
@@ -387,6 +509,18 @@ fn[N : Eq + Hash, W : @core.Weight + Compare] ch_up_dijkstra(
 ///
 /// Returns `(path, cost)` where `path` lists every **original** node from
 /// `source` to `target` in order, matching the Dijkstra-equivalent output.
+///
+/// ## ASCII 示意（4×4 网格底图，分层查询结果）
+/// CH 先将图预处理为带捷径的层级结构，查询时在两端各做一次「向上」
+/// Dijkstra，得到与朴素 Dijkstra 等价的最短路径。将网格底图的相邻空闲格
+/// 视为单位边时，下图 `*` 标出从源点 `S` 到目标 `G` 的查询结果路径：
+///
+///     S**.
+///     ..*.
+///     #.*#
+///     ..*G
+///
+/// 图例：S=起点 G=终点 #=障碍 *=路径 .=空闲
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_query(
   graph : CHGraph[N, W],
   source : N,

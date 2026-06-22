@@ -1,0 +1,4592 @@
+{
+  "schema": "moonbit-pathfinding.doc-api-guard.v1",
+  "generated_at": "2026-06-21T15:37:02Z",
+  "generated_by": "scripts/doc_api_guard.ps1",
+  "min_lines": 5,
+  "src_dir": "src",
+  "exclude_globs": [
+    "*_test.mbt",
+    "*_wbtest.mbt"
+  ],
+  "scanned_files": 260,
+  "total_apis": 1269,
+  "violation_count": 915,
+  "status": "failed",
+  "violations": [
+    {
+      "api": "fn ActorRef::pending",
+      "location": "src/actor/actor.mbt:87",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct CorrelationId",
+      "location": "src/actor/ask.mbt:16",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn AskBroker::new",
+      "location": "src/actor/ask.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn AskBroker::allocate",
+      "location": "src/actor/ask.mbt:52",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn AskBroker::has_reply",
+      "location": "src/actor/ask.mbt:98",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::unbecome",
+      "location": "src/actor/behavior.mbt:108",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::stash",
+      "location": "src/actor/behavior.mbt:114",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::unstash_all",
+      "location": "src/actor/behavior.mbt:120",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::unwatch",
+      "location": "src/actor/behavior.mbt:139",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn behavior_stack_new",
+      "location": "src/actor/behavior.mbt:150",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn behavior_stack_depth",
+      "location": "src/actor/behavior.mbt:158",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn behavior_stack_push",
+      "location": "src/actor/behavior.mbt:164",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Behavior::new",
+      "location": "src/actor/behavior.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Behavior::apply",
+      "location": "src/actor/behavior.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::new",
+      "location": "src/actor/behavior.mbt:79",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::id",
+      "location": "src/actor/behavior.mbt:85",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorContext::effect_count",
+      "location": "src/actor/behavior.mbt:91",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::length",
+      "location": "src/actor/bounded_mailbox.mbt:109",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::capacity",
+      "location": "src/actor/bounded_mailbox.mbt:115",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::is_empty",
+      "location": "src/actor/bounded_mailbox.mbt:121",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::counts",
+      "location": "src/actor/bounded_mailbox.mbt:127",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum OfferResult",
+      "location": "src/actor/bounded_mailbox.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct BoundedMailbox",
+      "location": "src/actor/bounded_mailbox.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::new",
+      "location": "src/actor/bounded_mailbox.mbt:47",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedMailbox::dequeue",
+      "location": "src/actor/bounded_mailbox.mbt:99",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct WatchRegistry",
+      "location": "src/actor/deathwatch.mbt:25",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn WatchRegistry::new",
+      "location": "src/actor/deathwatch.mbt:31",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn WatchRegistry::unwatch",
+      "location": "src/actor/deathwatch.mbt:58",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn WatchRegistry::active_count",
+      "location": "src/actor/deathwatch.mbt:94",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn LifecycleHooks::new",
+      "location": "src/actor/lifecycle.mbt:57",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn start_state",
+      "location": "src/actor/lifecycle.mbt:89",
+      "doc_lines": 1
+    },
+    {
+      "api": "let actor_version",
+      "location": "src/actor/release.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "let actor_name",
+      "location": "src/actor/release.mbt:40",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum RoutingStrategy",
+      "location": "src/actor/router.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Router::new",
+      "location": "src/actor/router.mbt:35",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Router::worker_count",
+      "location": "src/actor/router.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scheduler::new",
+      "location": "src/actor/scheduler.mbt:102",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scheduler::state_of",
+      "location": "src/actor/scheduler.mbt:214",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scheduler::status_of",
+      "location": "src/actor/scheduler.mbt:226",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scheduler::is_running",
+      "location": "src/actor/scheduler.mbt:238",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scheduler::pending",
+      "location": "src/actor/scheduler.mbt:250",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct StashBuffer",
+      "location": "src/actor/stash.mbt:12",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn StashBuffer::new",
+      "location": "src/actor/stash.mbt:18",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn StashBuffer::push",
+      "location": "src/actor/stash.mbt:24",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn StashBuffer::length",
+      "location": "src/actor/stash.mbt:30",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn StashBuffer::is_empty",
+      "location": "src/actor/stash.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn StashBuffer::clear",
+      "location": "src/actor/stash.mbt:42",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RestartIntensity::new",
+      "location": "src/actor/supervision.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SupervisorSpec::new",
+      "location": "src/actor/supervision.mbt:69",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::set_directive",
+      "location": "src/actor/system.mbt:191",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ActorSystem",
+      "location": "src/actor/system.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::new",
+      "location": "src/actor/system.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::run_until_idle",
+      "location": "src/actor/system.mbt:595",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::trace_of",
+      "location": "src/actor/system.mbt:605",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::state_of",
+      "location": "src/actor/system.mbt:613",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::status_of",
+      "location": "src/actor/system.mbt:625",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::is_running",
+      "location": "src/actor/system.mbt:637",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::restart_count",
+      "location": "src/actor/system.mbt:649",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::with_seed",
+      "location": "src/actor/system.mbt:66",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActorSystem::pending",
+      "location": "src/actor/system.mbt:661",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::new",
+      "location": "src/actor/types.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::enqueue",
+      "location": "src/actor/types.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::peek",
+      "location": "src/actor/types.mbt:68",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::is_empty",
+      "location": "src/actor/types.mbt:78",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::length",
+      "location": "src/actor/types.mbt:84",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::close",
+      "location": "src/actor/types.mbt:90",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Mailbox::is_closed",
+      "location": "src/actor/types.mbt:96",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActionCache::hit",
+      "location": "src/build_tool/cache.mbt:100",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActionCache::get",
+      "location": "src/build_tool/cache.mbt:106",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn cache_eq",
+      "location": "src/build_tool/cache.mbt:284",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn action_fingerprint",
+      "location": "src/build_tool/cache.mbt:41",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ActionCache",
+      "location": "src/build_tool/cache.mbt:78",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActionCache::new",
+      "location": "src/build_tool/cache.mbt:84",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ActionCache::record",
+      "location": "src/build_tool/cache.mbt:90",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn demo_rules",
+      "location": "src/build_tool/demo.mbt:19",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for ActionResult::output",
+      "location": "src/build_tool/executor.mbt:114",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DryRunExecutor::new",
+      "location": "src/build_tool/executor.mbt:152",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DryRunExecutor::recorded",
+      "location": "src/build_tool/executor.mbt:158",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Executor for DryRunExecutor::execute",
+      "location": "src/build_tool/executor.mbt:164",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CallbackExecutor::new",
+      "location": "src/build_tool/executor.mbt:181",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Executor for CallbackExecutor::execute",
+      "location": "src/build_tool/executor.mbt:187",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BuildLog::new",
+      "location": "src/build_tool/executor.mbt:261",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BuildLog::record",
+      "location": "src/build_tool/executor.mbt:267",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Provenance",
+      "location": "src/build_tool/provenance.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn dirty_targets",
+      "location": "src/build_tool/rebuild.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "let build_tool_name",
+      "location": "src/build_tool/release.mbt:31",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Recipe",
+      "location": "src/build_tool/rule_grammar.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Rule",
+      "location": "src/build_tool/rule_grammar.mbt:32",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PatternRule::instantiate",
+      "location": "src/build_tool/rule_grammar.mbt:324",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RuleSet::match_pattern",
+      "location": "src/build_tool/rule_grammar.mbt:333",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RuleSet::recipe_of",
+      "location": "src/build_tool/rule_grammar.mbt:347",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RuleSet::is_phony",
+      "location": "src/build_tool/rule_grammar.mbt:358",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseError::new",
+      "location": "src/build_tool/types.mbt:140",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Cycle::new",
+      "location": "src/build_tool/types.mbt:156",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Target::new",
+      "location": "src/build_tool/types.mbt:30",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for Target::output",
+      "location": "src/build_tool/types.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BuildGraph::new",
+      "location": "src/build_tool/types.mbt:55",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BuildCache::new",
+      "location": "src/build_tool/types.mbt:87",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct MoveSet",
+      "location": "src/codegen_infra/coalescing.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum CoalesceStrategy",
+      "location": "src/codegen_infra/coalescing.mbt:20",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn can_coalesce_george",
+      "location": "src/codegen_infra/coalescing.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn can_coalesce_briggs",
+      "location": "src/codegen_infra/coalescing.mbt:67",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct TargetInstr",
+      "location": "src/codegen_infra/codegen_infra.mbt:102",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct LiveInterval",
+      "location": "src/codegen_infra/codegen_infra.mbt:43",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Phi",
+      "location": "src/codegen_infra/codegen_infra.mbt:62",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Pass",
+      "location": "src/codegen_infra/codegen_infra.mbt:79",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct IselRule",
+      "location": "src/codegen_infra/codegen_infra.mbt:87",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum IrNode",
+      "location": "src/codegen_infra/codegen_infra.mbt:94",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct SpillCost",
+      "location": "src/codegen_infra/coloring.mbt:18",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SpillCost::uniform",
+      "location": "src/codegen_infra/coloring.mbt:24",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn allocate_coloring_briggs",
+      "location": "src/codegen_infra/coloring.mbt:56",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn interference_from_intervals",
+      "location": "src/codegen_infra/consistency.mbt:20",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn allocation_has_spill",
+      "location": "src/codegen_infra/consistency.mbt:72",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn demo_isel_rules",
+      "location": "src/codegen_infra/demo.mbt:41",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn demo_ir",
+      "location": "src/codegen_infra/demo.mbt:53",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct PipelineStages",
+      "location": "src/codegen_infra/demo.mbt:9",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DomTree::dominates",
+      "location": "src/codegen_infra/dominator.mbt:179",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct EvalResult",
+      "location": "src/codegen_infra/evaluate.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn gvn",
+      "location": "src/codegen_infra/gvn.mbt:156",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn dce_strong",
+      "location": "src/codegen_infra/gvn.mbt:47",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn copy_prop_strong",
+      "location": "src/codegen_infra/gvn.mbt:67",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for IrError::output",
+      "location": "src/codegen_infra/ir_validator.mbt:73",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct LivenessResult",
+      "location": "src/codegen_infra/liveness.mbt:23",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn destruct_ssa",
+      "location": "src/codegen_infra/out_of_ssa.mbt:127",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum OptPass",
+      "location": "src/codegen_infra/pipeline.mbt:13",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn run_to_fixpoint",
+      "location": "src/codegen_infra/pipeline.mbt:42",
+      "doc_lines": 1
+    },
+    {
+      "api": "let codegen_infra_version",
+      "location": "src/codegen_infra/release.mbt:19",
+      "doc_lines": 1
+    },
+    {
+      "api": "let codegen_infra_name",
+      "location": "src/codegen_infra/release.mbt:23",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn sccp",
+      "location": "src/codegen_infra/sccp.mbt:126",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for TypedBlock::output",
+      "location": "src/codegen_infra/typed_ir.mbt:269",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for TypedFunction::output",
+      "location": "src/codegen_infra/typed_ir.mbt:303",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for Operand::output",
+      "location": "src/codegen_infra/typed_ir.mbt:77",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DSU::new",
+      "location": "src/core/dsu.mbt:18",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DSU::make_set",
+      "location": "src/core/dsu.mbt:24",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DSU::find",
+      "location": "src/core/dsu.mbt:33",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DSU::same",
+      "location": "src/core/dsu.mbt:79",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PQueue::new",
+      "location": "src/core/pqueue.mbt:18",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PQueue::len",
+      "location": "src/core/pqueue.mbt:24",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PQueue::is_empty",
+      "location": "src/core/pqueue.mbt:30",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PQueue::push",
+      "location": "src/core/pqueue.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn PQueue::pop",
+      "location": "src/core/pqueue.mbt:69",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct AllPairs",
+      "location": "src/directed/floyd_warshall_paths.mbt:8",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn World::trace_view",
+      "location": "src/dst/des_sim.mbt:374",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn World::clock_now",
+      "location": "src/dst/des_sim.mbt:380",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Action",
+      "location": "src/dst/des_types.mbt:106",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Protocol::new",
+      "location": "src/dst/des_types.mbt:127",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DesScenario::new",
+      "location": "src/dst/des_types.mbt:166",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SimEvent::time_of",
+      "location": "src/dst/des_types.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn NodeApp::empty",
+      "location": "src/dst/des_types.mbt:81",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Pending",
+      "location": "src/dst/event_queue.mbt:17",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct QueuedEvent",
+      "location": "src/dst/event_queue.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct EventQueue",
+      "location": "src/dst/event_queue.mbt:35",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn EventQueue::new",
+      "location": "src/dst/event_queue.mbt:41",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn EventQueue::is_empty",
+      "location": "src/dst/event_queue.mbt:47",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn EventQueue::size",
+      "location": "src/dst/event_queue.mbt:53",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn EventQueue::push",
+      "location": "src/dst/event_queue.mbt:59",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for EventuallyResult::output",
+      "location": "src/dst/eventually.mbt:43",
+      "doc_lines": 1
+    },
+    {
+      "api": "type Schedule",
+      "location": "src/dst/explore.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct FaultPolicyEx",
+      "location": "src/dst/faults_ext.mbt:39",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FaultPolicyEx::new",
+      "location": "src/dst/faults_ext.mbt:47",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FaultPolicyEx::of_legacy",
+      "location": "src/dst/faults_ext.mbt:70",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Invariant::new",
+      "location": "src/dst/invariant.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum OpKind",
+      "location": "src/dst/linearizability.mbt:15",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn OpEvent::invoke",
+      "location": "src/dst/linearizability.mbt:40",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn OpEvent::ret",
+      "location": "src/dst/linearizability.mbt:51",
+      "doc_lines": 1
+    },
+    {
+      "api": "type History",
+      "location": "src/dst/linearizability.mbt:62",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct RegisterModel",
+      "location": "src/dst/linearizability.mbt:66",
+      "doc_lines": 1
+    },
+    {
+      "api": "let dst_name",
+      "location": "src/dst/release.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ShrinkOutcome::is_minimal",
+      "location": "src/dst/shrink.mbt:127",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ShrinkOutcome::scenario",
+      "location": "src/dst/shrink.mbt:136",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DesScenario::size",
+      "location": "src/dst/shrink.mbt:15",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn default_fails",
+      "location": "src/dst/shrink.mbt:39",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ExecutableTask::new",
+      "location": "src/dst/task_body.mbt:112",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SimContext::new",
+      "location": "src/dst/task_body.mbt:49",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum CodecError",
+      "location": "src/dst/trace_codec.mbt:11",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn serialize_result",
+      "location": "src/dst/trace_codec.mbt:141",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CodecError::pos",
+      "location": "src/dst/trace_codec.mbt:17",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn result_to_bytes",
+      "location": "src/dst/trace_codec.mbt:526",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn result_of_bytes",
+      "location": "src/dst/trace_codec.mbt:537",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Sim::new",
+      "location": "src/dst/types.mbt:149",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Task::new",
+      "location": "src/dst/types.mbt:42",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FaultPolicy::new",
+      "location": "src/dst/types.mbt:75",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Scenario::new",
+      "location": "src/dst/types.mbt:97",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Gen::new",
+      "location": "src/infra_pbt/pbt.mbt:105",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Gen::generate",
+      "location": "src/infra_pbt/pbt.mbt:111",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn gen_int_range",
+      "location": "src/infra_pbt/pbt.mbt:117",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn gen_bool",
+      "location": "src/infra_pbt/pbt.mbt:123",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Rng::next_below",
+      "location": "src/infra_pbt/pbt.mbt:69",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Rng::next_range",
+      "location": "src/infra_pbt/pbt.mbt:80",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Rng::next_bool",
+      "location": "src/infra_pbt/pbt.mbt:90",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Shrinkable::new",
+      "location": "src/infra_pbt/shrink.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Shrinkable::candidates",
+      "location": "src/infra_pbt/shrink.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Stats::new",
+      "location": "src/infra_pbt/stats.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Stats::count",
+      "location": "src/infra_pbt/stats.mbt:68",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn TextBuilder::is_empty",
+      "location": "src/infra_text/text_builder.mbt:128",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct DemoOutcome",
+      "location": "src/logging/demo.mbt:18",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn run_demo",
+      "location": "src/logging/demo.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn EnvFilter::threshold_for",
+      "location": "src/logging/filter.mbt:130",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn field_filter",
+      "location": "src/logging/filter.mbt:152",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Sink::new",
+      "location": "src/logging/formatter.mbt:90",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn set_threshold",
+      "location": "src/logging/logging.mbt:100",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn current_threshold",
+      "location": "src/logging/logging.mbt:106",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn captured_events",
+      "location": "src/logging/logging.mbt:128",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn finished_spans",
+      "location": "src/logging/logging.mbt:134",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn current_trace",
+      "location": "src/logging/logging.mbt:163",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn level_count",
+      "location": "src/logging/metrics.mbt:35",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum SpanStatus",
+      "location": "src/logging/otel_span.mbt:19",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum SpanKind",
+      "location": "src/logging/otel_span.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SpanData::set_attribute",
+      "location": "src/logging/otel_span.mbt:71",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SpanData::set_status",
+      "location": "src/logging/otel_span.mbt:93",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn SpanData::set_kind",
+      "location": "src/logging/otel_span.mbt:99",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct RedactionPolicy",
+      "location": "src/logging/redaction.mbt:20",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RedactionPolicy::by_names",
+      "location": "src/logging/redaction.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RedactionPolicy::with_predicate",
+      "location": "src/logging/redaction.mbt:33",
+      "doc_lines": 1
+    },
+    {
+      "api": "let logging_name",
+      "location": "src/logging/release.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RateLimiter::new",
+      "location": "src/logging/sampling.mbt:164",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn W3CContext::is_sampled",
+      "location": "src/logging/trace_context.mbt:98",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Event::new",
+      "location": "src/logging/types.mbt:148",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Level::rank",
+      "location": "src/logging/types.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Level::label",
+      "location": "src/logging/types.mbt:57",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Value::is_nested",
+      "location": "src/logging/value_ext.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CancelRegistry::new",
+      "location": "src/lsp_binding/cancel.mbt:61",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CancelRegistry::cancel",
+      "location": "src/lsp_binding/cancel.mbt:67",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CancelRegistry::is_cancelled",
+      "location": "src/lsp_binding/cancel.mbt:78",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FrameReader::new",
+      "location": "src/lsp_binding/framing.mbt:331",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FrameReader::push",
+      "location": "src/lsp_binding/framing.mbt:338",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Router::new",
+      "location": "src/lsp_binding/types.mbt:115",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Router::register",
+      "location": "src/lsp_binding/types.mbt:121",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Router::lookup",
+      "location": "src/lsp_binding/types.mbt:131",
+      "doc_lines": 1
+    },
+    {
+      "api": "let parse_error_code",
+      "location": "src/lsp_binding/types.mbt:22",
+      "doc_lines": 1
+    },
+    {
+      "api": "let invalid_request_code",
+      "location": "src/lsp_binding/types.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "let method_not_found_code",
+      "location": "src/lsp_binding/types.mbt:30",
+      "doc_lines": 1
+    },
+    {
+      "api": "let invalid_params_code",
+      "location": "src/lsp_binding/types.mbt:34",
+      "doc_lines": 1
+    },
+    {
+      "api": "let internal_error_code",
+      "location": "src/lsp_binding/types.mbt:38",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RpcError::new",
+      "location": "src/lsp_binding/types.mbt:66",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn RpcError::with_data",
+      "location": "src/lsp_binding/types.mbt:72",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn InitializeParamsExt::empty",
+      "location": "src/lsp_server/capabilities_ext.mbt:103",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn InitializeParamsExt::new",
+      "location": "src/lsp_server/capabilities_ext.mbt:109",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ServerCapabilitiesExt::none",
+      "location": "src/lsp_server/capabilities_ext.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Reference",
+      "location": "src/lsp_server/dsl.mbt:26",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Analysis",
+      "location": "src/lsp_server/dsl.mbt:33",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for FrameError::output",
+      "location": "src/lsp_server/jsonrpc_frame.mbt:128",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for JsonRpcError::output",
+      "location": "src/lsp_server/jsonrpc_frame.mbt:336",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct LspSession",
+      "location": "src/lsp_server/lifecycle.mbt:195",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn LspSession::new",
+      "location": "src/lsp_server/lifecycle.mbt:203",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn LspSession::state",
+      "location": "src/lsp_server/lifecycle.mbt:213",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum LifecycleState",
+      "location": "src/lsp_server/lifecycle.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum PositionEncoding",
+      "location": "src/lsp_server/position_encoding.mbt:41",
+      "doc_lines": 1
+    },
+    {
+      "api": "let lsp_version",
+      "location": "src/lsp_server/release.mbt:23",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum TextDocumentSyncKind",
+      "location": "src/lsp_server/sync.mbt:31",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct InitializeParams",
+      "location": "src/lsp_server/types.mbt:103",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Position",
+      "location": "src/lsp_server/types.mbt:22",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Range",
+      "location": "src/lsp_server/types.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Location",
+      "location": "src/lsp_server/types.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum DiagnosticSeverity",
+      "location": "src/lsp_server/types.mbt:55",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum CompletionItemKind",
+      "location": "src/lsp_server/types.mbt:75",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Hover",
+      "location": "src/lsp_server/types.mbt:94",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Bytecode",
+      "location": "src/mini_compiler/bytecode.mbt:119",
+      "doc_lines": 1
+    },
+    {
+      "api": "let demo_factorial_src",
+      "location": "src/mini_compiler/demo.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "let demo_fib_src",
+      "location": "src/mini_compiler/demo.mbt:32",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FreshGen::new",
+      "location": "src/mini_compiler/infer.mbt:36",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FreshGen::fresh",
+      "location": "src/mini_compiler/infer.mbt:42",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn type_of",
+      "location": "src/mini_compiler/infer.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for Pattern::output",
+      "location": "src/mini_compiler/match_ext.mbt:132",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for TyX::output",
+      "location": "src/mini_compiler/match_ext.mbt:212",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for ValX::output",
+      "location": "src/mini_compiler/match_ext.mbt:277",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for TypeMismatch::output",
+      "location": "src/mini_compiler/match_ext.mbt:301",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ml_env_empty",
+      "location": "src/mini_compiler/ml_eval.mbt:45",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Ty",
+      "location": "src/mini_compiler/ml_types.mbt:107",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Scheme",
+      "location": "src/mini_compiler/ml_types.mbt:122",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum TExpr",
+      "location": "src/mini_compiler/ml_types.mbt:129",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Val",
+      "location": "src/mini_compiler/ml_types.mbt:158",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct TyEnv",
+      "location": "src/mini_compiler/ml_types.mbt:190",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum MlToken",
+      "location": "src/mini_compiler/ml_types.mbt:32",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum CmpOp",
+      "location": "src/mini_compiler/ml_types.mbt:51",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum LogicOp",
+      "location": "src/mini_compiler/ml_types.mbt:68",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn print_ast",
+      "location": "src/mini_compiler/printer.mbt:13",
+      "doc_lines": 1
+    },
+    {
+      "api": "let mini_compiler_name",
+      "location": "src/mini_compiler/release.mbt:30",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Diagnostic::new",
+      "location": "src/mini_compiler/types.mbt:141",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum BinOp",
+      "location": "src/mini_compiler/types.mbt:49",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn occurs",
+      "location": "src/mini_compiler/unify.mbt:124",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn subst_empty",
+      "location": "src/mini_compiler/unify.mbt:21",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn subst_single",
+      "location": "src/mini_compiler/unify.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Expr",
+      "location": "src/parser_combinator/arith.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn eval_expr",
+      "location": "src/parser_combinator/arith.mbt:158",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grammar::run_packrat_bounded_string",
+      "location": "src/parser_combinator/bounded_packrat.mbt:178",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedCache::len",
+      "location": "src/parser_combinator/bounded_packrat.mbt:62",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedCache::capacity",
+      "location": "src/parser_combinator/bounded_packrat.mbt:68",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BoundedCache::contains",
+      "location": "src/parser_combinator/bounded_packrat.mbt:74",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn cut",
+      "location": "src/parser_combinator/commit.mbt:27",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grammar::pure",
+      "location": "src/parser_combinator/engine.mbt:109",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grammar::map",
+      "location": "src/parser_combinator/engine.mbt:115",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grammar::run_packrat_string",
+      "location": "src/parser_combinator/engine.mbt:164",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grammar::run_naive_string",
+      "location": "src/parser_combinator/engine.mbt:173",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Json",
+      "location": "src/parser_combinator/json.mbt:12",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn json_parser",
+      "location": "src/parser_combinator/json.mbt:242",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn print_json",
+      "location": "src/parser_combinator/json.mbt:338",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn json_value_grammar",
+      "location": "src/parser_combinator/json.mbt:413",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn any_char",
+      "location": "src/parser_combinator/primitives.mbt:44",
+      "doc_lines": 1
+    },
+    {
+      "api": "let parser_combinator_name",
+      "location": "src/parser_combinator/release.mbt:29",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct StreamSource",
+      "location": "src/parser_combinator/streaming.mbt:15",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseResult::is_ok",
+      "location": "src/parser_combinator/types.mbt:113",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseResult::value",
+      "location": "src/parser_combinator/types.mbt:122",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseResult::rest",
+      "location": "src/parser_combinator/types.mbt:131",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Parser::new",
+      "location": "src/parser_combinator/types.mbt:181",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Parser::parse",
+      "location": "src/parser_combinator/types.mbt:187",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Parser::parse_string",
+      "location": "src/parser_combinator/types.mbt:193",
+      "doc_lines": 1
+    },
+    {
+      "api": "impl Show for Pos::output",
+      "location": "src/parser_combinator/types.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pos::start",
+      "location": "src/parser_combinator/types.mbt:34",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Input::from_string",
+      "location": "src/parser_combinator/types.mbt:54",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Input::is_eof",
+      "location": "src/parser_combinator/types.mbt:60",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Input::peek",
+      "location": "src/parser_combinator/types.mbt:66",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_visited_len",
+      "location": "src/playground/exports.mbt:322",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_visited_at",
+      "location": "src/playground/exports.mbt:338",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_frontier_len",
+      "location": "src/playground/exports.mbt:358",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_frontier_at",
+      "location": "src/playground/exports.mbt:374",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn pg_step_current",
+      "location": "src/playground/exports.mbt:394",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Grid::cell_count",
+      "location": "src/playground/grid.mbt:78",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn check_ends_at_goal",
+      "location": "src/proofs/bfs_proof.mbt:37",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Captures::group_count",
+      "location": "src/regex_engine/captures.mbt:50",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn CharSet::union",
+      "location": "src/regex_engine/charset_ext.mbt:16",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn demo_cases",
+      "location": "src/regex_engine/demo.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn to_dfa",
+      "location": "src/regex_engine/dfa.mbt:97",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Flags::default",
+      "location": "src/regex_engine/flags.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Flags::parse",
+      "location": "src/regex_engine/flags.mbt:34",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_digit",
+      "location": "src/regex_engine/flags.mbt:51",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_word",
+      "location": "src/regex_engine/flags.mbt:57",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_space",
+      "location": "src/regex_engine/flags.mbt:69",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_non_digit",
+      "location": "src/regex_engine/flags.mbt:76",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_non_word",
+      "location": "src/regex_engine/flags.mbt:82",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn predef_non_space",
+      "location": "src/regex_engine/flags.mbt:88",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn HybridMatcher::new",
+      "location": "src/regex_engine/hybrid.mbt:49",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn LazyDfa::new",
+      "location": "src/regex_engine/lazy_dfa.mbt:51",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum MatchKind",
+      "location": "src/regex_engine/match_kind.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn is_match",
+      "location": "src/regex_engine/matcher.mbt:37",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn build_nfa",
+      "location": "src/regex_engine/nfa.mbt:142",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Program::is_match",
+      "location": "src/regex_engine/pikevm.mbt:297",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn print_regex",
+      "location": "src/regex_engine/printer.mbt:14",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum Inst",
+      "location": "src/regex_engine/program.mbt:21",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn compile_program",
+      "location": "src/regex_engine/program.mbt:56",
+      "doc_lines": 1
+    },
+    {
+      "api": "let regex_engine_name",
+      "location": "src/regex_engine/release.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::captures_all",
+      "location": "src/regex_engine/search.mbt:101",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::replace",
+      "location": "src/regex_engine/search.mbt:124",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::replace_all",
+      "location": "src/regex_engine/search.mbt:146",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::is_match",
+      "location": "src/regex_engine/search.mbt:37",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::find",
+      "location": "src/regex_engine/search.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::captures",
+      "location": "src/regex_engine/search.mbt:55",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Pattern::find_iter",
+      "location": "src/regex_engine/search.mbt:95",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseError::pos",
+      "location": "src/regex_engine/types.mbt:95",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn default_changelog_path",
+      "location": "src/release_meta/release_meta.mbt:123",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn is_valid_semver",
+      "location": "src/release_meta/release_meta.mbt:168",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct SemVer",
+      "location": "src/release_meta/release_meta.mbt:63",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DirectionRelease::new",
+      "location": "src/release_meta/release_meta.mbt:95",
+      "doc_lines": 1
+    },
+    {
+      "api": "let demo_message_name",
+      "location": "src/serialization/demo.mbt:65",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn base64_encode",
+      "location": "src/serialization/json.mbt:22",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn encode_json",
+      "location": "src/serialization/json.mbt:326",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn base64_decode",
+      "location": "src/serialization/json.mbt:75",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ServiceDef",
+      "location": "src/serialization/proto_service.mbt:49",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ImportDecl",
+      "location": "src/serialization/proto_service.mbt:56",
+      "doc_lines": 1
+    },
+    {
+      "api": "let serialization_name",
+      "location": "src/serialization/release.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ProtoSchema",
+      "location": "src/serialization/schema_model.mbt:102",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ProtoSchema::empty",
+      "location": "src/serialization/schema_model.mbt:109",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ProtoSchema::message",
+      "location": "src/serialization/schema_model.mbt:115",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ProtoSchema::enum_def",
+      "location": "src/serialization/schema_model.mbt:126",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum FieldLabel",
+      "location": "src/serialization/schema_model.mbt:40",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct FieldOption",
+      "location": "src/serialization/schema_model.mbt:48",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ProtoField",
+      "location": "src/serialization/schema_model.mbt:55",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ReservedRange",
+      "location": "src/serialization/schema_model.mbt:65",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct MapEntry",
+      "location": "src/serialization/schema_model.mbt:72",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct ProtoMessage",
+      "location": "src/serialization/schema_model.mbt:89",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum SchemaError",
+      "location": "src/serialization/schema_validate.mbt:10",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSink::new",
+      "location": "src/serialization/streaming.mbt:170",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSink::to_bytes",
+      "location": "src/serialization/streaming.mbt:176",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSink::len",
+      "location": "src/serialization/streaming.mbt:182",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSource::new",
+      "location": "src/serialization/streaming.mbt:196",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSource::position",
+      "location": "src/serialization/streaming.mbt:202",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ByteSource::is_exhausted",
+      "location": "src/serialization/streaming.mbt:208",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum TypedValue",
+      "location": "src/serialization/typed.mbt:20",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn encode_typed",
+      "location": "src/serialization/typed.mbt:436",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn TypedMessage::new",
+      "location": "src/serialization/typed.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn TypedMessage::set",
+      "location": "src/serialization/typed.mbt:52",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn TypedMessage::get",
+      "location": "src/serialization/typed.mbt:64",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn TypedMessage::get_or_default",
+      "location": "src/serialization/typed.mbt:70",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct FieldEntry",
+      "location": "src/serialization/types.mbt:105",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldEntry::new",
+      "location": "src/serialization/types.mbt:112",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Message::empty",
+      "location": "src/serialization/types.mbt:127",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Message::from_fields",
+      "location": "src/serialization/types.mbt:133",
+      "doc_lines": 1
+    },
+    {
+      "api": "enum FieldType",
+      "location": "src/serialization/types.mbt:141",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct FieldDef",
+      "location": "src/serialization/types.mbt:155",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct EnumDef",
+      "location": "src/serialization/types.mbt:172",
+      "doc_lines": 1
+    },
+    {
+      "api": "struct Schema",
+      "location": "src/serialization/types.mbt:179",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn Schema::empty",
+      "location": "src/serialization/types.mbt:186",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn DecodeError::offset",
+      "location": "src/serialization/types.mbt:204",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseError::new",
+      "location": "src/serialization/types.mbt:225",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn ParseError::at",
+      "location": "src/serialization/types.mbt:236",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn WireType::code",
+      "location": "src/serialization/types.mbt:35",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn WireType::from_code",
+      "location": "src/serialization/types.mbt:46",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldValue::varint",
+      "location": "src/serialization/types.mbt:70",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldValue::i64",
+      "location": "src/serialization/types.mbt:76",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldValue::i32",
+      "location": "src/serialization/types.mbt:82",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldValue::bytes",
+      "location": "src/serialization/types.mbt:88",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn FieldValue::wire_type",
+      "location": "src/serialization/types.mbt:94",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn zigzag_decode_32",
+      "location": "src/serialization/zigzag.mbt:28",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn zigzag_encode_64",
+      "location": "src/serialization/zigzag.mbt:35",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn zigzag_decode_64",
+      "location": "src/serialization/zigzag.mbt:41",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn double_to_bits",
+      "location": "src/serialization/zigzag.mbt:48",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn bits_to_double",
+      "location": "src/serialization/zigzag.mbt:54",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn float_to_bits",
+      "location": "src/serialization/zigzag.mbt:60",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn bits_to_float",
+      "location": "src/serialization/zigzag.mbt:66",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn BfsTree::distance_to",
+      "location": "src/unweighted/bfs_all.mbt:100",
+      "doc_lines": 1
+    },
+    {
+      "api": "fn reset_runtime",
+      "location": "src/actor/actor.mbt:44",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn AskBroker::fulfill",
+      "location": "src/actor/ask.mbt:61",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn behavior_stack_pop",
+      "location": "src/actor/behavior.mbt:174",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn behavior_stack_top",
+      "location": "src/actor/behavior.mbt:183",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ActorContext::become_",
+      "location": "src/actor/behavior.mbt:99",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct WatchEntry",
+      "location": "src/actor/deathwatch.mbt:16",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Router::worker_for_key",
+      "location": "src/actor/router.mbt:186",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct RestartIntensity",
+      "location": "src/actor/supervision.mbt:43",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct SupervisorSpec",
+      "location": "src/actor/supervision.mbt:61",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct SupervisedCell",
+      "location": "src/actor/system.mbt:17",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ActorSystem::step",
+      "location": "src/actor/system.mbt:582",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Mailbox::dequeue",
+      "location": "src/actor/types.mbt:58",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn deserialize_cache",
+      "location": "src/build_tool/cache.mbt:227",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_graph",
+      "location": "src/build_tool/demo.mbt:34",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn add_dynamic_deps",
+      "location": "src/build_tool/dynamic.mbt:12",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn reschedule_with_dynamic",
+      "location": "src/build_tool/dynamic.mbt:46",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct DryRunExecutor",
+      "location": "src/build_tool/executor.mbt:143",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct CallbackExecutor",
+      "location": "src/build_tool/executor.mbt:175",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ParallelSchedule",
+      "location": "src/build_tool/executor.mbt:200",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn BuildLog::is_up_to_date",
+      "location": "src/build_tool/executor.mbt:278",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn minimal_rebuild_set",
+      "location": "src/build_tool/rebuild.mbt:84",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct PatternRule",
+      "location": "src/build_tool/rule_grammar.mbt:41",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn GrammarError::to_legacy",
+      "location": "src/build_tool/rule_grammar.mbt:75",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn min_layers",
+      "location": "src/build_tool/scheduler.mbt:60",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn select_burs",
+      "location": "src/codegen_infra/burs.mbt:110",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum Location",
+      "location": "src/codegen_infra/codegen_infra.mbt:25",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn build_intervals_from_liveness",
+      "location": "src/codegen_infra/liveness.mbt:460",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum LatticeValue",
+      "location": "src/codegen_infra/sccp.mbt:23",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn DSU::union",
+      "location": "src/core/dsu.mbt:58",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn PQueue::peek",
+      "location": "src/core/pqueue.mbt:59",
+      "doc_lines": 2
+    },
+    {
+      "api": "impl Weight for Int::zero",
+      "location": "src/core/prelude.mbt:35",
+      "doc_lines": 2
+    },
+    {
+      "api": "impl Weight for Double::zero",
+      "location": "src/core/prelude.mbt:65",
+      "doc_lines": 2
+    },
+    {
+      "api": "impl Weight for Double::add",
+      "location": "src/core/prelude.mbt:80",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct Condensation",
+      "location": "src/directed/condensation.mbt:10",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ShortestPathTree::distance_to",
+      "location": "src/directed/dijkstra_all.mbt:114",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ShortestPathTree",
+      "location": "src/directed/dijkstra_all.mbt:13",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn AllPairs::distance",
+      "location": "src/directed/floyd_warshall_paths.mbt:142",
+      "doc_lines": 2
+    },
+    {
+      "api": "let algorithm_count",
+      "location": "src/docgen/complexity.mbt:18",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn violates_consistency",
+      "location": "src/dst/demo.mbt:162",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn replication_protocol",
+      "location": "src/dst/demo.mbt:52",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_replication_scenario",
+      "location": "src/dst/demo.mbt:79",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn World::step",
+      "location": "src/dst/des_sim.mbt:367",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn status_from_des_trace",
+      "location": "src/dst/des_sim.mbt:387",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn run_des",
+      "location": "src/dst/des_sim.mbt:422",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn World::new",
+      "location": "src/dst/des_sim.mbt:56",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SimEvent::actor_of",
+      "location": "src/dst/des_types.mbt:59",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn depends",
+      "location": "src/dst/dpor.mbt:43",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn EventQueue::pop_min",
+      "location": "src/dst/event_queue.mbt:81",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ExploreReport",
+      "location": "src/dst/explore.mbt:19",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn fault_ex_cmp",
+      "location": "src/dst/faults_ext.mbt:81",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn is_linearizable",
+      "location": "src/dst/linearizability.mbt:182",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum LinResult",
+      "location": "src/dst/linearizability.mbt:73",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn World::schedule_send",
+      "location": "src/dst/messaging.mbt:27",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn World::deliver",
+      "location": "src/dst/messaging.mbt:73",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Rng::next",
+      "location": "src/dst/rng.mbt:50",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Rng::next_below",
+      "location": "src/dst/rng.mbt:63",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum ShrinkOutcome",
+      "location": "src/dst/shrink.mbt:23",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SimContext::send",
+      "location": "src/dst/task_body.mbt:56",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SimContext::append",
+      "location": "src/dst/task_body.mbt:68",
+      "doc_lines": 2
+    },
+    {
+      "api": "impl Show for TaskResult::output",
+      "location": "src/dst/task_body.mbt:87",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn deserialize_result",
+      "location": "src/dst/trace_codec.mbt:507",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn GraphBuilder::new",
+      "location": "src/graph/builder.mbt:51",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn GraphRepr::node_count",
+      "location": "src/graph/graph_repr.mbt:64",
+      "doc_lines": 2
+    },
+    {
+      "api": "let default_tol_pct",
+      "location": "src/infra_bench/regression.mbt:28",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_report",
+      "location": "src/infra_bench/report.mbt:847",
+      "doc_lines": 2
+    },
+    {
+      "api": "let default_iters",
+      "location": "src/infra_pbt/pbt.mbt:22",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Rng::next",
+      "location": "src/infra_pbt/pbt.mbt:58",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Stats::record",
+      "location": "src/infra_pbt/stats.mbt:58",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Stats::total",
+      "location": "src/infra_pbt/stats.mbt:79",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn TextBuilder::len",
+      "location": "src/infra_text/text_builder.mbt:122",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn route",
+      "location": "src/logging/filter.mbt:160",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct FilterError",
+      "location": "src/logging/filter.mbt:32",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn format_event",
+      "location": "src/logging/formatter.mbt:31",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn reset_logger",
+      "location": "src/logging/logging.mbt:114",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn span_duration",
+      "location": "src/logging/logging.mbt:142",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn current_span",
+      "location": "src/logging/logging.mbt:152",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn begin_trace",
+      "location": "src/logging/logging.mbt:258",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn capture_context",
+      "location": "src/logging/logging.mbt:268",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct SpanEvent",
+      "location": "src/logging/otel_span.mbt:39",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct SpanData",
+      "location": "src/logging/otel_span.mbt:48",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SpanData::new",
+      "location": "src/logging/otel_span.mbt:59",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SpanData::add_event",
+      "location": "src/logging/otel_span.mbt:82",
+      "doc_lines": 2
+    },
+    {
+      "api": "let redaction_mask",
+      "location": "src/logging/redaction.mbt:16",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn retained_count",
+      "location": "src/logging/sampling.mbt:89",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SinkHandle::set_level",
+      "location": "src/logging/sink_layer.mbt:113",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn SinkHandle::buffered",
+      "location": "src/logging/sink_layer.mbt:98",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Value::is_scalar",
+      "location": "src/logging/value_ext.mbt:18",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn encode_batch",
+      "location": "src/lsp_binding/batch.mbt:99",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn encode_message",
+      "location": "src/lsp_binding/binding.mbt:172",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn cancelled_response",
+      "location": "src/lsp_binding/cancel.mbt:107",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct CancelRegistry",
+      "location": "src/lsp_binding/cancel.mbt:55",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn id_of",
+      "location": "src/lsp_binding/correlate.mbt:19",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn encode_framed",
+      "location": "src/lsp_binding/framing.mbt:297",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct FrameReader",
+      "location": "src/lsp_binding/framing.mbt:325",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum Json",
+      "location": "src/lsp_binding/json.mbt:16",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum Id",
+      "location": "src/lsp_binding/types.mbt:46",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn error_response",
+      "location": "src/lsp_binding/types.mbt:97",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ServerCapabilitiesExt",
+      "location": "src/lsp_server/capabilities_ext.mbt:24",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ServerCapabilitiesExt::all",
+      "location": "src/lsp_server/capabilities_ext.mbt:65",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ServerCapabilitiesExt::default",
+      "location": "src/lsp_server/capabilities_ext.mbt:86",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct Symbol",
+      "location": "src/lsp_server/dsl.mbt:18",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum JsonRpcError",
+      "location": "src/lsp_server/jsonrpc_frame.mbt:326",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn LspSession::handle",
+      "location": "src/lsp_server/lifecycle.mbt:286",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum LifecycleEvent",
+      "location": "src/lsp_server/lifecycle.mbt:40",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct StepResult",
+      "location": "src/lsp_server/lifecycle.mbt:52",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn position_to_offset",
+      "location": "src/lsp_server/position_encoding.mbt:165",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn offset_to_position",
+      "location": "src/lsp_server/position_encoding.mbt:192",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn code_units",
+      "location": "src/lsp_server/position_encoding.mbt:50",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn negotiate_encoding",
+      "location": "src/lsp_server/position_encoding.mbt:70",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct DocumentSymbol",
+      "location": "src/lsp_server/references.mbt:29",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn document_symbols",
+      "location": "src/lsp_server/references.mbt:84",
+      "doc_lines": 2
+    },
+    {
+      "api": "let lsp_name",
+      "location": "src/lsp_server/release.mbt:28",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct WorkspaceEdit",
+      "location": "src/lsp_server/rename.mbt:54",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct SignatureInfo",
+      "location": "src/lsp_server/semantic.mbt:30",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn capabilities_to_json",
+      "location": "src/lsp_server/server.mbt:165",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn publish_diagnostics_notification",
+      "location": "src/lsp_server/server.mbt:177",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn position_from_json",
+      "location": "src/lsp_server/server.mbt:195",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn on_initialize",
+      "location": "src/lsp_server/server.mbt:21",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn on_did_change",
+      "location": "src/lsp_server/server.mbt:35",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn on_hover",
+      "location": "src/lsp_server/server.mbt:86",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ServerCapabilities",
+      "location": "src/lsp_server/types.mbt:110",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct TextDocument",
+      "location": "src/lsp_server/types.mbt:46",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct Diagnostic",
+      "location": "src/lsp_server/types.mbt:65",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct CompletionItem",
+      "location": "src/lsp_server/types.mbt:84",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn instantiate",
+      "location": "src/mini_compiler/infer.mbt:111",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn generalize",
+      "location": "src/mini_compiler/infer.mbt:123",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn check_x",
+      "location": "src/mini_compiler/match_ext.mbt:555",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn erase_span",
+      "location": "src/mini_compiler/ml_printer.mbt:98",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct Span",
+      "location": "src/mini_compiler/ml_types.mbt:25",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum Expr",
+      "location": "src/mini_compiler/ml_types.mbt:78",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn beta_reduce",
+      "location": "src/mini_compiler/optimize.mbt:312",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn optimize",
+      "location": "src/mini_compiler/optimize.mbt:343",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn eval",
+      "location": "src/mini_compiler/semantics.mbt:131",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn run_tco_with_depth",
+      "location": "src/mini_compiler/tco.mbt:104",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum Value",
+      "location": "src/mini_compiler/types.mbt:107",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ftv",
+      "location": "src/mini_compiler/unify.mbt:107",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn apply_scheme",
+      "location": "src/mini_compiler/unify.mbt:55",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn compose",
+      "location": "src/mini_compiler/unify.mbt:93",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum SVal",
+      "location": "src/mini_compiler/vm.mbt:49",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn expr_parser",
+      "location": "src/parser_combinator/arith.mbt:127",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn print_expr",
+      "location": "src/parser_combinator/arith.mbt:197",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_and_eval",
+      "location": "src/parser_combinator/arith.mbt:212",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn BoundedCache::get",
+      "location": "src/parser_combinator/bounded_packrat.mbt:81",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn optional",
+      "location": "src/parser_combinator/combinators.mbt:140",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn chainl",
+      "location": "src/parser_combinator/derived.mbt:108",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn chainr",
+      "location": "src/parser_combinator/derived.mbt:120",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn between",
+      "location": "src/parser_combinator/derived.mbt:41",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Grammar::bind",
+      "location": "src/parser_combinator/engine.mbt:127",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Grammar::run_packrat",
+      "location": "src/parser_combinator/engine.mbt:155",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn op_as_label",
+      "location": "src/parser_combinator/error_model.mbt:107",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pchar",
+      "location": "src/parser_combinator/primitives.mbt:38",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_step_flags",
+      "location": "src/playground/exports.mbt:415",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_final_path_len",
+      "location": "src/playground/exports.mbt:439",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn pg_final_path_at",
+      "location": "src/playground/exports.mbt:464",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn fifo_order_preserved",
+      "location": "src/proofs/actor_proof.mbt:11",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn deterministic_replay",
+      "location": "src/proofs/dst_proof.mbt:10",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn is_idempotent",
+      "location": "src/proofs/predicates.mbt:217",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_proof_report",
+      "location": "src/proofs/proof_report.mbt:719",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ProofReport::any_failed",
+      "location": "src/proofs/proof_report.mbt:76",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn print_ast",
+      "location": "src/regex_engine/ast.mbt:94",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Captures::group",
+      "location": "src/regex_engine/captures.mbt:23",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Captures::name",
+      "location": "src/regex_engine/captures.mbt:41",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn CharSet::complement",
+      "location": "src/regex_engine/charset_ext.mbt:30",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_ipv4",
+      "location": "src/regex_engine/demo.mbt:24",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_iso_date",
+      "location": "src/regex_engine/demo.mbt:32",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_number",
+      "location": "src/regex_engine/demo.mbt:40",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Dfa::find",
+      "location": "src/regex_engine/dfa.mbt:165",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Flags::dot_set",
+      "location": "src/regex_engine/flags.mbt:95",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Dfa::minimize",
+      "location": "src/regex_engine/minimize.mbt:34",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct CharSet",
+      "location": "src/regex_engine/nfa.mbt:30",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Nfa::find",
+      "location": "src/regex_engine/nfa.mbt:458",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_pattern",
+      "location": "src/regex_engine/pattern_parser.mbt:33",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Program::exec",
+      "location": "src/regex_engine/pikevm.mbt:211",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Pattern::split",
+      "location": "src/regex_engine/search.mbt:179",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Pattern::compile",
+      "location": "src/regex_engine/search.mbt:24",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn Pattern::find_all",
+      "location": "src/regex_engine/search.mbt:62",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn DirectionRelease::evaluate",
+      "location": "src/release_meta/release_meta.mbt:107",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn canonicalize_wire",
+      "location": "src/serialization/canonical.mbt:56",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn demo_proto",
+      "location": "src/serialization/demo.mbt:12",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn parse_proto_full",
+      "location": "src/serialization/proto_grammar.mbt:740",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct OneofDef",
+      "location": "src/serialization/schema_model.mbt:82",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ByteSource",
+      "location": "src/serialization/streaming.mbt:189",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct MessageDef",
+      "location": "src/serialization/types.mbt:165",
+      "doc_lines": 2
+    },
+    {
+      "api": "enum DecodeError",
+      "location": "src/serialization/types.mbt:195",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct ParseError",
+      "location": "src/serialization/types.mbt:216",
+      "doc_lines": 2
+    },
+    {
+      "api": "struct BfsTree",
+      "location": "src/unweighted/bfs_all.mbt:10",
+      "doc_lines": 2
+    },
+    {
+      "api": "fn ActorRef::stop",
+      "location": "src/actor/actor.mbt:81",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum AskResult",
+      "location": "src/actor/ask.mbt:25",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn AskBroker::poll",
+      "location": "src/actor/ask.mbt:78",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ActorContext::watch",
+      "location": "src/actor/behavior.mbt:129",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum ContextEffect",
+      "location": "src/actor/behavior.mbt:52",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct ActorContext",
+      "location": "src/actor/behavior.mbt:72",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn BoundedMailbox::offer",
+      "location": "src/actor/bounded_mailbox.mbt:60",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn WatchRegistry::watch",
+      "location": "src/actor/deathwatch.mbt:40",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Task",
+      "location": "src/actor/demo.mbt:40",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct TraceEvent",
+      "location": "src/actor/deterministic.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum TerminationReason",
+      "location": "src/actor/lifecycle.mbt:18",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn LifecycleHooks::identity",
+      "location": "src/actor/lifecycle.mbt:46",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Scheduler::run_until_idle",
+      "location": "src/actor/scheduler.mbt:204",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ActorSystem::spawn",
+      "location": "src/actor/system.mbt:114",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ActorSystem::supervise",
+      "location": "src/actor/system.mbt:170",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct ActorId",
+      "location": "src/actor/types.mbt:21",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn alt_query_batch",
+      "location": "src/advanced/advanced_ext.mbt:131",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn jps_batch",
+      "location": "src/advanced/advanced_ext.mbt:148",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn alt_query",
+      "location": "src/advanced/alt.mbt:272",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn JPSGrid::new",
+      "location": "src/advanced/jps.mbt:44",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn needs_rebuild_by_key",
+      "location": "src/build_tool/cache.mbt:114",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn content_hash",
+      "location": "src/build_tool/cache.mbt:24",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn cache_key",
+      "location": "src/build_tool/cache.mbt:56",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum ActionResult",
+      "location": "src/build_tool/executor.mbt:107",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct BuildLog",
+      "location": "src/build_tool/executor.mbt:255",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn derive_output_hash",
+      "location": "src/build_tool/provenance.mbt:26",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn record_provenance",
+      "location": "src/build_tool/provenance.mbt:46",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn propagate_dirty",
+      "location": "src/build_tool/rebuild.mbt:44",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn rebuild_schedule",
+      "location": "src/build_tool/rebuild.mbt:96",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/build_tool/release.mbt:57",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn RuleSet::to_graph",
+      "location": "src/build_tool/rule_grammar.mbt:367",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct GrammarError",
+      "location": "src/build_tool/rule_grammar.mbt:66",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn critical_path_length",
+      "location": "src/build_tool/scheduler.mbt:18",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn BuildCache::observe",
+      "location": "src/build_tool/types.mbt:101",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn BuildCache::mark_built",
+      "location": "src/build_tool/types.mbt:116",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn max_munch",
+      "location": "src/codegen_infra/burs.mbt:169",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct CostRule",
+      "location": "src/codegen_infra/burs.mbt:22",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn tiling_cost",
+      "location": "src/codegen_infra/burs.mbt:87",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn coalesce",
+      "location": "src/codegen_infra/coalescing.mbt:153",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Var",
+      "location": "src/codegen_infra/codegen_infra.mbt:18",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct BasicBlock",
+      "location": "src/codegen_infra/codegen_infra.mbt:54",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct SsaProgram",
+      "location": "src/codegen_infra/codegen_infra.mbt:72",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn spill_cost",
+      "location": "src/codegen_infra/coloring.mbt:32",
+      "doc_lines": 3
+    },
+    {
+      "api": "impl Show for IrEvalResult::output",
+      "location": "src/codegen_infra/ir_interp.mbt:69",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn build_interference_from_liveness",
+      "location": "src/codegen_infra/liveness.mbt:388",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn run_pipeline",
+      "location": "src/codegen_infra/pipeline.mbt:26",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/codegen_infra/release.mbt:49",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TypedInstr::is_terminator",
+      "location": "src/codegen_infra/typed_ir.mbt:241",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TypedFunction::block_labels",
+      "location": "src/codegen_infra/typed_ir.mbt:326",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct DSU",
+      "location": "src/core/dsu.mbt:11",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum PathError",
+      "location": "src/core/prelude.mbt:117",
+      "doc_lines": 3
+    },
+    {
+      "api": "impl Weight for Int::infinity",
+      "location": "src/core/prelude.mbt:43",
+      "doc_lines": 3
+    },
+    {
+      "api": "impl Weight for Int::add",
+      "location": "src/core/prelude.mbt:52",
+      "doc_lines": 3
+    },
+    {
+      "api": "impl Weight for Double::infinity",
+      "location": "src/core/prelude.mbt:73",
+      "doc_lines": 3
+    },
+    {
+      "api": "impl Weight for Int::sub",
+      "location": "src/core/prelude.mbt:88",
+      "doc_lines": 3
+    },
+    {
+      "api": "type LogicalTime",
+      "location": "src/dst/clock.mbt:26",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn demo_partition_crash_scenario",
+      "location": "src/dst/demo.mbt:135",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn replica_consistency_invariant",
+      "location": "src/dst/demo.mbt:20",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn null_protocol",
+      "location": "src/dst/des_types.mbt:140",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct NodeApp",
+      "location": "src/dst/des_types.mbt:74",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn explore_dpor",
+      "location": "src/dst/dpor.mbt:191",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn explore_bounded",
+      "location": "src/dst/explore.mbt:80",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn NetFaultKind::of_legacy",
+      "location": "src/dst/faults_ext.mbt:60",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/dst/release.mbt:55",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn rng_new",
+      "location": "src/dst/rng.mbt:41",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn shrink",
+      "location": "src/dst/shrink.mbt:106",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Task",
+      "location": "src/dst/types.mbt:35",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Graph::node_count",
+      "location": "src/graph/graph.mbt:69",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn LazyPath::empty",
+      "location": "src/graph/lazy_path.mbt:59",
+      "doc_lines": 3
+    },
+    {
+      "api": "let default_eps",
+      "location": "src/infra_fuzz/diff.mbt:31",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn holds_for_all",
+      "location": "src/infra_pbt/pbt.mbt:158",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn rng_new",
+      "location": "src/infra_pbt/pbt.mbt:49",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Gen",
+      "location": "src/infra_pbt/pbt.mbt:99",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct CheckResult",
+      "location": "src/infra_pbt/shrink.mbt:59",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Stats::ratio",
+      "location": "src/infra_pbt/stats.mbt:92",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TextBuilder::push_str",
+      "location": "src/infra_text/text_builder.mbt:107",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TextBuilder::reset",
+      "location": "src/infra_text/text_builder.mbt:151",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TextBuilder::new",
+      "location": "src/infra_text/text_builder.mbt:49",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn TextBuilder::push_char",
+      "location": "src/infra_text/text_builder.mbt:97",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn run_downstream",
+      "location": "src/logging/demo.mbt:85",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn EnvFilter::allows",
+      "location": "src/logging/filter.mbt:142",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct EnvFilter",
+      "location": "src/logging/filter.mbt:23",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn format_pretty",
+      "location": "src/logging/formatter.mbt:44",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Sink",
+      "location": "src/logging/formatter.mbt:81",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct TraceContext",
+      "location": "src/logging/logging.mbt:249",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn count_by_level",
+      "location": "src/logging/metrics.mbt:24",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn histogram",
+      "location": "src/logging/metrics.mbt:55",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/logging/release.mbt:55",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn SinkHandle::console",
+      "location": "src/logging/sink_layer.mbt:74",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn SinkHandle::callback",
+      "location": "src/logging/sink_layer.mbt:86",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn W3CContext::to_trace_context",
+      "location": "src/logging/trace_context.mbt:107",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct W3CContext",
+      "location": "src/logging/trace_context.mbt:25",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn inject_traceparent",
+      "location": "src/logging/trace_context.mbt:36",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct SpanId",
+      "location": "src/logging/types.mbt:118",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Event",
+      "location": "src/logging/types.mbt:140",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum Level",
+      "location": "src/logging/types.mbt:26",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Level::is_enabled",
+      "location": "src/logging/types.mbt:51",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Level::from_label",
+      "location": "src/logging/types.mbt:72",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct RpcError",
+      "location": "src/lsp_binding/types.mbt:58",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct InitializeParamsExt",
+      "location": "src/lsp_server/capabilities_ext.mbt:96",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct SessionStep",
+      "location": "src/lsp_server/demo.mbt:38",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct CodeAction",
+      "location": "src/lsp_server/format.mbt:114",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum FrameError",
+      "location": "src/lsp_server/jsonrpc_frame.mbt:100",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn step",
+      "location": "src/lsp_server/lifecycle.mbt:117",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn convert_position",
+      "location": "src/lsp_server/position_encoding.mbt:223",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/lsp_server/release.mbt:61",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct TextEdit",
+      "location": "src/lsp_server/rename.mbt:46",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn on_definition",
+      "location": "src/lsp_server/server.mbt:68",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn VersionedDocument::apply",
+      "location": "src/lsp_server/sync.mbt:192",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct VersionedDocument",
+      "location": "src/lsp_server/sync.mbt:53",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct FreshGen",
+      "location": "src/mini_compiler/infer.mbt:30",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn infer",
+      "location": "src/mini_compiler/infer.mbt:414",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn eval_ml",
+      "location": "src/mini_compiler/ml_eval.mbt:229",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ml_env_extend",
+      "location": "src/mini_compiler/ml_eval.mbt:53",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn parse_ml",
+      "location": "src/mini_compiler/ml_parser.mbt:131",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Subst",
+      "location": "src/mini_compiler/ml_types.mbt:184",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn of_minilet",
+      "location": "src/mini_compiler/ml_types.mbt:199",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn peephole_opt",
+      "location": "src/mini_compiler/peephole.mbt:69",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn run_interp",
+      "location": "src/mini_compiler/pipeline.mbt:82",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn run_tco",
+      "location": "src/mini_compiler/tco.mbt:96",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum DiagKind",
+      "location": "src/mini_compiler/types.mbt:117",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum Backend",
+      "location": "src/mini_compiler/types.mbt:155",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum Type",
+      "location": "src/mini_compiler/types.mbt:82",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum TypedAst",
+      "location": "src/mini_compiler/types.mbt:92",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn VM::run",
+      "location": "src/mini_compiler/vm.mbt:98",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn BoundedCache::new",
+      "location": "src/parser_combinator/bounded_packrat.mbt:54",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn many1",
+      "location": "src/parser_combinator/combinators.mbt:108",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn sep_by",
+      "location": "src/parser_combinator/derived.mbt:33",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Grammar::run_naive",
+      "location": "src/parser_combinator/engine.mbt:144",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn parse_json",
+      "location": "src/parser_combinator/json.mbt:386",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/parser_combinator/release.mbt:55",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Grammar::run_incremental",
+      "location": "src/parser_combinator/streaming.mbt:79",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn Input::advance",
+      "location": "src/parser_combinator/types.mbt:79",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_reset",
+      "location": "src/playground/exports.mbt:184",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_set_start",
+      "location": "src/playground/exports.mbt:241",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_set_goal",
+      "location": "src/playground/exports.mbt:263",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_select_algo",
+      "location": "src/playground/exports.mbt:285",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn pg_last_error",
+      "location": "src/playground/exports.mbt:494",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn error_isolation",
+      "location": "src/proofs/actor_proof.mbt:20",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ssa_single_assignment_counts",
+      "location": "src/proofs/codegen_infra_proof.mbt:19",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn interference_distinct",
+      "location": "src/proofs/codegen_infra_proof.mbt:60",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn level_threshold_filter",
+      "location": "src/proofs/logging_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn illegal_message_keeps_alive",
+      "location": "src/proofs/lsp_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn fail_does_not_consume",
+      "location": "src/proofs/parser_combinator_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn preserves",
+      "location": "src/proofs/predicates.mbt:227",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn seq_eq",
+      "location": "src/proofs/predicates.mbt:236",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn nfa_dfa_consistent",
+      "location": "src/proofs/regex_engine_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn decode_failure_no_partial",
+      "location": "src/proofs/serialization_proof.mbt:12",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn bridges_post",
+      "location": "src/proofs/spanning_connectivity_proof.mbt:395",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn demo_email",
+      "location": "src/regex_engine/demo.mbt:16",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn HybridMatcher::find",
+      "location": "src/regex_engine/hybrid.mbt:238",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn LazyDfa::find",
+      "location": "src/regex_engine/lazy_dfa.mbt:75",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn find",
+      "location": "src/regex_engine/matcher.mbt:29",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn parse_regex",
+      "location": "src/regex_engine/parser.mbt:23",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/regex_engine/release.mbt:54",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Pattern",
+      "location": "src/regex_engine/search.mbt:16",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum AnchorKind",
+      "location": "src/regex_engine/types.mbt:17",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum ClassItem",
+      "location": "src/regex_engine/types.mbt:29",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct CharClass",
+      "location": "src/regex_engine/types.mbt:41",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum Regex",
+      "location": "src/regex_engine/types.mbt:51",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn unicode_category",
+      "location": "src/regex_engine/unicode_gc.mbt:256",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn category_charset",
+      "location": "src/regex_engine/unicode_gc.mbt:273",
+      "doc_lines": 3
+    },
+    {
+      "api": "let direction_count",
+      "location": "src/release_aggregate/release_aggregate.mbt:23",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct DirectionRelease",
+      "location": "src/release_meta/release_meta.mbt:54",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn gen_moonbit_structured",
+      "location": "src/serialization/codegen_ast.mbt:193",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn gen_moonbit",
+      "location": "src/serialization/codegen.mbt:28",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn demo_message",
+      "location": "src/serialization/demo.mbt:48",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn decode_json",
+      "location": "src/serialization/json.mbt:629",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/serialization/release.mbt:54",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct ByteSink",
+      "location": "src/serialization/streaming.mbt:164",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct AnyValue",
+      "location": "src/serialization/streaming.mbt:60",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct TypedMessage",
+      "location": "src/serialization/typed.mbt:39",
+      "doc_lines": 3
+    },
+    {
+      "api": "struct Message",
+      "location": "src/serialization/types.mbt:121",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum WireType",
+      "location": "src/serialization/types.mbt:26",
+      "doc_lines": 3
+    },
+    {
+      "api": "enum FieldValue",
+      "location": "src/serialization/types.mbt:61",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn encode",
+      "location": "src/serialization/wire.mbt:48",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn zigzag_encode_32",
+      "location": "src/serialization/zigzag.mbt:22",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn articulation_points",
+      "location": "src/undirected/bridges.mbt:37",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn bridges_and_articulation_points",
+      "location": "src/undirected/bridges.mbt:50",
+      "doc_lines": 3
+    },
+    {
+      "api": "fn ActorRef::send",
+      "location": "src/actor/actor.mbt:69",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct AskBroker",
+      "location": "src/actor/ask.mbt:38",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Behavior",
+      "location": "src/actor/behavior.mbt:22",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum BackpressurePolicy",
+      "location": "src/actor/bounded_mailbox.mbt:18",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn WatchRegistry::collect_terminations",
+      "location": "src/actor/deathwatch.mbt:76",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn release_info_with_gates",
+      "location": "src/actor/release.mbt:66",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn Router::route",
+      "location": "src/actor/router.mbt:116",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn Router::route_keyed",
+      "location": "src/actor/router.mbt:140",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Router",
+      "location": "src/actor/router.mbt:26",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum ActorStatus",
+      "location": "src/actor/scheduler.mbt:50",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum SupervisionStrategy",
+      "location": "src/actor/supervision.mbt:20",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Directive",
+      "location": "src/actor/supervision.mbt:32",
+      "doc_lines": 4
+    },
+    {
+      "api": "trait Executor",
+      "location": "src/build_tool/executor.mbt:136",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn run_actions",
+      "location": "src/build_tool/executor.mbt:293",
+      "doc_lines": 4
+    },
+    {
+      "api": "impl Show for Action::output",
+      "location": "src/build_tool/executor.mbt:67",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn print_rules",
+      "location": "src/build_tool/rule_grammar.mbt:395",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_rules_full",
+      "location": "src/build_tool/rule_grammar.mbt:464",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_rules_full_with_includes",
+      "location": "src/build_tool/rule_grammar.mbt:474",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct ParseError",
+      "location": "src/build_tool/types.mbt:133",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Cycle",
+      "location": "src/build_tool/types.mbt:150",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct InterferenceGraph",
+      "location": "src/codegen_infra/codegen_infra.mbt:36",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn demo_pipeline",
+      "location": "src/codegen_infra/demo.mbt:67",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn dominance_frontier",
+      "location": "src/codegen_infra/dominator.mbt:206",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct DomTree",
+      "location": "src/codegen_infra/dominator.mbt:24",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn build_dom_tree",
+      "location": "src/codegen_infra/dominator.mbt:69",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn evaluate",
+      "location": "src/codegen_infra/evaluate.mbt:206",
+      "doc_lines": 4
+    },
+    {
+      "api": "impl Show for TypedInstr::output",
+      "location": "src/codegen_infra/typed_ir.mbt:137",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct TypedFunction",
+      "location": "src/codegen_infra/typed_ir.mbt:296",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct PQueue",
+      "location": "src/core/pqueue.mbt:12",
+      "doc_lines": 4
+    },
+    {
+      "api": "impl Weight for Double::sub",
+      "location": "src/core/prelude.mbt:104",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn ShortestPathTree::path_to",
+      "location": "src/directed/dijkstra_all.mbt:89",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn AllPairs::path",
+      "location": "src/directed/floyd_warshall_paths.mbt:117",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn run_des_with_order",
+      "location": "src/dst/des_sim.mbt:434",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn replay_des",
+      "location": "src/dst/des_sim.mbt:469",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn DesScenario::of_legacy",
+      "location": "src/dst/des_sim.mbt:524",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Protocol",
+      "location": "src/dst/des_types.mbt:119",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Message",
+      "location": "src/dst/des_types.mbt:20",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum SimEvent",
+      "location": "src/dst/des_types.mbt:31",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Invariant",
+      "location": "src/dst/invariant.mbt:19",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn eval_invariants",
+      "location": "src/dst/invariant.mbt:36",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Rng",
+      "location": "src/dst/rng.mbt:31",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct ExecutableTask",
+      "location": "src/dst/task_body.mbt:104",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Event",
+      "location": "src/dst/types.mbt:52",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct FaultPolicy",
+      "location": "src/dst/types.mbt:67",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Scenario",
+      "location": "src/dst/types.mbt:89",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn GraphRepr::to_successors",
+      "location": "src/graph/graph_repr.mbt:174",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum OsmDataSource",
+      "location": "src/graph/osm.mbt:33",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn RegressionVerdict::speedup",
+      "location": "src/infra_bench/regression.mbt:62",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn fuzz_graph_gen",
+      "location": "src/infra_fuzz/gen.mbt:365",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn fuzz_graph_nonneg_gen",
+      "location": "src/infra_fuzz/gen.mbt:378",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct FuzzGraph",
+      "location": "src/infra_fuzz/gen.mbt:86",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn sized",
+      "location": "src/infra_pbt/combinators.mbt:105",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Shrinkable",
+      "location": "src/infra_pbt/shrink.mbt:37",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn TextBuilder::with_capacity",
+      "location": "src/infra_text/text_builder.mbt:63",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn dispatch",
+      "location": "src/logging/formatter.mbt:108",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Formatter",
+      "location": "src/logging/formatter.mbt:21",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_logfmt",
+      "location": "src/logging/logfmt.mbt:53",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn exit_span",
+      "location": "src/logging/logging.mbt:218",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn child_context",
+      "location": "src/logging/logging.mbt:278",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_json_log",
+      "location": "src/logging/logging.mbt:477",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Histogram",
+      "location": "src/logging/metrics.mbt:45",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn redact",
+      "location": "src/logging/redaction.mbt:46",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct RateLimiter",
+      "location": "src/logging/sampling.mbt:156",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn RateLimiter::allow",
+      "location": "src/logging/sampling.mbt:174",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn mix",
+      "location": "src/logging/sampling.mbt:30",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn sample_trace",
+      "location": "src/logging/sampling.mbt:73",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn extract_traceparent",
+      "location": "src/logging/trace_context.mbt:52",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Span",
+      "location": "src/logging/types.mbt:162",
+      "doc_lines": 4
+    },
+    {
+      "api": "let request_cancelled_code",
+      "location": "src/lsp_binding/cancel.mbt:31",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn cancel_id_of",
+      "location": "src/lsp_binding/cancel.mbt:93",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn correlate",
+      "location": "src/lsp_binding/correlate.mbt:35",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn decode_framed",
+      "location": "src/lsp_binding/framing.mbt:309",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Router",
+      "location": "src/lsp_binding/types.mbt:109",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum JsonRpcMessage",
+      "location": "src/lsp_binding/types.mbt:88",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pull_diagnostics",
+      "location": "src/lsp_server/diagnostics.mbt:38",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn encode_frame",
+      "location": "src/lsp_server/jsonrpc_frame.mbt:139",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn folding_ranges",
+      "location": "src/lsp_server/semantic.mbt:192",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn on_completion",
+      "location": "src/lsp_server/server.mbt:45",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Instr",
+      "location": "src/mini_compiler/bytecode.mbt:88",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn scope_check_ml",
+      "location": "src/mini_compiler/ml_eval.mbt:254",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Env",
+      "location": "src/mini_compiler/ml_types.mbt:175",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse",
+      "location": "src/mini_compiler/parser.mbt:29",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn run_compiled",
+      "location": "src/mini_compiler/pipeline.mbt:94",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Diagnostic",
+      "location": "src/mini_compiler/types.mbt:132",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Ast",
+      "location": "src/mini_compiler/types.mbt:66",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn apply_subst",
+      "location": "src/mini_compiler/unify.mbt:38",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct VM",
+      "location": "src/mini_compiler/vm.mbt:88",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pure",
+      "location": "src/parser_combinator/algebra.mbt:24",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn bind",
+      "location": "src/parser_combinator/algebra.mbt:50",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn seq",
+      "location": "src/parser_combinator/combinators.mbt:24",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn many",
+      "location": "src/parser_combinator/combinators.mbt:82",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn commit",
+      "location": "src/parser_combinator/commit.mbt:16",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn sep_by1",
+      "location": "src/parser_combinator/derived.mbt:16",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn chainl1",
+      "location": "src/parser_combinator/derived.mbt:55",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn lift",
+      "location": "src/parser_combinator/engine.mbt:98",
+      "doc_lines": 4
+    },
+    {
+      "api": "impl Show for RecoveryStrategy::output",
+      "location": "src/parser_combinator/incremental_ext.mbt:41",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_json_recover",
+      "location": "src/parser_combinator/json.mbt:423",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn not_followed_by",
+      "location": "src/parser_combinator/lookahead.mbt:29",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn satisfy",
+      "location": "src/parser_combinator/primitives.mbt:20",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn ptoken",
+      "location": "src/parser_combinator/primitives.mbt:54",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum Step",
+      "location": "src/parser_combinator/streaming.mbt:25",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn drive",
+      "location": "src/parser_combinator/streaming.mbt:93",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Parser",
+      "location": "src/parser_combinator/types.mbt:175",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pg_set_obstacle",
+      "location": "src/playground/exports.mbt:207",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_starts_at_start",
+      "location": "src/proofs/bfs_proof.mbt:28",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_edges_valid",
+      "location": "src/proofs/bfs_proof.mbt:50",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn require_non_negative_edges",
+      "location": "src/proofs/dijkstra_proof.mbt:29",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn check_edges_valid_weighted",
+      "location": "src/proofs/dijkstra_proof.mbt:83",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn topo_order_post",
+      "location": "src/proofs/flow_matching_proof.mbt:257",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn pairwise_diff_within",
+      "location": "src/proofs/loop_invariants.mbt:116",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn is_monotonic_nondecreasing",
+      "location": "src/proofs/loop_invariants.mbt:96",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn all_edges_non_negative",
+      "location": "src/proofs/predicates.mbt:168",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn round_trip_eq",
+      "location": "src/proofs/predicates.mbt:202",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn floyd_warshall_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:183",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn astar_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:26",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn bellman_ford_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:43",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn dag_sp_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:60",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn bidirectional_dijkstra_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:77",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn ida_star_post",
+      "location": "src/proofs/shortest_path_family_proof.mbt:94",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum AssertKind",
+      "location": "src/regex_engine/ast.mbt:20",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct Captures",
+      "location": "src/regex_engine/captures.mbt:15",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn CharSet::case_fold",
+      "location": "src/regex_engine/charset_ext.mbt:40",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct HybridMatcher",
+      "location": "src/regex_engine/hybrid.mbt:42",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct LazyDfa",
+      "location": "src/regex_engine/lazy_dfa.mbt:19",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn CharSet::contains",
+      "location": "src/regex_engine/nfa.mbt:40",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum ParseError",
+      "location": "src/regex_engine/types.mbt:80",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum GeneralCategory",
+      "location": "src/regex_engine/unicode_gc.mbt:22",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn suite_release_ready",
+      "location": "src/release_aggregate/release_aggregate.mbt:107",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn aggregate_suite",
+      "location": "src/release_aggregate/release_aggregate.mbt:127",
+      "doc_lines": 4
+    },
+    {
+      "api": "struct SuiteGates",
+      "location": "src/release_aggregate/release_aggregate.mbt:43",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn release_manifest",
+      "location": "src/release_aggregate/release_aggregate.mbt:62",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn parse_semver",
+      "location": "src/release_meta/release_meta.mbt:133",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn aggregate_release_ready",
+      "location": "src/release_meta/release_meta.mbt:75",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn release_ready_of",
+      "location": "src/release_meta/release_meta.mbt:85",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn render_code",
+      "location": "src/serialization/codegen_ast.mbt:109",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn gen_moonbit_full",
+      "location": "src/serialization/codegen_full.mbt:34",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn print_proto",
+      "location": "src/serialization/proto_grammar.mbt:1075",
+      "doc_lines": 4
+    },
+    {
+      "api": "enum ProtoType",
+      "location": "src/serialization/schema_model.mbt:18",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn decode_typed",
+      "location": "src/serialization/typed.mbt:697",
+      "doc_lines": 4
+    },
+    {
+      "api": "fn BfsTree::path_to",
+      "location": "src/unweighted/bfs_all.mbt:76",
+      "doc_lines": 4
+    }
+  ]
+}

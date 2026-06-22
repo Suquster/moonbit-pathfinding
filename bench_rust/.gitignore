@@ -1,0 +1,2 @@
+# Cargo 构建产物（不纳入版本控制）。Cargo.lock 保留以保证可复现构建。
+/target

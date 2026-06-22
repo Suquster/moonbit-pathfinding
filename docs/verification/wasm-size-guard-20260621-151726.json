@@ -1,0 +1,23 @@
+{
+  "schema": "moonbit-pathfinding.wasm-size-guard.v1",
+  "generated_at": "2026-06-21T15:17:26Z",
+  "generated_by": "scripts/wasm_size_guard.ps1",
+  "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "package": "src/playground",
+  "wasm_name": "playground.wasm",
+  "wasm_path": "_build/wasm-gc/release/build/src/playground/playground.wasm",
+  "locate_method": "options(link:) → <build-root>/src/playground/playground.wasm（缺省时按构建根递归查找同名产物）",
+  "measured_bytes": 12407,
+  "limit_bytes": 102400,
+  "margin_bytes": 89993,
+  "usage_percent": 12.1,
+  "sha256": "009ed784bd87e897fbb1374de2e6df95435d20a9115c68289b3d6a2d5001e78c",
+  "determinism": {
+    "verified": true,
+    "bytes_first": 12407,
+    "sha256_first": "009ed784bd87e897fbb1374de2e6df95435d20a9115c68289b3d6a2d5001e78c",
+    "bytes_second": 12407,
+    "sha256_second": "009ed784bd87e897fbb1374de2e6df95435d20a9115c68289b3d6a2d5001e78c"
+  },
+  "status": "passed"
+}

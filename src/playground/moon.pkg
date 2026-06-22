@@ -1,0 +1,67 @@
+// 包：Suquster/moonbit-pathfinding/src/playground
+//
+// 方向 1（WASM Playground 交互可视化）的核心包 `@playground`。
+// 本包承载「逐步执行引擎」（Stepper）：在 successor function 之上运行
+// BFS / DFS / Dijkstra / A\* / JPS，并在每一步产出结构化单步状态
+// （已访问集合 / 待扩展边界 / 当前节点 / 终止标志），供宿主逐帧回放。
+//
+// 依赖约定（design.md §「体积优化策略」/ Requirement 1.1/1.4/1.5）：
+//   * 生产代码 **仅依赖 @core** —— 提供 `Weight` 数值抽象与 `PQueue`
+//     最小堆。刻意 **不** 链接 @infra_text / @infra_pbt / @directed /
+//     @advanced 等重型包，把它们挡在 tree-shaking 之外以控制 wasm-gc
+//     产物体积（目标 ≤102400 字节）。逐步执行引擎在包内自洽实现，不复用
+//     算法包；与既有算法的「结果一致性」仅在 `*_test.mbt` 中交叉验证。
+//
+// 例外（任务 25.1 / Grid 模型）：网格编辑操作的结构化错误类型采用
+// `@graph.PathError`（design.md §「方向 1 · 1.2」接口草图明确如此），因此
+// 生产代码新增对 `@graph` 的依赖。`@graph` 仅引入 `PathError` 枚举构造子，
+// 不调用其 `message()`，故 `@infra_text` 等重型传递依赖在 wasm-gc release
+// 的死代码消除（tree-shaking）下不会被链接进导出层产物；最终 `.wasm` 体积
+// 仍由任务 27.2 的 `wasm_size_guard.ps1`（上限 102400 字节）把关。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/graph",
+}
+
+// 属性测试（任务 24.2 Property 1 结构不变量、任务 24.3 Property 4 终止路径
+// 合法/可达一致）复用共享 PBT 包 @infra_pbt 的 Gen / Rng / holds_for_all
+// 模板（每条属性 ≥100 次迭代，由模板默认 `iters=100` 保证）。该依赖仅作用于
+// 黑盒测试驱动（`for "test"`），不进入运行时产物，从而保持 @playground 生产
+// 代码「仅依赖 @core」的叶子性与 wasm-gc 体积约束（design.md §体积优化策略）。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"
+
+// wasm-gc 链接导出配置（任务 27.2 / R1.1）：
+// 声明 `@playground` 导出层（pg_* 整型句柄协议，见 exports.mbt）在 wasm-gc
+// release 构建下需要保留并导出的入口函数。有了该 `link` 配置，`moon build
+// --target wasm-gc --release` 会为本（库）包额外产出按包名命名的链接产物
+// `playground.wasm`（位于构建根 `_build/wasm-gc/release/build/src/playground/`），
+// 其体积由 `scripts/wasm_size_guard.ps1` 以 102400 字节上限把关。
+// 仅声明 wasm-gc 后端导出，不影响 js / native / 测试构建；death-code
+// elimination 仍只链接 pg_* 可达闭包，保持产物精简（design.md §体积优化策略）。
+
+options(
+  link: {
+    "wasm-gc": {
+      "exports": [
+        "pg_reset",
+        "pg_set_obstacle",
+        "pg_set_start",
+        "pg_set_goal",
+        "pg_select_algo",
+        "pg_compute",
+        "pg_step_visited_len",
+        "pg_step_visited_at",
+        "pg_step_frontier_len",
+        "pg_step_frontier_at",
+        "pg_step_current",
+        "pg_step_flags",
+        "pg_final_path_len",
+        "pg_final_path_at",
+        "pg_last_error",
+      ],
+      "export-memory-name": "moonbit_memory",
+    },
+  },
+)

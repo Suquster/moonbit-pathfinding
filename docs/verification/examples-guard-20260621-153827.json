@@ -1,0 +1,39 @@
+{
+  "schema": "moonbit-pathfinding.examples-guard.v1",
+  "generated_at": "2026-06-21T15:38:27Z",
+  "generated_by": "scripts/examples_guard.ps1",
+  "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "doc_file": "README.mbt.md",
+  "backends": [
+    "wasm-gc"
+  ],
+  "expected_total": 28,
+  "status": "passed",
+  "failures": [],
+  "backend_runs": [
+    {
+      "backend": "wasm-gc",
+      "exit_code": 0,
+      "totals": {
+        "parsed": true,
+        "total": 28,
+        "passed": 28,
+        "failed": 0
+      },
+      "status": "passed",
+      "reasons": [],
+      "diagnostics": null,
+      "command": [
+        "moon",
+        "test",
+        "README.mbt.md",
+        "--target",
+        "wasm-gc"
+      ],
+      "output": [
+        "Warning: Both moon.mod.json and moon.mod exist at module root '/home/ubuntu/repos/moonbit-pathfinding', using the new format moon.mod. Please remove the deprecated moon.mod.json.",
+        "Total tests: 28, passed: 28, failed: 0."
+      ]
+    }
+  ]
+}

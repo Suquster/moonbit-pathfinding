@@ -1,0 +1,41 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/docgen"
+
+import {
+  "Suquster/moonbit-pathfinding/src/graph",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub let algorithm_count : Int
+
+pub fn algorithm_metadata() -> Array[AlgoMeta]
+
+pub fn complexity_table(Array[AlgoMeta]) -> Result[String, @graph.PathError]
+
+pub fn render_ascii(AsciiGrid) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct AlgoMeta {
+  name : String
+  worst_time : String
+  avg_time : String
+  space : String
+  applicability : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct AsciiGrid {
+  rows : Int
+  cols : Int
+  blocked : Array[Bool]
+  start : Int
+  goal : Int
+  path : Array[Int]
+}
+
+// Type aliases
+
+// Traits
+

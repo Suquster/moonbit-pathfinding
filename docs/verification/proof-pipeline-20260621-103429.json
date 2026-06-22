@@ -1,0 +1,325 @@
+﻿{
+  "schema": "moonbit-pathfinding.proof-pipeline.v1",
+  "generated_at": "2026-06-21T10:34:29Z",
+  "generated_by": "scripts/proof_pipeline.ps1",
+  "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "package_path": "src/proofs",
+  "backends": [
+    "wasm-gc",
+    "js",
+    "native"
+  ],
+  "proof_report": {
+    "schema": "moonbit-pathfinding.proof.v1",
+    "backends": [
+      "wasm-gc",
+      "js",
+      "native"
+    ],
+    "moon_version": "moon 0.1.20260608 (60bc8c3 2026-06-08)  Feature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "generated_at": "2026-06-21T10:34:29Z",
+    "entries": [
+      {
+        "algorithm": "BFS",
+        "property": "无权最短路后置条件（合法性/可达/最小性）",
+        "passed": true,
+        "evidence": "src/proofs/bfs_proof.mbt::bfs_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "BFS-All",
+        "property": "多源/全分量 BFS 后置条件",
+        "passed": true,
+        "evidence": "src/proofs/unweighted_family_proof.mbt::bfs_all_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "DFS",
+        "property": "DFS 路径合法性与可达一致",
+        "passed": true,
+        "evidence": "src/proofs/unweighted_family_proof.mbt::dfs_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Bidirectional-BFS",
+        "property": "双向 BFS 与单向 BFS 等价",
+        "passed": true,
+        "evidence": "src/proofs/unweighted_family_proof.mbt::bidirectional_bfs_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Dijkstra",
+        "property": "非负权最短路后置条件（合法/代价一致/非负）",
+        "passed": true,
+        "evidence": "src/proofs/dijkstra_proof.mbt::dijkstra_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "A-Star",
+        "property": "A* 最短路后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::astar_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Bellman-Ford",
+        "property": "含负权最短路后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::bellman_ford_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "DAG-SP",
+        "property": "DAG 最短路后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::dag_sp_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Bidirectional-Dijkstra",
+        "property": "双向 Dijkstra 与单向等价",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::bidirectional_dijkstra_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "IDA-Star",
+        "property": "IDA* 最短路后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::ida_star_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Yen",
+        "property": "K 最短路逐条合法且非降序",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::yen_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Johnson",
+        "property": "全对最短路（Johnson）后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::johnson_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Floyd-Warshall",
+        "property": "全对最短路矩阵后置条件",
+        "passed": true,
+        "evidence": "src/proofs/shortest_path_family_proof.mbt::floyd_warshall_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Kruskal",
+        "property": "最小生成树不变量与最小性",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::mst_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Prim",
+        "property": "最小生成树不变量",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::mst_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Connected-Components",
+        "property": "连通分量等价类划分正确",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::components_partition_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Tarjan-SCC",
+        "property": "强连通分量划分正确",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::scc_partition_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Bridges",
+        "property": "报告的每条桥确为桥（删后两端不连通）",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::bridges_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Condensation",
+        "property": "缩点后必为 DAG",
+        "passed": true,
+        "evidence": "src/proofs/spanning_connectivity_proof.mbt::condensation_is_dag · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Edmonds-Karp",
+        "property": "最大流合法（守恒/容量约束）",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_valid · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Dinic",
+        "property": "最大流合法（守恒/容量约束）",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_valid · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Min-Cut",
+        "property": "最大流 = 最小割",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::max_flow_equals_min_cut · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Min-Cost-Flow",
+        "property": "最小费用流合法且费用一致",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::min_cost_flow_valid · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Hopcroft-Karp",
+        "property": "匹配合法（无公共端点）",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::matching_valid · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Kuhn-Munkres",
+        "property": "完美匹配权重一致",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::perfect_matching_weight · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Eulerian",
+        "property": "欧拉迹合法（逐边消耗、含重边）",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::eulerian_trail_valid · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Topo-Sort",
+        "property": "拓扑序合法（无重复、边方向一致）",
+        "passed": true,
+        "evidence": "src/proofs/flow_matching_proof.mbt::topo_order_post · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "Dijkstra-Loop",
+        "property": "弹出键单调不减不变式",
+        "passed": true,
+        "evidence": "src/proofs/loop_invariants.mbt::dijkstra_pop_monotonic · moon test src/proofs (wasm-gc/js/native) 通过"
+      },
+      {
+        "algorithm": "BFS-Loop",
+        "property": "层级单调（相邻层差 ≤ 1）不变式",
+        "passed": true,
+        "evidence": "src/proofs/loop_invariants.mbt::bfs_level_invariant · moon test src/proofs (wasm-gc/js/native) 通过"
+      }
+    ]
+  },
+  "any_failed": false,
+  "backend_runs": [
+    {
+      "backend": "wasm-gc",
+      "exit_code": 0,
+      "totals": {
+        "parsed": true,
+        "total": 99,
+        "passed": 99,
+        "failed": 0
+      },
+      "failing": null,
+      "status": "passed",
+      "command": [
+        "moon",
+        "test",
+        "src/proofs",
+        "--target",
+        "wasm-gc"
+      ],
+      "output": [
+        "Warning: Both moon.mod.json and moon.mod exist at module root '/home/ubuntu/repos/moonbit-pathfinding', using the new format moon.mod. Please remove the deprecated moon.mod.json.",
+        "Total tests: 99, passed: 99, failed: 0."
+      ]
+    },
+    {
+      "backend": "js",
+      "exit_code": 0,
+      "totals": {
+        "parsed": true,
+        "total": 99,
+        "passed": 99,
+        "failed": 0
+      },
+      "failing": null,
+      "status": "passed",
+      "command": [
+        "moon",
+        "test",
+        "src/proofs",
+        "--target",
+        "js"
+      ],
+      "output": [
+        "Warning: Both moon.mod.json and moon.mod exist at module root '/home/ubuntu/repos/moonbit-pathfinding', using the new format moon.mod. Please remove the deprecated moon.mod.json.",
+        "Total tests: 99, passed: 99, failed: 0."
+      ]
+    },
+    {
+      "backend": "native",
+      "exit_code": 0,
+      "totals": {
+        "parsed": true,
+        "total": 99,
+        "passed": 99,
+        "failed": 0
+      },
+      "failing": null,
+      "status": "passed",
+      "command": [
+        "moon",
+        "test",
+        "src/proofs",
+        "--target",
+        "native"
+      ],
+      "output": [
+        "Warning: Both moon.mod.json and moon.mod exist at module root '/home/ubuntu/repos/moonbit-pathfinding', using the new format moon.mod. Please remove the deprecated moon.mod.json.",
+        "Total tests: 99, passed: 99, failed: 0."
+      ]
+    }
+  ],
+  "moon_prove_help": {
+    "command": [
+      "moon",
+      "prove",
+      "--help"
+    ],
+    "exit_code": 0,
+    "output": [
+      "Prove the current package",
+      "",
+      "Usage: moon prove [OPTIONS] [PATH]",
+      "",
+      "Arguments:",
+      "  [PATH]  The file-system path to the package or file in package to prove",
+      "",
+      "Options:",
+      "      --why3-config <PATH>  Use a user-supplied Why3 configuration file instead of the generated default",
+      "  -h, --help                Print help",
+      "",
+      "Manifest Options:",
+      "      --frozen                     Do not sync dependencies, assuming local dependencies are up-to-date",
+      "  -d, --deny-warn                  Treat all warnings as errors",
+      "      --no-render                  Don't render diagnostics (in raw human-readable format)",
+      "      --output-json                Output diagnostics in JSON format",
+      "      --warn-list <WARN_LIST>      Warn list config",
+      "  -j, --jobs <JOBS>                Set the max number of jobs to run in parallel",
+      "      --render-no-loc <MIN_LEVEL>  Render no-location diagnostics starting from a certain level [default: error] [possible values: info, warn, error]",
+      "      --diagnostic-limit <N>       Limit the number of rendered diagnostics",
+      "",
+      "Common Options:",
+      "      --target-dir <TARGET_DIR>  The target directory. Defaults to `<project-root>/_build`",
+      "  -q, --quiet                    Suppress output",
+      "  -v, --verbose                  Increase verbosity",
+      "      --trace                    Trace the execution of the program",
+      "      --dry-run                  Do not actually run the command"
+    ]
+  },
+  "moon_prove_status": "blocked-missing-why3",
+  "moon_prove": {
+    "command": [
+      "moon",
+      "prove",
+      "src/proofs"
+    ],
+    "exit_code": 255,
+    "output": [
+      "Error: failed to locate `why3` required by `moon prove`; install Why3 1.7.2 preferably via opam, and ensure `why3` is available on PATH"
+    ]
+  },
+  "why3_available": false,
+  "why3_version": "",
+  "env_limitations": [
+    "moon prove 存在但 Why3 不在 PATH，静态证明无法在本机执行；仅输出运行时谓词结果。"
+  ],
+  "interpretation": "全部运行时证明谓词在所选后端通过；官方 moon prove 静态验证受本机环境限制无法执行（已记录环境限制，不影响门禁）。"
+}

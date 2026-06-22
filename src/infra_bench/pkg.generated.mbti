@@ -1,0 +1,66 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_bench"
+
+import {
+  "Suquster/moonbit-pathfinding/src/graph",
+}
+
+// Values
+pub fn compute_stats(Array[Double]) -> Result[BenchStats, @graph.PathError]
+
+pub let default_tol_pct : Double
+
+pub fn parse_report(String) -> Result[BenchReport, @graph.PathError]
+
+pub fn regression_check(BenchReport, BenchReport, Double) -> Array[RegressionVerdict]
+
+// Errors
+
+// Types and methods
+pub(all) struct BenchCase {
+  algorithm : String
+  graph_size : Int
+  edge_count : Int
+  query_count : Int
+  seed : UInt64
+  raw_ns : Array[Double]
+  stats : BenchStats
+} derive(Eq, Show)
+
+pub(all) struct BenchReport {
+  moon_version : String
+  backend : String
+  os : String
+  cpu : String
+  generator : String
+  warmup_count : Int
+  cases : Array[BenchCase]
+} derive(Eq, Show)
+pub fn BenchReport::from_json(String) -> Result[Self, @graph.PathError]
+pub fn BenchReport::to_json(Self) -> String
+pub fn BenchReport::to_json_with_timestamp(Self, String) -> String
+pub fn BenchReport::to_markdown(Self) -> String
+
+pub struct BenchStats {
+  min : Double
+  max : Double
+  median : Double
+  mean : Double
+  p95 : Double
+  stddev : Double
+  sample_count : Int
+} derive(Eq, Show)
+
+pub(all) struct RegressionVerdict {
+  algorithm : String
+  baseline_median : Double
+  current_median : Double
+  regression_pct : Double
+  failed : Bool
+} derive(Eq, Show)
+pub fn RegressionVerdict::speedup(Self) -> Double?
+
+// Type aliases
+
+// Traits
+

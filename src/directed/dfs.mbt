@@ -18,6 +18,18 @@
 ///
 /// ## Complexity
 /// Time: O(V + E). Space: O(V) for the explicit stack.
+///
+/// ## ASCII 示意（4×4 网格，深度优先路径）
+/// DFS 沿一条分支一路深入，找到的路径不保证最短。下图 `*` 标出一条
+/// 「先纵深、后折返」的可行路径，直观体现 DFS 偏好深度而非最短：
+///
+///     S..#
+///     **.#
+///     .*.#
+///     .**G
+///
+/// 图例：S=起点 G=终点 #=障碍 *=路径 .=空闲
+/// 若需无权图最短路径，请改用 `@unweighted.bfs`。
 pub fn[N : Eq + Hash] dfs(
   start : N,
   successors : (N) -> Array[N],

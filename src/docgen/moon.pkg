@@ -1,0 +1,29 @@
+// 包：Suquster/moonbit-pathfinding/src/docgen
+//
+// 方向 6（文档卓越）的基础包 `@docgen`。本包提供「文档即数据」的能力：
+//   * `AlgoMeta` —— 算法复杂度元数据模型（精确结构体，禁止字符串模拟结构 · R22.6）。
+//   * `algorithm_metadata()` —— 库内静态常量数组，恰好 33 条（30 经典算法
+//     + Contraction Hierarchies / Jump Point Search / ALT · R19.1/R19.2）。
+//   * `complexity_table()` —— 从元数据 O(n) 线性生成 Markdown 复杂度表，文本
+//     构建统一走 `@infra_text.TextBuilder`，禁止循环内字符串 `+` 拼接（R19.4）；
+//     任一必填字段为空 → 返回 `Err(@graph.PathError)` 且不产生部分写入（R19.5）。
+//
+// 依赖约定（design.md §「包依赖控制」/ Requirement 22）：
+//   * @core —— 提供数值与基础数据结构抽象（与既有算法包共享同一基线）。
+//   * @infra_text —— 共享高效文本构建叶子包；表格与诊断串的构建统一走其
+//     `TextBuilder`，禁止循环内字符串 `+` 拼接（Requirement 13.7 / 22.4）。
+//   * @graph —— 复用结构化错误类型 `PathError`（含 `InvalidArgument` 变体），
+//     不新增错误类型、不改既有公开签名（bypass 新增 · Requirement 13.8）。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/infra_text",
+  "Suquster/moonbit-pathfinding/src/graph",
+}
+
+// 属性测试（Property 29–32）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
+// holds_for_all 模板（每条属性 ≥100 次迭代）。该依赖仅作用于黑盒测试驱动
+// （`for "test"`），不进入运行时产物，符合 design.md「infra_pbt 为横切
+// 测试期共享约定」的定位。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

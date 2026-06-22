@@ -27,6 +27,18 @@
 ///
 /// ## Complexity
 /// Time: O((V + E) log V) worst case; often much better with a good heuristic.
+///
+/// ## ASCII 示意（5×5 网格，启发式引导）
+/// A* 以 `f(n) = g(n) + h(n)` 引导搜索朝终点 `G` 方向优先扩展。下图 `*`
+/// 标出一条受启发式牵引、近似阶梯走向终点的最优路径：
+///
+///     S*...
+///     .**..
+///     ..**.
+///     ...**
+///     ....G
+///
+/// 图例：S=起点 G=终点 #=障碍 *=路径 .=空闲
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(
   start : N,
   successors : (N) -> Array[(N, W)],

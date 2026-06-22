@@ -246,3 +246,124 @@ pub fn[T : Eq] seq_eq(xs : Array[T], ys : Array[T]) -> Bool {
   }
   true
 }
+
+// ---------------------------------------------------------------------------
+// 四类核心谓词 → 统一聚合组合子（30 算法基座 · Requirement 9.1–9.6）
+//
+// 既有 `bfs_post` / `dijkstra_post` 已分别示范「无权可达」与「带权最短路」两
+// 类后置条件的拼装方式。本节把它们归纳为 30 算法共享的复用基座：
+//
+//   (A) path-validity     —— 路径结构合法（非空、首=源、相邻对为图中边）
+//        既有：`is_valid_path` / `check_edges_valid` / `check_edges_valid_weighted`
+//   (B) cost-consistency  —— 返回代价 == 沿路径边权之和（精确相等；Double
+//        的 ≤1e-9 容差由对应 PBT 用例驱动）
+//        既有：`path_cost` / `check_cost_matches_path` / `check_non_negativity`
+//   (C) none-witness      —— 返回 None/空 ⟺ 目标确不可达（有界 BFS 预言机）
+//        既有：`is_reachable` / `check_none_witness`；本节新增带权重载
+//        `check_none_witness_weighted` 适配最短路 `(Array[N], W)?` 结果形状。
+//   (D) bad-witness 拒绝   —— 对故意构造的违例结果（违反 A/B/C 之一），聚合
+//        谓词必判 false 且不修改、不丢弃输入。该性质由本模块所有谓词均为
+//        **纯函数**（无副作用、不就地修改入参 `Array`/闭包）天然保证：谓词
+//        只读取 `result` / `path` / `nodes` 并返回 `Bool`，从不写回。bad-witness
+//        的拒绝行为由 10.5 的 `prop_bad_witness_test.mbt` 测试驱动验证。
+//
+// 新增的两个带权重载（`check_ends_at_goal_weighted` /
+// `check_none_witness_weighted`）让上述谓词组合可直接服务最短路族 30 算法
+// 的 `(Array[N], W)?` 结果，无需在各 `*_proof.mbt` 中重复编写拆包骨架。
+// ---------------------------------------------------------------------------
+
+///|
+/// `check_ends_at_goal_weighted(result, goal)` —— path-validity(A) 的「末节点
+/// 落在目标」分量，适配最短路算法的带权结果 `(Array[N], W)?`。
+///
+/// 与 `check_ends_at_goal`（无权 `Array[N]?`）语义一致：`Some((path, _))` 时
+/// 要求 `path` 非空且末节点满足 `goal`；`None` 时平凡为真（由 none-witness 另
+/// 行校验）。从带权结果中剥离权重分量后复用同一判定，避免重复。
+pub fn[N, W] check_ends_at_goal_weighted(
+  result : (Array[N], W)?,
+  goal : (N) -> Bool,
+) -> Bool {
+  match result {
+    Some((path, _cost)) => path.length() > 0 && goal(path[path.length() - 1])
+    None => true
+  }
+}
+
+///|
+/// `check_none_witness_weighted(result, start, successors, goal, nodes)` ——
+/// none-witness(C) 的带权重载，适配最短路算法的 `(Array[N], W)?` 结果。
+///
+/// 语义与 `check_none_witness`（无权）一致：`Some(_)` 时算法已给出显式可达
+/// 见证，平凡为真；`None` 时用有界 BFS 预言机 `is_reachable` 交叉验证图中
+/// 确无从 `start` 到满足 `goal` 节点的路径。带权后继 `(N, W)` 先剥离权重再
+/// 复用无权可达性预言机——「是否可达」与边权无关。
+pub fn[N : Eq + Hash, W] check_none_witness_weighted(
+  result : (Array[N], W)?,
+  start : N,
+  successors : (N) -> Array[(N, W)],
+  goal : (N) -> Bool,
+  nodes : Array[N],
+) -> Bool {
+  match result {
+    Some(_) => true
+    None => {
+      // 剥离权重分量，复用无权可达性预言机 is_reachable。
+      let unw_succ = fn(n : N) -> Array[N] {
+        let xs = successors(n)
+        let out : Array[N] = []
+        for p in xs {
+          out.push(p.0)
+        }
+        out
+      }
+      !is_reachable(start, goal, unw_succ, nodes)
+    }
+  }
+}
+
+///|
+/// `shortest_path_post(result, start, goal, successors, edge_weight, nodes)`
+/// —— **统一聚合组合子**：把 path-validity(A) + cost-consistency(B) +
+/// none-witness(C) 按「最短路语义」拼装为单一后置条件谓词（Requirement
+/// 9.1–9.6）。`bfs_post` / `dijkstra_post` 是此模式的早期实例，本组合子将其
+/// 推广为最短路族 30 算法（dijkstra/astar/bellman_ford/dag_sp/bidirectional_* /
+/// ida_star/yen/johnson/floyd_warshall 等）共享的基座。
+///
+/// 判定语义：
+///   * `result == Some((path, cost))`：
+///       - (A) `path` 非空、`path[0] == start`、每相邻对 `(path[i], path[i+1])`
+///         在图中存在对应边（经 `successors` 校验），且末节点满足 `goal`；
+///       - (B) `cost` 与沿 `path` 各边权之和（经 `edge_weight` 累加）一致。
+///   * `result == None`：
+///       - (C) 用 `nodes` + `successors` 做有界可达性预言机，校验图中确无
+///         从 `start` 到满足 `goal` 的路径。
+///
+/// 四个分量谓词对「不适用」分支均平凡返回 `true`（`Some` 分量在 `None` 时
+/// 平凡真，反之亦然），故可直接合取，与 `bfs_post`/`dijkstra_post` 写法一致。
+///
+/// (D) bad-witness 拒绝：本谓词为纯函数，对违反 A/B/C 之一的 `result` 必返回
+/// `false` 且不修改入参；由 10.5 测试驱动验证。
+///
+/// 运行时用法示例：
+///
+/// ```moonbit skip
+/// let r = @dir.dijkstra(start, succ, edge_weight, goal)
+/// assert_true(@proofs.shortest_path_post(r, start, goal, succ, edge_weight, nodes))
+/// ```
+pub fn[N : Eq + Hash, W : @core.Weight] shortest_path_post(
+  result : (Array[N], W)?,
+  start : N,
+  goal : (N) -> Bool,
+  successors : (N) -> Array[(N, W)],
+  edge_weight : (N, N) -> W?,
+  nodes : Array[N],
+) -> Bool {
+  // (A) 路径结构合法：非空、首=源、相邻对为边（check_edges_valid_weighted）
+  //     + 末节点落在目标（check_ends_at_goal_weighted）。
+  check_edges_valid_weighted(result, start, successors) &&
+  check_ends_at_goal_weighted(result, goal) &&
+  // (B) 代价一致：返回代价 == 沿路径边权之和。
+  check_cost_matches_path(result, edge_weight) &&
+  // (C) none-witness：None ⟺ 目标确不可达。
+  check_none_witness_weighted(result, start, successors, goal, nodes)
+}

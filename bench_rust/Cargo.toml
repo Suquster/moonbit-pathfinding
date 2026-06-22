@@ -1,0 +1,38 @@
+# bench_rust —— Rust 对比基准工程（Requirement 6：与 Rust `pathfinding` crate 对比报告）。
+#
+# 本工程是 `scripts/rust_comparison.ps1` 的 Rust 侧采集器：它用与 MoonBit 侧
+# **逐位一致** 的 xorshift64 随机源与 **完全相同** 的确定性图/查询生成算法，
+# 在 BFS / Dijkstra / A* 三种算法上对统一工作负载矩阵采集计时，并能输出「黄金
+# JSON」供两侧逐元素交叉校验（R6.2）。
+#
+# 依赖固定版本（pinned），避免开放区间带来的不可复现：
+#   * pathfinding —— 被对比的 Rust 图算法库（R6 指定）。
+#   * serde / serde_json —— 结构化 JSON 产物（黄金样本 + 计时报告）。
+[package]
+name = "bench_rust"
+version = "1.0.0"
+edition = "2021"
+description = "Rust-side comparison harness against the MoonBit pathfinding library (OSC 2026, Requirement 6)."
+license = "Apache-2.0"
+publish = false
+
+[[bin]]
+name = "bench_rust"
+path = "src/main.rs"
+
+[dependencies]
+# pathfinding 固定到与 Rust 1.83 工具链兼容的版本（4.15 需 Rust 1.87）。
+# BFS / Dijkstra / A* 的公开 API 在整个 4.x 系列稳定一致。
+pathfinding = "=4.11.0"
+serde = { version = "=1.0.215", features = ["derive"] }
+serde_json = "=1.0.133"
+# 钉死传递依赖到与 Rust 1.83 兼容的版本（更新版本要求 edition2024 / 更高 MSRV）。
+indexmap = "=2.6.0"
+hashbrown = "=0.14.5"
+
+# 发布级优化：对比基准必须在 release 模式下采集，保证与 MoonBit release 公平对齐。
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

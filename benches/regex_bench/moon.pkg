@@ -16,6 +16,9 @@
 import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/regex_engine" @re,
+  // @infra_text —— 共享高效文本构建叶子包；用于构造稀疏长文本基准负载，
+  // 避免 setup 阶段循环内字符串 `+` 的 O(n²) 拼接（T2.1 prefilter 基准）。
+  "Suquster/moonbit-pathfinding/src/infra_text",
   "moonbitlang/core/test",
 }
 

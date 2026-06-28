@@ -12,6 +12,8 @@ pub fn category_charset(GeneralCategory) -> CharSet
 
 pub fn compile_program(Ast, flags? : Flags) -> Program
 
+pub fn compute_prefilter(Ast, Flags) -> Prefilter
+
 pub fn demo_cases() -> Array[(String, String)]
 
 pub fn demo_email() -> String
@@ -229,16 +231,25 @@ pub fn Pattern::replace_all(Self, String, String) -> String
 pub fn Pattern::replace_fn(Self, String, (Match) -> String) -> String
 pub fn Pattern::split(Self, String) -> Array[String]
 pub fn Pattern::split_n(Self, String, Int) -> Array[String]
+pub fn Pattern::without_prefilter(Self) -> Self
+
+pub enum Prefilter {
+  PfNone
+  PfFirstSet(CharSet)
+} derive(Eq)
+pub fn Prefilter::next_candidate(Self, Array[Char], Int, Int) -> Int
 
 pub struct Program {
   insts : Array[Inst]
   num_groups : Int
   names : Map[String, Int]
   flags : Flags
+  prefilter : Prefilter
 }
 pub fn Program::exec(Self, String, start? : Int, kind? : MatchKind) -> Captures?
 pub fn Program::exec_steps(Self, String) -> Int
 pub fn Program::is_match(Self, String) -> Bool
+pub fn Program::without_prefilter(Self) -> Self
 
 pub(all) enum Regex {
   Char(Char)

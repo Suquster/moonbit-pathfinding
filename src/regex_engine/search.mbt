@@ -33,6 +33,13 @@ pub fn Pattern::compile(
 }
 
 ///|
+/// 返回禁用字面量预过滤的等价模式（T2.1）：匹配语义不变，仅关闭预过滤优化。
+/// 供差分测试 / 基准对照使用——开/关预过滤必须产出逐位相等的结果。
+pub fn Pattern::without_prefilter(self : Pattern) -> Pattern {
+  { ..self, prog: self.prog.without_prefilter() }
+}
+
+///|
 /// 是否存在匹配。
 pub fn Pattern::is_match(self : Pattern, input : String) -> Bool {
   match self.prog.exec(input, kind=self.kind) {

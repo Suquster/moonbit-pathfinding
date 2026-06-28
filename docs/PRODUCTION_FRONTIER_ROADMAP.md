@@ -89,10 +89,11 @@ Aho-Corasick（多模匹配）、Teddy（SIMD 字面量匹配）。
 **≥5× 提速**；差分正确性 100%（开/关预过滤逐位相等，≥200 迭代）。
 
 **任务分解**：
-- [~] **T2.1 字面量预过滤（first-set prefilter）**：从 AST 提取「匹配必经首字符集」
+- [x] **T2.1 字面量预过滤（first-set prefilter）** ✅：从 AST 提取「匹配必经首字符集」
       （保守**超集**，含 case-fold），在 Pike VM 播种前快速跳过不可能起点。
-      *验收*：差分 PBT（开/关结果逐位相等，≥200 迭代）+ 病态/边界用例 + benchmark 提速证据。
-      *验证*：`moon test -p regex_engine` 三后端 + `benches/regex_bench`。
+      *证据*：差分 PBT `prop_prefilter_test.mbt`（≥200 迭代，逐字段相等）；native bench
+      稀疏长文本 **5.58 ms → 276.5 µs（≈20.2×）**，见 `benches/results/regex-prefilter-t2.1-native.md`；
+      确定性 guard 证明预过滤裁掉 >95% 播种位置。三后端 1925 测试全绿、0 告警、.mbti 只增。
 - [ ] **T2.2 必经字面量串 + Aho-Corasick 多模扫描**：对 `Concat`/`Alt` 提取公共必经子串，
       多字面量用 Aho-Corasick 自动机一次扫描。
 - [ ] **T2.3 引擎自动选择**：按模式特征（捕获/定长/字符集规模/字面量可得性）在
@@ -302,7 +303,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 | 方向 | 任务 | 状态 | 证据 |
 |------|------|------|------|
-| 二 Regex | T2.1 字面量预过滤 | 🚧 进行中 | （本批 PR 待开） |
+| 二 Regex | T2.1 字面量预过滤 | ✅ 完成 | bench 20.2×；`benches/results/regex-prefilter-t2.1-native.md` |
 | 二 Regex | T2.2 必经串 + AC 多模 | ⬜ 待办 | — |
 | 二 Regex | T2.3 引擎自动选择 | ⬜ 待办 | — |
 | 二 Regex | T2.4 对抗性鲁棒回归 | ⬜ 待办 | — |

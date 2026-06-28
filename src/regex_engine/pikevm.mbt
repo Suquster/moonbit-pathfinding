@@ -238,6 +238,21 @@ fn Program::exec_chars(
   let mut matched : Array[Int]? = None
   let mut pos = start
   while true {
+    // 字面量预过滤（T2.1）：仅当存在首字符集预过滤、尚未命中、且无在飞线程时，
+    // 把 pos 跳到下一个可能成为匹配起点的位置。此条件下跳过中间位置不会丢弃
+    // 任何匹配中途的线程，故 `find`/`find_all`/`is_match` 结果与不过滤逐位相等。
+    // 非可空正则若再无候选起点（np >= n），则不可能再有匹配，提前终止。
+    match self.prefilter {
+      PfFirstSet(_) =>
+        if matched is None && clist.pcs.length() == 0 {
+          let np = self.prefilter.next_candidate(chars, n, pos)
+          if np >= n {
+            break
+          }
+          pos = np
+        }
+      PfNone => ()
+    }
     // 在每个位置追加最低优先级起点线程，实现单遍最左扫描；命中后停止播种。
     match matched {
       None => {

@@ -264,3 +264,105 @@ test "bench: real workload demo email pike vm find_all" (b : @bench.T) {
   let input = scaled_input("user_1@example.com", 64)
   b.bench(name="regex_real_email_find_all", fn() { b.keep(p.find_all(input)) })
 }
+
+// ---------------------------------------------------------------------------
+// 字面量预过滤（T2.1，对标 Rust regex / RE2）：稀疏命中长文本工作负载
+// ---------------------------------------------------------------------------
+
+///|
+/// 稀疏命中长文本：以不含字符 'n' 的填充词反复拼接，每 `gap` 个词插入一次
+/// 字面关键字 `needle`。命中极稀疏，正是字面量预过滤的主战场（绝大多数位置
+/// 的首字符 != 'n'，可被预过滤快速跳过，不进 Pike VM 播种）。
+fn sparse_haystack(words : Int, gap : Int) -> String {
+  let buf = @infra_text.TextBuilder::new()
+  for i in 0..<words {
+    if i > 0 {
+      buf.push_str(" ")
+    }
+    if gap > 0 && i % gap == gap - 1 {
+      buf.push_str("needle")
+    } else {
+      buf.push_str("lorem ipsum dolor sit amet")
+    }
+  }
+  buf.build()
+}
+
+///|
+/// 预过滤候选起点计数：扫描 `chars`，统计字面量预过滤判定为「可能匹配起点」
+/// 的位置数（即真正会被播种进 Pike VM 的位置数）。
+fn count_prefilter_candidates(pf : @re.Prefilter, chars : Array[Char]) -> Int {
+  let n = chars.length()
+  let mut pos = 0
+  let mut candidates = 0
+  while pos < n {
+    let np = pf.next_candidate(chars, n, pos)
+    if np >= n {
+      break
+    }
+    candidates = candidates + 1
+    pos = np + 1
+  }
+  candidates
+}
+
+///|
+/// 回归 guard（T2.1）：字面量预过滤必须把「需要播种 Pike VM 的位置数」从 O(n)
+/// 削减到与命中数同阶——稀疏长文本上候选起点应不足总位置的 5%。这是预过滤提速
+/// 的**确定性、非计时**证据（不受机器抖动影响），与 prop_prefilter 的正确性
+/// 差分共同构成 T2.1 的双重证明。
+test "guard: prefilter eliminates majority of seed positions on sparse text" {
+  let haystack = sparse_haystack(2000, 500)
+  let chars = haystack.iter().to_array()
+  let n = chars.length()
+  let ast = match @re.parse_pattern("needle") {
+    Ok(a) => a
+    Err(_) => {
+      fail("parse_pattern failed for literal 'needle'")
+      return
+    }
+  }
+  let pf = @re.compute_prefilter(ast, @re.Flags::default())
+  let candidates = count_prefilter_candidates(pf, chars)
+  // 候选起点必须远少于总位置（< 5%），证明绝大多数位置被预过滤跳过。
+  if candidates * 20 >= n {
+    fail(
+      "REGEX-BENCH GUARD FAIL [prefilter]: prefilter left " +
+      candidates.to_string() +
+      " seed candidates out of " +
+      n.to_string() +
+      " positions (>= 5%); literal prefilter not effective.",
+    )
+  }
+  // 正确性交叉验证：开/关预过滤的 find_all 命中数一致。
+  let p = match @re.Pattern::compile("needle") {
+    Ok(pat) => pat
+    Err(_) => {
+      fail("Pattern::compile failed for 'needle'")
+      return
+    }
+  }
+  @test.assert_eq(
+    p.find_all(haystack).length(),
+    p.without_prefilter().find_all(haystack).length(),
+  )
+}
+
+///|
+/// 原生基准（T2.1）：稀疏命中长文本上 `find_all` 开/关字面量预过滤的计时对照。
+/// `moon bench` 下 `regex_sparse_prefilter_on` 应显著快于 `..._off`，量化预过滤
+/// 在 RE2/Rust regex 同类场景的提速。
+test "bench: prefilter sparse long-text find_all on vs off" (b : @bench.T) {
+  let haystack = sparse_haystack(2000, 500)
+  let p = match @re.Pattern::compile("needle") {
+    Ok(pat) => pat
+    Err(_) => return
+  }
+  let off = p.without_prefilter()
+  b.bench(name="regex_sparse_prefilter_on", fn() {
+    b.keep(p.find_all(haystack))
+  })
+  b.bench(name="regex_sparse_prefilter_off", fn() {
+    b.keep(off.find_all(haystack))
+  })
+}

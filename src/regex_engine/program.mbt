@@ -49,6 +49,9 @@ pub struct Program {
   num_groups : Int
   names : Map[String, Int]
   flags : Flags
+  // 字面量预过滤策略（T2.1）：从 AST 推导的「匹配必经首字符集」，供 `exec_chars`
+  // 在无在飞线程时快速跳过不可能起点。不影响匹配语义（见 `prefilter.mbt`）。
+  prefilter : Prefilter
 }
 
 ///|
@@ -61,7 +64,17 @@ pub fn compile_program(ast : Ast, flags? : Flags = Flags::default()) -> Program 
   insts.push(IMatch)
   let names : Map[String, Int] = Map([])
   ast_collect_names(ast, names)
-  { insts, num_groups: ast_max_group(ast), names, flags }
+  let prefilter = compute_prefilter(ast, flags)
+  { insts, num_groups: ast_max_group(ast), names, flags, prefilter }
+}
+
+///|
+/// 返回禁用字面量预过滤的等价程序（`prefilter = PfNone`），其余完全不变。
+///
+/// 供差分属性测试与基准对照使用：「开启预过滤」与「禁用预过滤」必须在任意
+/// 输入上产出逐位相等的匹配结果（T2.1 正确性不变量），而基准可量化两者时差。
+pub fn Program::without_prefilter(self : Program) -> Program {
+  { ..self, prefilter: PfNone }
 }
 
 ///|

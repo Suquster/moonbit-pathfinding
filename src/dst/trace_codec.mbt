@@ -10,7 +10,7 @@
 /// 持久化错误（codec error）—— 携带人类可读原因 `reason` 与出错记号偏移 `pos`。
 pub(all) enum CodecError {
   Malformed(reason~ : String, pos~ : Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 取出持久化错误的出错记号偏移。

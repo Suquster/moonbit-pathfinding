@@ -141,7 +141,7 @@ test "Feature: championship-v1-upgrade, Property 28: counterexample shrink local
       // 最小反例自身仍失败。
       assert_false(prop_anchor(c))
       // 最小反例边数恰为阈值 k_anchor。
-      assert_eq(c.edges.length(), k_anchor)
+      @test.assert_eq(c.edges.length(), k_anchor)
       // 局部最小性：所有收缩候选都不再是反例。
       assert_true(p28_locally_minimal(c, prop_anchor))
     }
@@ -157,7 +157,7 @@ test "Feature: championship-v1-upgrade, Property 28: counterexample shrink local
   )
   match result_one.counterexample {
     Some(c) => {
-      assert_eq(c.edges.length(), 1)
+      @test.assert_eq(c.edges.length(), 1)
       assert_true(p28_locally_minimal(c, prop_one))
     }
     None => assert_true(false)

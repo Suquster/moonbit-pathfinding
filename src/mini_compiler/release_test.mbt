@@ -10,9 +10,9 @@
 /// 登记的发布元数据身份字段正确，版本为旗舰深化版 0.2.0。
 test "mini_compiler release_info registers identity at 0.2.0" {
   let info = release_info()
-  assert_eq(info.name, "mini_compiler")
-  assert_eq(info.version, "0.2.0")
-  assert_eq(info.changelog_path, "src/mini_compiler/CHANGELOG.md")
+  @test.assert_eq(info.name, "mini_compiler")
+  @test.assert_eq(info.version, "0.2.0")
+  @test.assert_eq(info.changelog_path, "src/mini_compiler/CHANGELOG.md")
 }
 
 ///|
@@ -28,7 +28,7 @@ test "mini_compiler version is a well-formed 0.2.0 semver" {
 ///|
 /// changelog 路径遵循 src/{方向}/CHANGELOG.md 约定。
 test "mini_compiler changelog path follows convention" {
-  assert_eq(
+  @test.assert_eq(
     release_info().changelog_path,
     @release_meta.default_changelog_path("mini_compiler"),
   )
@@ -43,8 +43,8 @@ test "mini_compiler release_info_with_gates matches aggregate gate" {
     docs_passing: true,
   })
   assert_true(ready.release_ready)
-  assert_eq(ready.name, "mini_compiler")
-  assert_eq(ready.version, "0.2.0")
+  @test.assert_eq(ready.name, "mini_compiler")
+  @test.assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: false,

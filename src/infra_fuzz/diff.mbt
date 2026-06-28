@@ -8,7 +8,7 @@
 //     BfsVsDijkstraUnit          // 单位权图：BFS 代价 == Dijkstra 代价（精确 · R16.1）
 //     DijkstraVsBellmanFord      // 非负权：两者代价偏差 ≤1e-9（R16.2）
 //     FloydWarshallVsJohnson     // 全对最短距离矩阵逐元素 ≤1e-9（R16.3）
-//   } derive(Eq, Show)
+//   } derive(Eq, Debug)
 //
 // 设计哲学：
 //   * `approx_eq` 是差分判等的唯一数值口径：整数权 / 单位权场景以 `eps=0`
@@ -20,7 +20,7 @@
 //     任何有限容差。全过程不依赖可能缺失的库函数，差值取绝对值手工计算，
 //     保证 total 且三后端逐位一致。
 //   * `EquivClass` 以精确枚举表达三个等价类，严禁以字符串模拟结构化数据
-//     （R22.6 / 反模式清单）；`derive(Eq, Show)` 使等价类可直接参与相等性
+//     （R22.6 / 反模式清单）；`derive(Eq, Debug)` 使等价类可直接参与相等性
 //     断言与快照校验。
 //   * 命名常量替代 magic number：默认容差 1e-9 命名为 `default_eps`。
 
@@ -76,7 +76,7 @@ pub fn approx_eq(a : Double, b : Double, eps : Double) -> Bool {
 ///   * `FloydWarshallVsJohnson` —— 带权图上 Floyd-Warshall 与 Johnson 的
 ///     全对最短距离矩阵逐元素偏差不超过 1e-9（R16.3）。
 ///
-/// `derive(Eq, Show)` 使等价类可直接以相等性断言与快照（`Show`）校验，
+/// `derive(Eq, Debug)` 使等价类可直接以相等性断言与快照（`Show`）校验，
 /// 并可作为差分用例标识参与报告输出。
 ///
 /// 可见性为 `pub(all)`：差分测试器（task 15.1 支撑逻辑 / task 15.2 属性测试）
@@ -87,4 +87,4 @@ pub(all) enum EquivClass {
   BfsVsDijkstraUnit
   DijkstraVsBellmanFord
   FloydWarshallVsJohnson
-} derive(Eq, Show)
+} derive(Eq, Debug)

@@ -50,17 +50,17 @@ pub fn decode_message(bytes : Bytes) -> Result[JsonRpcMessage, RpcError] {
   }
   let id_field = json_obj_get(obj, "id")
   match json_obj_get(obj, "method") {
-    Some(JStr(method)) => {
+    Some(JStr(method_name)) => {
       // 请求或通知：params 缺省视为 JNull。
       let params = match json_obj_get(obj, "params") {
         Some(p) => p
         None => JNull
       }
       match id_field {
-        None => Ok(Notification(method~, params~)) // 无 id → 通知
+        None => Ok(Notification(method_name~, params~)) // 无 id → 通知
         Some(idj) =>
           match parse_id(idj) {
-            Some(id) => Ok(Request(id~, method~, params~))
+            Some(id) => Ok(Request(id~, method_name~, params~))
             None =>
               Err(
                 RpcError::new(
@@ -177,17 +177,17 @@ pub fn encode_message(msg : JsonRpcMessage) -> Bytes {
 /// 将消息映射为 JSON 值（确定的字段顺序，便于确定性序列化与往返）。
 fn message_to_json(msg : JsonRpcMessage) -> Json {
   match msg {
-    Request(id~, method~, params~) =>
+    Request(id~, method_name~, params~) =>
       JObj([
         ("jsonrpc", JStr("2.0")),
         ("id", id_to_json(id)),
-        ("method", JStr(method)),
+        ("method", JStr(method_name)),
         ("params", params),
       ])
-    Notification(method~, params~) =>
+    Notification(method_name~, params~) =>
       JObj([
         ("jsonrpc", JStr("2.0")),
-        ("method", JStr(method)),
+        ("method", JStr(method_name)),
         ("params", params),
       ])
     Response(id~, result~, error~) => {
@@ -243,20 +243,20 @@ fn rpc_error_to_json(e : RpcError) -> Json {
 ///   * 响应（Response）：服务端不分发响应，返回 `None`。
 pub fn dispatch(msg : JsonRpcMessage, router : Router) -> JsonRpcMessage? {
   match msg {
-    Request(id~, method~, ..) =>
-      match router.lookup(method) {
+    Request(id~, method_name~, ..) =>
+      match router.lookup(method_name) {
         Some(handler) => handler(msg)
         None =>
           Some(
             error_response(
               id,
               method_not_found_code,
-              "Method not found: " + method,
+              "Method not found: " + method_name,
             ),
           )
       }
-    Notification(method~, ..) =>
-      match router.lookup(method) {
+    Notification(method_name~, ..) =>
+      match router.lookup(method_name) {
         Some(handler) => {
           let _ = handler(msg)
           None

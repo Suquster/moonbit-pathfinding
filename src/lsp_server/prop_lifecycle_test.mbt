@@ -32,14 +32,14 @@ let sample_methods : Array[String] = [
 /// 生成单个随机生命周期事件：在 6 种事件构造子中等概率选取，
 /// `EvRequest` / `EvNotification` 携带随机 method 名。
 fn gen_lifecycle_event(rng : @infra_pbt.Rng) -> LifecycleEvent {
-  let method = sample_methods[rng.next_below(sample_methods.length())]
+  let method_name = sample_methods[rng.next_below(sample_methods.length())]
   match rng.next_below(6) {
     0 => EvInitialize(InitializeParamsExt::empty())
     1 => EvInitialized
     2 => EvShutdown
     3 => EvExit
-    4 => EvRequest(method~)
-    _ => EvNotification(method~)
+    4 => EvRequest(method_name~)
+    _ => EvNotification(method_name~)
   }
 }
 
@@ -95,8 +95,8 @@ fn expected_state(
         _ => state
       }
     EvExit => Exited
-    EvRequest(method=_) => state
-    EvNotification(method=_) => state
+    EvRequest(method_name=_) => state
+    EvNotification(method_name=_) => state
   }
 }
 
@@ -108,7 +108,7 @@ fn is_request_event(event : LifecycleEvent) -> Bool {
   match event {
     EvInitialize(_) => true
     EvShutdown => true
-    EvRequest(method=_) => true
+    EvRequest(method_name=_) => true
     _ => false
   }
 }

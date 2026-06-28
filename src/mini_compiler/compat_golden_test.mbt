@@ -65,7 +65,7 @@ test "golden: integer literal 42 across all stages" {
   // eval
   assert_true(golden_eval(src) == IntV(42))
   // print_ast 逐字
-  assert_eq(print_ast(golden_parse(src)), "42")
+  @test.assert_eq(print_ast(golden_parse(src)), "42")
 }
 
 // ---------------------------------------------------------------------------
@@ -86,7 +86,7 @@ test "golden: let-bound variable across all stages" {
   // eval
   assert_true(golden_eval(src) == IntV(1))
   // print_ast 逐字
-  assert_eq(print_ast(golden_parse(src)), "let x = 1 in x")
+  @test.assert_eq(print_ast(golden_parse(src)), "let x = 1 in x")
 }
 
 // ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ test "golden: arithmetic precedence across all stages" {
   // eval：1 + 6 = 7
   assert_true(golden_eval(src) == IntV(7))
   // print_ast：完全括号化
-  assert_eq(print_ast(golden_parse(src)), "(1 + (2 * 3))")
+  @test.assert_eq(print_ast(golden_parse(src)), "(1 + (2 * 3))")
 }
 
 // ---------------------------------------------------------------------------
@@ -135,7 +135,7 @@ test "golden: let with arithmetic body across all stages" {
   // eval：10 - 4 = 6
   assert_true(golden_eval(src) == IntV(6))
   // print_ast 逐字
-  assert_eq(print_ast(golden_parse(src)), "let x = 10 in (x - 4)")
+  @test.assert_eq(print_ast(golden_parse(src)), "let x = 10 in (x - 4)")
 }
 
 // ---------------------------------------------------------------------------
@@ -187,7 +187,10 @@ test "golden: nested let across all stages" {
   // eval：x=1, y=2 → 1 + 2 = 3
   assert_true(golden_eval(src) == IntV(3))
   // print_ast 逐字
-  assert_eq(print_ast(golden_parse(src)), "let x = 1 in let y = 2 in (x + y)")
+  @test.assert_eq(
+    print_ast(golden_parse(src)),
+    "let x = 1 in let y = 2 in (x + y)",
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -212,7 +215,7 @@ test "golden: division by zero is defined as zero across all stages" {
   // eval：除零定义为 0（MiniLet 全函数约定）
   assert_true(golden_eval(src) == IntV(0))
   // print_ast 逐字
-  assert_eq(print_ast(golden_parse(src)), "let z = 5 in (z / 0)")
+  @test.assert_eq(print_ast(golden_parse(src)), "let z = 5 in (z / 0)")
 }
 
 // ---------------------------------------------------------------------------
@@ -240,10 +243,10 @@ test "golden: print_ast round-trips structurally for all fixtures" {
 /// compile 桩对任一后端均返回空 Bytes（签名与行为冻结，R12.2）。
 test "golden: compile stub signature and empty-bytes behavior unchanged" {
   let typed = golden_check("let x = 10 in x - 4")
-  assert_eq(compile(typed, Wasm).length(), 0)
-  assert_eq(compile(typed, Js).length(), 0)
+  @test.assert_eq(compile(typed, Wasm).length(), 0)
+  @test.assert_eq(compile(typed, Js).length(), 0)
   // 纯字面量同样产出空 Bytes。
-  assert_eq(compile(TInt(42), Wasm).length(), 0)
+  @test.assert_eq(compile(TInt(42), Wasm).length(), 0)
 }
 
 ///|
@@ -251,20 +254,20 @@ test "golden: compile stub signature and empty-bytes behavior unchanged" {
 test "golden: Diagnostic::new builds expected struct verbatim" {
   let d = Diagnostic::new(LexError, 1, 3, "非法字符 '@'")
   assert_true(d.kind == LexError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
-  assert_eq(d.msg, "非法字符 '@'")
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
+  @test.assert_eq(d.msg, "非法字符 '@'")
   // 整体结构相等（走派生 Eq）。
   assert_true(d == Diagnostic::new(LexError, 1, 3, "非法字符 '@'"))
   // 不同类别 / 位置构造亦原样保留。
   let d2 = Diagnostic::new(SyntaxError, 2, 7, "期望 ')'")
   assert_true(d2.kind == SyntaxError)
-  assert_eq(d2.line, 2)
-  assert_eq(d2.col, 7)
-  assert_eq(d2.msg, "期望 ')'")
+  @test.assert_eq(d2.line, 2)
+  @test.assert_eq(d2.col, 7)
+  @test.assert_eq(d2.msg, "期望 ')'")
   let d3 = Diagnostic::new(TypeError, 0, 0, "未绑定变量 'q'")
   assert_true(d3.kind == TypeError)
-  assert_eq(d3.line, 0)
-  assert_eq(d3.col, 0)
-  assert_eq(d3.msg, "未绑定变量 'q'")
+  @test.assert_eq(d3.line, 0)
+  @test.assert_eq(d3.col, 0)
+  @test.assert_eq(d3.msg, "未绑定变量 'q'")
 }

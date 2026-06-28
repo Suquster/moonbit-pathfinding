@@ -59,13 +59,13 @@ pub struct CancelRegistry {
 ///|
 /// 构造一个空的取消登记表（无任何 id 被标记取消）。
 pub fn CancelRegistry::new() -> CancelRegistry {
-  { cancelled: Map::new() }
+  { cancelled: Map([]) }
 }
 
 ///|
 /// 将某 `id` 标记为已取消，返回携带该新标记的**新**登记表（原实例不变）。
 pub fn CancelRegistry::cancel(self : CancelRegistry, id : Id) -> CancelRegistry {
-  let next : Map[String, Bool] = Map::new()
+  let next : Map[String, Bool] = Map([])
   for k, v in self.cancelled {
     next[k] = v
   }

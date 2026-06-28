@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/infra_bench"
 
 import {
   "Suquster/moonbit-pathfinding/src/graph",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -25,7 +26,7 @@ pub(all) struct BenchCase {
   seed : UInt64
   raw_ns : Array[Double]
   stats : BenchStats
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct BenchReport {
   moon_version : String
@@ -35,7 +36,7 @@ pub(all) struct BenchReport {
   generator : String
   warmup_count : Int
   cases : Array[BenchCase]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn BenchReport::from_json(String) -> Result[Self, @graph.PathError]
 pub fn BenchReport::to_json(Self) -> String
 pub fn BenchReport::to_json_with_timestamp(Self, String) -> String
@@ -49,7 +50,7 @@ pub struct BenchStats {
   p95 : Double
   stddev : Double
   sample_count : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct RegressionVerdict {
   algorithm : String
@@ -57,7 +58,7 @@ pub(all) struct RegressionVerdict {
   current_median : Double
   regression_pct : Double
   failed : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn RegressionVerdict::speedup(Self) -> Double?
 
 // Type aliases

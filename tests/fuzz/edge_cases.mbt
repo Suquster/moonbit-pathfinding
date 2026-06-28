@@ -15,7 +15,7 @@ test "differential checker skips graphs with negative cycles" {
   // treats that as a skip (0 mismatches) rather than a failure.
   let nodes = [0, 1]
   let edges = [(0, 1, -2), (1, 0, -2)]
-  assert_eq(differential_one(nodes, edges, 0), 0)
+  @test.assert_eq(differential_one(nodes, edges, 0), 0)
 }
 
 ///|

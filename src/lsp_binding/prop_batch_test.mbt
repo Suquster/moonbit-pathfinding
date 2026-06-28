@@ -78,12 +78,12 @@ fn gen_batch_message(rng : @infra_pbt.Rng) -> JsonRpcMessage {
     0 =>
       JsonRpcMessage::Request(
         id=gen_id(rng),
-        method=gen_batch_method(rng),
+        method_name=gen_batch_method(rng),
         params=gen_json(rng, 2),
       )
     1 =>
       JsonRpcMessage::Notification(
-        method=gen_batch_method(rng),
+        method_name=gen_batch_method(rng),
         params=gen_json(rng, 2),
       )
     _ =>

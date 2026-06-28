@@ -35,7 +35,7 @@ pub(all) enum PlaygroundAlgo {
   Dijkstra
   AStar
   JPS
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 单步可观察状态（Requirement 1.2）。
@@ -53,7 +53,7 @@ pub struct StepState[N] {
   current : N?
   done : Bool
   found : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整逐步轨迹（Step_Trace）。供动画逐帧消费。
@@ -68,7 +68,7 @@ pub struct StepTrace[N] {
   steps : Array[StepState[N]]
   final_path : Array[N]?
   reachable : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 在 successor function 之上生成一条 `StepTrace`。纯函数、可复现。

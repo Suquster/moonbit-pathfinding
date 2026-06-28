@@ -69,7 +69,7 @@ test "whitebox: yen breaks out of loop when candidates exhausted" {
     Ok(paths) => {
       // 只能找到 1 条路径,即便请求 k=3。
       inspect(paths.length(), content="1")
-      inspect(paths[0].0, content="[0, 1, 2]")
+      @debug.debug_inspect(paths[0].0, content="[0, 1, 2]")
       inspect(paths[0].1, content="2")
     }
     Err(_) => inspect(false, content="true")

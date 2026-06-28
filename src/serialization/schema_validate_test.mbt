@@ -133,6 +133,6 @@ test "validate_schema accepts a well-formed schema" {
   )
   match validate_schema(s) {
     Ok(_) => assert_true(true)
-    Err(errs) => fail("合法模式不应报错：\{errs}")
+    Err(errs) => fail("合法模式不应报错：\{@debug.to_string(errs)}")
   }
 }

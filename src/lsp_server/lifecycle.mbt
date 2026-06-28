@@ -32,7 +32,22 @@ pub(all) enum LifecycleState {
   Initialized // 已就绪，可处理常规请求
   ShuttingDown // 已收到 shutdown，等待 exit
   Exited // 已退出
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// `LifecycleState` 的文本表示用于对外协议 / JSON 输出（领域专用显示文本），
+/// 故手工实现 `Show`（变体名），与历史 `derive(Show)` 行为一致；调试输出走 `Debug`。
+pub impl Show for LifecycleState with fn output(self, logger) {
+  logger.write_string(
+    match self {
+      Uninitialized => "Uninitialized"
+      Initializing => "Initializing"
+      Initialized => "Initialized"
+      ShuttingDown => "ShuttingDown"
+      Exited => "Exited"
+    },
+  )
+}
 
 ///|
 /// 驱动生命周期状态机的事件。`EvRequest` / `EvNotification` 承载除生命周期消息之外
@@ -42,9 +57,9 @@ pub(all) enum LifecycleEvent {
   EvInitialized // initialized 通知
   EvShutdown // shutdown 请求
   EvExit // exit 通知
-  EvRequest(method~ : String) // 任意其他请求
-  EvNotification(method~ : String) // 任意其他通知
-} derive(Eq, Show)
+  EvRequest(method_name~ : String) // 任意其他请求
+  EvNotification(method_name~ : String) // 任意其他通知
+} derive(Eq, Debug)
 
 ///|
 /// 一步转移的结果：新状态 `state` + 可选应答 `reply`（请求才有；通知为 None）+
@@ -53,7 +68,7 @@ pub(all) struct StepResult {
   state : LifecycleState
   reply : @lsp_binding.JsonRpcMessage?
   exit_code : Int?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 能力 JSON 合成 ─────────────────────────
 
@@ -176,14 +191,14 @@ pub fn step(
         exit_code: Some(if shutdown_seen { 0 } else { 1 }),
       }
     // 其他请求：未声明转移，保持状态并回 invalid_request_code（1.3/1.5/1.8 健全性）。
-    EvRequest(method=_) =>
+    EvRequest(method_name=_) =>
       StepResult::{
         state,
         reply: Some(invalid_request_reply(reply_id)),
         exit_code: None,
       }
     // 其他通知：未声明转移，保持状态且无应答（通知无响应）。
-    EvNotification(method=_) =>
+    EvNotification(method_name=_) =>
       StepResult::{ state, reply: None, exit_code: None }
   }
 }
@@ -220,25 +235,25 @@ fn message_to_event(
   msg : @lsp_binding.JsonRpcMessage,
 ) -> (LifecycleEvent, @lsp_binding.Id) {
   match msg {
-    @lsp_binding.Request(id~, method~, params~) =>
-      if method == "initialize" {
+    @lsp_binding.Request(id~, method_name~, params~) =>
+      if method_name == "initialize" {
         (EvInitialize(parse_init_params(params)), id)
-      } else if method == "shutdown" {
+      } else if method_name == "shutdown" {
         (EvShutdown, id)
       } else {
-        (EvRequest(method~), id)
+        (EvRequest(method_name~), id)
       }
-    @lsp_binding.Notification(method~, params=_) =>
-      if method == "initialized" {
+    @lsp_binding.Notification(method_name~, params=_) =>
+      if method_name == "initialized" {
         (EvInitialized, @lsp_binding.IdNull)
-      } else if method == "exit" {
+      } else if method_name == "exit" {
         (EvExit, @lsp_binding.IdNull)
       } else {
-        (EvNotification(method~), @lsp_binding.IdNull)
+        (EvNotification(method_name~), @lsp_binding.IdNull)
       }
     // 响应消息不驱动生命周期（视为无关通知，无应答、状态不变）。
     @lsp_binding.Response(_) =>
-      (EvNotification(method="$/response"), @lsp_binding.IdNull)
+      (EvNotification(method_name="$/response"), @lsp_binding.IdNull)
   }
 }
 

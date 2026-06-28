@@ -81,14 +81,14 @@ let freq_special : Int = 3
 /// 结构化随机图：节点为 `0..n-1`；`edges` 为有向边 `(源, 目标, 权重)` 序列，
 /// 允许自环（源 == 目标）与平行边（同一 `(源, 目标)` 多次出现）。
 ///
-/// 作为差分 / 模糊测试的统一输入模型；`derive(Eq, Show)` 使「同种子确定性」
+/// 作为差分 / 模糊测试的统一输入模型；`derive(Eq, Debug)` 使「同种子确定性」
 /// 等性质可直接以相等性断言与快照校验（R17.7）。字段 `n` 为节点数，`edges`
 /// 以三元组数组精确表达每条有向边的源、目标与浮点权重（禁止字符串模拟结构化
 /// 数据，R22.6）。该模型可经 `to_successors` 等适配后接入各算法入口。
 pub(all) struct FuzzGraph {
   n : Int
   edges : Array[(Int, Int, Double)]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 取两整数较小值。

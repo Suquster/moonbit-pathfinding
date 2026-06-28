@@ -45,7 +45,7 @@ test "ch_query source equals target returns zero cost" {
   let graph = ch_preprocess(nodes, fn(n) { adj[n] })
   match ch_query(graph, 0, 0) {
     Some((path, cost)) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     None => assert_true(false)

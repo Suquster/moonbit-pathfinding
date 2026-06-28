@@ -37,11 +37,11 @@ test "destruct_ssa 消除全部 φ 且语义一致" {
   // 沿 then 来路：原 SSA 与析构后输出一致（均为 1）。
   let oa = evaluate(ssa, Map([]), ["entry", "then", "join"]).output
   let ob = evaluate(d, Map([]), ["entry", "then", "join"]).output
-  assert_eq(oa, ob)
-  inspect(ob, content="[1]")
+  @test.assert_eq(oa, ob)
+  @debug.debug_inspect(ob, content="[1]")
   // 沿 else 来路一致（均为 2）。
   let ea = evaluate(ssa, Map([]), ["entry", "else", "join"]).output
   let eb = evaluate(d, Map([]), ["entry", "else", "join"]).output
-  assert_eq(ea, eb)
-  inspect(eb, content="[2]")
+  @test.assert_eq(ea, eb)
+  @debug.debug_inspect(eb, content="[2]")
 }

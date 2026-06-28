@@ -14,7 +14,7 @@ pub(all) struct PipelineStages {
   coloring : Map[Var, Location]
   linear_scan : Map[Var, Location]
   instrs : Array[TargetInstr]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 旗舰示例程序：带条件分支与菱形汇合的小程序。

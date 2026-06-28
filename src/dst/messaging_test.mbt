@@ -39,12 +39,12 @@ test "send pairs with one deliver, deliver later than send" {
     30,
   )
   let r = run_des(11, sc)
-  assert_eq(count_deliveries(r.trace), 1)
+  @test.assert_eq(count_deliveries(r.trace), 1)
   let (snd, dlv) = first_send_deliver(r.trace)
   match (snd, dlv) {
     (Some((st, sid)), Some((dt, did))) => {
       assert_true(dt > st)
-      assert_eq(sid, did)
+      @test.assert_eq(sid, did)
     }
     _ => fail("expected one send and one deliver")
   }
@@ -68,6 +68,6 @@ test "message ids are assigned monotonically" {
       _ => ()
     }
   }
-  assert_eq(ids.length(), 2)
+  @test.assert_eq(ids.length(), 2)
   assert_true(ids[0] < ids[1])
 }

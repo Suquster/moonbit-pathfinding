@@ -54,7 +54,7 @@ pub(all) struct RegressionVerdict {
   current_median : Double
   regression_pct : Double
   failed : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 该判定对应的中位加速比 `baseline_median / current_median`（Requirement 6.6）。

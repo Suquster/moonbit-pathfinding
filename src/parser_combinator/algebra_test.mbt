@@ -15,9 +15,9 @@ test "pure succeeds with value and consumes nothing" {
   let input = Input::from_string("abc")
   match pure(42).parse(input) {
     Ok(v, rest) => {
-      assert_eq(v, 42)
+      @test.assert_eq(v, 42)
       // 零消费：剩余输入仍指向起始位置。
-      assert_eq(rest.pos.offset, 0)
+      @test.assert_eq(rest.pos.offset, 0)
       assert_true(rest.peek() == Some('a'))
     }
     Fail(_, ..) => fail("pure should never fail")
@@ -31,8 +31,8 @@ test "map applies function and preserves consumption" {
   let p = map(any_char(), fn(c) { c.to_int() })
   match p.parse_string("A") {
     Ok(v, rest) => {
-      assert_eq(v, 'A'.to_int())
-      assert_eq(rest.pos.offset, 1) // 与 any_char 一致地消费了一位
+      @test.assert_eq(v, 'A'.to_int())
+      @test.assert_eq(rest.pos.offset, 1) // 与 any_char 一致地消费了一位
     }
     Fail(_, ..) => fail("expected success")
   }
@@ -49,7 +49,7 @@ test "map propagates failure verbatim without calling f" {
   })
   match p.parse_string("abc") {
     Fail(pos, expected~) => {
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'x'"]) // 与 pchar('x') 的期望逐元素一致
     }
     Ok(_, _) => fail("expected failure")
@@ -64,8 +64,8 @@ test "bind sequences dependent parsers" {
   let p = bind(any_char(), fn(c) { pchar(c) })
   match p.parse_string("aab") {
     Ok(v, rest) => {
-      assert_eq(v, 'a')
-      assert_eq(rest.pos.offset, 2) // 消费了两个 'a'
+      @test.assert_eq(v, 'a')
+      @test.assert_eq(rest.pos.offset, 2) // 消费了两个 'a'
       assert_true(rest.peek() == Some('b'))
     }
     Fail(_, ..) => fail("expected success")
@@ -84,7 +84,7 @@ test "bind propagates failure verbatim without calling f" {
   })
   match p.parse_string("abc") {
     Fail(pos, expected~) => {
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'x'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -101,7 +101,7 @@ test "ap applies parsed function to parsed argument" {
     c.to_int() - '0'.to_int()
   })
   match ap(pf, pa).parse_string("7") {
-    Ok(v, _) => assert_eq(v, 8)
+    Ok(v, _) => @test.assert_eq(v, 8)
     Fail(_, ..) => fail("expected success")
   }
 }
@@ -112,7 +112,7 @@ test "pfail always fails with given expected and consumes nothing" {
   let p : Parser[Int] = pfail(expected=["期望符号"])
   match p.parse_string("abc") {
     Fail(pos, expected~) => {
-      assert_eq(pos.offset, 0) // 失败位置即进入位置（不消费）
+      @test.assert_eq(pos.offset, 0) // 失败位置即进入位置（不消费）
       assert_true(expected == ["期望符号"])
     }
     Ok(_, _) => fail("pfail should never succeed")
@@ -126,8 +126,8 @@ test "alt with leading pfail behaves like the surviving branch" {
   let lhs = alt([pfail(expected=["zero"]), p])
   match lhs.parse_string("abc") {
     Ok(v, rest) => {
-      assert_eq(v, 'a')
-      assert_eq(rest.pos.offset, 1)
+      @test.assert_eq(v, 'a')
+      @test.assert_eq(rest.pos.offset, 1)
     }
     Fail(_, ..) => fail("expected success")
   }

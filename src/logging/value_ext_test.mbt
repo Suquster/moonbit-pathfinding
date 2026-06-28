@@ -21,24 +21,27 @@ test "value is_scalar and is_nested classify scalar vs nested" {
 ///|
 /// 标量取值深度为 0。
 test "value depth of scalars is zero" {
-  assert_eq(Value::VStr("x").depth(), 0)
-  assert_eq(Value::VInt(7L).depth(), 0)
-  assert_eq(Value::VBool(false).depth(), 0)
-  assert_eq(Value::VFloat(3.25).depth(), 0)
+  @test.assert_eq(Value::VStr("x").depth(), 0)
+  @test.assert_eq(Value::VInt(7L).depth(), 0)
+  @test.assert_eq(Value::VBool(false).depth(), 0)
+  @test.assert_eq(Value::VFloat(3.25).depth(), 0)
 }
 
 ///|
 /// 空嵌套取值深度为 1；单层嵌套标量为 1。
 test "value depth of empty and single-level nesting is one" {
   let empty_map : Map[String, Value] = {}
-  assert_eq(Value::VMap(empty_map).depth(), 1)
+  @test.assert_eq(Value::VMap(empty_map).depth(), 1)
   let empty_list : Array[Value] = []
-  assert_eq(Value::VList(empty_list).depth(), 1)
-  assert_eq(
+  @test.assert_eq(Value::VList(empty_list).depth(), 1)
+  @test.assert_eq(
     Value::VMap({ "a": Value::VInt(1L), "b": Value::VStr("x") }).depth(),
     1,
   )
-  assert_eq(Value::VList([Value::VInt(1L), Value::VBool(true)]).depth(), 1)
+  @test.assert_eq(
+    Value::VList([Value::VInt(1L), Value::VBool(true)]).depth(),
+    1,
+  )
 }
 
 ///|
@@ -48,9 +51,9 @@ test "value depth of multi-level nesting takes one plus max child depth" {
   let inner : Map[String, Value] = { "inner": Value::VInt(1L) }
   let lst : Array[Value] = [Value::VMap(inner)]
   let outer : Map[String, Value] = { "outer": Value::VList(lst) }
-  assert_eq(Value::VMap(outer).depth(), 3)
+  @test.assert_eq(Value::VMap(outer).depth(), 3)
   // mixed: list containing a scalar and a depth-2 map -> 1 + max(0, 2) = 3
   let deep_map : Map[String, Value] = { "k": Value::VList([Value::VInt(1L)]) } // depth 2
   let mixed : Array[Value] = [Value::VInt(9L), Value::VMap(deep_map)]
-  assert_eq(Value::VList(mixed).depth(), 3)
+  @test.assert_eq(Value::VList(mixed).depth(), 3)
 }

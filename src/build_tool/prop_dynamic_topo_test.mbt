@@ -13,8 +13,8 @@
 /// **Validates: Requirements 8.1, 8.2, 8.4**
 test "Feature: build-tool, Property 14: dynamic-dependency topology preservation" {
   let ok = @infra_pbt.holds_for_all(gen_dag_dynamic(), fn(triple) {
-    let (g, target, dyn) = triple
-    let g2 = add_dynamic_deps(g, target, dyn)
+    let (g, target, dyn_deps) = triple
+    let g2 = add_dynamic_deps(g, target, dyn_deps)
     // 并入后仍无环。
     let acyclic = match detect_cycle(g2) {
       Some(_) => false
@@ -23,7 +23,7 @@ test "Feature: build-tool, Property 14: dynamic-dependency topology preservation
     if !acyclic {
       return false
     }
-    match reschedule_with_dynamic(g, target, dyn, 0) {
+    match reschedule_with_dynamic(g, target, dyn_deps, 0) {
       Err(_) => false
       Ok(batches) => {
         let pos = position_map(batches)

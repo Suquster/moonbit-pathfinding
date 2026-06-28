@@ -47,9 +47,12 @@ fn uu_err(t1 : Ty, t2 : Ty) -> Diagnostic {
 test "unify: TyInt ~ TyInt yields empty subst (identity)" {
   let s = uu_ok(TyInt, TyInt)
   assert_true(s == subst_empty())
-  assert_eq(apply_subst(s, TyInt), TyInt)
-  assert_eq(apply_subst(s, TyVar(7)), TyVar(7))
-  assert_eq(apply_subst(s, TyFun(TyVar(0), TyBool)), TyFun(TyVar(0), TyBool))
+  @test.assert_eq(apply_subst(s, TyInt), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(7)), TyVar(7))
+  @test.assert_eq(
+    apply_subst(s, TyFun(TyVar(0), TyBool)),
+    TyFun(TyVar(0), TyBool),
+  )
 }
 
 ///|
@@ -74,14 +77,14 @@ test "unify: TyInt ~ TyBool is a TypeError" {
 /// `TyVar(0) ~ TyInt` → 绑定，施于 `TyVar(0)` 得 `TyInt`。
 test "unify: TyVar(0) ~ TyInt binds the variable" {
   let s = uu_ok(TyVar(0), TyInt)
-  assert_eq(apply_subst(s, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyInt)
 }
 
 ///|
 /// `TyInt ~ TyVar(0)` → 同样把变量绑定到 `TyInt`（对称方向）。
 test "unify: TyInt ~ TyVar(0) binds the variable (symmetric)" {
   let s = uu_ok(TyInt, TyVar(0))
-  assert_eq(apply_subst(s, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyInt)
 }
 
 ///|
@@ -95,7 +98,7 @@ test "unify: TyVar(0) ~ TyVar(0) yields empty subst (no self-binding)" {
 /// `TyVar(0) ~ TyVar(1)` → 把 0 绑定到变量 1。
 test "unify: TyVar(0) ~ TyVar(1) binds one to the other" {
   let s = uu_ok(TyVar(0), TyVar(1))
-  assert_eq(apply_subst(s, TyVar(0)), TyVar(1))
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyVar(1))
 }
 
 // ---------------------------------------------------------------------------
@@ -106,8 +109,8 @@ test "unify: TyVar(0) ~ TyVar(1) binds one to the other" {
 /// `(a -> b) ~ (Int -> Bool)` → a↦Int, b↦Bool。
 test "unify: function type binds both parameter and result vars" {
   let s = uu_ok(TyFun(TyVar(0), TyVar(1)), TyFun(TyInt, TyBool))
-  assert_eq(apply_subst(s, TyVar(0)), TyInt)
-  assert_eq(apply_subst(s, TyVar(1)), TyBool)
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(1)), TyBool)
 }
 
 ///|
@@ -117,9 +120,9 @@ test "unify: nested function type threads shared variable" {
   let lhs : Ty = TyFun(TyVar(0), TyFun(TyVar(0), TyVar(1)))
   let rhs : Ty = TyFun(TyInt, TyFun(TyInt, TyBool))
   let s = uu_ok(lhs, rhs)
-  assert_eq(apply_subst(s, TyVar(0)), TyInt)
-  assert_eq(apply_subst(s, TyVar(1)), TyBool)
-  assert_eq(apply_subst(s, lhs), rhs)
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(1)), TyBool)
+  @test.assert_eq(apply_subst(s, lhs), rhs)
 }
 
 ///|
@@ -157,10 +160,10 @@ test "unify: occurs check rejects infinite type (symmetric)" {
 ///|
 /// `occurs` 直接断言：变量出现于函数类型为真，不出现于基本类型为假。
 test "occurs: detects presence and absence of a variable" {
-  assert_eq(occurs(0, TyFun(TyVar(0), TyInt)), true)
-  assert_eq(occurs(1, TyInt), false)
-  assert_eq(occurs(1, TyFun(TyVar(0), TyTuple([TyVar(1), TyInt]))), true)
-  assert_eq(occurs(2, TyFun(TyVar(0), TyTuple([TyVar(1), TyInt]))), false)
+  @test.assert_eq(occurs(0, TyFun(TyVar(0), TyInt)), true)
+  @test.assert_eq(occurs(1, TyInt), false)
+  @test.assert_eq(occurs(1, TyFun(TyVar(0), TyTuple([TyVar(1), TyInt]))), true)
+  @test.assert_eq(occurs(2, TyFun(TyVar(0), TyTuple([TyVar(1), TyInt]))), false)
 }
 
 // ---------------------------------------------------------------------------
@@ -171,8 +174,8 @@ test "occurs: detects presence and absence of a variable" {
 /// 逐元素合一：`(a, Bool) ~ (Int, b)` → a↦Int, b↦Bool。
 test "unify: tuple unifies element-wise" {
   let s = uu_ok(TyTuple([TyVar(0), TyBool]), TyTuple([TyInt, TyVar(1)]))
-  assert_eq(apply_subst(s, TyVar(0)), TyInt)
-  assert_eq(apply_subst(s, TyVar(1)), TyBool)
+  @test.assert_eq(apply_subst(s, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(s, TyVar(1)), TyBool)
 }
 
 ///|
@@ -196,7 +199,7 @@ test "unify: tuple element conflict is a TypeError" {
 ///|
 /// `apply_subst` 递归替换函数类型中两处同一变量。
 test "apply_subst: replaces all occurrences in a function type" {
-  assert_eq(
+  @test.assert_eq(
     apply_subst(subst_single(0, TyInt), TyFun(TyVar(0), TyVar(0))),
     TyFun(TyInt, TyInt),
   )
@@ -205,7 +208,7 @@ test "apply_subst: replaces all occurrences in a function type" {
 ///|
 /// `apply_subst` 对元组递归下降。
 test "apply_subst: descends into tuples" {
-  assert_eq(
+  @test.assert_eq(
     apply_subst(subst_single(1, TyBool), TyTuple([TyVar(1), TyInt, TyVar(2)])),
     TyTuple([TyBool, TyInt, TyVar(2)]),
   )
@@ -218,22 +221,22 @@ test "compose: behaves like sequential application" {
   let s2 = subst_single(0, TyVar(1))
   let s1 = subst_single(1, TyInt)
   let c = compose(s1, s2)
-  assert_eq(apply_subst(c, TyVar(0)), TyInt)
-  assert_eq(apply_subst(c, TyVar(1)), TyInt)
+  @test.assert_eq(apply_subst(c, TyVar(0)), TyInt)
+  @test.assert_eq(apply_subst(c, TyVar(1)), TyInt)
 }
 
 ///|
 /// `ftv` 收集函数 / 元组中的自由类型变量。
 test "ftv: collects free type variables" {
   let vs = ftv(TyFun(TyVar(0), TyTuple([TyVar(1), TyInt])))
-  assert_eq(vs.contains(0), true)
-  assert_eq(vs.contains(1), true)
-  assert_eq(vs.contains(2), false)
+  @test.assert_eq(vs.contains(0), true)
+  @test.assert_eq(vs.contains(1), true)
+  @test.assert_eq(vs.contains(2), false)
 }
 
 ///|
 /// `ftv` 对无变量的基本类型为空。
 test "ftv: empty for base types" {
-  assert_eq(ftv(TyInt).is_empty(), true)
-  assert_eq(ftv(TyBool).is_empty(), true)
+  @test.assert_eq(ftv(TyInt).is_empty(), true)
+  @test.assert_eq(ftv(TyBool).is_empty(), true)
 }

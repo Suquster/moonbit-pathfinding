@@ -49,7 +49,7 @@ pub fn build_ssa_minimal(
   let defsites : Map[String, Array[String]] = Map([]) // 变量名 → 定义块集合（去重、块序）
   let first_def : Map[String, Int] = Map([]) // 变量名 → 最小定义版本号
   for b in blocks {
-    if not(reachset.contains(b.label)) {
+    if !reachset.contains(b.label) {
       continue
     }
     let row : Array[Int] = []
@@ -61,7 +61,7 @@ pub fn build_ssa_minimal(
           next_id = next_id + 1
           row.push(id)
           let sites = defsites.get(name).unwrap_or([])
-          if not(array_contains_str(sites, b.label)) {
+          if !array_contains_str(sites, b.label) {
             sites.push(b.label)
           }
           defsites[name] = sites
@@ -98,9 +98,9 @@ pub fn build_ssa_minimal(
     while worklist.length() > 0 {
       let x = worklist.pop().unwrap()
       for y in df.get(x).unwrap_or([]) {
-        if not(has_phi.contains(y)) {
+        if !has_phi.contains(y) {
           has_phi[y] = true
-          if not(on_work.contains(y)) {
+          if !on_work.contains(y) {
             on_work[y] = true
             worklist.push(y)
           }
@@ -113,7 +113,7 @@ pub fn build_ssa_minimal(
   // ---- Phase C：分配 φ 目标版本号（块数组序、块内变量名升序）----
   let phi_at : Map[String, Array[(String, Int)]] = Map([]) // 块 → [(变量名, 目标版本号)]
   for b in blocks {
-    if not(reachset.contains(b.label)) {
+    if !reachset.contains(b.label) {
       continue
     }
     let row : Array[(String, Int)] = []
@@ -137,7 +137,7 @@ pub fn build_ssa_minimal(
   let phis : Array[Phi] = []
   let phi_args : Map[(String, String), Array[Var]] = Map([])
   for b in blocks {
-    if not(reachset.contains(b.label)) {
+    if !reachset.contains(b.label) {
       continue
     }
     match phi_at.get(b.label) {
@@ -220,7 +220,7 @@ pub fn build_ssa_minimal(
     pushed_at[label] = pushed
     // 3) 回填后继 φ 实参（本块作为前驱的每条边）。
     for s in b.succs {
-      if not(reachset.contains(s)) {
+      if !reachset.contains(s) {
         continue
       }
       match phi_at.get(s) {

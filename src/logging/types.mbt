@@ -29,7 +29,7 @@ pub(all) enum Level {
   Info
   Warn
   Error
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 返回级别的严重程度序数（Trace=0 … Error=4），用于阈值比较。
@@ -92,7 +92,7 @@ pub fn Level::from_label(s : String) -> Level? {
 /// 嵌套取值可任意层级容纳标量与进一步的 `VMap` / `VList`（Requirement 1.2）。
 ///
 /// **向后兼容契约（Requirement 12.1 / 12.4）**：既有四个标量变体的名称、载荷
-/// 与 `derive(Eq, Show)` 语义逐字保留；本次仅在其后**追加**两个变体，不改动、
+/// 与 `derive(Eq, Debug)` 语义逐字保留；本次仅在其后**追加**两个变体，不改动、
 /// 不重排、不重命名任何既有变体，故仅含标量字段事件的 `format_json` /
 /// `parse_json_log` 行为逐字节不变（嵌套臂仅在 logging.mbt 私有助手中追加）。
 ///
@@ -106,7 +106,7 @@ pub(all) enum Value {
   VFloat(Double)
   VMap(Map[String, Value]) // 新增：对象型嵌套取值（Requirement 1.1）
   VList(Array[Value]) // 新增：数组型嵌套取值（Requirement 1.1）
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 标识符类型 ─────────────────────────────────
 
@@ -117,7 +117,7 @@ pub(all) enum Value {
 /// `enter_span` 桩。三后端（wasm-gc / js / native）对 `Int64` 语义一致。
 pub(all) struct SpanId {
   value : Int64
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// trace 上下文标识（trace identifier）—— 一次逻辑请求/任务链路的根标识。
@@ -128,7 +128,7 @@ pub(all) struct SpanId {
 /// （详见 moon.pkg 中的依赖处理说明）。
 pub(all) struct TraceId {
   value : Int64
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ────────────────────────────── 事件与 span ──────────────────────────────
 
@@ -141,7 +141,7 @@ pub(all) struct Event {
   ts : Int64
   level : Level
   fields : Map[String, Value]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一条事件（便于测试与 `log` 内部复用）。
@@ -164,4 +164,4 @@ pub(all) struct Span {
   parent : SpanId?
   start : Int64
   end : Int64?
-} derive(Eq, Show)
+} derive(Eq, Debug)

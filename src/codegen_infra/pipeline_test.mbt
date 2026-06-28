@@ -35,7 +35,10 @@ test "run_to_fixpoint 收敛终止" {
   inspect(out.blocks[0].instrs[0], content="x#0 = 3")
   // 再施加一遍不再变化（幂等收敛）。
   let again = run_pipeline(out, [OptPass::ConstFold, OptPass::DeadCodeElim])
-  assert_eq(again.blocks[0].instrs.length(), out.blocks[0].instrs.length())
+  @test.assert_eq(
+    again.blocks[0].instrs.length(),
+    out.blocks[0].instrs.length(),
+  )
 }
 
 ///|

@@ -87,7 +87,7 @@ fn gen_cfg() -> @infra_pbt.Gen[Array[BasicBlock]] {
       let mut placed = false
       for off in 0..<i {
         let j = (start + off) % i
-        if succ[j].length() < 2 && not(t_contains_int(succ[j], i)) {
+        if succ[j].length() < 2 && !t_contains_int(succ[j], i) {
           succ[j].push(i)
           placed = true
           break
@@ -101,7 +101,7 @@ fn gen_cfg() -> @infra_pbt.Gen[Array[BasicBlock]] {
     while e < extra {
       let a = rng.next_below(n - 1)
       let b = rng.next_range(a + 1, n - 1)
-      if succ[a].length() < 2 && not(t_contains_int(succ[a], b)) {
+      if succ[a].length() < 2 && !t_contains_int(succ[a], b) {
         succ[a].push(b)
       }
       e = e + 1
@@ -158,7 +158,7 @@ fn reachable_avoiding(
       return true
     }
     for s in sm.get(cur).unwrap_or([]) {
-      if s != blocked && not(seen.contains(s)) {
+      if s != blocked && !seen.contains(s) {
         seen[s] = true
         queue.push(s)
       }
@@ -182,7 +182,7 @@ fn reference_dominates(
   if d == entry {
     return true
   }
-  not(reachable_avoiding(blocks, entry, n, d))
+  !reachable_avoiding(blocks, entry, n, d)
 }
 
 ///|
@@ -216,12 +216,6 @@ fn gen_ir_node(rng : @infra_pbt.Rng, depth : Int) -> IrNode {
     let op = cfg_op_pool[rng.next_below(cfg_op_pool.length())]
     IrNode::BinOp(op, gen_ir_node(rng, depth - 1), gen_ir_node(rng, depth - 1))
   }
-}
-
-///|
-/// 随机 IR 树生成器（深度上界 `max_depth`）。
-fn gen_ir(max_depth : Int) -> @infra_pbt.Gen[IrNode] {
-  @infra_pbt.Gen::new(fn(rng) { gen_ir_node(rng, max_depth) })
 }
 
 ///|
@@ -427,9 +421,9 @@ fn t_iterated_df(
   while worklist.length() > 0 {
     let x = worklist.pop().unwrap()
     for y in df.get(x).unwrap_or([]) {
-      if not(has_phi.contains(y)) {
+      if !has_phi.contains(y) {
         has_phi[y] = true
-        if not(on_work.contains(y)) {
+        if !on_work.contains(y) {
           on_work[y] = true
           worklist.push(y)
         }
@@ -447,7 +441,7 @@ fn t_def_blocks(
 ) -> Map[String, Array[String]] {
   let m : Map[String, Array[String]] = Map([])
   for b in blocks {
-    if not(reach.contains(b.label)) {
+    if !reach.contains(b.label) {
       continue
     }
     for instr in b.instrs {
@@ -455,7 +449,7 @@ fn t_def_blocks(
       if toks.length() >= 2 && toks[1] == "=" {
         let name = toks[0]
         let lst = m.get(name).unwrap_or([])
-        if not(t_contains_str(lst, b.label)) {
+        if !t_contains_str(lst, b.label) {
           lst.push(b.label)
         }
         m[name] = lst
@@ -668,7 +662,7 @@ fn t_coloring_respects(
 ///|
 /// 分配是否覆盖图全部节点、每节点恰一个 Location。
 fn t_alloc_covers(g : InterferenceGraph, alloc : Map[Var, Location]) -> Bool {
-  if alloc.size() != g.nodes.length() {
+  if alloc.length() != g.nodes.length() {
     return false
   }
   for v in g.nodes {

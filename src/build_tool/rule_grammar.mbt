@@ -25,7 +25,7 @@
 /// 构建命令（recipe）：不透明命令文本行，保留原始文本以算动作指纹（R1.2）。
 pub(all) struct Recipe {
   lines : Array[String]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 已展开变量 / 模式后的具体规则（目标 + 依赖 + 可选 recipe）。
@@ -33,7 +33,7 @@ pub(all) struct Rule {
   target : String
   deps : Array[String]
   recipe : Recipe
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 模式规则（pattern rule），如 `%.o: %.c`；'%' 捕获词干 stem 并在实例化时
@@ -42,7 +42,7 @@ pub(all) struct PatternRule {
   target_pattern : String
   dep_patterns : Array[String]
   recipe : Recipe
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整规则文法的解析结果（富模型）。
@@ -56,7 +56,7 @@ pub(all) struct RuleSet {
   pattern_rules : Array[PatternRule]
   variables : Map[String, String]
   phony : Array[String]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 旗舰列号级解析诊断（旁路新增，不改既有 `ParseError`）。
@@ -67,7 +67,13 @@ pub(all) struct GrammarError {
   pos : @parser_combinator.Pos
   expected : Array[String]
   message : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// 公开错误类型的 `Show` 委托其 `Debug` 结构化表示（与历史 `derive` 输出一致）。
+pub impl Show for GrammarError with fn output(self, logger) {
+  logger.write_string(@debug.to_string(self))
+}
 
 ///|
 /// 投影回既有 `ParseError`（`line` 取 `pos.line`，列号内嵌 `message`），保后向

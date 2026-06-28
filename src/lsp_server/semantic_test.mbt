@@ -12,7 +12,7 @@
 //   * `SignatureInfo` 派生 Eq+Show，`Array[Int]` 有 Show → 直接 `assert_eq`。
 //   * `Range` 仅派生 Eq（无 Show）→ 以 Int 字段（line/character，有 Show）逐项见证。
 //   * 源码禁止裸美元-花括号引用前缀（部分后端报错）：需要引用文本时以
-//     `Char::from_int(36)`（'$'）拼接构造，避免在字面量中直接书写。
+//     `Int::unsafe_to_char(36)`（'$'）拼接构造，避免在字面量中直接书写。
 
 // ───────────────────────── signatureHelp（5.7） ───────────────────────
 
@@ -23,7 +23,7 @@ test "signature_help on a definition yields 'name = value'" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "k = 1\n" }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 0 })
-  assert_eq(sig, Some({ label: "k = 1" }))
+  @test.assert_eq(sig, Some({ label: "k = 1" }))
 }
 
 ///|
@@ -33,7 +33,7 @@ test "signature_help off any symbol yields None" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "k = 1\n" }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 4 })
-  assert_eq(sig, None)
+  @test.assert_eq(sig, None)
 }
 
 ///|
@@ -41,24 +41,24 @@ test "signature_help off any symbol yields None" {
 /// 文档 "k = 1\nv = ${k}\n"：第 1 行引用 ${k} 范围为 [4,8)，pos=(1,5) 落在其内，
 /// 键 k 已定义为 1，故签名为 "k = 1"。
 test "signature_help on a reference to a defined key yields its definition" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "k = 1\nv = " + dollar + "{k}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 1, character: 5 })
-  assert_eq(sig, Some({ label: "k = 1" }))
+  @test.assert_eq(sig, Some({ label: "k = 1" }))
 }
 
 ///|
 /// pos 落在引用上、但其定义不存在 → 仅返回引用名 "name"。
 /// 文档 "v = ${x}\n"：第 0 行引用 ${x} 范围为 [4,8)，键 x 未定义，签名为 "x"。
 test "signature_help on a reference to an undefined key yields just the name" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "v = " + dollar + "{x}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 5 })
-  assert_eq(sig, Some({ label: "x" }))
+  @test.assert_eq(sig, Some({ label: "x" }))
 }
 
 // ───────────────────────── semanticTokens（5.7） ──────────────────────
@@ -73,7 +73,7 @@ test "semantic_tokens encodes two symbol rows with delta line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\nb = 2\n" }
   let a = analyze(doc)
   let tokens = semantic_tokens(a)
-  assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0])
+  @test.assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0])
 }
 
 ///|
@@ -84,12 +84,12 @@ test "semantic_tokens encodes two symbol rows with delta line" {
 ///   * ${k} 引用：line1 char4 len4 type1 → 同行 deltaLine=0、deltaStart=4 → [0,4,4,1,0]。
 /// 合并为 [0,0,1,0,0, 1,0,1,0,0, 0,4,4,1,0]。
 test "semantic_tokens encodes a reference token with type 1 and same-line delta" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "k = 1\nv = " + dollar + "{k}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let tokens = semantic_tokens(a)
-  assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 4, 4, 1, 0])
+  @test.assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 4, 4, 1, 0])
 }
 
 ///|
@@ -97,7 +97,7 @@ test "semantic_tokens encodes a reference token with type 1 and same-line delta"
 test "semantic_tokens on empty document yields empty array" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "" }
   let a = analyze(doc)
-  assert_eq(semantic_tokens(a), [])
+  @test.assert_eq(semantic_tokens(a), [])
 }
 
 // ───────────────────────── foldingRange（5.7） ────────────────────────
@@ -112,13 +112,13 @@ test "folding_ranges folds a block of contiguous content lines" {
     text: "a = 1\nb = 2\nc = 3\n",
   }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 1)
+  @test.assert_eq(ranges.length(), 1)
   // Range 无 Show：以 Int 字段逐项见证 [ (0,0), (2,5) )。
   let r = ranges[0]
-  assert_eq(r.start.line, 0)
-  assert_eq(r.start.character, 0)
-  assert_eq(r.end.line, 2)
-  assert_eq(r.end.character, 5)
+  @test.assert_eq(r.start.line, 0)
+  @test.assert_eq(r.start.character, 0)
+  @test.assert_eq(r.end.line, 2)
+  @test.assert_eq(r.end.character, 5)
 }
 
 ///|
@@ -126,7 +126,7 @@ test "folding_ranges folds a block of contiguous content lines" {
 test "folding_ranges yields nothing for a single content line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\n" }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 0)
+  @test.assert_eq(ranges.length(), 0)
 }
 
 ///|
@@ -135,5 +135,5 @@ test "folding_ranges yields nothing for a single content line" {
 test "folding_ranges does not fold blocks broken by a blank line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\n\nb = 2\n" }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 0)
+  @test.assert_eq(ranges.length(), 0)
 }

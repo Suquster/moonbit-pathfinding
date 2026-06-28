@@ -18,7 +18,7 @@ test "ask returns Replied when the target fulfills the correlation id (witness)"
   )
   let result = ask(sys, broker, target, fn(id) { id.value }, 5)
   match result {
-    Replied(v) => assert_eq(v, 10) // 第一个关联 id 为 1 → resp = 10。
+    Replied(v) => @test.assert_eq(v, 10) // 第一个关联 id 为 1 → resp = 10。
     Timeout => fail("expected Replied")
   }
 }
@@ -52,8 +52,8 @@ test "consecutive asks use distinct correlation ids (witness)" {
   let r2 = ask(sys, broker, target, fn(id) { id.value }, 5)
   match (r1, r2) {
     (Replied(a), Replied(b)) => {
-      assert_eq(a, 100) // id 1
-      assert_eq(b, 200) // id 2
+      @test.assert_eq(a, 100) // id 1
+      @test.assert_eq(b, 200) // id 2
     }
     _ => fail("expected two Replied results")
   }

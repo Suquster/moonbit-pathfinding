@@ -39,7 +39,7 @@ test "bidirectional dijkstra on a simple chain" {
   )
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
       inspect(cost, content="6")
     }
     None => fail("expected a path")
@@ -63,7 +63,7 @@ test "bidirectional dijkstra picks the cheaper of two routes" {
   )
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
       inspect(cost, content="6")
     }
     None => fail("expected a path")
@@ -81,7 +81,7 @@ test "bidirectional dijkstra start equals goal" {
   )
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     None => fail("expected trivial path")
@@ -151,10 +151,10 @@ test "bidirectional dijkstra agrees with dijkstra on a grid" {
   let uni = dijkstra(0, succ, fn(n) { n == goal_node })
   match (bi, uni) {
     (Some((bi_path, bi_cost)), Some((uni_path, uni_cost))) => {
-      assert_eq(bi_cost, uni_cost)
-      assert_eq(bi_path.length(), uni_path.length())
-      assert_eq(bi_path[0], 0)
-      assert_eq(bi_path[bi_path.length() - 1], goal_node)
+      @test.assert_eq(bi_cost, uni_cost)
+      @test.assert_eq(bi_path.length(), uni_path.length())
+      @test.assert_eq(bi_path[0], 0)
+      @test.assert_eq(bi_path[bi_path.length() - 1], goal_node)
     }
     _ => fail("both searches should find a path")
   }

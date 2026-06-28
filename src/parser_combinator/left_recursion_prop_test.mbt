@@ -47,20 +47,20 @@ test "left_recursive fails at start without base case and consumes nothing" {
   // "x"：无数字，基础情形在起点失败。
   match lr.run_packrat_string("x") {
     Fail(pos, expected~) => {
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected.length() > 0)
     }
     Ok(_, _) => fail("expected failure on non-operand input")
   }
   // 空输入：同样在起点失败。
   match lr.run_packrat_string("") {
-    Fail(pos, ..) => assert_eq(pos.offset, 0)
+    Fail(pos, ..) => @test.assert_eq(pos.offset, 0)
     Ok(_, _) => fail("expected failure on empty input")
   }
   // 单操作数：退化为基础情形，成功且消费该操作数。
   match lr.run_packrat_string("42") {
     Ok(v, rest) => {
-      assert_eq(v, 42)
+      @test.assert_eq(v, 42)
       assert_true(rest.is_eof())
     }
     Fail(_, ..) => fail("expected single-operand success")

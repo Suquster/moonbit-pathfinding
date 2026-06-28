@@ -78,8 +78,8 @@ test "recover synchronizes past sync point after a committed failure" {
   // "(x,abc"：硬失败后扫描到 ','（offset 2）之后，以 '?' 续解，剩余停在 'a'。
   match r.run_packrat_string("(x,abc") {
     Ok(v, rest) => {
-      assert_eq(v, '?')
-      assert_eq(rest.pos.offset, 3)
+      @test.assert_eq(v, '?')
+      @test.assert_eq(rest.pos.offset, 3)
       assert_true(rest.peek() == Some('a'))
     }
     Fail(_, ..) => fail("expected recovery to succeed with fallback")

@@ -25,7 +25,7 @@ fn st_coherent(rng : @infra_pbt.Rng) -> Bool {
   if sample_trace(0.0, trace, seed) {
     return false
   }
-  if not(sample_trace(1.0, trace, seed)) {
+  if !sample_trace(1.0, trace, seed) {
     return false
   }
   true
@@ -46,7 +46,7 @@ test "sample_trace is constant per trace (witness)" {
   let trace : TraceId = { value: 123456789L }
   let seed = 42UL
   let d = sample_trace(0.5, trace, seed)
-  assert_eq(sample_trace(0.5, trace, seed), d) // 同一 trace 恒定
+  @test.assert_eq(sample_trace(0.5, trace, seed), d) // 同一 trace 恒定
   assert_false(sample_trace(0.0, trace, seed)) // 全弃
   assert_true(sample_trace(1.0, trace, seed)) // 全采
 }

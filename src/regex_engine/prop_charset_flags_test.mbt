@@ -112,9 +112,9 @@ test "Feature: regex-engine, Property 9: predefined classes and flags CharSet se
     let m2 = word.contains(c) == ref_is_word(c)
     let m3 = space.contains(c) == ref_is_space(c)
     // 否定类恒为精确补集。
-    let m4 = non_digit.contains(c) == not(digit.contains(c))
-    let m5 = non_word.contains(c) == not(word.contains(c))
-    let m6 = non_space.contains(c) == not(space.contains(c))
+    let m4 = non_digit.contains(c) == !digit.contains(c)
+    let m5 = non_word.contains(c) == !word.contains(c)
+    let m6 = non_space.contains(c) == !space.contains(c)
     // 点号：dotall 关时不含 '\n'（10），开时含全部 [0, MAX_CODE]。
     let m7 = dot_off.contains(c) == (c != 10)
     let m8 = dot_on.contains(c) == true

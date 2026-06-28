@@ -13,7 +13,7 @@
 /// 核心类型与游标：Input 推进 / 行列计算 / EOF 语义不变。
 test "compat: Input cursor and Pos semantics unchanged" {
   let input = Input::from_string("a\nb")
-  assert_eq(input.pos.offset, 0)
+  @test.assert_eq(input.pos.offset, 0)
   inspect(input.pos, content="1:1")
   let after = input.advance().advance()
   inspect(after.pos, content="2:1")
@@ -35,7 +35,7 @@ test "compat: primitives unchanged" {
   // 失败定位不变
   match pchar('x').parse_string("abc") {
     Fail(pos, expected~) => {
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'x'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -70,7 +70,7 @@ test "compat: alt success path and same-position aggregation unchanged" {
   match alt([pchar('a'), pchar('b')]).parse_string("zzz") {
     Fail(pos, expected~) => {
       inspect(pos, content="1:1")
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'a'", "'b'"])
     }
     Ok(_, _) => fail("expected failure")

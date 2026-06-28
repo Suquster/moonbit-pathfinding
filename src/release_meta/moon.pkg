@@ -11,3 +11,7 @@
 //   * 本包只承载「纯数据模型 + 纯函数」，不依赖任何方向子包，也不进入运行时
 //     产物，避免引入耦合；
 //   * 各方向独立 SemVer 与 changelog 结构的约定见 release_meta.mbt 顶部说明。
+
+import {
+  "moonbitlang/core/test",
+} for "test"

@@ -51,7 +51,7 @@ fn p17_stash_order(rng : @infra_pbt.Rng) -> Bool {
   // 回流：暂存序列置于原邮箱消息之前。
   stash.drain_to_front(mailbox)
   // 回流后暂存缓冲清空。
-  if not(stash.is_empty()) {
+  if !stash.is_empty() {
     return false
   }
   // 期望出队顺序：stashed ++ original。

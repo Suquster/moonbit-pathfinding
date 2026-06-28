@@ -48,4 +48,5 @@ import {
 // （`for "test"`），不进入运行时产物，符合 infra_pbt「横切测试期共享约定」定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"

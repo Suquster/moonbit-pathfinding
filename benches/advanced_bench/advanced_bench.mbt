@@ -563,7 +563,7 @@ test "smoke: advanced benchmark produces four well-formed cases (tiny)" {
   let (report_json, evidence_json) = run_advanced_benchmark(4, 6, 12, 3, 10)
   match @infra_bench.parse_report(report_json) {
     Ok(r) => {
-      assert_eq(r.cases.length(), 4)
+      @test.assert_eq(r.cases.length(), 4)
       for c in r.cases {
         // 采样数 ≥10、查询数 ≥10、原始样本数 ≥10（R5.3/R8.4）。
         assert_true(c.stats.sample_count >= 10)
@@ -572,7 +572,7 @@ test "smoke: advanced benchmark produces four well-formed cases (tiny)" {
       }
     }
     Err(e) => {
-      println("parse_report failed: " + e.to_string())
+      println("parse_report failed: " + @debug.to_string(e))
       assert_true(false)
     }
   }

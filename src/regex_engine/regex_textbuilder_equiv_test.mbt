@@ -11,43 +11,43 @@
 //   * minimize.mbt —— `accept_signature` / 细化签名键。
 //
 // 断言策略：`String` 直接用 `assert_eq`（具 Show）；`Match` / `Match?` 等未
-// 必 derive(Show) 的类型用 `assert_true(a == b)`（Eq）。所有期望值为改造前
+// 必 derive(Debug) 的类型用 `assert_true(a == b)`（Eq）。所有期望值为改造前
 // 逐段 `+` 拼接的逐字符等价结果（手工固化为黄金串）。
 
 ///|
 /// print_regex：Concat / Alt 循环改造后逐字符等价（黄金串）。
 test "textbuilder equiv: print_regex concat/alt" {
   // Concat 多元：逐段追加结果与 `acc + acc` 一致。
-  assert_eq(print_regex(Concat([Char('a'), Char('b'), Char('c')])), "abc")
+  @test.assert_eq(print_regex(Concat([Char('a'), Char('b'), Char('c')])), "abc")
   // Alt 多分支：以 `|` 分隔。
-  assert_eq(print_regex(Alt([Char('a'), Char('b'), Char('c')])), "a|b|c")
+  @test.assert_eq(print_regex(Alt([Char('a'), Char('b'), Char('c')])), "a|b|c")
   // 嵌套：分组 + 量词 + 拼接组合。
-  assert_eq(
+  @test.assert_eq(
     print_regex(Concat([Char('a'), Star(Group(Alt([Char('b'), Char('c')])))])),
     "a(b|c)*",
   )
   // 空 Concat / 单元素退化形态。
-  assert_eq(print_regex(Concat([])), "")
-  assert_eq(print_regex(Concat([Char('z')])), "z")
+  @test.assert_eq(print_regex(Concat([])), "")
+  @test.assert_eq(print_regex(Concat([Char('z')])), "z")
 }
 
 ///|
 /// print_class：字符类区间循环改造后逐字符等价（黄金串）。
 test "textbuilder equiv: print_class loop" {
   // 单点 + 区间混合。
-  assert_eq(
+  @test.assert_eq(
     print_regex(
       Class({ negated: false, items: [Single('a'), Range('b', 'd')] }),
     ),
     "[ab-d]",
   )
   // 取反字符类。
-  assert_eq(
+  @test.assert_eq(
     print_regex(Class({ negated: true, items: [Single('x'), Single('y')] })),
     "[^xy]",
   )
   // 类内特殊字符转义（] 与 - 与 \）。
-  assert_eq(
+  @test.assert_eq(
     print_regex(Class({ negated: false, items: [Single(']'), Single('-')] })),
     "[\\]\\-]",
   )
@@ -56,12 +56,15 @@ test "textbuilder equiv: print_class loop" {
 ///|
 /// print_ast：Concat / Alt 循环与字符集合打印改造后逐字符等价（黄金串）。
 test "textbuilder equiv: print_ast concat/alt/set" {
-  assert_eq(print_ast(Concat([Lit('a'), Lit('b'), Lit('c')])), "abc")
-  assert_eq(print_ast(Alt([Lit('a'), Lit('b')])), "a|b")
+  @test.assert_eq(print_ast(Concat([Lit('a'), Lit('b'), Lit('c')])), "abc")
+  @test.assert_eq(print_ast(Alt([Lit('a'), Lit('b')])), "a|b")
   // 单区间单点集合 → 字面字符。
-  assert_eq(print_ast(Set({ intervals: [(97, 97)] })), "a")
+  @test.assert_eq(print_ast(Set({ intervals: [(97, 97)] })), "a")
   // 多区间集合 → `[...]`，单点与区间混合。
-  assert_eq(print_ast(Set({ intervals: [(97, 97), (98, 100)] })), "[ab-d]")
+  @test.assert_eq(
+    print_ast(Set({ intervals: [(97, 97), (98, 100)] })),
+    "[ab-d]",
+  )
 }
 
 ///|
@@ -69,12 +72,12 @@ test "textbuilder equiv: print_ast concat/alt/set" {
 /// 逐字符累积改造后等价。
 test "textbuilder equiv: read_group_name via parse_pattern" {
   match parse_pattern("(?<word>abc)") {
-    Ok(ast) => assert_eq(print_ast(ast), "(?<word>abc)")
+    Ok(ast) => @test.assert_eq(print_ast(ast), "(?<word>abc)")
     Err(_) => assert_true(false)
   }
   // 多字符 + 数字 + 下划线组名。
   match parse_pattern("(?<g_1>x)") {
-    Ok(ast) => assert_eq(print_ast(ast), "(?<g_1>x)")
+    Ok(ast) => @test.assert_eq(print_ast(ast), "(?<g_1>x)")
     Err(_) => assert_true(false)
   }
 }
@@ -90,9 +93,9 @@ test "textbuilder equiv: replace_all / slice / expand" {
     }
   }
   // 逐个匹配替换：非匹配前缀（slice_chars）+ 替换文本（expand_repl）交错。
-  assert_eq(a.replace_all("banana", "X"), "bXnXnX")
+  @test.assert_eq(a.replace_all("banana", "X"), "bXnXnX")
   // 末尾残余非匹配片段。
-  assert_eq(a.replace_all("aXb", "_"), "_Xb")
+  @test.assert_eq(a.replace_all("aXb", "_"), "_Xb")
 
   // 捕获组引用 $1 $2 与交换。
   let pair = match Pattern::compile("(a)(b)") {
@@ -102,9 +105,9 @@ test "textbuilder equiv: replace_all / slice / expand" {
       return
     }
   }
-  assert_eq(pair.replace_all("ab", "$2$1"), "ba")
+  @test.assert_eq(pair.replace_all("ab", "$2$1"), "ba")
   // 字面 $$ 与编号组混用。
-  assert_eq(pair.replace("ab", "$$$1"), "$a")
+  @test.assert_eq(pair.replace("ab", "$$$1"), "$a")
 
   // ${name} 命名引用（expand_repl 内层组名累积亦走 TextBuilder）。
   let named = match Pattern::compile("(?<x>a)") {
@@ -114,7 +117,7 @@ test "textbuilder equiv: replace_all / slice / expand" {
       return
     }
   }
-  assert_eq(named.replace_all("a", "[${x}]"), "[a]")
+  @test.assert_eq(named.replace_all("a", "[${x}]"), "[a]")
 
   // split：以匹配为分隔切分（slice_chars 路径）。
   let comma = match Pattern::compile(",") {

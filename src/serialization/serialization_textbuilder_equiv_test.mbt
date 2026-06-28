@@ -27,7 +27,7 @@
 /// `gen_moonbit`（骨架代码生成）输出与改造前逐字符相等（黄金值）。
 ///
 /// 验证 `out = out + ...` → `TextBuilder` 改造后输出不变（含 repeated →
-/// `Array[元素类型]` 的映射与 `derive(Eq, Show)` 收尾）。
+/// `Array[元素类型]` 的映射与 `derive(Eq, Debug)` 收尾）。
 test "gen_moonbit output is byte-identical to pre-refactor (golden)" {
   let schema : Schema = {
     messages: [
@@ -45,8 +45,8 @@ test "gen_moonbit output is byte-identical to pre-refactor (golden)" {
     "\npub struct M {\n" +
     "  i : Int\n" +
     "  tags : Array[String]\n" +
-    "} derive(Eq, Show)\n"
-  assert_eq(gen_moonbit(schema), expected)
+    "} derive(Eq, Debug)\n"
+  @test.assert_eq(gen_moonbit(schema), expected)
 }
 
 ///|
@@ -73,12 +73,12 @@ test "gen_moonbit_full output is byte-identical to pre-refactor (golden)" {
     "\npub struct T {\n" +
     "  i : Int\n" +
     "  tags : Array[String]\n" +
-    "} derive(Eq, Show)\n" +
+    "} derive(Eq, Debug)\n" +
     "\npub fn T_encode(schema : ProtoSchema, msg : TypedMessage) -> Result[Bytes, DecodeError] {\n" +
     "  encode_typed(schema, \"T\", msg)\n}\n" +
     "\npub fn T_decode(schema : ProtoSchema, bytes : Bytes) -> Result[TypedMessage, DecodeError] {\n" +
     "  decode_typed(schema, \"T\", bytes)\n}\n"
-  assert_eq(gen_moonbit_full(schema), expected)
+  @test.assert_eq(gen_moonbit_full(schema), expected)
 }
 
 ///|
@@ -105,7 +105,7 @@ test "print_proto output is byte-identical to pre-refactor (golden)" {
     "  string name = 1;\n" +
     "  int32 id = 2;\n" +
     "}\n"
-  assert_eq(print_proto(schema), expected)
+  @test.assert_eq(print_proto(schema), expected)
 }
 
 ///|
@@ -161,7 +161,7 @@ test "print_proto round-trip is idempotent on complex schema" {
     }
   }
   let printed2 = print_proto(schema2)
-  assert_eq(printed1, printed2)
+  @test.assert_eq(printed1, printed2)
 }
 
 ///|
@@ -181,11 +181,11 @@ test "parse_proto accumulates identifiers and numbers correctly" {
       return
     }
   }
-  assert_eq(schema.messages.length(), 1)
-  assert_eq(schema.messages[0].name, "LongMessageName123")
-  assert_eq(schema.messages[0].fields.length(), 1)
-  assert_eq(schema.messages[0].fields[0].name, "field_with_underscore")
-  assert_eq(schema.messages[0].fields[0].number, 42)
+  @test.assert_eq(schema.messages.length(), 1)
+  @test.assert_eq(schema.messages[0].name, "LongMessageName123")
+  @test.assert_eq(schema.messages[0].fields.length(), 1)
+  @test.assert_eq(schema.messages[0].fields[0].name, "field_with_underscore")
+  @test.assert_eq(schema.messages[0].fields[0].number, 42)
 }
 
 ///|
@@ -226,7 +226,7 @@ test "encode_json comma-join is byte-identical to pre-refactor (golden)" {
   }
   let msg = TypedMessage::new().set(1, TStringV("x")).set(2, TStringV("y"))
   match encode_json(schema, "M", msg) {
-    Ok(s) => assert_eq(s, "{\"a\":\"x\",\"b\":\"y\"}")
+    Ok(s) => @test.assert_eq(s, "{\"a\":\"x\",\"b\":\"y\"}")
     Err(e) => fail("JSON 编码不应失败：\{e}")
   }
 }

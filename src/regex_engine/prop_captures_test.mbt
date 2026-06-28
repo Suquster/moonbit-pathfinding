@@ -134,7 +134,7 @@ fn cap_check(caps : Captures, spec : CapSpec) -> Bool {
   while g <= spec.total {
     match caps.group(g) {
       Some(m) =>
-        if not(m.start >= g0.start && m.end <= g0.end && m.start <= m.end) {
+        if !(m.start >= g0.start && m.end <= g0.end && m.start <= m.end) {
           return false
         }
       None => () // 未参与匹配 → 未设置（合法，R1.5）。
@@ -189,7 +189,7 @@ test "capture correctness representative witnesses" {
           assert_true(c.group(0) == Some({ start: 0, end: 3 }))
           assert_true(c.group(1) == Some({ start: 0, end: 1 }))
           assert_true(c.group(2) == Some({ start: 2, end: 3 }))
-          assert_eq(c.group_count(), 3)
+          @test.assert_eq(c.group_count(), 3)
         }
         None => fail("expected match for (a)(?:b)(c)")
       }

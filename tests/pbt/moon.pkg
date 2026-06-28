@@ -15,4 +15,5 @@ import {
   "Suquster/moonbit-pathfinding/src/proofs",
   "Suquster/moonbit-pathfinding/src/undirected" @und,
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
+  "moonbitlang/core/test",
 }

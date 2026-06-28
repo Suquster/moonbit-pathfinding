@@ -42,21 +42,21 @@ pub struct RpcDef {
   output_type : String
   client_stream : Bool
   server_stream : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一个 service 定义：服务名 + 有序 RPC 列表。
 pub struct ServiceDef {
   name : String
   rpcs : Array[RpcDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一条 `import` 声明：被导入文件路径 + 是否为 `import public`。
 pub struct ImportDecl {
   path : String
   public : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一个完整 `.proto` 文件模型（文件级，旁路于既有 `ProtoSchema`）。
@@ -70,7 +70,7 @@ pub struct ProtoFile {
   imports : Array[ImportDecl]
   schema : ProtoSchema
   services : Array[ServiceDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ─────────────────────────────── 解析（文件级） ────────────────────────────
 
@@ -460,26 +460,26 @@ test "parse_proto_file 解析 service 样例冒烟" {
       return
     }
   }
-  assert_eq(file.package_name, "demo.api")
-  assert_eq(file.imports.length(), 2)
-  assert_eq(file.imports[0], { path: "common.proto", public: false })
-  assert_eq(file.imports[1], { path: "types.proto", public: true })
-  assert_eq(file.schema.messages.length(), 2)
-  assert_eq(file.services.length(), 1)
+  @test.assert_eq(file.package_name, "demo.api")
+  @test.assert_eq(file.imports.length(), 2)
+  @test.assert_eq(file.imports[0], { path: "common.proto", public: false })
+  @test.assert_eq(file.imports[1], { path: "types.proto", public: true })
+  @test.assert_eq(file.schema.messages.length(), 2)
+  @test.assert_eq(file.services.length(), 1)
   let svc = file.services[0]
-  assert_eq(svc.name, "Greeter")
-  assert_eq(svc.rpcs.length(), 3)
-  assert_eq(svc.rpcs[0], {
+  @test.assert_eq(svc.name, "Greeter")
+  @test.assert_eq(svc.rpcs.length(), 3)
+  @test.assert_eq(svc.rpcs[0], {
     name: "Unary",
     input_type: "Req",
     output_type: "Resp",
     client_stream: false,
     server_stream: false,
   })
-  assert_eq(svc.rpcs[1].client_stream, true)
-  assert_eq(svc.rpcs[1].server_stream, false)
-  assert_eq(svc.rpcs[2].client_stream, true)
-  assert_eq(svc.rpcs[2].server_stream, true)
+  @test.assert_eq(svc.rpcs[1].client_stream, true)
+  @test.assert_eq(svc.rpcs[1].server_stream, false)
+  @test.assert_eq(svc.rpcs[2].client_stream, true)
+  @test.assert_eq(svc.rpcs[2].server_stream, true)
 }
 
 ///|
@@ -510,7 +510,7 @@ test "print_proto_file 与 parse_proto_file 往返冒烟" {
       return
     }
   }
-  assert_eq(reparsed, file)
+  @test.assert_eq(reparsed, file)
 }
 
 ///|
@@ -525,7 +525,7 @@ test "parse_proto_file 非法语法报告位置冒烟" {
     Ok(_) => fail("非法语法本应解析失败")
     Err(e) => {
       // 错误应定位到第 3 行（rpc 行），且 message 含 'returns'。
-      assert_eq(e.line, 3)
+      @test.assert_eq(e.line, 3)
       assert_true(e.message.contains("returns"))
     }
   }

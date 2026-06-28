@@ -22,7 +22,7 @@ test "search find_all enumerates non-overlapping matches" {
   match Pattern::compile("a") {
     Ok(p) => {
       let ms = p.find_all("banana")
-      assert_eq(ms.length(), 3)
+      @test.assert_eq(ms.length(), 3)
       assert_true(ms[0] == { start: 1, end: 2 })
       assert_true(ms[1] == { start: 3, end: 4 })
       assert_true(ms[2] == { start: 5, end: 6 })
@@ -37,7 +37,7 @@ test "search find_all multi-char token" {
   match Pattern::compile("ab") {
     Ok(p) => {
       let ms = p.find_all("ababxab")
-      assert_eq(ms.length(), 3)
+      @test.assert_eq(ms.length(), 3)
       assert_true(ms[0] == { start: 0, end: 2 })
       assert_true(ms[1] == { start: 2, end: 4 })
       assert_true(ms[2] == { start: 5, end: 7 })
@@ -81,11 +81,11 @@ test "search captures numbered and named groups" {
           assert_true(caps.group(2) == caps.name("host"))
           // 切片等于实际匹配子串。
           match caps.name("user") {
-            Some(m) => assert_eq(st_slice("bob@host", m), "bob")
+            Some(m) => @test.assert_eq(st_slice("bob@host", m), "bob")
             None => fail("user group unset")
           }
           match caps.name("host") {
-            Some(m) => assert_eq(st_slice("bob@host", m), "host")
+            Some(m) => @test.assert_eq(st_slice("bob@host", m), "host")
             None => fail("host group unset")
           }
           // 未知名称返回 None。
@@ -120,7 +120,7 @@ test "search captures unset group returns None" {
 /// replace：仅替换首个匹配（R8.5）。
 test "search replace first match only" {
   match Pattern::compile("a") {
-    Ok(p) => assert_eq(p.replace("banana", "X"), "bXnana")
+    Ok(p) => @test.assert_eq(p.replace("banana", "X"), "bXnana")
     Err(_) => fail("compile failed for a")
   }
 }
@@ -129,7 +129,7 @@ test "search replace first match only" {
 /// replace_all：替换全部不重叠匹配（R8.5）。
 test "search replace_all every match" {
   match Pattern::compile("a") {
-    Ok(p) => assert_eq(p.replace_all("banana", "X"), "bXnXnX")
+    Ok(p) => @test.assert_eq(p.replace_all("banana", "X"), "bXnXnX")
     Err(_) => fail("compile failed for a")
   }
 }
@@ -140,9 +140,9 @@ test "search replace_all numbered group references" {
   match Pattern::compile("(a)(b)") {
     Ok(p) => {
       // 交换两组。
-      assert_eq(p.replace_all("abab", "$2$1"), "baba")
+      @test.assert_eq(p.replace_all("abab", "$2$1"), "baba")
       // 字面 '$'。
-      assert_eq(p.replace_all("ab", "$$"), "$")
+      @test.assert_eq(p.replace_all("ab", "$$"), "$")
     }
     Err(_) => fail("compile failed for (a)(b)")
   }
@@ -152,7 +152,7 @@ test "search replace_all numbered group references" {
 /// replace_all：命名组引用 `${name}`（R8.6）。
 test "search replace_all named group references" {
   match Pattern::compile("(?<x>a)(?<y>b)") {
-    Ok(p) => assert_eq(p.replace_all("ab", "${y}-${x}"), "b-a")
+    Ok(p) => @test.assert_eq(p.replace_all("ab", "${y}-${x}"), "b-a")
     Err(_) => fail("compile failed for named groups")
   }
 }
@@ -163,10 +163,10 @@ test "search split on separator" {
   match Pattern::compile(",") {
     Ok(p) => {
       let parts = p.split("a,b,c")
-      assert_eq(parts.length(), 3)
-      assert_eq(parts[0], "a")
-      assert_eq(parts[1], "b")
-      assert_eq(parts[2], "c")
+      @test.assert_eq(parts.length(), 3)
+      @test.assert_eq(parts[0], "a")
+      @test.assert_eq(parts[1], "b")
+      @test.assert_eq(parts[2], "c")
     }
     Err(_) => fail("compile failed for ,")
   }
@@ -179,14 +179,14 @@ test "search split edge cases" {
     Ok(p) => {
       // 无匹配：返回整串。
       let whole = p.split("abc")
-      assert_eq(whole.length(), 1)
-      assert_eq(whole[0], "abc")
+      @test.assert_eq(whole.length(), 1)
+      @test.assert_eq(whole[0], "abc")
       // 前导/尾随分隔符产生空串片段。
       let parts = p.split(",a,")
-      assert_eq(parts.length(), 3)
-      assert_eq(parts[0], "")
-      assert_eq(parts[1], "a")
-      assert_eq(parts[2], "")
+      @test.assert_eq(parts.length(), 3)
+      @test.assert_eq(parts[0], "")
+      @test.assert_eq(parts[1], "a")
+      @test.assert_eq(parts[2], "")
     }
     Err(_) => fail("compile failed for ,")
   }

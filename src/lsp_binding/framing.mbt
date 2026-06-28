@@ -324,7 +324,7 @@ pub fn decode_framed(bytes : Bytes) -> Result[JsonRpcMessage, RpcError] {
 /// 状态）。`push` 追加字节并返回新读取器；`next` 切出下一条完整消息。
 pub struct FrameReader {
   buf : Bytes
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造空读取器。

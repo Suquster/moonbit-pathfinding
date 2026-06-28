@@ -33,12 +33,12 @@ fn is_valid_key(key : String) -> Bool {
   if kc.length() == 0 {
     return false
   }
-  if not(is_ident_start(kc[0])) {
+  if !is_ident_start(kc[0]) {
     return false
   }
   let mut i = 1
   while i < kc.length() {
-    if not(is_ident_part(kc[i])) {
+    if !is_ident_part(kc[i]) {
       return false
     }
     i = i + 1
@@ -90,7 +90,7 @@ pub fn formatting(doc : TextDocument) -> Array[TextEdit] {
     }
     // key = '=' 左侧 trim；非法键行不动。
     let key = trim_ws(chars_slice(cs, 0, eq))
-    if not(is_valid_key(key)) {
+    if !is_valid_key(key) {
       continue
     }
     // value = '=' 右侧 trim（内部空白原样保留，仅去首尾）。

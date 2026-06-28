@@ -329,8 +329,8 @@ test "Feature: championship-v1-upgrade, Property 10: CH/ALT vs Dijkstra chain an
     let alt_r = alt_query(lm, 0, t, succ)
     match (dj, ch_r, alt_r) {
       (Some((_, d)), Some((_, c)), Some((_, a))) => {
-        assert_eq(c, d)
-        assert_eq(a, d)
+        @test.assert_eq(c, d)
+        @test.assert_eq(a, d)
       }
       (None, None, None) => assert_true(true)
       _ => assert_true(false)

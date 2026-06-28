@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/logging"
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -100,12 +101,12 @@ pub(all) struct DemoOutcome {
   logfmt_lines : Array[String]
   traceparent : String
   span_count : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct EnvFilter {
   directives : Map[String, Level]
   fallback : Level
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn EnvFilter::allows(Self, Event) -> Bool
 pub fn EnvFilter::threshold_for(Self, String) -> Level
 
@@ -113,28 +114,24 @@ pub(all) struct Event {
   ts : Int64
   level : Level
   fields : Map[String, Value]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Event::new(Int64, Level, Map[String, Value]) -> Self
 
 pub(all) struct FilterError {
   pos : Int
   message : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Formatter {
   Json
   Logfmt
   Pretty
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Histogram {
   boundaries : Array[Double]
   buckets : Array[Int]
-} derive(Eq, Show)
-
-type JVal
-
-type JsonReader
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Level {
   Trace
@@ -142,13 +139,11 @@ pub(all) enum Level {
   Info
   Warn
   Error
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Level::from_label(String) -> Self?
 pub fn Level::is_enabled(Self, Self) -> Bool
 pub fn Level::label(Self) -> String
 pub fn Level::rank(Self) -> Int
-
-type Logger
 
 pub(all) struct RateLimiter {
   window : Int64
@@ -197,7 +192,7 @@ pub(all) struct Span {
   parent : SpanId?
   start : Int64
   end : Int64?
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SpanData {
   span : Span
@@ -205,7 +200,7 @@ pub(all) struct SpanData {
   mut events : Array[SpanEvent]
   mut status : SpanStatus
   mut kind : SpanKind
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn SpanData::add_event(Self, String, Int64, Map[String, Value]) -> Unit
 pub fn SpanData::new(Span) -> Self
 pub fn SpanData::set_attribute(Self, String, Value) -> Unit
@@ -216,11 +211,11 @@ pub(all) struct SpanEvent {
   name : String
   ts : Int64
   fields : Map[String, Value]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SpanId {
   value : Int64
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum SpanKind {
   Internal
@@ -228,22 +223,22 @@ pub(all) enum SpanKind {
   Client
   Producer
   Consumer
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum SpanStatus {
   Unset
   Ok
   Error
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TraceContext {
   trace : TraceId
   span : SpanId?
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TraceId {
   value : Int64
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Value {
   VStr(String)
@@ -252,7 +247,7 @@ pub(all) enum Value {
   VFloat(Double)
   VMap(Map[String, Value])
   VList(Array[Value])
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Value::depth(Self) -> Int
 pub fn Value::is_nested(Self) -> Bool
 pub fn Value::is_scalar(Self) -> Bool
@@ -261,7 +256,7 @@ pub(all) struct W3CContext {
   trace_id : String
   span_id : String
   flags : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn W3CContext::is_sampled(Self) -> Bool
 pub fn W3CContext::to_trace_context(Self) -> TraceContext
 

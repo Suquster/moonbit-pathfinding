@@ -20,7 +20,7 @@ pub(all) enum Json {
   JStr(String)
   JArr(Array[Json])
   JObj(Array[(String, Json)])
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 在有序键值对中按 key 查找首个匹配项；不存在返回 `None`。
@@ -65,7 +65,7 @@ fn text_to_bytes(s : String) -> Bytes {
 
 ///|
 /// 解析游标：不可变字符序列 + 可变偏移。
-struct JParser {
+priv struct JParser {
   chars : Array[Char]
   mut pos : Int
 }

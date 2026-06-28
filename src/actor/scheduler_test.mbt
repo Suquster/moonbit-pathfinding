@@ -22,8 +22,8 @@ test "scheduler processes a single actor's messages in fifo order" {
   a.send(2)
   a.send(3)
   sched.run_until_idle()
-  assert_eq(sched.state_of(a), Some([1, 2, 3]))
-  assert_eq(sched.pending(a), 0)
+  @test.assert_eq(sched.state_of(a), Some([1, 2, 3]))
+  @test.assert_eq(sched.pending(a), 0)
   assert_true(sched.is_running(a))
 }
 
@@ -36,15 +36,15 @@ test "scheduler step processes exactly one message per call" {
   let a = sched.spawn(0, fn(s, m) { Updated(s + m) })
   a.send(10)
   a.send(20)
-  assert_eq(sched.pending(a), 2)
+  @test.assert_eq(sched.pending(a), 2)
   let did1 = sched.step()
   assert_true(did1)
-  assert_eq(sched.pending(a), 1)
-  assert_eq(sched.state_of(a), Some(10))
+  @test.assert_eq(sched.pending(a), 1)
+  @test.assert_eq(sched.state_of(a), Some(10))
   let did2 = sched.step()
   assert_true(did2)
-  assert_eq(sched.pending(a), 0)
-  assert_eq(sched.state_of(a), Some(30))
+  @test.assert_eq(sched.pending(a), 0)
+  @test.assert_eq(sched.state_of(a), Some(30))
   // 邮箱已空：再 step 为空闲。
   assert_false(sched.step())
 }
@@ -89,16 +89,16 @@ test "uncaught error terminates the actor, notifies supervisor, isolates others"
   good.send(8)
   sched.run_until_idle()
   // 失败 actor 被隔离终止。
-  assert_eq(sched.status_of(bad), Some(Failed("negative:-1")))
-  assert_eq(sched.state_of(bad), Some(5))
-  assert_eq(sched.pending(bad), 0)
+  @test.assert_eq(sched.status_of(bad), Some(Failed("negative:-1")))
+  @test.assert_eq(sched.state_of(bad), Some(5))
+  @test.assert_eq(sched.pending(bad), 0)
   assert_false(sched.is_running(bad))
   // supervisor 恰好收到一次通知，且携带正确的 actor id 与错误描述。
-  assert_eq(notices.length(), 1)
-  assert_eq(notices[0], (bad.id.value, "negative:-1"))
+  @test.assert_eq(notices.length(), 1)
+  @test.assert_eq(notices[0], (bad.id.value, "negative:-1"))
   // 其他 actor 不受影响，完整处理其全部消息。
   assert_true(sched.is_running(good))
-  assert_eq(sched.state_of(good), Some(15))
+  @test.assert_eq(sched.state_of(good), Some(15))
 }
 
 // ─────────────────────── stop 语义（10.7） ──────────────────────────────
@@ -113,13 +113,13 @@ test "stop halts the message loop after the current message" {
   a.send(3)
   // 处理完「当前消息」1。
   let _ = sched.step()
-  assert_eq(sched.state_of(a), Some(1))
+  @test.assert_eq(sched.state_of(a), Some(1))
   // 请求停止：2、3 不应再被处理。
   a.stop()
   sched.run_until_idle()
-  assert_eq(sched.status_of(a), Some(Stopped))
-  assert_eq(sched.state_of(a), Some(1))
-  assert_eq(sched.pending(a), 0)
+  @test.assert_eq(sched.status_of(a), Some(Stopped))
+  @test.assert_eq(sched.state_of(a), Some(1))
+  @test.assert_eq(sched.pending(a), 0)
 }
 
 ///|
@@ -139,6 +139,6 @@ test "scheduler advances multiple actors preserving per-actor fifo" {
   a.send(2)
   b.send(20)
   sched.run_until_idle()
-  assert_eq(sched.state_of(a), Some([1, 2]))
-  assert_eq(sched.state_of(b), Some([10, 20]))
+  @test.assert_eq(sched.state_of(a), Some([1, 2]))
+  @test.assert_eq(sched.state_of(b), Some([10, 20]))
 }

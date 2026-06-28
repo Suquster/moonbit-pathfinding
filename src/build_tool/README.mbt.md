@@ -55,10 +55,10 @@ test "README · parse_rules 解析规则为构建图" {
   match parse_rules(src) {
     Ok(g) => {
       // 节点：app、main.o、util.o、common.h —— common.h 仅登记一次（去重）
-      assert_eq(g.nodes.length(), 4)
+      @test.assert_eq(g.nodes.length(), 4)
       assert_true(g.nodes[0] == Target::new("app"))
       // 边：(main.o→app)、(util.o→app)、(common.h→main.o)、(common.h→util.o)
-      assert_eq(g.edges.length(), 4)
+      @test.assert_eq(g.edges.length(), 4)
       let (dep0, tgt0) = g.edges[0]
       assert_true(dep0 == Target::new("main.o"))
       assert_true(tgt0 == Target::new("app"))
@@ -86,16 +86,16 @@ test "README · schedule 分层产出并行批次" {
       // jobs=4：并行度足够，宽层不切分
       let batches = schedule(g, 4)
       // 三个批次：[common.h] → [main.o, util.o] → [app]
-      assert_eq(batches.length(), 3)
+      @test.assert_eq(batches.length(), 3)
       // 第一批只有无依赖的 common.h
-      assert_eq(batches[0].length(), 1)
+      @test.assert_eq(batches[0].length(), 1)
       assert_true(batches[0][0] == Target::new("common.h"))
       // 第二批 main.o 与 util.o 相互无依赖，可并行构建
-      assert_eq(batches[1].length(), 2)
+      @test.assert_eq(batches[1].length(), 2)
       assert_true(batches[1][0] == Target::new("main.o"))
       assert_true(batches[1][1] == Target::new("util.o"))
       // 最后构建顶层产物 app
-      assert_eq(batches[2].length(), 1)
+      @test.assert_eq(batches[2].length(), 1)
       assert_true(batches[2][0] == Target::new("app"))
     }
     Err(_) => fail("合法规则不应解析失败")
@@ -118,10 +118,10 @@ test "README · schedule 按 jobs 上限切分宽层" {
   ]
   // 五个相互无依赖目标，无边；并行度上限 2 → 2 + 2 + 1 三批
   let batches = schedule(BuildGraph::new(nodes, []), 2)
-  assert_eq(batches.length(), 3)
-  assert_eq(batches[0].length(), 2)
-  assert_eq(batches[1].length(), 2)
-  assert_eq(batches[2].length(), 1)
+  @test.assert_eq(batches.length(), 3)
+  @test.assert_eq(batches[0].length(), 2)
+  @test.assert_eq(batches[1].length(), 2)
+  @test.assert_eq(batches[2].length(), 1)
 }
 ```
 
@@ -168,13 +168,13 @@ test "README · detect_cycle 报告依赖环并拒绝拓扑排序" {
     Ok(g) => {
       // 检出依赖环：返回构成环的两个目标
       match detect_cycle(g) {
-        Some(cycle_nodes) => assert_eq(cycle_nodes.length(), 2)
+        Some(cycle_nodes) => @test.assert_eq(cycle_nodes.length(), 2)
         None => fail("应检出 a↔b 依赖环")
       }
       // 有环图不应给出拓扑序，而是返回含环节点序列的 Cycle
       match topo_order(g) {
         Ok(_) => fail("有环图不应给出拓扑序")
-        Err(cycle) => assert_eq(cycle.nodes.length(), 2)
+        Err(cycle) => @test.assert_eq(cycle.nodes.length(), 2)
       }
     }
     Err(_) => fail("合法规则不应解析失败")
@@ -277,7 +277,7 @@ test "README · 最小重建集只含单源传递下游" {
   let g = demo_graph()
   // 仅 util_a.c 变化 → 下游 util_a.o → libutil.a → app
   let set = minimal_rebuild_set(g, [Target::new("util_a.c")])
-  assert_eq(set.length(), 4)
+  @test.assert_eq(set.length(), 4)
   // 相对 10 个全量目标显著缩减
   assert_true(set.length() < g.nodes.length())
 }
@@ -296,8 +296,8 @@ len(schedule(g, 0))`。
 test "README · 关键路径长度等于不限并行批次层数" {
   let g = demo_graph()
   // 最长链：源 → *.o → 库 → app（4 个节点）
-  assert_eq(critical_path_length(g), 4)
-  assert_eq(critical_path_length(g), schedule(g, 0).length())
+  @test.assert_eq(critical_path_length(g), 4)
+  @test.assert_eq(critical_path_length(g), schedule(g, 0).length())
 }
 ```
 
@@ -336,13 +336,16 @@ test "README · 端到端 demo 解析-环检测-调度-增量" {
   match parse_rules(demo_rules()) {
     Ok(g) => {
       // 10 个目标：app / 两个库 / 三个 .o / 三个源 / 共享头
-      assert_eq(g.nodes.length(), 10)
+      @test.assert_eq(g.nodes.length(), 10)
       // 工程图无依赖环
       assert_true(detect_cycle(g) is None)
       // 调度为 4 层：源 → .o → 库 → app
-      assert_eq(schedule(g, 0).length(), 4)
+      @test.assert_eq(schedule(g, 0).length(), 4)
       // 单源变更增量：仅 4 个目标重建
-      assert_eq(minimal_rebuild_set(g, [Target::new("core_a.c")]).length(), 4)
+      @test.assert_eq(
+        minimal_rebuild_set(g, [Target::new("core_a.c")]).length(),
+        4,
+      )
     }
     Err(_) => fail("demo 规则不应解析失败")
   }

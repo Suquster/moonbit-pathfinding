@@ -79,8 +79,8 @@ test "lex illegal char reports line and column" {
   match lex("a @ b") {
     Err(d) => {
       assert_true(d.kind == LexError)
-      assert_eq(d.line, 1)
-      assert_eq(d.col, 3)
+      @test.assert_eq(d.line, 1)
+      @test.assert_eq(d.col, 3)
     }
     Ok(_) => fail("期望词法错误")
   }
@@ -92,8 +92,8 @@ test "lex illegal char tracks newlines" {
   match lex("12\n#") {
     Err(d) => {
       assert_true(d.kind == LexError)
-      assert_eq(d.line, 2)
-      assert_eq(d.col, 1)
+      @test.assert_eq(d.line, 2)
+      @test.assert_eq(d.col, 1)
     }
     Ok(_) => fail("期望词法错误")
   }
@@ -272,56 +272,56 @@ fn run_int(s : String) -> Int {
 ///|
 /// 整数字面量求值。
 test "eval literal yields int value" {
-  assert_eq(run_int("7"), 7)
+  @test.assert_eq(run_int("7"), 7)
 }
 
 ///|
 /// 算术求值遵循优先级与结合性：1 + 2 * 3 = 7。
 test "eval respects precedence" {
-  assert_eq(run_int("1 + 2 * 3"), 7)
+  @test.assert_eq(run_int("1 + 2 * 3"), 7)
 }
 
 ///|
 /// 减法左结合：10 - 3 - 2 = 5。
 test "eval left-associative subtraction" {
-  assert_eq(run_int("10 - 3 - 2"), 5)
+  @test.assert_eq(run_int("10 - 3 - 2"), 5)
 }
 
 ///|
 /// 括号改变求值范围：(1 + 2) * 3 = 9。
 test "eval parentheses change grouping" {
-  assert_eq(run_int("(1 + 2) * 3"), 9)
+  @test.assert_eq(run_int("(1 + 2) * 3"), 9)
 }
 
 ///|
 /// 整数截断除法：7 / 2 = 3。
 test "eval integer truncating division" {
-  assert_eq(run_int("7 / 2"), 3)
+  @test.assert_eq(run_int("7 / 2"), 3)
 }
 
 ///|
 /// let 绑定与变量查找：let x = 2 in x * x = 4。
 test "eval let binding and variable lookup" {
-  assert_eq(run_int("let x = 2 in x * x"), 4)
+  @test.assert_eq(run_int("let x = 2 in x * x"), 4)
 }
 
 ///|
 /// 嵌套 let 与内层遮蔽：let x = 1 in let x = 10 in x + 1 = 11。
 test "eval nested let shadows outer binding" {
-  assert_eq(run_int("let x = 1 in let x = 10 in x + 1"), 11)
+  @test.assert_eq(run_int("let x = 1 in let x = 10 in x + 1"), 11)
 }
 
 ///|
 /// 被绑定表达式可引用外层绑定：let x = 3 in let y = x + 1 in x * y = 12。
 test "eval inner binding sees outer scope" {
-  assert_eq(run_int("let x = 3 in let y = x + 1 in x * y"), 12)
+  @test.assert_eq(run_int("let x = 3 in let y = x + 1 in x * y"), 12)
 }
 
 ///|
 /// 除零定义为 0（MiniLet 语义规范，保证全函数与三后端一致）。
 test "eval division by zero is defined as zero" {
-  assert_eq(run_int("1 / 0"), 0)
-  assert_eq(run_int("(5 + 5) / (3 - 3)"), 0)
+  @test.assert_eq(run_int("1 / 0"), 0)
+  @test.assert_eq(run_int("(5 + 5) / (3 - 3)"), 0)
 }
 
 ///|
@@ -341,7 +341,7 @@ test "eval is deterministic" {
 /// compile 桩锁定签名并返回空产物（骨架级）。
 test "compile stub returns empty bytes" {
   match check(Int(1)) {
-    Ok(t) => assert_eq(compile(t, Wasm).length(), 0)
+    Ok(t) => @test.assert_eq(compile(t, Wasm).length(), 0)
     Err(_) => fail("check 意外失败")
   }
 }

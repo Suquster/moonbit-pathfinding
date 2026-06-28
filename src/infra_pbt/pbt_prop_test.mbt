@@ -89,9 +89,9 @@ test "Feature: moonbit-infra-suite, Property 1.2c: holds_for_all default iterati
     true
   })
   assert_true(ok)
-  assert_eq(default_iters, 100)
-  assert_eq(calls[0], 100)
-  assert_eq(calls[0], default_iters)
+  @test.assert_eq(default_iters, 100)
+  @test.assert_eq(calls[0], 100)
+  @test.assert_eq(calls[0], default_iters)
 }
 
 ///|
@@ -109,7 +109,7 @@ test "Feature: moonbit-infra-suite, Property 1.2c': holds_for_all respects expli
     },
     iters=37,
   )
-  assert_eq(calls[0], 37)
+  @test.assert_eq(calls[0], 37)
 }
 
 ///|

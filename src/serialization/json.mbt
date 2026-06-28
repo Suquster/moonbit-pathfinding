@@ -134,7 +134,7 @@ fn snake_to_camel(s : String) -> String {
     } else if up {
       let ci = c.to_int()
       let uc = if ci >= 'a'.to_int() && ci <= 'z'.to_int() {
-        Char::from_int(ci - 32)
+        Int::unsafe_to_char(ci - 32)
       } else {
         c
       }
@@ -174,15 +174,6 @@ fn json_escape(s : String) -> String {
   }
   out.push('"')
   String::from_array(out)
-}
-
-///|
-/// 某 proto 类型是否为 64 位整型（JSON 表示为字符串）。
-fn proto_is_64bit(t : ProtoType) -> Bool {
-  match t {
-    PInt64 | PUInt64 | PSInt64 | PFixed64 | PSFixed64 => true
-    _ => false
-  }
 }
 
 // ─────────────────────────────── JSON 编码 ─────────────────────────────────
@@ -389,7 +380,7 @@ fn json_parse_u64(s : String) -> UInt64? {
     if c < '0' || c > '9' {
       return None
     }
-    v = v * 10UL + (c.to_int() - '0'.to_int()).to_uint().to_uint64()
+    v = v * 10UL + (c.to_int() - '0'.to_int()).reinterpret_as_uint().to_uint64()
     idx = idx + 1
   }
   Some(v)
@@ -455,7 +446,7 @@ fn decode_json_value(
       }
     PFloat =>
       match j {
-        @parser_combinator.JNumber(d) => Ok(TFloatV(d.to_float()))
+        @parser_combinator.JNumber(d) => Ok(TFloatV(Float::from_double(d)))
         _ => Err(json_type_error())
       }
     PDouble =>
@@ -582,7 +573,7 @@ fn decode_json_message(
               _ =>
                 match decode_json_value(schema, f.ptype, jv) {
                   Ok(tv) =>
-                    if not(proto_is_scalar(f.ptype) && typed_is_default(tv)) {
+                    if !(proto_is_scalar(f.ptype) && typed_is_default(tv)) {
                       fields[f.number] = tv
                     }
                   Err(er) => return Err(er)

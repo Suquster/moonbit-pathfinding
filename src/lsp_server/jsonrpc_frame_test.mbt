@@ -4,7 +4,7 @@
 // Content-Length 非法报错、内容不足报错，以及合法 / 非法 JSON-RPC 结构校验。
 //
 // 注：统一用 `assert_true(a == b)`（仅依赖 `Eq`），规避 `assert_eq` 经由
-// `derive(Show)` 触发的弃用告警，保证本测试文件 `moon check` 零告警。
+// `derive(Debug)` 触发的弃用告警，保证本测试文件 `moon check` 零告警。
 
 ///|
 /// encode/decode 往返：解码 `encode_frame(body)` 还原 body，rest 为空串

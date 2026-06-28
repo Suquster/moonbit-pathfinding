@@ -298,30 +298,33 @@ fn render_actor_bench_artifact() -> String {
 /// Smoke guard：高频 send 串行消费全部消息，trace 长度等于投递条数。
 test "smoke: high-frequency send drains all messages serially" {
   let processed = run_send_workload()
-  assert_eq(processed, send_workload_msgs)
+  @test.assert_eq(processed, send_workload_msgs)
 }
 
 ///|
 /// Smoke guard：海量 actor 调度处理全部消息（trace 长度 = actor 数 × 每 actor 条数）。
 test "smoke: massive actor scheduling processes every message" {
   let processed = run_massive_scheduling_workload()
-  assert_eq(processed, massive_actor_count * massive_msgs_per_actor)
+  @test.assert_eq(processed, massive_actor_count * massive_msgs_per_actor)
 }
 
 ///|
 /// Smoke guard：ask 往返每次都命中 `Replied`（应答 actor 总在预算内回填）。
 test "smoke: ask round-trip replies within budget" {
   let replied = run_ask_roundtrip_workload()
-  assert_eq(replied, ask_roundtrip_count)
+  @test.assert_eq(replied, ask_roundtrip_count)
 }
 
 ///|
 /// Smoke guard：三种路由策略均处理消息且不丢失。RoundRobin / ConsistentHash 每条
 /// 消息命中一个 worker（trace == msgs）；Broadcast 复制到全部 worker（trace == msgs × workers）。
 test "smoke: router dispatch delivers under all strategies" {
-  assert_eq(run_router_workload(@actor.RoundRobin), router_dispatch_msgs)
-  assert_eq(run_router_workload(@actor.ConsistentHash), router_dispatch_msgs)
-  assert_eq(
+  @test.assert_eq(run_router_workload(@actor.RoundRobin), router_dispatch_msgs)
+  @test.assert_eq(
+    run_router_workload(@actor.ConsistentHash),
+    router_dispatch_msgs,
+  )
+  @test.assert_eq(
     run_router_workload(@actor.Broadcast),
     router_dispatch_msgs * router_worker_count,
   )
@@ -331,7 +334,7 @@ test "smoke: router dispatch delivers under all strategies" {
 /// Smoke guard：监督重启在单点注入失败后仍完成全部可完成任务（注入的失败任务不计入完成）。
 test "smoke: supervision restart completes all completable tasks" {
   let completed = run_supervision_restart_workload()
-  assert_eq(completed, supervision_task_count - 1)
+  @test.assert_eq(completed, supervision_task_count - 1)
 }
 
 ///|
@@ -644,15 +647,15 @@ test "guard: regression verdict and audit report are deterministic on synthetic 
     measured_us: 150.0,
     tolerance_ratio: 0.50,
   })
-  assert_eq(within.allowed_us, 150.0)
-  assert_eq(within.regressed, false)
+  @test.assert_eq(within.allowed_us, 150.0)
+  @test.assert_eq(within.regressed, false)
   let over = evaluate_guard_sample({
     workload: "w",
     baseline_us: 100.0,
     measured_us: 151.0,
     tolerance_ratio: 0.50,
   })
-  assert_eq(over.regressed, true)
+  @test.assert_eq(over.regressed, true)
 
   // 一组合成样本：第三类（ask）注入回归，其余在容差内 → 报告 status=FAIL。
   let samples : Array[GuardSample] = [
@@ -688,7 +691,7 @@ test "guard: regression verdict and audit report are deterministic on synthetic 
     },
   ]
   let (failed, report) = render_guard_report(samples)
-  assert_eq(failed, true)
+  @test.assert_eq(failed, true)
   assert_true(report.contains("status: FAIL"))
   // 回归行：allowed=800×1.5=1200，delta=(2000-800)/800=150%，判 REGRESSED。
   assert_true(
@@ -717,7 +720,7 @@ test "guard: regression verdict and audit report are deterministic on synthetic 
     },
   ]
   let (ok_failed, ok_report) = render_guard_report(healthy)
-  assert_eq(ok_failed, false)
+  @test.assert_eq(ok_failed, false)
   assert_true(ok_report.contains("status: PASS"))
 }
 

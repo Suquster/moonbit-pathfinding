@@ -29,8 +29,8 @@
 > **关于代码围栏**：可执行代码块均以 ` ```mbt check ` 开头，这是 MoonBit toolchain
 > 识别可运行代码块的标记；块首的 `///|` 是 top-level marker，用于声明一个独立条目。
 >
-> **关于保留字 `method`**：`JsonRpcMessage` 的 `method~` 为带标签字段，构造与
-> 解构时统一使用标签形式（`method=...` / `method~`），避免与保留字冲突。
+> **关于保留字 `method_name`**：`JsonRpcMessage` 的 `method_name~` 为带标签字段，构造与
+> 解构时统一使用标签形式（`method_name=...` / `method_name~`），避免与保留字冲突。
 >
 > **关于黑盒枚举构造**：跨包枚举须用限定形式（`@lsp_binding.JStr(...)`、
 > `@lsp_binding.Request(...)`、`@lsp_binding.IdNum(...)` 等）；本包公开枚举
@@ -154,10 +154,10 @@ fn jfield(json : @lsp_binding.Json, key : String) -> @lsp_binding.Json? {
 ///|
 /// 运行期构造 `${name}`（由字符码拼接 '$' '{' '}'，避免源码字面 `${`）。
 fn dollar_ref(name : String) -> String {
-  Char::from_int(0x24).to_string() +
-  Char::from_int(0x7B).to_string() +
+  Int::unsafe_to_char(0x24).to_string() +
+  Int::unsafe_to_char(0x7B).to_string() +
   name +
-  Char::from_int(0x7D).to_string()
+  Int::unsafe_to_char(0x7D).to_string()
 }
 ```
 
@@ -170,7 +170,7 @@ fn dollar_ref(name : String) -> String {
 1. 用 `@lsp_binding.decode_message` 把字节报文解码为 `JsonRpcMessage::Request`；
 2. 在 `@lsp_binding.Router` 上注册 `initialize` 能力处理器（内部调用本包
    `on_initialize` 并经 `capabilities_to_json` 序列化能力声明），用
-   `@lsp_binding.dispatch` 按 `method` 分发得到响应；
+   `@lsp_binding.dispatch` 按 `method_name` 分发得到响应；
 3. 用 `@lsp_binding.encode_message` 把响应编码回字节。
 
 ```mbt check
@@ -204,7 +204,8 @@ test "README · 解码 initialize 请求并分发、编码响应" {
   }
   // 确认解码为 method=initialize 的请求。
   match msg {
-    @lsp_binding.Request(method~, ..) => assert_eq(method, "initialize")
+    @lsp_binding.Request(method_name~, ..) =>
+      @test.assert_eq(method_name, "initialize")
     _ => fail("期望解码为 Request")
   }
 
@@ -244,8 +245,8 @@ test "README · 解码 didChange 通知并发布诊断" {
   }
   // 从通知 params 中取出文档 uri 与正文。
   let (uri, text) = match msg {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/didChange")
+    @lsp_binding.Notification(method_name~, params~) => {
+      @test.assert_eq(method_name, "textDocument/didChange")
       let td = match jfield(params, "textDocument") {
         Some(j) => j
         None => fail("缺少 textDocument 字段")
@@ -265,15 +266,18 @@ test "README · 解码 didChange 通知并发布诊断" {
 
   // 2) 重分析文档，产出诊断（首行缺 '=' → 一条 Error 诊断）。
   let diags = on_did_change({ uri, text })
-  assert_eq(diags.length(), 1)
+  @test.assert_eq(diags.length(), 1)
   assert_true(diags[0].severity == Error)
-  assert_eq(diags[0].message, "缺少 '='：期望形如 key = value 的赋值")
+  @test.assert_eq(
+    diags[0].message,
+    "缺少 '='：期望形如 key = value 的赋值",
+  )
 
   // 3) 据诊断构造 publishDiagnostics 通知（服务端主动下发）。
   let publish = publish_diagnostics_notification(uri, diags)
   match publish {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      @test.assert_eq(method_name, "textDocument/publishDiagnostics")
       // params 携带 uri 与 diagnostics 两个字段。
       assert_true(jfield(params, "uri") == Some(@lsp_binding.JStr(uri)))
       assert_true(jfield(params, "diagnostics") != None)
@@ -297,17 +301,17 @@ test "README · 解码 didChange 通知并发布诊断" {
 test "README · 非法消息返回规范错误码" {
   // 非法 JSON → 解析错误 -32700。
   match @lsp_binding.decode_message(to_bytes("{ not json ")) {
-    Err(e) => assert_eq(e.code, @lsp_binding.parse_error_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.parse_error_code)
     Ok(_) => fail("期望解析错误")
   }
   // 合法 JSON 但缺 jsonrpc 字段 → 非法请求 -32600。
   match @lsp_binding.decode_message(to_bytes("{\"id\":1,\"method\":\"x\"}")) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_request_code)
     Ok(_) => fail("期望非法请求错误")
   }
   // 错误码即标准值，进程未被终止（可继续后续处理）。
-  assert_eq(@lsp_binding.parse_error_code, -32700)
-  assert_eq(@lsp_binding.invalid_request_code, -32600)
+  @test.assert_eq(@lsp_binding.parse_error_code, -32700)
+  @test.assert_eq(@lsp_binding.invalid_request_code, -32600)
 }
 ```
 
@@ -315,7 +319,7 @@ test "README · 非法消息返回规范错误码" {
 
 ## 示例 4 · 分发未知方法 → 合成规范错误响应 → 编码
 
-`dispatch` 对**请求**中未登记的 `method` 会合成一条规范的「方法未找到」错误
+`dispatch` 对**请求**中未登记的 `method_name` 会合成一条规范的「方法未找到」错误
 响应（`method_not_found_code` = -32601），交由调用方编码下发（**R5.2 / R5.3**）。
 
 ```mbt check
@@ -338,7 +342,7 @@ test "README · 未知方法分发合成 method-not-found 错误响应" {
   match resp {
     @lsp_binding.Response(error~, ..) =>
       match error {
-        Some(e) => assert_eq(e.code, @lsp_binding.method_not_found_code)
+        Some(e) => @test.assert_eq(e.code, @lsp_binding.method_not_found_code)
         None => fail("期望响应携带 error 对象")
       }
     _ => fail("期望一条 Response")
@@ -368,7 +372,7 @@ test "README · 生命周期会话状态机" {
   // 1) initialize 请求 → Initializing，回携带 capabilities 的成功响应。
   let init = @lsp_binding.Request(
     id=@lsp_binding.IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=@lsp_binding.JObj([
       (
         "capabilities",
@@ -384,7 +388,7 @@ test "README · 生命周期会话状态机" {
   assert_true(s1.state() == Initializing)
   match reply1 {
     Some(@lsp_binding.Response(id~, error~, ..)) => {
-      assert_eq(id, @lsp_binding.IdNum(1))
+      @test.assert_eq(id, @lsp_binding.IdNum(1))
       assert_true(error == None)
     }
     _ => fail("期望 initialize 成功响应")
@@ -392,7 +396,10 @@ test "README · 生命周期会话状态机" {
 
   // 2) initialized 通知 → Initialized（通知无应答）。
   let (s2, reply2) = s1.handle(
-    @lsp_binding.Notification(method="initialized", params=@lsp_binding.JNull),
+    @lsp_binding.Notification(
+      method_name="initialized",
+      params=@lsp_binding.JNull,
+    ),
   )
   assert_true(s2.state() == Initialized)
   assert_true(reply2 == None)
@@ -401,7 +408,7 @@ test "README · 生命周期会话状态机" {
   let (s3, reply3) = s2.handle(
     @lsp_binding.Request(
       id=@lsp_binding.IdNum(2),
-      method="shutdown",
+      method_name="shutdown",
       params=@lsp_binding.JNull,
     ),
   )
@@ -415,20 +422,20 @@ test "README · 生命周期会话状态机" {
   // 4) exit（经纯状态转移 step；已 shutdown → 退出码 0）。
   let exit = step(s3.state(), true, EvExit, @lsp_binding.IdNull)
   assert_true(exit.state == Exited)
-  assert_eq(exit.exit_code, Some(0))
+  @test.assert_eq(exit.exit_code, Some(0))
 
   // 健全性：未初始化时收到非 initialize 请求 → invalid_request_code，状态不变。
   let bad = step(
     Uninitialized,
     false,
-    EvRequest(method="textDocument/hover"),
+    EvRequest(method_name="textDocument/hover"),
     @lsp_binding.IdNum(9),
   )
   assert_true(bad.state == Uninitialized)
   match bad.reply {
     Some(@lsp_binding.Response(error~, ..)) =>
       match error {
-        Some(e) => assert_eq(e.code, @lsp_binding.invalid_request_code)
+        Some(e) => @test.assert_eq(e.code, @lsp_binding.invalid_request_code)
         None => fail("期望 error 对象")
       }
     _ => fail("期望一条错误响应")
@@ -458,9 +465,9 @@ test "README · 能力协商取客户端声明子集" {
   assert_true(caps.rename_provider)
   assert_true(caps.document_symbol_provider)
   // 未声明的能力不予声明。
-  assert_true(not(caps.hover_provider))
-  assert_true(not(caps.formatting_provider))
-  assert_true(not(caps.semantic_tokens_provider))
+  assert_true(!caps.hover_provider)
+  assert_true(!caps.formatting_provider)
+  assert_true(!caps.semantic_tokens_provider)
 
   // 空声明 → 不声明任何能力。
   let none_caps = negotiate(InitializeParamsExt::empty())
@@ -485,12 +492,12 @@ test "README · 位置编码协商与坐标换算" {
   assert_true(negotiate_encoding([Utf8, Utf32]) == Utf8)
 
   // 文本 "a😀b"（emoji 由码位 0x1F600 运行期构造，避免源码字面）。
-  let text = "a" + Char::from_int(0x1F600).to_string() + "b"
+  let text = "a" + Int::unsafe_to_char(0x1F600).to_string() + "b"
 
   // 单码位码元数：BMP 外字符在 UTF-16 计 2、UTF-8 计 4、UTF-32 计 1。
-  assert_eq(code_units(0x1F600, Utf16), 2)
-  assert_eq(code_units(0x1F600, Utf8), 4)
-  assert_eq(code_units(0x1F600, Utf32), 1)
+  @test.assert_eq(code_units(0x1F600, Utf16), 2)
+  @test.assert_eq(code_units(0x1F600, Utf8), 4)
+  @test.assert_eq(code_units(0x1F600, Utf32), 1)
 
   // 'b' 在 UTF-16 下的列号为 3（a=1 + emoji=2）。
   let pos_b : Position = { line: 0, character: 3 }
@@ -498,7 +505,7 @@ test "README · 位置编码协商与坐标换算" {
     Some(o) => o
     None => fail("应能换算 offset")
   }
-  assert_eq(off, 3)
+  @test.assert_eq(off, 3)
 
   // Position↔offset 往返（Property 6）。
   match offset_to_position(text, off, Utf16) {
@@ -511,7 +518,7 @@ test "README · 位置编码协商与坐标换算" {
     Some(p) => p
     None => fail("应能换算到 UTF-8")
   }
-  assert_eq(in_utf8.character, 5) // a=1 + emoji=4
+  @test.assert_eq(in_utf8.character, 5) // a=1 + emoji=4
   match convert_position(text, in_utf8, from=Utf8, to=Utf16) {
     Some(p) => assert_true(p == pos_b)
     None => fail("应能换算回 UTF-16")
@@ -543,7 +550,7 @@ test "README · 增量与全量文档同步" {
     Ok(t) => t
     Err(e) => fail("增量变更应成功：" + e.message)
   }
-  assert_eq(after_inc, "host = localhost\nport = 9090")
+  @test.assert_eq(after_inc, "host = localhost\nport = 9090")
 
   // 2) 全量：range = None，整体替换为变更后全文。
   let full : ContentChange = {
@@ -555,7 +562,7 @@ test "README · 增量与全量文档同步" {
     Err(e) => fail("全量变更应成功：" + e.message)
   }
   // 增量结果与全量替换结果逐字符相等（Property 5）。
-  assert_eq(after_inc, after_full)
+  @test.assert_eq(after_inc, after_full)
 
   // 3) 带版本文档：成功则文本更新且版本号更新为通知携带版本。
   let doc_v1 : VersionedDocument = { uri, text, version: 1 }
@@ -563,8 +570,8 @@ test "README · 增量与全量文档同步" {
     Ok(d) => d
     Err(e) => fail("带版本变更应成功：" + e.message)
   }
-  assert_eq(doc_v2.version, 2)
-  assert_eq(doc_v2.text, "host = localhost\nport = 9090")
+  @test.assert_eq(doc_v2.version, 2)
+  @test.assert_eq(doc_v2.text, "host = localhost\nport = 9090")
 
   // 4) 越界范围 → invalid_params_code，且不返回部分应用结果。
   let oob_range : Range = {
@@ -573,7 +580,7 @@ test "README · 增量与全量文档同步" {
   }
   let oob : ContentChange = { range: Some(oob_range), text: "x" }
   match apply_changes(text, [oob], Utf16) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
     Ok(_) => fail("越界变更应失败")
   }
 }
@@ -597,13 +604,13 @@ test "README · 符号、引用、工作区符号与高亮" {
 
   // documentSymbol：当前文档全部键定义（host、url），按出现顺序。
   let syms = document_symbols(a)
-  assert_eq(syms.length(), 2)
-  assert_eq(syms[0].name, "host")
-  assert_eq(syms[1].name, "url")
+  @test.assert_eq(syms.length(), 2)
+  @test.assert_eq(syms[0].name, "host")
+  @test.assert_eq(syms[1].name, "url")
 
   // references：host 的定义 + 全部引用（定义在前）。
   let refs = references(a, "host")
-  assert_eq(refs.length(), 2)
+  @test.assert_eq(refs.length(), 2)
   // 第一处为定义（line 0，键 token [0,4)）。
   assert_true(
     refs[0] ==
@@ -616,16 +623,16 @@ test "README · 符号、引用、工作区符号与高亮" {
     },
   )
   // 第二处为 line 1 上的 ${host} 引用（[6,13)）。
-  assert_eq(refs[1].range.start.line, 1)
+  @test.assert_eq(refs[1].range.start.line, 1)
 
   // workspace/symbol：跨内存多文档按子串匹配；"ho" 命中 host，不命中 url。
   let ws = workspace_symbols([a], "ho")
-  assert_eq(ws.length(), 1)
-  assert_eq(ws[0].uri, uri)
+  @test.assert_eq(ws.length(), 1)
+  @test.assert_eq(ws[0].uri, uri)
 
   // documentHighlight：光标落在 host 定义上 → host 的全部出现（定义 + 引用）。
   let hl = document_highlights(a, { line: 0, character: 1 })
-  assert_eq(hl.length(), 2)
+  @test.assert_eq(hl.length(), 2)
 }
 ```
 
@@ -646,23 +653,23 @@ test "README · 重命名产出并应用 WorkspaceEdit" {
 
   // 将 host 重命名为 HOST。
   let edit = rename(a, "host", "HOST")
-  assert_eq(edit.changes.length(), 1)
+  @test.assert_eq(edit.changes.length(), 1)
   let (edit_uri, edits) = edit.changes[0]
-  assert_eq(edit_uri, uri)
+  @test.assert_eq(edit_uri, uri)
   // 两处编辑：定义（裸 HOST）+ 引用（${HOST}）。
-  assert_eq(edits.length(), 2)
-  assert_eq(edits[0].new_text, "HOST")
-  assert_eq(edits[1].new_text, dollar_ref("HOST"))
+  @test.assert_eq(edits.length(), 2)
+  @test.assert_eq(edits[0].new_text, "HOST")
+  @test.assert_eq(edits[1].new_text, dollar_ref("HOST"))
 
   // 应用编辑：原名全部出现变为新名，其余文本不变。
   let renamed = apply_workspace_edit(text, edits)
   let expected = "HOST = localhost\n" + "url = " + dollar_ref("HOST")
-  assert_eq(renamed, expected)
+  @test.assert_eq(renamed, expected)
 
   // 重分析后新名出现数 = 原名原出现数（定义 1 + 引用 1）。
   let a2 = analyze({ uri, text: renamed })
-  assert_eq(references(a2, "HOST").length(), 2)
-  assert_eq(references(a2, "host").length(), 0)
+  @test.assert_eq(references(a2, "HOST").length(), 2)
+  @test.assert_eq(references(a2, "host").length(), 0)
 }
 ```
 
@@ -681,21 +688,21 @@ test "README · 格式化幂等与代码动作" {
   // 1) 格式化：把 "host=localhost" 规范为 "host = localhost"。
   let messy = "host=localhost"
   let edits = formatting({ uri, text: messy })
-  assert_eq(edits.length(), 1)
-  assert_eq(edits[0].new_text, "host = localhost")
+  @test.assert_eq(edits.length(), 1)
+  @test.assert_eq(edits[0].new_text, "host = localhost")
 
   // 2) 幂等：对已规范文本再次格式化不产生任何编辑（Property 17）。
   let normalized = "host = localhost"
-  assert_eq(formatting({ uri, text: normalized }).length(), 0)
+  @test.assert_eq(formatting({ uri, text: normalized }).length(), 0)
 
   // 3) 代码动作：针对「缺少 '='」诊断给出「插入 '='」快速修复。
   let a = analyze({ uri, text: "broken" })
-  assert_eq(a.diagnostics.length(), 1)
+  @test.assert_eq(a.diagnostics.length(), 1)
   let d = a.diagnostics[0]
   assert_true(d.severity == Error)
   let actions = code_actions(a, d)
-  assert_eq(actions.length(), 1)
-  assert_eq(actions[0].title, "插入 '='")
+  @test.assert_eq(actions.length(), 1)
+  @test.assert_eq(actions[0].title, "插入 '='")
 }
 ```
 
@@ -715,7 +722,7 @@ test "README · 签名帮助、语义 token 与折叠" {
 
   // signatureHelp：光标落在 host 定义上 → "host = localhost"。
   match signature_help(a, { line: 0, character: 1 }) {
-    Some(sig) => assert_eq(sig.label, "host = localhost")
+    Some(sig) => @test.assert_eq(sig.label, "host = localhost")
     None => fail("期望签名信息")
   }
 
@@ -723,11 +730,11 @@ test "README · 签名帮助、语义 token 与折叠" {
   //   host: [deltaLine=0, deltaStart=0, len=4, type=0, mod=0]
   //   port: [deltaLine=1, deltaStart=0, len=4, type=0, mod=0]
   let tokens = semantic_tokens(a)
-  assert_eq(tokens, [0, 0, 4, 0, 0, 1, 0, 4, 0, 0])
+  @test.assert_eq(tokens, [0, 0, 4, 0, 0, 1, 0, 4, 0, 0])
 
   // foldingRange：两行连续内容块 → 一个折叠范围 [{0,0}, {1,11}]。
   let folds = folding_ranges({ uri, text })
-  assert_eq(folds.length(), 1)
+  @test.assert_eq(folds.length(), 1)
   assert_true(
     folds[0] ==
     Range::{ start: { line: 0, character: 0 }, end: { line: 1, character: 11 } },
@@ -753,7 +760,7 @@ test "README · push 与 pull 诊断等价、严重码编码" {
 
   // pull：textDocument/diagnostic 请求 → 当前诊断。
   let pulled = pull_diagnostics(doc)
-  assert_eq(pulled.length(), 1)
+  @test.assert_eq(pulled.length(), 1)
   assert_true(pulled[0].severity == Error)
 
   // push：on_did_change 与 pull_diagnostics 走同一投影 → 诊断集合相等。
@@ -768,8 +775,8 @@ test "README · push 与 pull 诊断等价、严重码编码" {
 
   // push 通知携带 uri 与 diagnostics 数组。
   match publish_diagnostics_notification(uri, pushed) {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      @test.assert_eq(method_name, "textDocument/publishDiagnostics")
       assert_true(jfield(params, "uri") == Some(@lsp_binding.JStr(uri)))
       assert_true(jfield(params, "diagnostics") != None)
     }
@@ -798,7 +805,7 @@ test "README · 端到端会话 demo 串联全流程" {
   for s in steps {
     labels.push(s.label)
   }
-  assert_eq(labels, [
+  @test.assert_eq(labels, [
     "initialize", "initialized", "didOpen", "didChange", "diagnostics", "completion",
     "definition", "references", "rename", "hover", "shutdown", "exit",
   ])

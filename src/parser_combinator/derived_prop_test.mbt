@@ -211,16 +211,16 @@ test "chainl/chainr yield default on empty operand sequence without consuming" {
   let cl = chainl(dp_number(), dp_sub_op(), -1)
   match cl.parse_string("") {
     Ok(v, rest) => {
-      assert_eq(v, -1)
-      assert_eq(rest.pos.offset, 0)
+      @test.assert_eq(v, -1)
+      @test.assert_eq(rest.pos.offset, 0)
     }
     Fail(_, ..) => fail("chainl should yield default on empty")
   }
   let cr = chainr(dp_number(), dp_sub_op(), -2)
   match cr.parse_string("") {
     Ok(v, rest) => {
-      assert_eq(v, -2)
-      assert_eq(rest.pos.offset, 0)
+      @test.assert_eq(v, -2)
+      @test.assert_eq(rest.pos.offset, 0)
     }
     Fail(_, ..) => fail("chainr should yield default on empty")
   }
@@ -248,7 +248,7 @@ test "lazy_parser supports recursive grammar without divergence" {
   // 三层嵌套括号 → 深度 3。
   match dp_nested_depth().parse_string("((()))") {
     Ok(v, rest) => {
-      assert_eq(v, 3)
+      @test.assert_eq(v, 3)
       assert_true(rest.is_eof())
     }
     Fail(_, ..) => fail("expected nested parens to parse")
@@ -256,8 +256,8 @@ test "lazy_parser supports recursive grammar without divergence" {
   // 无括号 → 深度 0，不消费输入。
   match dp_nested_depth().parse_string("x") {
     Ok(v, rest) => {
-      assert_eq(v, 0)
-      assert_eq(rest.pos.offset, 0)
+      @test.assert_eq(v, 0)
+      @test.assert_eq(rest.pos.offset, 0)
     }
     Fail(_, ..) => fail("expected zero-depth success")
   }

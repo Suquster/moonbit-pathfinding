@@ -43,7 +43,7 @@ test "run is deterministic for the same seed" {
   let a = run(0xDEAD_BEEF, scenario)
   let b = run(0xDEAD_BEEF, scenario)
   // SimResult derive(Eq)：种子 + 轨迹 + 终态整体逐项一致。
-  assert_eq(a, b)
+  @test.assert_eq(a, b)
 }
 
 ///|
@@ -59,7 +59,7 @@ test "run diverges for different seeds" {
   let scenario = Scenario::new(tasks, [], 16)
   let a = run(1, scenario)
   let b = run(999, scenario)
-  assert_not_eq(a.trace, b.trace)
+  @test.assert_not_eq(a.trace, b.trace)
 }
 
 ///|
@@ -70,7 +70,7 @@ test "run schedule is independent of input task ordering" {
   let reversed = [Task::new(2, "c"), Task::new(1, "b"), Task::new(0, "a")]
   let r1 = run(42, Scenario::new(forward, [], 8))
   let r2 = run(42, Scenario::new(reversed, [], 8))
-  assert_eq(r1, r2)
+  @test.assert_eq(r1, r2)
 }
 
 ///|
@@ -78,7 +78,7 @@ test "run schedule is independent of input task ordering" {
 test "run completes all tasks when no faults are injected" {
   let tasks = [Task::new(0, "a"), Task::new(1, "b"), Task::new(2, "c")]
   let result = run(7, Scenario::new(tasks, [], 16))
-  assert_eq(count_completed(result.trace), 3)
+  @test.assert_eq(count_completed(result.trace), 3)
   match result.status {
     Completed => ()
     Failed(reason~) => fail("expected Completed, got Failed: \{reason}")
@@ -95,7 +95,7 @@ test "inject_fault triggers a Faulted event and fails the run on crash" {
   // 产生崩溃故障事件。
   assert_true(has_fault(result.trace, FaultKind::Crash))
   // 崩溃任务被移出调度集合：仅其余 2 个任务完成。
-  assert_eq(count_completed(result.trace), 2)
+  @test.assert_eq(count_completed(result.trace), 2)
   // 终态为 Failed。
   match result.status {
     Failed(..) => ()
@@ -111,7 +111,7 @@ test "inject_fault drops a task without failing the run" {
   let faults = [FaultPolicy::new(0, 2, FaultKind::Drop)]
   let result = run(55, Scenario::new(tasks, faults, 16))
   assert_true(has_fault(result.trace, FaultKind::Drop))
-  assert_eq(count_completed(result.trace), 2)
+  @test.assert_eq(count_completed(result.trace), 2)
   match result.status {
     Completed => ()
     Failed(reason~) => fail("expected Completed, got Failed: \{reason}")
@@ -126,7 +126,7 @@ test "replay reproduces the identical failing result" {
   let original = run(0x1234, Scenario::new(tasks, faults, 16))
   let replayed = replay(original.seed, original.trace)
   // 种子、逐事件轨迹与终态完全一致。
-  assert_eq(replayed, original)
+  @test.assert_eq(replayed, original)
 }
 
 ///|
@@ -135,5 +135,5 @@ test "replay reproduces a successful run" {
   let tasks = [Task::new(0, "a"), Task::new(1, "b")]
   let original = run(2024, Scenario::new(tasks, [], 8))
   let replayed = replay(original.seed, original.trace)
-  assert_eq(replayed, original)
+  @test.assert_eq(replayed, original)
 }

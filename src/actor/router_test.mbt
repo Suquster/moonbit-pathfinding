@@ -16,9 +16,9 @@ test "round-robin distributes in cycle (witness)" {
   for i in 0..<5 {
     router.route(i)
   }
-  assert_eq(workers[0].pending(), 2)
-  assert_eq(workers[1].pending(), 2)
-  assert_eq(workers[2].pending(), 1)
+  @test.assert_eq(workers[0].pending(), 2)
+  @test.assert_eq(workers[1].pending(), 2)
+  @test.assert_eq(workers[2].pending(), 1)
 }
 
 ///|
@@ -33,8 +33,8 @@ test "broadcast delivers to all workers (witness)" {
   router.route(1)
   router.route(2)
   router.route(3)
-  assert_eq(workers[0].pending(), 3)
-  assert_eq(workers[1].pending(), 3)
+  @test.assert_eq(workers[0].pending(), 3)
+  @test.assert_eq(workers[1].pending(), 3)
 }
 
 ///|
@@ -47,10 +47,10 @@ test "consistent hash is stable for the same key (witness)" {
     spawn(0, fn(s, _m) { s }),
   ]
   let router = Router::new(ConsistentHash, workers)
-  assert_eq(router.worker_count(), 3)
+  @test.assert_eq(router.worker_count(), 3)
   let a = router.worker_for_key("alpha")
   let b = router.worker_for_key("alpha")
-  assert_eq(a, b)
+  @test.assert_eq(a, b)
   // 路由实际分发到同一 worker。
   router.route_keyed("alpha", 1)
   router.route_keyed("alpha", 2)
@@ -63,6 +63,6 @@ test "consistent hash is stable for the same key (witness)" {
       hit = w.pending()
     }
   }
-  assert_eq(total, 2)
-  assert_eq(hit, 2)
+  @test.assert_eq(total, 2)
+  @test.assert_eq(hit, 2)
 }

@@ -65,8 +65,17 @@ test "Feature: logging, Property 6: sampling-ratio bound (holds_for_all)" {
 /// 具体见证：rate=0.5 over 10 事件保留 5 条；rate=0/1 边界。
 test "sample_stream retained count witnesses" {
   let events = sb_events(10)
-  assert_eq(retained_count(0.5, 10), 5)
-  assert_eq(sample_stream(0.5, events, @infra_pbt.rng_new(7UL)).length(), 5)
-  assert_eq(sample_stream(0.0, events, @infra_pbt.rng_new(7UL)).length(), 0)
-  assert_eq(sample_stream(1.0, events, @infra_pbt.rng_new(7UL)).length(), 10)
+  @test.assert_eq(retained_count(0.5, 10), 5)
+  @test.assert_eq(
+    sample_stream(0.5, events, @infra_pbt.rng_new(7UL)).length(),
+    5,
+  )
+  @test.assert_eq(
+    sample_stream(0.0, events, @infra_pbt.rng_new(7UL)).length(),
+    0,
+  )
+  @test.assert_eq(
+    sample_stream(1.0, events, @infra_pbt.rng_new(7UL)).length(),
+    10,
+  )
 }

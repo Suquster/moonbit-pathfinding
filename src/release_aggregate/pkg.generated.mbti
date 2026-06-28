@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/release_aggregate"
 
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -30,12 +31,12 @@ pub(all) struct SuiteGates {
   lsp : @release_meta.QualityGates
   mini_compiler : @release_meta.QualityGates
   actor : @release_meta.QualityGates
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SuiteReleaseReport {
   directions : Array[@release_meta.DirectionRelease]
   release_ready : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

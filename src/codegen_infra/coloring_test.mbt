@@ -61,6 +61,6 @@ test "allocate_coloring_briggs potential-spill 选中最低代价节点" {
   let alloc = allocate_coloring_briggs(g, 3, cost~)
   inspect(t_count_spills(alloc), content="1")
   // 最低代价节点 3 被溢出，其余着色为寄存器。
-  inspect(alloc.get({ id: 3 }), content="Some(Spill(0))")
+  @debug.debug_inspect(alloc.get({ id: 3 }), content="Some(Spill(0))")
   assert_true(t_coloring_respects(g, alloc))
 }

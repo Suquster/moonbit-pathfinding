@@ -114,7 +114,7 @@ test "README · 非法字节返回含偏移的解码错误" {
   match decode(b"\x80", Schema::empty()) {
     Ok(_) => fail("截断 varint 不应解码成功")
     Err(e) => {
-      assert_eq(e.offset(), 0)
+      @test.assert_eq(e.offset(), 0)
       match e {
         UnexpectedEof(..) => assert_true(true)
         _ => fail("期望 UnexpectedEof，实际：\{e}")
@@ -125,7 +125,7 @@ test "README · 非法字节返回含偏移的解码错误" {
   match decode(b"\x0b", Schema::empty()) {
     Ok(_) => fail("非法 wire 类型不应解码成功")
     Err(e) => {
-      assert_eq(e.offset(), 0)
+      @test.assert_eq(e.offset(), 0)
       match e {
         InvalidWireType(..) => assert_true(true)
         _ => fail("期望 InvalidWireType，实际：\{e}")
@@ -159,9 +159,9 @@ test "README · parse_proto 解析模式并 gen_moonbit 生成类型" {
     }
   }
   // 解析出单个消息 Pt，含两个字段：标量 int32 与 repeated string。
-  assert_eq(schema.messages.length(), 1)
+  @test.assert_eq(schema.messages.length(), 1)
   let pt = schema.messages[0]
-  assert_eq(pt.name, "Pt")
+  @test.assert_eq(pt.name, "Pt")
   assert_true(pt.fields[0].ftype == FieldType::TInt32)
   assert_false(pt.fields[0].repeated)
   assert_true(pt.fields[1].ftype == FieldType::TString)
@@ -169,7 +169,7 @@ test "README · parse_proto 解析模式并 gen_moonbit 生成类型" {
   // 代码生成：repeated 字段映射为 Array[String]。
   let code = gen_moonbit(schema)
   let expected = "// 由 gen_moonbit 生成（骨架）—— 请勿手工编辑\n" +
-    "\npub struct Pt {\n  x : Int\n  tags : Array[String]\n} derive(Eq, Show)\n"
+    "\npub struct Pt {\n  x : Int\n  tags : Array[String]\n} derive(Eq, Debug)\n"
   assert_true(code == expected)
 }
 ```
@@ -332,7 +332,7 @@ test "README · 模式校验与代码生成" {
   }
   match validate_schema(schema) {
     Ok(_) => assert_true(true)
-    Err(errs) => fail("合法模式不应报错：\{errs}")
+    Err(errs) => fail("合法模式不应报错：\{@debug.to_string(errs)}")
   }
   let code = gen_moonbit_full(schema)
   assert_true(code.contains("pub struct Pt"))
@@ -361,7 +361,7 @@ test "README · 端到端实战 demo" {
   }
   match validate_schema(schema) {
     Ok(_) => assert_true(true)
-    Err(errs) => fail("demo 校验失败：\{errs}")
+    Err(errs) => fail("demo 校验失败：\{@debug.to_string(errs)}")
   }
   let msg = demo_message()
   let bin = match encode_typed(schema, demo_message_name, msg) {

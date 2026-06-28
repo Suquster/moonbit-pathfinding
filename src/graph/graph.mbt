@@ -68,7 +68,7 @@ pub fn[N : Eq + Hash, W] Graph::successors(
 /// （无任何出边）同样计入。复杂度 O(1)。该值是节点遍历的合法上界，常用于
 /// 为基于下标的辅助结构（如 distance / visited 数组）预分配容量。纯查询，
 /// 不修改图的任何字段，可安全地重复调用。
-pub fn[N : Eq + Hash, W] Graph::node_count(self : Graph[N, W]) -> Int {
+pub fn[N, W] Graph::node_count(self : Graph[N, W]) -> Int {
   self.nodes.length()
 }
 
@@ -79,7 +79,7 @@ pub fn[N : Eq + Hash, W] Graph::node_count(self : Graph[N, W]) -> Int {
 /// 内做任何字符串拼接，符合横切红线（Requirement 22.4）。每条 `(源, 目标)`
 /// 边计为一条；由于 `GraphBuilder` 对重复 `(源, 目标)` 取末次权重覆盖
 /// （Requirement 12.3），此处的计数与去重后的边集大小一致。
-pub fn[N : Eq + Hash, W] Graph::edge_count(self : Graph[N, W]) -> Int {
+pub fn[N, W] Graph::edge_count(self : Graph[N, W]) -> Int {
   let mut total = 0
   for _node, edges in self.adj {
     total = total + edges.length()

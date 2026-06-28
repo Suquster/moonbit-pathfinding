@@ -60,9 +60,9 @@ let p18_ref_pool : Array[String] = ["k0", "k1", "zzz", "und", "a"]
 /// 被常量折叠成字面 `${` 的片段（JS 后端会把悬空的 `${` 当作模板字符串插值起始，
 /// 导致生成代码语法错误）；运行期仍得到 `${name}`。
 fn p18_gen_value(rng : @infra_pbt.Rng) -> String {
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
-  let rbrace = Char::from_int(0x7D).to_string() // '}'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+  let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
   let mut v = p18_literal_pool[rng.next_below(p18_literal_pool.length())]
   let refs = rng.next_below(3) // 0..2 处引用
   let mut i = 0
@@ -83,8 +83,8 @@ fn p18_gen_value(rng : @infra_pbt.Rng) -> String {
 /// 生成一份随机 DSL 文档，逐行随机产出多种行型以覆盖各类诊断路径。
 fn p18_gen_doc(rng : @infra_pbt.Rng) -> TextDocument {
   let n_lines = rng.next_range(2, 8) // 2..7 行
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
   let mut text = ""
   let mut li = 0
   while li < n_lines {
@@ -213,7 +213,7 @@ fn p18_push_pull_equivalent(doc : TextDocument) -> Bool {
   let pushed = on_did_change(doc)
   let pulled = pull_diagnostics(doc)
   // (1) 诊断序列逐条相等。
-  if not(p18_diagnostics_equal(pushed, pulled)) {
+  if !p18_diagnostics_equal(pushed, pulled) {
     return false
   }
   // (2) push 通知嵌入的诊断 JSON 与 pull 诊断编码数组相等。

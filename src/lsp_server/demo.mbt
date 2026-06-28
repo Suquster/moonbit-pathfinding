@@ -33,12 +33,12 @@
 ///|
 /// 一个会话步骤：人类可读标签 `label` + 该步骤的确定性输出 `output`（JSON 值）。
 ///
-/// `output` 复用 `@lsp_binding.Json`（`derive(Eq, Show)`），故本结构亦可
-/// `derive(Eq, Show)`，便于在单元测试中断言确定性与逐步对照。
+/// `output` 复用 `@lsp_binding.Json`（`derive(Eq, Debug)`），故本结构亦可
+/// `derive(Eq, Debug)`，便于在单元测试中断言确定性与逐步对照。
 pub(all) struct SessionStep {
   label : String
   output : @lsp_binding.Json
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── JSON 编码辅助 ──────────────────────────
 //
@@ -286,7 +286,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   ])
   let init_request = @lsp_binding.Request(
     id=@lsp_binding.IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=init_params,
   )
   let (session, init_reply) = session.handle(init_request)
@@ -294,7 +294,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
 
   // ── 2. initialized 通知 ────────────────────────────────────────────
   let initialized_note = @lsp_binding.Notification(
-    method="initialized",
+    method_name="initialized",
     params=@lsp_binding.JNull,
   )
   let (session, _) = session.handle(initialized_note)
@@ -468,7 +468,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 5. diagnostics（dispatch） ─────────────────────────────────────
   let req_diag = @lsp_binding.Request(
     id=@lsp_binding.IdNum(2),
-    method="textDocument/diagnostic",
+    method_name="textDocument/diagnostic",
     params=@lsp_binding.JNull,
   )
   steps.push({
@@ -479,7 +479,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 6. completion（dispatch） ──────────────────────────────────────
   let req_comp = @lsp_binding.Request(
     id=@lsp_binding.IdNum(3),
-    method="textDocument/completion",
+    method_name="textDocument/completion",
     params=demo_position_to_json({ line: 3, character: 8 }),
   )
   steps.push({
@@ -490,7 +490,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 7. definition（dispatch；位置落在 line 3 的 ${host} 引用上） ────
   let req_def = @lsp_binding.Request(
     id=@lsp_binding.IdNum(4),
-    method="textDocument/definition",
+    method_name="textDocument/definition",
     params=demo_position_to_json({ line: 3, character: 8 }),
   )
   steps.push({
@@ -501,7 +501,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 8. references（dispatch；键 host） ─────────────────────────────
   let req_refs = @lsp_binding.Request(
     id=@lsp_binding.IdNum(5),
-    method="textDocument/references",
+    method_name="textDocument/references",
     params=@lsp_binding.JObj([("name", @lsp_binding.JStr("host"))]),
   )
   steps.push({
@@ -512,7 +512,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 9. rename（dispatch；键 port → PORT） ──────────────────────────
   let req_rename = @lsp_binding.Request(
     id=@lsp_binding.IdNum(6),
-    method="textDocument/rename",
+    method_name="textDocument/rename",
     params=@lsp_binding.JObj([
       ("name", @lsp_binding.JStr("port")),
       ("newName", @lsp_binding.JStr("PORT")),
@@ -526,7 +526,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 10. hover（dispatch；位置落在 line 1 的 host 定义上） ──────────
   let req_hover = @lsp_binding.Request(
     id=@lsp_binding.IdNum(7),
-    method="textDocument/hover",
+    method_name="textDocument/hover",
     params=demo_position_to_json({ line: 1, character: 1 }),
   )
   steps.push({
@@ -537,7 +537,7 @@ pub fn run_session_demo() -> Array[SessionStep] {
   // ── 11. shutdown（任务 5） ─────────────────────────────────────────
   let shutdown_request = @lsp_binding.Request(
     id=@lsp_binding.IdNum(10),
-    method="shutdown",
+    method_name="shutdown",
     params=@lsp_binding.JNull,
   )
   let (session, shutdown_reply) = session.handle(shutdown_request)

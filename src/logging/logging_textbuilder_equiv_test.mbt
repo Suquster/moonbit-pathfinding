@@ -22,7 +22,7 @@
 test "format_json scalar golden equals pre-refactor output" {
   let e = Event::new(1L, Level::Info, { "a": VStr("x"), "b": VInt(42) })
   // 字段按键名升序：a, b。
-  assert_eq(
+  @test.assert_eq(
     format_json(e),
     "{\"ts\":1,\"level\":\"INFO\",\"fields\":{\"a\":\"x\",\"b\":42}}",
   )
@@ -33,7 +33,7 @@ test "format_json scalar golden equals pre-refactor output" {
 /// 循环改造）。
 test "format_json escapes golden equals pre-refactor output" {
   let e = Event::new(2L, Level::Warn, { "msg": VStr("a\"b\nc\td\\e") })
-  assert_eq(
+  @test.assert_eq(
     format_json(e),
     "{\"ts\":2,\"level\":\"WARN\",\"fields\":{\"msg\":\"a\\\"b\\nc\\td\\\\e\"}}",
   )
@@ -48,7 +48,7 @@ test "format_json nested golden equals pre-refactor output" {
     "arr": VList([VInt(1), VStr("a"), VBool(true)]),
   })
   // 顶层字段升序：arr, obj；obj 成员升序：x, y。
-  assert_eq(
+  @test.assert_eq(
     format_json(e),
     "{\"ts\":3,\"level\":\"ERROR\",\"fields\":{\"arr\":[1,\"a\",true],\"obj\":{\"x\":2,\"y\":1}}}",
   )
@@ -58,7 +58,7 @@ test "format_json nested golden equals pre-refactor output" {
 /// format_logfmt 对标量字段事件产出与改造前逐字符相等的黄金值。
 test "format_logfmt scalar golden equals pre-refactor output" {
   let e = Event::new(7L, Level::Debug, { "k": VStr("v"), "n": VInt(5) })
-  assert_eq(format_logfmt(e), "ts=7 level=DEBUG k=\"v\" n=5")
+  @test.assert_eq(format_logfmt(e), "ts=7 level=DEBUG k=\"v\" n=5")
 }
 
 ///|
@@ -71,7 +71,7 @@ test "format_pretty scalar golden equals pre-refactor output" {
     "c": VFloat(0.5),
   })
   // 字段升序：a, b, c。
-  assert_eq(format_pretty(e), "ts=9 [TRACE] a=hi b=false c=0.5")
+  @test.assert_eq(format_pretty(e), "ts=9 [TRACE] a=hi b=false c=0.5")
 }
 
 // ─────────────────────── 格式化器 + 解析器：往返等价 ───────────────────────
@@ -127,7 +127,7 @@ test "inject_traceparent golden equals pre-refactor output" {
     trace: ({ value: 0x0123456789abcdefL } : TraceId),
     span: Some({ value: 0x00000000000000ffL }),
   }
-  assert_eq(
+  @test.assert_eq(
     inject_traceparent(ctx),
     "00-00000000000000000123456789abcdef-00000000000000ff-01",
   )
@@ -144,12 +144,12 @@ test "inject then extract traceparent roundtrips after refactor" {
   let tp = inject_traceparent(ctx)
   match extract_traceparent(tp) {
     Some(w) => {
-      assert_eq(w.trace_id, "000000000000000000000000deadbeef")
-      assert_eq(w.span_id, "0000000000001234")
-      assert_eq(w.flags, 1)
+      @test.assert_eq(w.trace_id, "000000000000000000000000deadbeef")
+      @test.assert_eq(w.span_id, "0000000000001234")
+      @test.assert_eq(w.flags, 1)
       // 桥接回内部 TraceContext，低 64 位无损还原。
       let back = w.to_trace_context()
-      assert_eq(back.trace.value, 0x00000000deadbeefL)
+      @test.assert_eq(back.trace.value, 0x00000000deadbeefL)
     }
     None => abort_unreachable()
   }

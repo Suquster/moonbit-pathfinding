@@ -13,15 +13,15 @@ test "drain_to_front places stashed messages ahead of mailbox messages (witness)
   stash.push(3)
   mailbox.enqueue(10)
   mailbox.enqueue(20)
-  assert_eq(stash.length(), 3)
+  @test.assert_eq(stash.length(), 3)
   stash.drain_to_front(mailbox)
   assert_true(stash.is_empty())
-  assert_eq(mailbox.dequeue(), Some(1))
-  assert_eq(mailbox.dequeue(), Some(2))
-  assert_eq(mailbox.dequeue(), Some(3))
-  assert_eq(mailbox.dequeue(), Some(10))
-  assert_eq(mailbox.dequeue(), Some(20))
-  assert_eq(mailbox.dequeue(), None)
+  @test.assert_eq(mailbox.dequeue(), Some(1))
+  @test.assert_eq(mailbox.dequeue(), Some(2))
+  @test.assert_eq(mailbox.dequeue(), Some(3))
+  @test.assert_eq(mailbox.dequeue(), Some(10))
+  @test.assert_eq(mailbox.dequeue(), Some(20))
+  @test.assert_eq(mailbox.dequeue(), None)
 }
 
 ///|
@@ -31,8 +31,8 @@ test "drain_to_front on empty stash leaves mailbox unchanged" {
   let mailbox : Mailbox[Int] = Mailbox::new()
   mailbox.enqueue(7)
   stash.drain_to_front(mailbox)
-  assert_eq(mailbox.dequeue(), Some(7))
-  assert_eq(mailbox.dequeue(), None)
+  @test.assert_eq(mailbox.dequeue(), Some(7))
+  @test.assert_eq(mailbox.dequeue(), None)
 }
 
 ///|
@@ -43,5 +43,5 @@ test "clear empties the stash buffer" {
   stash.push(2)
   stash.clear()
   assert_true(stash.is_empty())
-  assert_eq(stash.length(), 0)
+  @test.assert_eq(stash.length(), 0)
 }

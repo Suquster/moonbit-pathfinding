@@ -45,3 +45,8 @@ import {
 // 属性测试（task 16.3 Property 22：Actor 串行与 FIFO 顺序不变量）复用共享 PBT 包
 // @infra_pbt 的 Gen / Rng / holds_for_all 模板（每条属性 ≥100 次迭代，三后端
 // 逐位一致、可重放）。该依赖已在上方运行时 import 中登记，测试期同样可用。
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/test",
+} for "test"

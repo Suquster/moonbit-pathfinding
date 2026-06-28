@@ -35,7 +35,7 @@ fn uniform_suite_gates(g : @release_meta.QualityGates) -> SuiteGates {
 test "aggregate_suite is ready when all directions are green" {
   let report = aggregate_suite(uniform_suite_gates(gates_of(true)))
   assert_true(report.release_ready)
-  assert_eq(report.directions.length(), direction_count)
+  @test.assert_eq(report.directions.length(), direction_count)
   for d in report.directions {
     assert_true(d.release_ready)
   }
@@ -53,16 +53,16 @@ test "aggregate_suite blocks release when any direction gate fails" {
   }
   let report = aggregate_suite(gates)
   assert_false(report.release_ready)
-  assert_eq(report.directions.length(), direction_count)
+  @test.assert_eq(report.directions.length(), direction_count)
   let mut ready_count = 0
   for d in report.directions {
     if d.release_ready {
       ready_count = ready_count + 1
     } else {
-      assert_eq(d.name, "dst")
+      @test.assert_eq(d.name, "dst")
     }
   }
-  assert_eq(ready_count, direction_count - 1)
+  @test.assert_eq(ready_count, direction_count - 1)
 }
 
 ///|
@@ -129,7 +129,7 @@ test "aggregate_suite fails if exactly one direction is not green" {
   for i in 0..<direction_count {
     let report = aggregate_suite(make(i))
     assert_false(report.release_ready)
-    assert_eq(report.directions.length(), direction_count)
+    @test.assert_eq(report.directions.length(), direction_count)
   }
 }
 
@@ -138,7 +138,7 @@ test "aggregate_suite fails if exactly one direction is not green" {
 /// 名称集合与预期一致（含以 "lsp" 标识的方向五），且无重复。
 test "release_manifest enumerates all ten directions by name" {
   let manifest = release_manifest()
-  assert_eq(manifest.length(), direction_count)
+  @test.assert_eq(manifest.length(), direction_count)
   let expected = [
     "parser_combinator", "regex_engine", "serialization", "build_tool", "logging",
     "codegen_infra", "dst", "lsp", "mini_compiler", "actor",
@@ -155,7 +155,7 @@ test "release_manifest enumerates all ten directions by name" {
         occurrences = occurrences + 1
       }
     }
-    assert_eq(occurrences, 1)
+    @test.assert_eq(occurrences, 1)
   }
 }
 
@@ -165,9 +165,9 @@ test "release_manifest enumerates all ten directions by name" {
 test "collect_direction_releases aligns with manifest order and valid semver" {
   let releases = collect_direction_releases(uniform_suite_gates(gates_of(true)))
   let manifest = release_manifest()
-  assert_eq(releases.length(), manifest.length())
+  @test.assert_eq(releases.length(), manifest.length())
   for i in 0..<releases.length() {
-    assert_eq(releases[i].name, manifest[i].name)
+    @test.assert_eq(releases[i].name, manifest[i].name)
     assert_true(@release_meta.is_valid_semver(releases[i].version))
   }
 }

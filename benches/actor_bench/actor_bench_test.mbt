@@ -104,9 +104,9 @@ test "witness: small high-frequency send drains exactly N messages" {
   }
   sys.run_until_idle()
   // trace 长度 == 投递条数（每条消息恰处理一次）。
-  assert_eq(sys.trace_of().length(), smoke_send_msgs)
+  @test.assert_eq(sys.trace_of().length(), smoke_send_msgs)
   // 计数终态同样等于条数（消息值均为 1）。
-  assert_eq(sys.state_of(counter).unwrap(), smoke_send_msgs)
+  @test.assert_eq(sys.state_of(counter).unwrap(), smoke_send_msgs)
 }
 
 ///|
@@ -126,10 +126,10 @@ test "witness: small massive scheduling processes actors x msgs events" {
   }
   sys.run_until_idle()
   let expected = smoke_scheduling_actors * smoke_scheduling_msgs_per_actor
-  assert_eq(sys.trace_of().length(), expected)
+  @test.assert_eq(sys.trace_of().length(), expected)
   // 每个 actor 恰处理 msgs_per_actor 条。
   for r in refs {
-    assert_eq(sys.state_of(r).unwrap(), smoke_scheduling_msgs_per_actor)
+    @test.assert_eq(sys.state_of(r).unwrap(), smoke_scheduling_msgs_per_actor)
   }
 }
 
@@ -154,7 +154,7 @@ test "witness: small ask round-trip replies every time within budget" {
       @actor.Timeout => ()
     }
   }
-  assert_eq(replied, smoke_ask_round_trips)
+  @test.assert_eq(replied, smoke_ask_round_trips)
 }
 
 ///|
@@ -179,7 +179,7 @@ test "witness: small router dispatch yields exact per-worker counts" {
     sys.run_until_idle()
     let per_worker = smoke_router_msgs / smoke_router_workers
     for w in workers {
-      assert_eq(sys.state_of(w).unwrap(), per_worker)
+      @test.assert_eq(sys.state_of(w).unwrap(), per_worker)
     }
   }
   // ── Broadcast：每 worker 恰得全部 msgs 条 ──
@@ -195,7 +195,7 @@ test "witness: small router dispatch yields exact per-worker counts" {
     }
     sys.run_until_idle()
     for w in workers {
-      assert_eq(sys.state_of(w).unwrap(), smoke_router_msgs)
+      @test.assert_eq(sys.state_of(w).unwrap(), smoke_router_msgs)
     }
   }
   // ── ConsistentHash：总计数守恒 + 同键稳定落点（确定性可重放）──
@@ -214,9 +214,12 @@ test "witness: small router dispatch yields exact per-worker counts" {
   for w in workers {
     total = total + sys.state_of(w).unwrap()
   }
-  assert_eq(total, smoke_router_msgs)
+  @test.assert_eq(total, smoke_router_msgs)
   // 确定性：同一路由键始终映射到同一 worker。
-  assert_eq(router.worker_for_key("key#0"), router.worker_for_key("key#0"))
+  @test.assert_eq(
+    router.worker_for_key("key#0"),
+    router.worker_for_key("key#0"),
+  )
 }
 
 ///|
@@ -239,9 +242,9 @@ test "witness: small supervision restart completes all but the faulted task" {
     smoke_supervision_seed,
   )
   // 注入的失败任务不计入完成，其余可完成任务全部完成。
-  assert_eq(report.completed, smoke_supervision_tasks - 1)
+  @test.assert_eq(report.completed, smoke_supervision_tasks - 1)
   // 单点失败恰触发一次重启。
-  assert_eq(report.restarts, 1)
+  @test.assert_eq(report.restarts, 1)
   // 同种子重放：逐字段一致。
   let replay = @actor.worker_pool_demo(
     smoke_supervision_workers,
@@ -249,6 +252,6 @@ test "witness: small supervision restart completes all but the faulted task" {
     Some(smoke_supervision_fault_at),
     smoke_supervision_seed,
   )
-  assert_eq(replay.completed, report.completed)
-  assert_eq(replay.restarts, report.restarts)
+  @test.assert_eq(replay.completed, report.completed)
+  @test.assert_eq(replay.restarts, report.restarts)
 }

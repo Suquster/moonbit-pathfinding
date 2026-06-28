@@ -20,7 +20,7 @@
 pub(all) struct Message {
   id : Int
   payload : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// DES 富事件——既有 `Event` 的旁路扩展：每个事件携带其发生的逻辑时间戳 `time`，
@@ -39,7 +39,7 @@ pub(all) enum SimEvent {
   EvSend(time~ : LogicalTime, from~ : Int, to~ : Int, msg~ : Message)
   /// 消息 `msg`（源 `from`、目标 `to`）在逻辑时间 `time` 被投递。
   EvDeliver(time~ : LogicalTime, from~ : Int, to~ : Int, msg~ : Message)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 返回事件的逻辑时间戳（全序第一键）。
@@ -74,7 +74,7 @@ pub fn SimEvent::actor_of(self : SimEvent) -> Int {
 pub(all) struct NodeApp {
   log : Array[Int]
   kv : Array[(String, Int)]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个初始应用状态（空日志、空键值）。
@@ -108,7 +108,7 @@ pub(all) enum Action {
   ActSend(to~ : Int, payload~ : Int, after~ : LogicalTime)
   /// 向本节点复制日志追加 `value`。
   ActAppend(value~ : Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 协议——以纯转移函数描述节点行为（函数值字段，故不派生）。
@@ -186,4 +186,4 @@ pub(all) struct DesResult {
   trace : Array[SimEvent]
   status : SimStatus
   finals : Array[(Int, NodeApp)]
-} derive(Eq, Show)
+} derive(Eq, Debug)

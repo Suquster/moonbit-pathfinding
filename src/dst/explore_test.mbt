@@ -9,7 +9,7 @@ test "explore_bounded counts all interleavings of independent tasks" {
   let tasks = [Task::new(0, "a"), Task::new(1, "b"), Task::new(2, "c")]
   let sc = DesScenario::new(tasks, [], [], null_protocol(), 8)
   let rep = explore_bounded(1, sc, 3)
-  assert_eq(rep.explored, 6)
+  @test.assert_eq(rep.explored, 6)
   match rep.failing {
     None => ()
     Some(_) => fail("no failing interleaving expected")

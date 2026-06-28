@@ -30,8 +30,8 @@ test "jps on 5x5 open grid corner-to-corner" {
   match jps(grid, (0, 0), (4, 4)) {
     Some((path, _cost)) => {
       // Path must start/end at corners.
-      inspect(path[0], content="(0, 0)")
-      inspect(path[path.length() - 1], content="(4, 4)")
+      @debug.debug_inspect(path[0], content="(0, 0)")
+      @debug.debug_inspect(path[path.length() - 1], content="(4, 4)")
       // Open-grid diagonal: 4 diagonal steps -> cost ≈ 4 * sqrt(2) ≈ 5.6568...
       assert_true(path.length() >= 2)
     }
@@ -74,8 +74,8 @@ test "jps with obstacle forces detour but still optimal" {
   let grid = grid_from_pattern([".....", ".....", "..#..", ".....", "....."])
   match jps(grid, (0, 0), (4, 4)) {
     Some((path, _cost)) => {
-      inspect(path[0], content="(0, 0)")
-      inspect(path[path.length() - 1], content="(4, 4)")
+      @debug.debug_inspect(path[0], content="(0, 0)")
+      @debug.debug_inspect(path[path.length() - 1], content="(4, 4)")
       // JPS path must still be reasonably short (< full perimeter).
       assert_true(path.length() <= 6)
     }

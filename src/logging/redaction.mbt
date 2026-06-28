@@ -44,7 +44,7 @@ pub fn RedactionPolicy::with_predicate(
 /// 命中者其取值整体替换为 `redaction_mask`（即使原值为嵌套 `VMap` / `VList`
 /// 也整体替换），未命中者原样保留。字段键集合保持不变；时间戳与级别不变。
 pub fn redact(policy : RedactionPolicy, e : Event) -> Event {
-  let out : Map[String, Value] = Map::new()
+  let out : Map[String, Value] = Map([])
   e.fields.each(fn(k, v) {
     let sensitive = array_contains(policy.sensitive, k) ||
       (policy.predicate)(k, v)

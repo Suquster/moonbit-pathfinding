@@ -6,4 +6,5 @@
 // proves a bug in one of the two algorithms.
 import {
   "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "moonbitlang/core/test",
 }

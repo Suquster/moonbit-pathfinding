@@ -15,8 +15,13 @@ test "build_dom_tree 排除不可达块" {
   inspect(t_contains_str(dom.reachable, "b0"), content="true")
   inspect(t_contains_str(dom.reachable, "b1"), content="true")
   inspect(t_contains_str(dom.reachable, "b2"), content="false")
-  inspect(dom.idom.get("b1"), content="Some(b0)")
-  inspect(dom.idom.get("b2"), content="None")
+  @debug.debug_inspect(
+    dom.idom.get("b1"),
+    content=(
+      #|Some("b0")
+    ),
+  )
+  @debug.debug_inspect(dom.idom.get("b2"), content="None")
 }
 
 ///|
@@ -35,11 +40,26 @@ test "build_dom_tree 菱形汇合各非入口节点恰有一个 idom" {
   let dom = build_dom_tree(blocks, entry="entry")
   inspect(dom.root, content="entry")
   inspect(dom.reachable.length(), content="4")
-  inspect(dom.idom.get("then"), content="Some(entry)")
-  inspect(dom.idom.get("else"), content="Some(entry)")
-  inspect(dom.idom.get("join"), content="Some(entry)")
+  @debug.debug_inspect(
+    dom.idom.get("then"),
+    content=(
+      #|Some("entry")
+    ),
+  )
+  @debug.debug_inspect(
+    dom.idom.get("else"),
+    content=(
+      #|Some("entry")
+    ),
+  )
+  @debug.debug_inspect(
+    dom.idom.get("join"),
+    content=(
+      #|Some("entry")
+    ),
+  )
   // 入口不在 idom 键集。
-  inspect(dom.idom.get("entry"), content="None")
+  @debug.debug_inspect(dom.idom.get("entry"), content="None")
   // 支配关系：entry 支配全部；then 不支配 join。
   inspect(dom.dominates("entry", "join"), content="true")
   inspect(dom.dominates("then", "join"), content="false")

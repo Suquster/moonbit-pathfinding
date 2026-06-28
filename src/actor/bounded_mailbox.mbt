@@ -19,7 +19,7 @@ pub(all) enum BackpressurePolicy {
   DropNewest
   DropOldest
   Reject
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 投递结果（offer result）—— 可观测的背压信号（Requirement 9.5 / 9.6）。
@@ -27,7 +27,7 @@ pub(all) enum OfferResult {
   Enqueued
   Dropped
   Rejected
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 有界邮箱 ──────────────────────────────────
 

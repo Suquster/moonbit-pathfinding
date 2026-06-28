@@ -15,7 +15,7 @@ test "dijkstra finds shortest path in 4-node chain" {
   match result {
     Some((path, cost)) => {
       inspect(cost, content="3")
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
     }
     None => inspect(false, content="true")
   }
@@ -35,7 +35,7 @@ test "dijkstra picks cheaper of two paths" {
   match result {
     Some((path, cost)) => {
       inspect(cost, content="2")
-      inspect(path, content="[0, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 2, 3]")
     }
     None => inspect(false, content="true")
   }
@@ -56,7 +56,7 @@ test "dijkstra start equals goal returns singleton path with zero cost" {
   let result = dijkstra(0, fn(n) { adj[n] }, fn(n) { n == 0 })
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     None => inspect(false, content="true")
@@ -72,7 +72,7 @@ test "dijkstra works with Double edge weights" {
   let result = dijkstra(0, fn(n) { adj[n] }, fn(n) { n == 2 })
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0, 1, 2]")
+      @debug.debug_inspect(path, content="[0, 1, 2]")
       inspect(cost, content="4")
     }
     None => inspect(false, content="true")
@@ -86,7 +86,7 @@ test "dijkstra start equals goal with Double weight" {
   let result = dijkstra(0, fn(n) { adj[n] }, fn(n) { n == 0 })
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     None => inspect(false, content="true")
@@ -113,7 +113,7 @@ test "whitebox: dijkstra skips stale pq entry via continue branch" {
   match result {
     Some((path, cost)) => {
       // 正确最短路应为 0 -> 2 -> 1 -> 4,总代价 102
-      inspect(path, content="[0, 2, 1, 4]")
+      @debug.debug_inspect(path, content="[0, 2, 1, 4]")
       inspect(cost, content="102")
     }
     None => inspect(false, content="true")

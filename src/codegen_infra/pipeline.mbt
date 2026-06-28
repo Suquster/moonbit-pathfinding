@@ -16,7 +16,7 @@ pub(all) enum OptPass {
   CopyProp
   Sccp
   Gvn
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 按声明顺序对程序施加一遍各 `OptPass`。

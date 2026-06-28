@@ -61,9 +61,9 @@ fn p22_drain(it : LazyPath[Int]) -> Array[Int] {
 test "Feature: championship-v1-upgrade, Property 22: lazy iterator equivalent to materialized path" {
   // 锚点：空路径的惰性迭代器首次 next() 即返回 None，收集结果为空数组。
   let empty_drained = p22_drain(LazyPath::from_path([]))
-  assert_eq(empty_drained.length(), 0)
+  @test.assert_eq(empty_drained.length(), 0)
   // 锚点：empty() 构造的迭代器同样首次即终止。
-  assert_eq(p22_drain(LazyPath::empty()).length(), 0)
+  @test.assert_eq(p22_drain(LazyPath::empty()).length(), 0)
 
   // 属性：随机路径上，惰性消费序列与物化路径等长且逐元素相等。迭代 256 次。
   let ok = @infra_pbt.holds_for_all(

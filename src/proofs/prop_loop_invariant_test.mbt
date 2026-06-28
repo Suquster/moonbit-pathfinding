@@ -31,18 +31,7 @@
 enum LoopInvariantOutcome {
   Held
   Violated(String, Int)
-} derive(Eq)
-
-///|
-/// 手动实现 `Show`（供 `inspect` 使用），避免 `derive(Show)` 的弃用告警。
-/// `Held` 渲染为 `Held`，`Violated` 渲染为 `Violated("名称", 序号)`。
-impl Show for LoopInvariantOutcome with fn output(self, logger) {
-  match self {
-    Held => logger.write_string("Held")
-    Violated(name, iter) =>
-      logger.write_string("Violated(\{name.escape()}, \{iter})")
-  }
-}
+} derive(Eq, Debug)
 
 ///|
 /// 将校验结果渲染为人类可读报告字符串（R10.6 报告呈现）。
@@ -258,11 +247,11 @@ test "outcome_report renders Held and Violated with invariant name and iteration
 ///|
 test "instrumented Dijkstra holds pop-monotonicity on a seeded random graph" {
   let rng = @infra_pbt.rng_new(0x5151_2025_UL)
-  inspect(li_run_dijkstra(rng), content="Held")
+  @debug.debug_inspect(li_run_dijkstra(rng), content="Held")
 }
 
 ///|
 test "instrumented BFS holds level-invariant on a seeded random graph" {
   let rng = @infra_pbt.rng_new(0x7a7a_2025_UL)
-  inspect(li_run_bfs(rng), content="Held")
+  @debug.debug_inspect(li_run_bfs(rng), content="Held")
 }

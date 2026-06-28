@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/actor"
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -64,7 +65,7 @@ pub fn[S, M] ActorContext::watch(Self[S, M], ActorId, (ActorId, TerminationReaso
 
 pub(all) struct ActorId {
   value : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum ActorOutcome[S] {
   Updated(S)
@@ -79,13 +80,11 @@ pub fn[M] ActorRef::pending(Self[M]) -> Int
 pub fn[M] ActorRef::send(Self[M], M) -> Unit
 pub fn[M] ActorRef::stop(Self[M]) -> Unit
 
-type ActorRuntime
-
 pub(all) enum ActorStatus {
   Running
   Stopped
   Failed(String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct ActorSystem[S, M] {
   cells : Array[SupervisedCell[S, M]]
@@ -126,13 +125,13 @@ pub fn[R] AskBroker::poll(Self[R], CorrelationId) -> AskResult[R]
 pub(all) enum AskResult[R] {
   Replied(R)
   Timeout
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum BackpressurePolicy {
   DropNewest
   DropOldest
   Reject
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Behavior[S, M] {
   receive : (ActorContext[S, M], S, M) -> ActorOutcome[S]
@@ -167,13 +166,13 @@ pub(all) enum ContextEffect[S, M] {
 
 pub(all) struct CorrelationId {
   value : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Directive {
   Restart
   Stop
   Escalate
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct LifecycleHooks[S] {
   pre_start : (S) -> S
@@ -201,7 +200,7 @@ pub(all) enum OfferResult {
   Enqueued
   Dropped
   Rejected
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum PoolMsg {
   RunTask(Task)
@@ -209,12 +208,12 @@ pub(all) enum PoolMsg {
   AskCount(CorrelationId)
   WatchWorker(ActorId)
   WorkerDown(ActorId, TerminationReason)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct RestartIntensity {
   max_restarts : Int
   window : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn RestartIntensity::new(Int, Int) -> Self
 
 type RingNode
@@ -235,7 +234,7 @@ pub(all) enum RoutingStrategy {
   RoundRobin
   Broadcast
   ConsistentHash
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct Scheduler[S, M] {
   cells : Array[ActorCell[S, M]]
@@ -279,29 +278,29 @@ pub(all) enum SupervisionStrategy {
   OneForOne
   OneForAll
   RestForOne
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SupervisorSpec {
   strategy : SupervisionStrategy
   intensity : RestartIntensity
   default_directive : Directive
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn SupervisorSpec::new(SupervisionStrategy, RestartIntensity, Directive) -> Self
 
 pub(all) struct Task {
   id : Int
   payload : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum TerminationReason {
   StoppedNormally
   FailedWith(String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TraceEvent {
   actor : ActorId
   seq : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct WatchEntry[M] {
   target : ActorId
@@ -324,7 +323,7 @@ pub(all) struct WorkerPoolReport {
   restarts : Int
   terminated_seen : Array[ActorId]
   ask_results : Array[AskResult[Int]]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

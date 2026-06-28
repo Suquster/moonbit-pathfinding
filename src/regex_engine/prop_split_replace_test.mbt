@@ -79,7 +79,7 @@ test "split and replace representative witnesses" {
   match Pattern::compile(",") {
     Ok(p) => {
       let parts = p.split("a,b,c")
-      assert_eq(parts.length(), 3)
+      @test.assert_eq(parts.length(), 3)
       assert_true(parts[0] == "a")
       assert_true(parts[1] == "b")
       assert_true(parts[2] == "c")

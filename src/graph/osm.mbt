@@ -38,7 +38,7 @@ pub(all) enum OsmDataSource {
   RealOsm
   /// 来自合成回退网格（数据缺失或解析失败时的安全降级）。
   SyntheticFallback
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 路网加载结果：始终携带一张有效的 `CsrGraph[Double]` 与其来源/规模/诊断。

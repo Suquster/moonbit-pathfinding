@@ -277,8 +277,8 @@ test "regex ext properties representative witnesses" {
   // 5.1 is_match 与 find 一致。
   match Pattern::compile("a(b|c)*d") {
     Ok(p) => {
-      assert_eq(p.is_match("abcbcd"), p.find("abcbcd") is Some(_))
-      assert_eq(p.is_match("xyz"), p.find("xyz") is Some(_))
+      @test.assert_eq(p.is_match("abcbcd"), p.find("abcbcd") is Some(_))
+      @test.assert_eq(p.is_match("xyz"), p.find("xyz") is Some(_))
     }
     Err(_) => fail("compile failed for a(b|c)*d")
   }
@@ -286,7 +286,7 @@ test "regex ext properties representative witnesses" {
   // 5.2 contains_binary 与 contains 一致（多区间集合，含补集）。
   let cs = ext_class("Lu").union(ext_class("Nd")).complement()
   for code in [0, 0x41, 0x5A, 0x30, 0x39, 0x61, 0x4E00, 0x3000] {
-    assert_eq(cs.contains_binary(code), cs.contains(code))
+    @test.assert_eq(cs.contains_binary(code), cs.contains(code))
   }
 
   // 5.3 Hybrid 与 NFA 一致（极小容量触发回退）。

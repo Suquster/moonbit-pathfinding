@@ -19,11 +19,11 @@
 ///|
 /// 级别严重程度自低到高单调：Trace < Debug < Info < Warn < Error。
 test "level rank is monotonic from trace to error" {
-  assert_eq(Level::Trace.rank(), 0)
-  assert_eq(Level::Debug.rank(), 1)
-  assert_eq(Level::Info.rank(), 2)
-  assert_eq(Level::Warn.rank(), 3)
-  assert_eq(Level::Error.rank(), 4)
+  @test.assert_eq(Level::Trace.rank(), 0)
+  @test.assert_eq(Level::Debug.rank(), 1)
+  @test.assert_eq(Level::Info.rank(), 2)
+  @test.assert_eq(Level::Warn.rank(), 3)
+  @test.assert_eq(Level::Error.rank(), 4)
 }
 
 ///|
@@ -48,7 +48,7 @@ test "level label and from_label are inverse" {
     Level::Error,
   ]
   for i = 0; i < levels.length(); i = i + 1 {
-    assert_eq(Level::from_label(levels[i].label()), Some(levels[i]))
+    @test.assert_eq(Level::from_label(levels[i].label()), Some(levels[i]))
   }
   assert_true(Level::from_label("NOPE") is None)
 }
@@ -60,7 +60,7 @@ test "level label and from_label are inverse" {
 test "event new preserves timestamp level and fields" {
   let fields : Map[String, Value] = { "msg": VStr("hi"), "n": VInt(7L) }
   let e = Event::new(42L, Level::Warn, fields)
-  assert_eq(e.ts, 42L)
+  @test.assert_eq(e.ts, 42L)
   assert_true(e.level == Level::Warn)
   assert_true(e.fields.get("msg") == Some(VStr("hi")))
   assert_true(e.fields.get("n") == Some(VInt(7L)))
@@ -79,7 +79,7 @@ test "log discards events below configured threshold" {
   log(Level::Error, { "m": VStr("error") })
   let events = captured_events()
   // 仅 Info 与 Error 两条被保留。
-  assert_eq(events.length(), 2)
+  @test.assert_eq(events.length(), 2)
   assert_true(events[0].level == Level::Info)
   assert_true(events[1].level == Level::Error)
 }
@@ -91,7 +91,7 @@ test "log records all levels at default threshold with monotonic timestamps" {
   log(Level::Trace, {})
   log(Level::Error, {})
   let events = captured_events()
-  assert_eq(events.length(), 2)
+  @test.assert_eq(events.length(), 2)
   assert_true(events[0].ts < events[1].ts)
 }
 
@@ -106,7 +106,7 @@ test "log annotates events with active span and trace context" {
   log(Level::Info, { "msg": VStr("inside") })
   exit_span(s)
   let events = captured_events()
-  assert_eq(events.length(), 1)
+  @test.assert_eq(events.length(), 1)
   let e = events[0]
   assert_true(e.fields.get("span") == Some(VInt(s.id.value)))
   assert_true(e.fields.get("trace") == Some(VInt(trace.value)))
@@ -166,7 +166,7 @@ test "exit_span records positive duration" {
   log(Level::Info, { "m": VStr("step") })
   exit_span(s)
   let finished = finished_spans()
-  assert_eq(finished.length(), 1)
+  @test.assert_eq(finished.length(), 1)
   let fs = finished[0]
   assert_true(fs.id == s.id)
   match span_duration(fs) {
@@ -202,7 +202,7 @@ test "with_context propagates parent trace id across task boundary" {
   exit_span(parent_span)
   // 校验子任务事件确实带父 trace 标识。
   let events = captured_events()
-  assert_eq(events.length(), 1)
+  @test.assert_eq(events.length(), 1)
   assert_true(events[0].fields.get("trace") == Some(VInt(parent_trace.value)))
 }
 
@@ -239,7 +239,7 @@ test "parse_json_log round-trips format_json output" {
   let json = format_json(e)
   match parse_json_log(json) {
     Some(parsed) => {
-      assert_eq(parsed.ts, e.ts)
+      @test.assert_eq(parsed.ts, e.ts)
       assert_true(parsed.level == e.level)
       assert_true(parsed.fields.get("msg") == Some(VStr("hello world")))
       assert_true(parsed.fields.get("count") == Some(VInt(42L)))

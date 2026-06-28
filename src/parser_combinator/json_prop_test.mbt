@@ -213,15 +213,15 @@ test "Feature: parser-combinator, Property 30: JSON syntax error diagnostics, no
 test "parse_json handles representative documents" {
   match parse_json("{\"a\":[1,2,3],\"b\":null,\"c\":true}") {
     Ok(JObject(pairs)) => {
-      assert_eq(pairs.length(), 3)
-      assert_eq(pairs[0].0, "a")
+      @test.assert_eq(pairs.length(), 3)
+      @test.assert_eq(pairs[0].0, "a")
     }
     _ => fail("expected object parse")
   }
   // 空白宽容。
-  assert_true(parse_json("  [ 1 , 2 ]  ").is_ok())
+  assert_true(parse_json("  [ 1 , 2 ]  ") is Ok(_))
   // 语法错误 → Err。
-  assert_true(parse_json("[1,2").is_err())
+  assert_true(parse_json("[1,2") is Err(_))
 }
 
 ///|
@@ -241,8 +241,8 @@ test "parse_json_recover records errors and continues past malformed elements" {
   // 全合法数组：无错误、元素齐全。
   let (v2, e2) = parse_json_recover("[1,2,3]")
   match v2 {
-    Some(JArray(items)) => assert_eq(items.length(), 3)
+    Some(JArray(items)) => @test.assert_eq(items.length(), 3)
     _ => fail("expected array")
   }
-  assert_eq(e2.length(), 0)
+  @test.assert_eq(e2.length(), 0)
 }

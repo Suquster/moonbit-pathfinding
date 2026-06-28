@@ -5,7 +5,7 @@
 // fixed/sfixed，也无 oneof/map/嵌套/reserved。本文件新增**富模式模型**承载完整
 // proto3 类型信息，并提供向下投影桥 `ProtoSchema::to_legacy` 以桥接既有骨架。
 //
-// 严格旁路扩展：本文件不修改 types.mbt 任何既有声明；新增类型全部 derive(Eq, Show)。
+// 严格旁路扩展：本文件不修改 types.mbt 任何既有声明；新增类型全部 derive(Eq, Debug)。
 
 // ───────────────────────────── 完整 proto3 字段类型 ─────────────────────────
 
@@ -33,7 +33,7 @@ pub(all) enum ProtoType {
   PBytes
   PMessage(String) // 引用消息（限定名）
   PEnum(String) // 引用枚举（限定名）
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 字段标签：proto3 默认（singular）、repeated、或属于某 oneof 互斥组。
@@ -41,14 +41,14 @@ pub(all) enum FieldLabel {
   LSingular
   LRepeated(packed~ : Bool) // packed 默认对数值标量为 true
   LOneof(group~ : String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 字段选项（原样保留 `name`/`value`，不解释语义；如 `[packed=true]`）。
 pub(all) struct FieldOption {
   name : String
   value : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 字段定义（富模型）：名称 / 字段号 / 完整类型 / 标签 / 选项序列。
@@ -58,14 +58,14 @@ pub(all) struct ProtoField {
   ptype : ProtoType
   label : FieldLabel
   options : Array[FieldOption]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 保留字段号区间（闭区间；单个号时 `lo == hi`）。
 pub(all) struct ReservedRange {
   lo : Int
   hi : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// map<K, V> 条目（wire 上等价于 `repeated` 的 `{key=1, value=2}` 条目消息）。
@@ -74,7 +74,7 @@ pub(all) struct MapEntry {
   number : Int
   key : ProtoType // 仅允许整型 / bool / string
   value : ProtoType
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// oneof 互斥组：名称 + 成员字段号序列（成员的字段定义存于 message.fields，
@@ -82,7 +82,7 @@ pub(all) struct MapEntry {
 pub(all) struct OneofDef {
   name : String
   members : Array[Int]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 消息定义（富模型）。`name` 为限定名（嵌套以 '.' 连接）。
@@ -95,14 +95,14 @@ pub(all) struct ProtoMessage {
   reserved_names : Array[String]
   nested_messages : Array[String] // 嵌套消息限定名（登记于顶层 messages）
   nested_enums : Array[String]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 富模式：含嵌套、按限定名唯一登记的消息序列 + 枚举（复用既有 `EnumDef`）。
 pub(all) struct ProtoSchema {
   messages : Array[ProtoMessage]
   enums : Array[EnumDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造空富模式。

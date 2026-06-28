@@ -58,31 +58,31 @@ fn iu_err(src : String) -> Diagnostic {
 ///|
 /// 算术：`1 + 2` => TyInt。
 test "infer: arithmetic yields TyInt" {
-  assert_eq(iu_ty("1 + 2"), TyInt)
+  @test.assert_eq(iu_ty("1 + 2"), TyInt)
 }
 
 ///|
 /// 比较：`1 < 2` => TyBool。
 test "infer: comparison yields TyBool" {
-  assert_eq(iu_ty("1 < 2"), TyBool)
+  @test.assert_eq(iu_ty("1 < 2"), TyBool)
 }
 
 ///|
 /// 条件：`if true then 1 else 2` => TyInt（两分支同型）。
 test "infer: if expression yields branch type" {
-  assert_eq(iu_ty("if true then 1 else 2"), TyInt)
+  @test.assert_eq(iu_ty("if true then 1 else 2"), TyInt)
 }
 
 ///|
 /// `let`：`let x = 5 in x + 1` => TyInt。
 test "infer: let binding yields body type" {
-  assert_eq(iu_ty("let x = 5 in x + 1"), TyInt)
+  @test.assert_eq(iu_ty("let x = 5 in x + 1"), TyInt)
 }
 
 ///|
 /// 函数应用：`(fun x -> x + 1) 41` => TyInt。
 test "infer: application of lambda yields TyInt" {
-  assert_eq(iu_ty("(fun x -> x + 1) 41"), TyInt)
+  @test.assert_eq(iu_ty("(fun x -> x + 1) 41"), TyInt)
 }
 
 // ---------------------------------------------------------------------------
@@ -94,7 +94,7 @@ test "infer: application of lambda yields TyInt" {
 /// 类型变量。不硬编码新鲜变量 id，仅断言两侧 id 相等。
 test "infer: identity function has type a -> a (same var)" {
   match iu_ty("fun x -> x") {
-    TyFun(TyVar(p), TyVar(q)) => assert_eq(p, q)
+    TyFun(TyVar(p), TyVar(q)) => @test.assert_eq(p, q)
     other => abort("期望 TyFun(TyVar, TyVar)，实际：\{other}")
   }
 }
@@ -106,13 +106,13 @@ test "infer: identity function has type a -> a (same var)" {
 ///|
 /// `let id = fun x -> x in id 3` => TyInt（id 在 Int 处实例化）。
 test "infer: let-polymorphism instantiates id at Int" {
-  assert_eq(iu_ty("let id = fun x -> x in id 3"), TyInt)
+  @test.assert_eq(iu_ty("let id = fun x -> x in id 3"), TyInt)
 }
 
 ///|
 /// `let id = fun x -> x in id true` => TyBool（id 在 Bool 处实例化）。
 test "infer: let-polymorphism instantiates id at Bool" {
-  assert_eq(iu_ty("let id = fun x -> x in id true"), TyBool)
+  @test.assert_eq(iu_ty("let id = fun x -> x in id true"), TyBool)
 }
 
 ///|
@@ -120,7 +120,7 @@ test "infer: let-polymorphism instantiates id at Bool" {
 /// 同一 `id` 在条件处用于 Bool、在分支处用于 Int，单态绑定将无法通过——成功推断
 /// 出 TyInt 证明 `id` 被泛化为 `∀a. a -> a`（R4.2 / R4.3）。
 test "infer: let-polymorphism allows id used at both Bool and Int" {
-  assert_eq(
+  @test.assert_eq(
     iu_ty("let id = fun x -> x in if id true then id 1 else id 2"),
     TyInt,
   )
@@ -133,7 +133,7 @@ test "infer: let-polymorphism allows id used at both Bool and Int" {
 ///|
 /// 递归阶乘整体应用：`let rec f = fun n -> ... in f 5` => TyInt。
 test "infer: recursive factorial application yields TyInt" {
-  assert_eq(
+  @test.assert_eq(
     iu_ty("let rec f = fun n -> if n <= 0 then 1 else n * f (n - 1) in f 5"),
     TyInt,
   )
@@ -142,7 +142,7 @@ test "infer: recursive factorial application yields TyInt" {
 ///|
 /// 裸递归函数：`let rec f = fun n -> ... in f` => TyFun(TyInt, TyInt)。
 test "infer: recursive factorial function has type Int -> Int" {
-  assert_eq(
+  @test.assert_eq(
     iu_ty("let rec f = fun n -> if n <= 0 then 1 else n * f (n - 1) in f"),
     TyFun(TyInt, TyInt),
   )

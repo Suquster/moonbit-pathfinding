@@ -149,14 +149,14 @@ test "api_ext smoke" {
   // ── contains_binary 与线性 contains 一致 ──
   let digits = predef_digit()
   for code in 0..<128 {
-    assert_eq(digits.contains_binary(code), digits.contains(code))
+    @test.assert_eq(digits.contains_binary(code), digits.contains(code))
   }
   // 多区间字符集合（Unicode 类别）上一致。
   let letters = category_charset(Lu).union(category_charset(Ll))
   assert_true(letters.contains_binary('A'.to_int()))
   assert_true(letters.contains_binary('z'.to_int()))
   assert_false(letters.contains_binary('5'.to_int()))
-  assert_eq(
+  @test.assert_eq(
     letters.contains_binary('Z'.to_int()),
     letters.contains('Z'.to_int()),
   )
@@ -202,5 +202,5 @@ test "api_ext smoke" {
   // ── replace_fn：回调计算替换文本 ──
   // 把每个 'a' 替换为其匹配长度的字符串 "1"，非匹配原样保留。
   let out = p.replace_fn(s, fn(m) { (m.end - m.start).to_string() })
-  assert_eq(out, "1b1c1")
+  @test.assert_eq(out, "1b1c1")
 }

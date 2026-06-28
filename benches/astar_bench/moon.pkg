@@ -6,3 +6,7 @@ import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/directed" @dir,
 }
+
+import {
+  "moonbitlang/core/debug",
+} for "wbtest"

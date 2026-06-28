@@ -26,10 +26,10 @@
 ///|
 /// 签名信息：单一展示标签 `label`（如 `key = value`）。
 ///
-/// 仅含 `String`，故可安全 `derive(Eq, Show)`。
+/// 仅含 `String`，故可安全 `derive(Eq, Debug)`。
 pub(all) struct SignatureInfo {
   label : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 在位置 `pos` 处给出签名帮助（Requirement 5.7）。
@@ -67,7 +67,7 @@ let token_type_reference : Int = 1
 ///|
 /// 一个待编码的语义 token（同行 token）：行号 `line`、起始列 `start`、字符长度
 /// `length`、类型 `ttype`。
-struct SemTok {
+priv struct SemTok {
   line : Int
   start : Int
   length : Int

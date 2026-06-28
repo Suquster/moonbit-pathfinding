@@ -41,26 +41,26 @@ fn has_look(p : Program) -> Bool {
 /// 捕获组 `ISave` 槽位分配：n 个捕获组 → `2*(n+1)` 个 ISave（含第 0 组整体）。
 test "compile_program allocates ISave slots per group" {
   let p = compile_of("(a)(b)")
-  assert_eq(p.num_groups, 2)
+  @test.assert_eq(p.num_groups, 2)
   // 整体组(0) + 组1 + 组2 → 3 组 × 2 = 6 个 ISave。
-  assert_eq(count_saves(p), 6)
+  @test.assert_eq(count_saves(p), 6)
 }
 
 ///|
 /// 非捕获组不发 `ISave`：仅整体组的 2 个 ISave。
 test "compile_program non-capturing group emits no ISave" {
   let p = compile_of("(?:ab)")
-  assert_eq(p.num_groups, 0)
-  assert_eq(count_saves(p), 2)
+  @test.assert_eq(p.num_groups, 0)
+  @test.assert_eq(count_saves(p), 2)
 }
 
 ///|
 /// 命名组登记到 `names` 映射。
 test "compile_program records named groups" {
   let p = compile_of("(?<year>a)(?<month>b)")
-  assert_eq(p.num_groups, 2)
-  assert_eq(p.names.get("year"), Some(1))
-  assert_eq(p.names.get("month"), Some(2))
+  @test.assert_eq(p.num_groups, 2)
+  @test.assert_eq(p.names.get("year"), Some(1))
+  @test.assert_eq(p.names.get("month"), Some(2))
 }
 
 ///|
@@ -79,7 +79,7 @@ test "compile_program greedy/lazy and counted repeat via behavior" {
   match p.exec("aaaa", kind=LeftmostFirst) {
     Some(c) =>
       match c.group(0) {
-        Some(m) => assert_eq(m.end - m.start, 3)
+        Some(m) => @test.assert_eq(m.end - m.start, 3)
         None => fail("expected group 0")
       }
     None => fail("expected match")
@@ -89,7 +89,7 @@ test "compile_program greedy/lazy and counted repeat via behavior" {
   match q.exec("aaaa", kind=LeftmostFirst) {
     Some(c) =>
       match c.group(0) {
-        Some(m) => assert_eq(m.end - m.start, 2)
+        Some(m) => @test.assert_eq(m.end - m.start, 2)
         None => fail("expected group 0")
       }
     None => fail("expected match")

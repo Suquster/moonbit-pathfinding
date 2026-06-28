@@ -58,14 +58,14 @@ test "property: aggregate equals logical conjunction over all inputs" {
           proofs_passing: p,
           docs_passing: d,
         }
-        assert_eq(aggregate_release_ready(g), expected)
+        @test.assert_eq(aggregate_release_ready(g), expected)
         // 裸布尔入口，两条入口须等价
-        assert_eq(release_ready_of(t, p, d), expected)
+        @test.assert_eq(release_ready_of(t, p, d), expected)
         // evaluate 计算出的 release_ready 须与聚合判定一致
         let dr = DirectionRelease::evaluate(
           "demo", "0.1.0", "src/demo/CHANGELOG.md", g,
         )
-        assert_eq(dr.release_ready, expected)
+        @test.assert_eq(dr.release_ready, expected)
       }
     }
   }
@@ -80,9 +80,9 @@ test "DirectionRelease::evaluate preserves identity and computes readiness" {
     "src/regex_engine/CHANGELOG.md",
     { tests_passing: true, proofs_passing: true, docs_passing: true },
   )
-  assert_eq(dr.name, "regex_engine")
-  assert_eq(dr.version, "0.1.0")
-  assert_eq(dr.changelog_path, "src/regex_engine/CHANGELOG.md")
+  @test.assert_eq(dr.name, "regex_engine")
+  @test.assert_eq(dr.version, "0.1.0")
+  @test.assert_eq(dr.changelog_path, "src/regex_engine/CHANGELOG.md")
   assert_true(dr.release_ready)
 }
 
@@ -102,30 +102,33 @@ test "DirectionRelease::evaluate blocks release when a gate fails" {
 /// new 构造保留显式给定的 release_ready。
 test "DirectionRelease::new keeps explicit fields" {
   let dr = DirectionRelease::new("dst", "0.2.1", "src/dst/CHANGELOG.md", false)
-  assert_eq(dr.name, "dst")
-  assert_eq(dr.version, "0.2.1")
-  assert_eq(dr.changelog_path, "src/dst/CHANGELOG.md")
+  @test.assert_eq(dr.name, "dst")
+  @test.assert_eq(dr.version, "0.2.1")
+  @test.assert_eq(dr.changelog_path, "src/dst/CHANGELOG.md")
   assert_false(dr.release_ready)
 }
 
 ///|
 /// SemVer 解析：合法三段版本号。
 test "parse_semver accepts well-formed versions" {
-  assert_eq(parse_semver("0.1.0"), Some({ major: 0, minor: 1, patch: 0 }))
-  assert_eq(parse_semver("1.2.3"), Some({ major: 1, minor: 2, patch: 3 }))
-  assert_eq(parse_semver("10.20.30"), Some({ major: 10, minor: 20, patch: 30 }))
+  @test.assert_eq(parse_semver("0.1.0"), Some({ major: 0, minor: 1, patch: 0 }))
+  @test.assert_eq(parse_semver("1.2.3"), Some({ major: 1, minor: 2, patch: 3 }))
+  @test.assert_eq(
+    parse_semver("10.20.30"),
+    Some({ major: 10, minor: 20, patch: 30 }),
+  )
 }
 
 ///|
 /// SemVer 解析：拒绝段数错误、含前缀 / 字母 / 空段的非法输入。
 test "parse_semver rejects malformed versions" {
-  assert_eq(parse_semver("1.2"), None) // 段数不足
-  assert_eq(parse_semver("1.2.3.4"), None) // 段数过多
-  assert_eq(parse_semver("v1.2.3"), None) // 含 v 前缀
-  assert_eq(parse_semver("1.2.x"), None) // 含字母
-  assert_eq(parse_semver(""), None) // 空串
-  assert_eq(parse_semver("1..2"), None) // 空段
-  assert_eq(parse_semver("1.2.3-rc1"), None) // 预发布后缀
+  @test.assert_eq(parse_semver("1.2"), None) // 段数不足
+  @test.assert_eq(parse_semver("1.2.3.4"), None) // 段数过多
+  @test.assert_eq(parse_semver("v1.2.3"), None) // 含 v 前缀
+  @test.assert_eq(parse_semver("1.2.x"), None) // 含字母
+  @test.assert_eq(parse_semver(""), None) // 空串
+  @test.assert_eq(parse_semver("1..2"), None) // 空段
+  @test.assert_eq(parse_semver("1.2.3-rc1"), None) // 预发布后缀
 }
 
 ///|
@@ -139,9 +142,9 @@ test "is_valid_semver agrees with parse_semver" {
 ///|
 /// changelog 约定路径：src/{方向}/CHANGELOG.md。
 test "default_changelog_path follows convention" {
-  assert_eq(
+  @test.assert_eq(
     default_changelog_path("regex_engine"),
     "src/regex_engine/CHANGELOG.md",
   )
-  assert_eq(default_changelog_path("dst"), "src/dst/CHANGELOG.md")
+  @test.assert_eq(default_changelog_path("dst"), "src/dst/CHANGELOG.md")
 }

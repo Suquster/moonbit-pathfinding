@@ -31,7 +31,7 @@ test "encode_typed omits default-valued scalar" {
   let schema = tt_scalar_schema(PInt32)
   let m = TypedMessage::new().set(1, TInt(0L))
   match encode_typed(schema, "M", m) {
-    Ok(bytes) => assert_eq(bytes.length(), 0)
+    Ok(bytes) => @test.assert_eq(bytes.length(), 0)
     Err(e) => fail("编码不应失败：\{e}")
   }
   // 非默认值则写入。

@@ -30,7 +30,7 @@ test "seq fails at second parser position" {
   match result {
     Fail(pos, expected~) => {
       inspect(pos, content="1:2")
-      assert_eq(pos.offset, 1)
+      @test.assert_eq(pos.offset, 1)
       assert_true(expected == ["'b'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -71,7 +71,7 @@ test "alt backtracks to branch start after partial consumption" {
     Some(rest) => {
       // 回溯后从分支起点重新消费 "abx"，剩余应停在 'y'（offset 3）。
       assert_true(rest.peek() == Some('y'))
-      assert_eq(rest.pos.offset, 3)
+      @test.assert_eq(rest.pos.offset, 3)
     }
     None => fail("expected remaining input")
   }
@@ -85,7 +85,7 @@ test "alt fails at start and aggregates expected" {
   match result {
     Fail(pos, expected~) => {
       inspect(pos, content="1:1")
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'a'", "'b'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -113,7 +113,7 @@ test "many succeeds with empty result on zero matches" {
   let empty : Array[Char] = []
   assert_true(result.value() == Some(empty))
   match result.rest() {
-    Some(rest) => assert_eq(rest.pos.offset, 0)
+    Some(rest) => @test.assert_eq(rest.pos.offset, 0)
     None => fail("expected remaining input")
   }
 }
@@ -138,7 +138,7 @@ test "many1 fails when first match fails" {
   match result {
     Fail(pos, expected~) => {
       inspect(pos, content="1:1")
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'a'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -167,7 +167,7 @@ test "optional yields None and backtracks on failure" {
   match result.rest() {
     Some(rest) => {
       assert_true(rest.peek() == Some('x'))
-      assert_eq(rest.pos.offset, 0)
+      @test.assert_eq(rest.pos.offset, 0)
     }
     None => fail("expected remaining input")
   }
@@ -182,7 +182,7 @@ test "combinators compose for a small grammar" {
   assert_true(result.is_ok())
   match result.value() {
     Some(((head, digits), bang)) => {
-      assert_eq(head, 'x')
+      @test.assert_eq(head, 'x')
       assert_true(digits == ['1', '2', '3'])
       assert_true(bang == Some('!'))
     }

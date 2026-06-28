@@ -23,7 +23,7 @@
 //     一次性 `to_string`，不做 `out = out + ...` 累积拼接；
 //   * 无字符串模拟结构化数据 —— 错误以 `IrError` 枚举表达；
 //   * `Show` 手写（`derive(Eq)` + `pub impl Show ... with fn output`）以规避
-//     `derive(Show)` 弃用告警，与 typed_ir.mbt / build_tool 方向保持一致。
+//     `derive(Debug)` 弃用告警，与 typed_ir.mbt / build_tool 方向保持一致。
 //
 // 错误收集策略：`validate_ir` **收集函数内的全部错误**后一次性返回
 // （不在遇到首个错误时短路），便于一次调用即获得完整诊断列表；当且仅当
@@ -61,7 +61,7 @@ let address_kinds_desc : String = "address operand (Reg or Mem)"
 ///   * `ControlFlowError(block~, detail~)` —— 块 `block` 的控制流不完整（缺终结
 ///     指令、终结指令位置非法、跳转目标不存在，或入口块缺失，AC5）。
 ///
-/// 派生 `Eq` 以支持测试与去重比较；`Show` 手写以规避 `derive(Show)` 弃用告警。
+/// 派生 `Eq` 以支持测试与去重比较；`Show` 手写以规避 `derive(Debug)` 弃用告警。
 pub enum IrError {
   SsaViolation(reg~ : Int)
   TypeMismatch(instr~ : String, detail~ : String)
@@ -69,7 +69,7 @@ pub enum IrError {
 } derive(Eq)
 
 ///|
-/// 以可读形式展示验证错误（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示验证错误（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for IrError with fn output(self : IrError, logger : &Logger) -> Unit {
   match self {
     SsaViolation(reg~) => {

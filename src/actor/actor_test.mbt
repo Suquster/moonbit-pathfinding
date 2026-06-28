@@ -17,9 +17,9 @@
 test "spawn returns a reference handle with a fresh id and empty mailbox" {
   reset_runtime()
   let a = spawn(0, fn(s, m) { s + m })
-  assert_eq(a.id.value, 1)
+  @test.assert_eq(a.id.value, 1)
   assert_true(a.mailbox.is_empty())
-  assert_eq(a.pending(), 0)
+  @test.assert_eq(a.pending(), 0)
 }
 
 ///|
@@ -28,8 +28,8 @@ test "spawn allocates monotonically increasing unique ids" {
   reset_runtime()
   let a = spawn(0, fn(s, m) { s + m })
   let b = spawn(0, fn(s, m) { s + m })
-  assert_eq(a.id.value, 1)
-  assert_eq(b.id.value, 2)
+  @test.assert_eq(a.id.value, 1)
+  @test.assert_eq(b.id.value, 2)
   assert_false(a.id == b.id)
 }
 
@@ -43,11 +43,11 @@ test "send appends messages to the mailbox queue in fifo order" {
   a.send(10)
   a.send(20)
   a.send(30)
-  assert_eq(a.pending(), 3)
-  assert_eq(a.mailbox.dequeue(), Some(10))
-  assert_eq(a.mailbox.dequeue(), Some(20))
-  assert_eq(a.mailbox.dequeue(), Some(30))
-  assert_eq(a.mailbox.dequeue(), None)
+  @test.assert_eq(a.pending(), 3)
+  @test.assert_eq(a.mailbox.dequeue(), Some(10))
+  @test.assert_eq(a.mailbox.dequeue(), Some(20))
+  @test.assert_eq(a.mailbox.dequeue(), Some(30))
+  @test.assert_eq(a.mailbox.dequeue(), None)
 }
 
 // ─────────────────────────── stop：关闭邮箱 ───────────────────────────────
@@ -61,7 +61,7 @@ test "stop closes the mailbox and further sends are dropped" {
   a.stop()
   assert_true(a.mailbox.is_closed())
   a.send(2)
-  assert_eq(a.pending(), 1)
+  @test.assert_eq(a.pending(), 1)
 }
 
 // ───────────────────────────── 邮箱原语 ──────────────────────────────────
@@ -71,9 +71,9 @@ test "stop closes the mailbox and further sends are dropped" {
 test "fresh mailbox is empty" {
   let mb : Mailbox[String] = Mailbox::new()
   assert_true(mb.is_empty())
-  assert_eq(mb.length(), 0)
-  assert_eq(mb.dequeue(), None)
-  assert_eq(mb.peek(), None)
+  @test.assert_eq(mb.length(), 0)
+  @test.assert_eq(mb.dequeue(), None)
+  @test.assert_eq(mb.peek(), None)
 }
 
 ///|
@@ -82,9 +82,9 @@ test "mailbox peek does not remove the head" {
   let mb : Mailbox[String] = Mailbox::new()
   mb.enqueue("a")
   mb.enqueue("b")
-  assert_eq(mb.peek(), Some("a"))
-  assert_eq(mb.length(), 2)
-  assert_eq(mb.dequeue(), Some("a"))
-  assert_eq(mb.peek(), Some("b"))
-  assert_eq(mb.length(), 1)
+  @test.assert_eq(mb.peek(), Some("a"))
+  @test.assert_eq(mb.length(), 2)
+  @test.assert_eq(mb.dequeue(), Some("a"))
+  @test.assert_eq(mb.peek(), Some("b"))
+  @test.assert_eq(mb.length(), 1)
 }

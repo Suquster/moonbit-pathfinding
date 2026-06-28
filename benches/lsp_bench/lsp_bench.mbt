@@ -53,9 +53,9 @@
 ///|
 /// 在运行期构造 `${name}`（避免源码字面 `${`，三后端一致）。
 fn wrap_ref(name : String) -> String {
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
-  let rbrace = Char::from_int(0x7D).to_string() // '}'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+  let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
   dollar + lbrace + name + rbrace
 }
 
@@ -87,7 +87,7 @@ fn make_rpc_message(n : Int) -> @binding.JsonRpcMessage {
   }
   @binding.Request(
     id=@binding.IdNum(1),
-    method="workspace/symbol",
+    method_name="workspace/symbol",
     params=@binding.JObj(fields),
   )
 }
@@ -117,7 +117,7 @@ fn make_dispatch_messages(n : Int) -> Array[@binding.JsonRpcMessage] {
     msgs.push(
       @binding.Request(
         id=@binding.IdNum(i),
-        method="m\{i % 8}",
+        method_name="m\{i % 8}",
         params=@binding.JNull,
       ),
     )
@@ -246,7 +246,7 @@ test "bench: lsp_suite workloads over increasing sizes" (b : @bench.T) {
 /// 借此确认对 `@binding` 子包的依赖连通且编解码自洽。
 test "smoke: lsp_binding encode/decode round-trip" {
   let msg : @binding.JsonRpcMessage = @binding.Notification(
-    method="initialized",
+    method_name="initialized",
     params=@binding.JNull,
   )
   let bytes = @binding.encode_message(msg)

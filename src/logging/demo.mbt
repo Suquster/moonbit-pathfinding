@@ -21,7 +21,7 @@ pub(all) struct DemoOutcome {
   logfmt_lines : Array[String]
   traceparent : String
   span_count : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 运行父进程实战链路（Requirement 11.1 / 11.2）。

@@ -39,7 +39,7 @@ test "apply_incremental matches apply_changes for a single change" {
       Ok(s) => s
       Err(e) => fail("apply_changes error: " + e.message)
     }
-    assert_eq(single, batch)
+    @test.assert_eq(single, batch)
   }
 }
 
@@ -48,7 +48,7 @@ test "apply_incremental matches apply_changes for a single change" {
 test "apply_incremental with range None replaces the whole document" {
   let change : ContentChange = { range: None, text: "brand new content" }
   match apply_incremental("old text here", change, Utf16) {
-    Ok(result) => assert_eq(result, "brand new content")
+    Ok(result) => @test.assert_eq(result, "brand new content")
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
 }
@@ -58,17 +58,17 @@ test "apply_incremental with range None replaces the whole document" {
 test "apply_incremental insert/delete/replace behave correctly" {
   // 插入：在 (0,3)-(0,3) 处插入 "-" → "abc-def"
   match apply_incremental("abcdef", inc_change(3, 3, "-"), Utf16) {
-    Ok(r) => assert_eq(r, "abc-def")
+    Ok(r) => @test.assert_eq(r, "abc-def")
     Err(e) => fail("insert error: " + e.message)
   }
   // 删除：删除 (0,1)-(0,4)（"bcd"）→ "aef"
   match apply_incremental("abcdef", inc_change(1, 4, ""), Utf16) {
-    Ok(r) => assert_eq(r, "aef")
+    Ok(r) => @test.assert_eq(r, "aef")
     Err(e) => fail("delete error: " + e.message)
   }
   // 替换：把 (0,0)-(0,3)（"abc"）替换为 "Z" → "Zdef"
   match apply_incremental("abcdef", inc_change(0, 3, "Z"), Utf16) {
-    Ok(r) => assert_eq(r, "Zdef")
+    Ok(r) => @test.assert_eq(r, "Zdef")
     Err(e) => fail("replace error: " + e.message)
   }
 }
@@ -78,6 +78,6 @@ test "apply_incremental insert/delete/replace behave correctly" {
 test "apply_incremental out-of-bounds range returns invalid_params error" {
   match apply_incremental("abc", inc_change(0, 99, "X"), Utf16) {
     Ok(_) => fail("expected Err for out-of-bounds range")
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
   }
 }

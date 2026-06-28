@@ -124,7 +124,7 @@ test "parse_pattern lookahead" {
 /// 重复组名 → 携带第二个左括号位置的 `Unexpected`，不构造任何程序。
 test "parse_pattern duplicate group name errors with position" {
   match parse_pattern("(?<x>a)(?<x>b)") {
-    Err(Unexpected(pos~, ..)) => assert_eq(pos, 7)
+    Err(Unexpected(pos~, ..)) => @test.assert_eq(pos, 7)
     _ => fail("expected Unexpected for duplicate group name")
   }
 }
@@ -133,7 +133,7 @@ test "parse_pattern duplicate group name errors with position" {
 /// 反向引用不支持 → `Unexpected`（携带反斜杠位置）。
 test "parse_pattern backreference is unsupported" {
   match parse_pattern("(a)\\1") {
-    Err(Unexpected(pos~, ..)) => assert_eq(pos, 3)
+    Err(Unexpected(pos~, ..)) => @test.assert_eq(pos, 3)
     _ => fail("expected Unexpected for backreference")
   }
 }
@@ -152,28 +152,28 @@ test "parse_pattern lookbehind is unsupported" {
 test "parse_pattern structural errors map to existing ParseError" {
   match parse_pattern("(a") {
     Err(Unbalanced(pos~, what~)) => {
-      assert_eq(what, "(")
-      assert_eq(pos, 2)
+      @test.assert_eq(what, "(")
+      @test.assert_eq(pos, 2)
     }
     _ => fail("expected Unbalanced")
   }
   match parse_pattern("[a") {
     Err(Unbalanced(pos~, what~)) => {
-      assert_eq(what, "[")
-      assert_eq(pos, 0)
+      @test.assert_eq(what, "[")
+      @test.assert_eq(pos, 0)
     }
     _ => fail("expected Unbalanced")
   }
   match parse_pattern("*") {
-    Err(DanglingQuantifier(pos~)) => assert_eq(pos, 0)
+    Err(DanglingQuantifier(pos~)) => @test.assert_eq(pos, 0)
     _ => fail("expected DanglingQuantifier")
   }
   match parse_pattern("a)") {
-    Err(TrailingInput(pos~)) => assert_eq(pos, 1)
+    Err(TrailingInput(pos~)) => @test.assert_eq(pos, 1)
     _ => fail("expected TrailingInput")
   }
   match parse_pattern("a{}") {
-    Err(InvalidRepeat(pos~)) => assert_eq(pos, 1)
+    Err(InvalidRepeat(pos~)) => @test.assert_eq(pos, 1)
     _ => fail("expected InvalidRepeat")
   }
 }

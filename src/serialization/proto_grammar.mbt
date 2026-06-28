@@ -156,7 +156,7 @@ fn pg_parse_field_options(
       let opts : Array[FieldOption] = []
       let mut packed_override : Bool? = None
       let mut done = false
-      while not(done) {
+      while !done {
         cur = skip_trivia(cur)
         let (oname, r1) = match pg_expect_ident(cur, "选项期望名称") {
           Ok(p) => p
@@ -216,7 +216,7 @@ fn pg_parse_enum(
   }
   let values : Array[(String, Int)] = []
   let mut done = false
-  while not(done) {
+  while !done {
     cur = skip_trivia(cur)
     match cur.peek() {
       None => return Err(ParseError::at(cur.pos, "enum 块未闭合"))
@@ -276,7 +276,7 @@ fn pg_parse_reserved_numbers(
 ) -> Result[@parser_combinator.Input, ParseError] {
   let mut rc = after_kw
   let mut done = false
-  while not(done) {
+  while !done {
     rc = skip_trivia(rc)
     let (lo, r1) = match pg_expect_number(rc, "reserved 期望字段号") {
       Ok(p) => p
@@ -315,7 +315,7 @@ fn pg_parse_reserved_names(
 ) -> Result[@parser_combinator.Input, ParseError] {
   let mut rc = start
   let mut done = false
-  while not(done) {
+  while !done {
     rc = skip_trivia(rc)
     let (nm, r1) = match pg_parse_string_lit(rc) {
       Some(p) => p
@@ -364,7 +364,7 @@ fn pg_parse_message(
   let nested_messages : Array[String] = []
   let nested_enums : Array[String] = []
   let mut done = false
-  while not(done) {
+  while !done {
     cur = skip_trivia(cur)
     match cur.peek() {
       None => return Err(ParseError::at(cur.pos, "message 块未闭合"))
@@ -469,7 +469,7 @@ fn pg_parse_oneof(
   }
   let members : Array[Int] = []
   let mut done = false
-  while not(done) {
+  while !done {
     oc = skip_trivia(oc)
     match oc.peek() {
       None => return Err(ParseError::at(oc.pos, "oneof 块未闭合"))
@@ -1078,12 +1078,12 @@ pub fn print_proto(schema : ProtoSchema) -> String {
   let out = @infra_text.TextBuilder::new()
   out.push_str("syntax = \"proto3\";\n")
   for m in schema.messages {
-    if not(pg_is_nested_name(m.name)) {
+    if !pg_is_nested_name(m.name) {
       out.push_str(pg_print_message(schema, m, 0))
     }
   }
   for e in schema.enums {
-    if not(pg_is_nested_name(e.name)) {
+    if !pg_is_nested_name(e.name) {
       out.push_str(pg_print_enum(e, 0))
     }
   }

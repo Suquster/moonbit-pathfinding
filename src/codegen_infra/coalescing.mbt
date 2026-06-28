@@ -13,14 +13,14 @@
 /// 传送相关（move / copy）变量对集合。
 pub(all) struct MoveSet {
   moves : Array[(Var, Var)]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 合并策略：George 或 Briggs 保守判据。
 pub(all) enum CoalesceStrategy {
   George
   Briggs
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 两变量是否在图中干涉（存在无向边）。
@@ -55,7 +55,7 @@ pub fn can_coalesce_george(
     if t.id == b.id {
       continue
     }
-    if degree_of(adj, t) >= k && not(interferes(adj, t, b)) {
+    if degree_of(adj, t) >= k && !interferes(adj, t, b) {
       return false
     }
   }
@@ -178,7 +178,7 @@ pub fn coalesce(
     if a.id == b.id {
       continue
     }
-    if not(nodes_contain(cur, a)) || not(nodes_contain(cur, b)) {
+    if !nodes_contain(cur, a) || !nodes_contain(cur, b) {
       continue
     }
     let ok = match strategy {

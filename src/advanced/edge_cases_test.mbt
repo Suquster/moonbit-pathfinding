@@ -7,11 +7,11 @@ test "alt with zero landmarks degenerates to dijkstra" {
   let adj : Array[Array[(Int, Int)]] = [[(1, 2)], [(2, 3)], []]
   let succ = fn(n : Int) { adj[n] }
   let lm = alt_preprocess([0, 1, 2], succ, 0)
-  assert_eq(lm.landmarks.length(), 0)
+  @test.assert_eq(lm.landmarks.length(), 0)
   match alt_query(lm, 0, 2, succ) {
     Some((path, cost)) => {
-      assert_eq(path, [0, 1, 2])
-      assert_eq(cost, 5)
+      @test.assert_eq(path, [0, 1, 2])
+      @test.assert_eq(cost, 5)
     }
     None => assert_true(false)
   }
@@ -21,7 +21,7 @@ test "alt with zero landmarks degenerates to dijkstra" {
 test "alt_preprocess on empty node set yields no landmarks" {
   let succ = fn(_n : Int) -> Array[(Int, Int)] { [] }
   let lm = alt_preprocess([], succ, 4)
-  assert_eq(lm.landmarks.length(), 0)
+  @test.assert_eq(lm.landmarks.length(), 0)
 }
 
 ///|
@@ -43,8 +43,8 @@ test "ch witness search suppresses redundant shortcuts" {
   let graph = ch_preprocess([0, 1, 2, 3, 4, 5, 6], succ)
   match ch_query(graph, 0, 2) {
     Some((path, cost)) => {
-      assert_eq(cost, 1)
-      assert_eq(path, [0, 2])
+      @test.assert_eq(cost, 1)
+      @test.assert_eq(path, [0, 2])
     }
     None => assert_true(false)
   }
@@ -66,7 +66,7 @@ test "ch shortcut replaces a more expensive existing edge" {
   let succ = fn(n : Int) { adj[n] }
   let graph = ch_preprocess([0, 1, 2, 3, 4, 5, 6], succ)
   match ch_query(graph, 0, 2) {
-    Some((_, cost)) => assert_eq(cost, 2)
+    Some((_, cost)) => @test.assert_eq(cost, 2)
     None => assert_true(false)
   }
 }
@@ -87,15 +87,15 @@ test "ch handles a bidirected ring with a chord" {
   let succ = fn(n : Int) { adj[n] }
   let graph = ch_preprocess([0, 1, 2, 3, 4, 5], succ)
   match ch_query(graph, 0, 3) {
-    Some((_, cost)) => assert_eq(cost, 2)
+    Some((_, cost)) => @test.assert_eq(cost, 2)
     None => assert_true(false)
   }
   match ch_query(graph, 1, 4) {
-    Some((_, cost)) => assert_eq(cost, 3)
+    Some((_, cost)) => @test.assert_eq(cost, 3)
     None => assert_true(false)
   }
   match ch_query(graph, 2, 5) {
-    Some((_, cost)) => assert_eq(cost, 3)
+    Some((_, cost)) => @test.assert_eq(cost, 3)
     None => assert_true(false)
   }
 }
@@ -133,9 +133,9 @@ test "jps handles forced neighbours during vertical travel" {
   let grid = JPSGrid::new(5, 5, blocked).unwrap()
   match jps(grid, (0, 2), (4, 2)) {
     Some((path, cost)) => {
-      assert_eq(cost, 4.0)
-      assert_eq(path[0], (0, 2))
-      assert_eq(path[path.length() - 1], (4, 2))
+      @test.assert_eq(cost, 4.0)
+      @test.assert_eq(path[0], (0, 2))
+      @test.assert_eq(path[path.length() - 1], (4, 2))
     }
     None => assert_true(false)
   }
@@ -149,8 +149,8 @@ test "jps travels up and left across an open grid" {
   match jps(grid, (4, 4), (0, 0)) {
     Some((path, cost)) => {
       assert_true(cost > 0.0)
-      assert_eq(path[0], (4, 4))
-      assert_eq(path[path.length() - 1], (0, 0))
+      @test.assert_eq(path[0], (4, 4))
+      @test.assert_eq(path[path.length() - 1], (0, 0))
     }
     None => assert_true(false)
   }
@@ -166,9 +166,9 @@ test "jps handles forced neighbours during horizontal travel" {
   let grid = JPSGrid::new(5, 5, blocked).unwrap()
   match jps(grid, (2, 0), (2, 4)) {
     Some((path, cost)) => {
-      assert_eq(cost, 4.0)
-      assert_eq(path[0], (2, 0))
-      assert_eq(path[path.length() - 1], (2, 4))
+      @test.assert_eq(cost, 4.0)
+      @test.assert_eq(path[0], (2, 0))
+      @test.assert_eq(path[path.length() - 1], (2, 4))
     }
     None => assert_true(false)
   }

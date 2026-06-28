@@ -80,7 +80,7 @@ fn build_text(lines : Array[Array[Int]]) -> String {
       s = s + "\n"
     }
     for cp in lines[li] {
-      s = s + Char::from_int(cp).to_string()
+      s = s + Int::unsafe_to_char(cp).to_string()
     }
     li = li + 1
   }

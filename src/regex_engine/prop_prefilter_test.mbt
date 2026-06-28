@@ -133,6 +133,30 @@ test "prefilter representative witnesses agree with no-prefilter" {
 }
 
 ///|
+/// AST 节点覆盖：`Empty`（空串/空分支）与 `Look`（前瞻，零宽）均为可空节点，
+/// `compute_prefilter` 必须退化为 `PfNone`（保守，不跳过任何起点）；而 `Look`
+/// 作为 `Concat` 零宽前缀时，应继续向后累计到真实必经首字符。
+test "prefilter degrades to PfNone on nullable Empty and Look nodes" {
+  let flags = Flags::default()
+  // Empty 可空 => PfNone。
+  assert_true(compute_prefilter(Empty, flags) is PfNone)
+  // Look（零宽前瞻）可空 => PfNone。
+  let look : Ast = Look(positive=true, body=Lit('a'))
+  assert_true(compute_prefilter(look, flags) is PfNone)
+  // Concat[Look, Lit('b')]：Look 零宽可空，Concat 继续累计 => 必经首字符 {'b'}。
+  let concat : Ast = Concat([Look(positive=true, body=Lit('a')), Lit('b')])
+  assert_true(!(compute_prefilter(concat, flags) is PfNone))
+  // 非可空但首字符集为空（如空字符类 `Set([]）`）：该正则不可能匹配 =>
+  // 保守 PfNone，正确性交由 Pike VM 自然得出 None。
+  let impossible : Ast = Set({ intervals: [] })
+  assert_true(compute_prefilter(impossible, flags) is PfNone)
+  // PfNone::next_candidate 恒返回原位置（不跳过任何起点）——直接见证该分支。
+  let none_pf = compute_prefilter(Empty, flags)
+  let chars = "abc".iter().to_array()
+  assert_eq(none_pf.next_candidate(chars, chars.length(), 1), 1)
+}
+
+///|
 /// 忽略大小写：预过滤首字符集必须 case-fold，否则会漏过合法起点。
 /// 这是 case-fold 超集不变量的专门见证。
 test "prefilter respects ignore_case folding" {

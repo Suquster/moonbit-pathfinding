@@ -1,0 +1,48 @@
+// Conformance corpus schema (T9.1). Exercises every proto3 wire branch:
+// Varint (int32/int64/uint32/uint64/sint32/sint64/bool/enum), I32
+// (fixed32/sfixed32/float), I64 (fixed64/sfixed64/double), LEN
+// (string/bytes/nested message), packed repeated, and map.
+//
+// Field numbers are ascending so that the canonical field order emitted by the
+// authoritative protobuf runtime matches this library's definition-order
+// emission, enabling byte-exact golden comparison.
+syntax = "proto3";
+
+enum Color {
+  UNKNOWN = 0;
+  RED = 1;
+  GREEN = 2;
+}
+
+message Scalars {
+  int32 f_int32 = 1;
+  int64 f_int64 = 2;
+  uint32 f_uint32 = 3;
+  uint64 f_uint64 = 4;
+  sint32 f_sint32 = 5;
+  sint64 f_sint64 = 6;
+  fixed32 f_fixed32 = 7;
+  fixed64 f_fixed64 = 8;
+  sfixed32 f_sfixed32 = 9;
+  sfixed64 f_sfixed64 = 10;
+  float f_float = 11;
+  double f_double = 12;
+  bool f_bool = 13;
+  string f_string = 14;
+  bytes f_bytes = 15;
+  Color f_enum = 16;
+}
+
+message Nested {
+  Scalars inner = 1;
+  int32 tag = 2;
+}
+
+message Packed {
+  repeated int32 vals = 1;
+  repeated sint64 svals = 2;
+}
+
+message WithMap {
+  map<string, int32> m = 1;
+}

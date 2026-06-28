@@ -34,7 +34,7 @@ fn make_cfg(rng : @pbt.Rng, n : Int) -> Array[@cg.BasicBlock] {
             dup = true
           }
         }
-        if not(dup) {
+        if !(dup) {
           succ[j].push(i)
           break
         }

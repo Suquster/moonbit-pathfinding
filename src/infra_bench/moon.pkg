@@ -21,10 +21,10 @@
 //     `native` 三后端行为一致；JSON 的**结构**解析仍在包内自包含实现（递归下降），
 //     不引入任何跨方向（算法方向包）依赖。
 import {
-  "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/infra_text",
   "Suquster/moonbit-pathfinding/src/graph",
   "moonbitlang/core/strconv",
+  "moonbitlang/core/string",
 }
 
 // 属性测试（任务 6.2 起的 Property 5/6/8）复用共享 PBT 包 @infra_pbt 的

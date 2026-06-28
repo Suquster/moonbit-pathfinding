@@ -29,8 +29,8 @@
 > **关于代码围栏**：可执行代码块均以 ` ```mbt check ` 开头，这是 MoonBit toolchain
 > 识别可运行代码块的标记；块首的 `///|` 是 top-level marker，用于声明一个独立条目。
 >
-> **关于保留字 `method`**：`JsonRpcMessage` 的 `method~` 为带标签字段，构造与
-> 解构时统一使用标签形式（`method=...` / `method~`），避免与保留字冲突。
+> **关于保留字 `method_name`**：`JsonRpcMessage` 的 `method_name~` 为带标签字段，构造与
+> 解构时统一使用标签形式（`method_name=...` / `method_name~`），避免与保留字冲突。
 >
 > **关于黑盒枚举构造**：跨包枚举须用限定形式（`@lsp_binding.JStr(...)`、
 > `@lsp_binding.Request(...)`、`@lsp_binding.IdNum(...)` 等）；本包公开枚举
@@ -154,10 +154,10 @@ fn jfield(json : @lsp_binding.Json, key : String) -> @lsp_binding.Json? {
 ///|
 /// 运行期构造 `${name}`（由字符码拼接 '$' '{' '}'，避免源码字面 `${`）。
 fn dollar_ref(name : String) -> String {
-  Char::from_int(0x24).to_string() +
-  Char::from_int(0x7B).to_string() +
+  Int::unsafe_to_char(0x24).to_string() +
+  Int::unsafe_to_char(0x7B).to_string() +
   name +
-  Char::from_int(0x7D).to_string()
+  Int::unsafe_to_char(0x7D).to_string()
 }
 ```
 
@@ -170,7 +170,7 @@ fn dollar_ref(name : String) -> String {
 1. 用 `@lsp_binding.decode_message` 把字节报文解码为 `JsonRpcMessage::Request`；
 2. 在 `@lsp_binding.Router` 上注册 `initialize` 能力处理器（内部调用本包
    `on_initialize` 并经 `capabilities_to_json` 序列化能力声明），用
-   `@lsp_binding.dispatch` 按 `method` 分发得到响应；
+   `@lsp_binding.dispatch` 按 `method_name` 分发得到响应；
 3. 用 `@lsp_binding.encode_message` 把响应编码回字节。
 
 ```mbt check
@@ -204,7 +204,7 @@ test "README · 解码 initialize 请求并分发、编码响应" {
   }
   // 确认解码为 method=initialize 的请求。
   match msg {
-    @lsp_binding.Request(method~, ..) => assert_eq(method, "initialize")
+    @lsp_binding.Request(method_name~, ..) => assert_eq(method_name, "initialize")
     _ => fail("期望解码为 Request")
   }
 
@@ -244,8 +244,8 @@ test "README · 解码 didChange 通知并发布诊断" {
   }
   // 从通知 params 中取出文档 uri 与正文。
   let (uri, text) = match msg {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/didChange")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_eq(method_name, "textDocument/didChange")
       let td = match jfield(params, "textDocument") {
         Some(j) => j
         None => fail("缺少 textDocument 字段")
@@ -272,8 +272,8 @@ test "README · 解码 didChange 通知并发布诊断" {
   // 3) 据诊断构造 publishDiagnostics 通知（服务端主动下发）。
   let publish = publish_diagnostics_notification(uri, diags)
   match publish {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_eq(method_name, "textDocument/publishDiagnostics")
       // params 携带 uri 与 diagnostics 两个字段。
       assert_true(jfield(params, "uri") == Some(@lsp_binding.JStr(uri)))
       assert_true(jfield(params, "diagnostics") != None)
@@ -315,7 +315,7 @@ test "README · 非法消息返回规范错误码" {
 
 ## 示例 4 · 分发未知方法 → 合成规范错误响应 → 编码
 
-`dispatch` 对**请求**中未登记的 `method` 会合成一条规范的「方法未找到」错误
+`dispatch` 对**请求**中未登记的 `method_name` 会合成一条规范的「方法未找到」错误
 响应（`method_not_found_code` = -32601），交由调用方编码下发（**R5.2 / R5.3**）。
 
 ```mbt check
@@ -368,7 +368,7 @@ test "README · 生命周期会话状态机" {
   // 1) initialize 请求 → Initializing，回携带 capabilities 的成功响应。
   let init = @lsp_binding.Request(
     id=@lsp_binding.IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=@lsp_binding.JObj([
       (
         "capabilities",
@@ -392,7 +392,7 @@ test "README · 生命周期会话状态机" {
 
   // 2) initialized 通知 → Initialized（通知无应答）。
   let (s2, reply2) = s1.handle(
-    @lsp_binding.Notification(method="initialized", params=@lsp_binding.JNull),
+    @lsp_binding.Notification(method_name="initialized", params=@lsp_binding.JNull),
   )
   assert_true(s2.state() == Initialized)
   assert_true(reply2 == None)
@@ -401,7 +401,7 @@ test "README · 生命周期会话状态机" {
   let (s3, reply3) = s2.handle(
     @lsp_binding.Request(
       id=@lsp_binding.IdNum(2),
-      method="shutdown",
+      method_name="shutdown",
       params=@lsp_binding.JNull,
     ),
   )
@@ -421,7 +421,7 @@ test "README · 生命周期会话状态机" {
   let bad = step(
     Uninitialized,
     false,
-    EvRequest(method="textDocument/hover"),
+    EvRequest(method_name="textDocument/hover"),
     @lsp_binding.IdNum(9),
   )
   assert_true(bad.state == Uninitialized)
@@ -458,9 +458,9 @@ test "README · 能力协商取客户端声明子集" {
   assert_true(caps.rename_provider)
   assert_true(caps.document_symbol_provider)
   // 未声明的能力不予声明。
-  assert_true(not(caps.hover_provider))
-  assert_true(not(caps.formatting_provider))
-  assert_true(not(caps.semantic_tokens_provider))
+  assert_true(!(caps.hover_provider))
+  assert_true(!(caps.formatting_provider))
+  assert_true(!(caps.semantic_tokens_provider))
 
   // 空声明 → 不声明任何能力。
   let none_caps = negotiate(InitializeParamsExt::empty())
@@ -485,7 +485,7 @@ test "README · 位置编码协商与坐标换算" {
   assert_true(negotiate_encoding([Utf8, Utf32]) == Utf8)
 
   // 文本 "a😀b"（emoji 由码位 0x1F600 运行期构造，避免源码字面）。
-  let text = "a" + Char::from_int(0x1F600).to_string() + "b"
+  let text = "a" + Int::unsafe_to_char(0x1F600).to_string() + "b"
 
   // 单码位码元数：BMP 外字符在 UTF-16 计 2、UTF-8 计 4、UTF-32 计 1。
   assert_eq(code_units(0x1F600, Utf16), 2)
@@ -768,8 +768,8 @@ test "README · push 与 pull 诊断等价、严重码编码" {
 
   // push 通知携带 uri 与 diagnostics 数组。
   match publish_diagnostics_notification(uri, pushed) {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_eq(method_name, "textDocument/publishDiagnostics")
       assert_true(jfield(params, "uri") == Some(@lsp_binding.JStr(uri)))
       assert_true(jfield(params, "diagnostics") != None)
     }

@@ -202,8 +202,8 @@ test "publish_diagnostics_notification builds a valid notification" {
   let diags = on_did_change(doc)
   let msg = publish_diagnostics_notification(doc.uri, diags)
   match msg {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_true(method == "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_true(method_name == "textDocument/publishDiagnostics")
       match params {
         @lsp_binding.JObj(fields) => {
           // 含 uri 与 diagnostics 两个字段。

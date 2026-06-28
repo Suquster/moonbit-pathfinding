@@ -41,7 +41,7 @@ fn rd_completeness(rng : @infra_pbt.Rng) -> Bool {
   let e = Event::new(0L, Level::Info, fields)
   let red = redact(policy, e)
   // 键集合不变（同尺寸 + 每键存在）。
-  if red.fields.size() != e.fields.size() {
+  if red.fields.length() != e.fields.length() {
     return false
   }
   let mut ok = true
@@ -51,17 +51,17 @@ fn rd_completeness(rng : @infra_pbt.Rng) -> Bool {
       Some(rv) => {
         let is_sensitive = rd_contains(sensitive, k) || pred(k, v)
         if is_sensitive {
-          if not(rv == redaction_mask) {
+          if !(rv == redaction_mask) {
             ok = false
           }
-        } else if not(rv == v) {
+        } else if !(rv == v) {
           ok = false
         }
       }
     }
   })
   // ts / level 不变。
-  if red.ts != e.ts || not(red.level == e.level) {
+  if red.ts != e.ts || !(red.level == e.level) {
     ok = false
   }
   ok

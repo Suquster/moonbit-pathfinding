@@ -139,7 +139,7 @@ test "Feature: regex-engine, Property 6: word boundary equals reference predicat
     let expected = ar_wb(chars, n, pos)
     let holds_b = ar_probe("", chars, pos, "\\b", s)
     let holds_nb = ar_probe("", chars, pos, "\\B", s)
-    holds_b == expected && holds_nb == not(expected) && holds_b != holds_nb
+    holds_b == expected && holds_nb == !(expected) && holds_b != holds_nb
   })
   assert_true(ok)
 }

@@ -38,7 +38,7 @@ test "Feature: logging, Property 11: traceparent inject/extract round-trip (hold
     match extract_traceparent(s) {
       Some(w) => {
         // 严格提取成功即蕴含 32hex/16hex/2hex 形态；再校验采样位与往返。
-        if not(w.is_sampled()) {
+        if !(w.is_sampled()) {
           return false
         }
         let back = w.to_trace_context()

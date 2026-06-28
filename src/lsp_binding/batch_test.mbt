@@ -52,10 +52,10 @@ fn bt_router() -> Router {
 test "dispatch_batch collects responses in order and skips notifications" {
   let router = bt_router()
   let msgs : Array[JsonRpcMessage] = [
-    Request(id=IdNum(1), method="echo", params=JObj([])),
-    Notification(method="note", params=JNull),
-    Request(id=IdNum(2), method="echo", params=JObj([])),
-    Request(id=IdNum(3), method="unknown", params=JNull),
+    Request(id=IdNum(1), method_name="echo", params=JObj([])),
+    Notification(method_name="note", params=JNull),
+    Request(id=IdNum(2), method_name="echo", params=JObj([])),
+    Request(id=IdNum(3), method_name="unknown", params=JNull),
   ]
   let responses = dispatch_batch(msgs, router)
   // 通知略去：4 条输入 → 3 条响应。
@@ -96,10 +96,10 @@ test "dispatch_batch collects responses in order and skips notifications" {
 test "dispatch_batch with only notifications yields empty responses" {
   let router = bt_router()
   let msgs : Array[JsonRpcMessage] = [
-    Notification(method="note", params=JNull),
-    Notification(method="note", params=JArr([JNum("1")])),
+    Notification(method_name="note", params=JNull),
+    Notification(method_name="note", params=JArr([JNum("1")])),
     // 未注册的通知同样不产生响应。
-    Notification(method="unregistered", params=JNull),
+    Notification(method_name="unregistered", params=JNull),
   ]
   let responses = dispatch_batch(msgs, router)
   assert_eq(responses.length(), 0)
@@ -123,9 +123,9 @@ test "decode_batch isolates a single invalid element" {
       assert_eq(results.length(), 3)
       // 元素 0：合法请求。
       match results[0] {
-        Ok(JsonRpcMessage::Request(id~, method~, ..)) => {
+        Ok(JsonRpcMessage::Request(id~, method_name~, ..)) => {
           assert_eq(id, IdNum(1))
-          assert_eq(method, "echo")
+          assert_eq(method_name, "echo")
         }
         _ => fail("element 0 should decode as a valid Request")
       }
@@ -136,8 +136,8 @@ test "decode_batch isolates a single invalid element" {
       }
       // 元素 2：合法通知（在非法元素之后仍正常解码）。
       match results[2] {
-        Ok(JsonRpcMessage::Notification(method~, ..)) =>
-          assert_eq(method, "note")
+        Ok(JsonRpcMessage::Notification(method_name~, ..)) =>
+          assert_eq(method_name, "note")
         _ => fail("element 2 should decode as a valid Notification")
       }
     }

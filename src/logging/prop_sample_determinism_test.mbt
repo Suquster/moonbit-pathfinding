@@ -30,7 +30,7 @@ fn sd_replay(rng : @infra_pbt.Rng) -> Bool {
     return false
   }
   for i in 0..<run1.length() {
-    if not(run1[i] == run2[i]) {
+    if !(run1[i] == run2[i]) {
       return false
     }
   }

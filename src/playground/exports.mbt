@@ -91,7 +91,7 @@ let sentinel_none : Int = -1
 /// - `algo`：当前选定的可视化算法档。
 /// - `trace`：最近一次 `pg_compute` 物化的逐步轨迹；尚未计算时为 `None`。
 /// - `last_error`：最近一次操作的错误码（`err_ok` 表示成功）。
-struct PgSession {
+priv struct PgSession {
   mut grid : Grid
   mut algo : PlaygroundAlgo
   mut trace : StepTrace[Int]?

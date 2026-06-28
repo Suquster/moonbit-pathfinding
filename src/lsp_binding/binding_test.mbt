@@ -29,9 +29,9 @@ test "decode valid request" {
     "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"k\":\"v\"}}",
   )
   match decode_message(bytes) {
-    Ok(JsonRpcMessage::Request(id~, method~, params~)) => {
+    Ok(JsonRpcMessage::Request(id~, method_name~, params~)) => {
       assert_eq(id, IdNum(1))
-      assert_eq(method, "initialize")
+      assert_eq(method_name, "initialize")
       assert_eq(params, JObj([("k", JStr("v"))]))
     }
     Ok(_) => fail("expected a Request")
@@ -44,8 +44,8 @@ test "decode valid request" {
 test "decode valid notification with array params" {
   let bytes = t2b("{\"jsonrpc\":\"2.0\",\"method\":\"note\",\"params\":[1,2]}")
   match decode_message(bytes) {
-    Ok(JsonRpcMessage::Notification(method~, params~)) => {
-      assert_eq(method, "note")
+    Ok(JsonRpcMessage::Notification(method_name~, params~)) => {
+      assert_eq(method_name, "note")
       assert_eq(params, JArr([JNum("1"), JNum("2")]))
     }
     _ => fail("expected a Notification")
@@ -73,7 +73,7 @@ test "decode valid response with result" {
 test "encode/decode round-trip for request" {
   let msg = JsonRpcMessage::Request(
     id=IdNum(42),
-    method="textDocument/hover",
+    method_name="textDocument/hover",
     params=JObj([("line", JNum("3")), ("char", JNum("7"))]),
   )
   match decode_message(encode_message(msg)) {
@@ -86,7 +86,7 @@ test "encode/decode round-trip for request" {
 /// 通知与响应 encode → decode 往返恒等（含转义字符串与 null id）。
 test "encode/decode round-trip for notification and response" {
   let note = JsonRpcMessage::Notification(
-    method="log",
+    method_name="log",
     params=JStr("line1\nline2\t\"q\""),
   )
   match decode_message(encode_message(note)) {
@@ -162,7 +162,7 @@ test "dispatch routes request to registered handler" {
       ),
     )
   })
-  let req = JsonRpcMessage::Request(id=IdNum(7), method="ping", params=JNull)
+  let req = JsonRpcMessage::Request(id=IdNum(7), method_name="ping", params=JNull)
   match dispatch(req, router) {
     Some(JsonRpcMessage::Response(id~, result~, ..)) => {
       assert_eq(id, IdNum(7))
@@ -176,7 +176,7 @@ test "dispatch routes request to registered handler" {
 /// 请求方法未找到：合成规范的「方法未找到」错误响应。
 test "dispatch unknown method yields method-not-found error response" {
   let router = Router::new()
-  let req = JsonRpcMessage::Request(id=IdNum(1), method="unknown", params=JNull)
+  let req = JsonRpcMessage::Request(id=IdNum(1), method_name="unknown", params=JNull)
   match dispatch(req, router) {
     Some(JsonRpcMessage::Response(error~, ..)) =>
       match error {
@@ -191,7 +191,7 @@ test "dispatch unknown method yields method-not-found error response" {
 /// 通知不产生响应（即便无对应处理器）。
 test "dispatch notification yields no response" {
   let router = Router::new()
-  let note = JsonRpcMessage::Notification(method="didChange", params=JNull)
+  let note = JsonRpcMessage::Notification(method_name="didChange", params=JNull)
   assert_eq(dispatch(note, router), None)
 }
 
@@ -270,7 +270,7 @@ test "regression: RpcError::with_data shape is unchanged" {
 test "regression: bare-JSON encode of request is byte-identical to 0.1.0" {
   let req = JsonRpcMessage::Request(
     id=IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=JObj([("k", JStr("v"))]),
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"k\":\"v\"}}"
@@ -281,7 +281,7 @@ test "regression: bare-JSON encode of request is byte-identical to 0.1.0" {
 /// 回归：通知编码（无 id 字段）逐字节一致。
 test "regression: bare-JSON encode of notification is byte-identical to 0.1.0" {
   let note = JsonRpcMessage::Notification(
-    method="note",
+    method_name="note",
     params=JArr([JNum("1"), JNum("2")]),
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"method\":\"note\",\"params\":[1,2]}"
@@ -318,14 +318,14 @@ test "regression: bare-JSON encode of error response is byte-identical to 0.1.0"
 /// 回归：裸 JSON decode∘encode 往返对三种 Id 变体（IdNum/IdStr/IdNull）逐字段恒等。
 test "regression: bare-JSON decode/encode round-trip across all Id variants" {
   let msgs = [
-    JsonRpcMessage::Request(id=IdNum(0), method="m", params=JNull),
+    JsonRpcMessage::Request(id=IdNum(0), method_name="m", params=JNull),
     JsonRpcMessage::Request(
       id=IdStr("req-1"),
-      method="textDocument/hover",
+      method_name="textDocument/hover",
       params=JObj([("line", JNum("3"))]),
     ),
     JsonRpcMessage::Response(id=IdNull, result=Some(JNull), error=None),
-    JsonRpcMessage::Notification(method="exit", params=JNull),
+    JsonRpcMessage::Notification(method_name="exit", params=JNull),
   ]
   for m in msgs {
     match decode_message(encode_message(m)) {
@@ -350,7 +350,7 @@ test "regression: dispatch routes to registered handler with handler result" {
       ),
     )
   })
-  let req = JsonRpcMessage::Request(id=IdNum(99), method="ping", params=JNull)
+  let req = JsonRpcMessage::Request(id=IdNum(99), method_name="ping", params=JNull)
   assert_eq(
     dispatch(req, router),
     Some(
@@ -370,7 +370,7 @@ test "regression: dispatch synthesizes method_not_found with matching id" {
   let router = Router::new()
   let req = JsonRpcMessage::Request(
     id=IdStr("call-7"),
-    method="no/such",
+    method_name="no/such",
     params=JNull,
   )
   assert_eq(
@@ -391,7 +391,7 @@ test "regression: dispatch synthesizes method_not_found with matching id" {
 /// 回归：通知不产生响应；服务端不分发响应消息（返回 None）。
 test "regression: dispatch yields None for notification and response inputs" {
   let router = Router::new()
-  let note = JsonRpcMessage::Notification(method="didChange", params=JNull)
+  let note = JsonRpcMessage::Notification(method_name="didChange", params=JNull)
   assert_eq(dispatch(note, router), None)
   let resp = JsonRpcMessage::Response(
     id=IdNum(1),

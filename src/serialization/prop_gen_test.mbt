@@ -111,7 +111,7 @@ fn sg_value_for(rng : @infra_pbt.Rng, t : ProtoType) -> TypedValue {
     PUInt64 | PFixed64 => TUInt(sg_u64_of(rng.next_range(1, 100000)))
     PBool => TBoolV(true)
     PEnum(_) => TEnumV(rng.next_range(1, 2))
-    PFloat => TFloatV(sg_nonzero_int(rng).to_float())
+    PFloat => TFloatV(Float::from_int(sg_nonzero_int(rng)))
     PDouble => TDoubleV(sg_nonzero_int(rng).to_double())
     PString => TStringV(sg_alnum(rng))
     PBytes => TBytesV(sg_bytes(rng))

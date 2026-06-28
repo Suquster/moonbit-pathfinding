@@ -44,7 +44,7 @@ fn p28_serial_fifo(rng : @infra_pbt.Rng) -> Bool {
   }
   sys.run_until_idle()
   match sys.state_of(a) {
-    Some(processed) => if not(p28_eq(processed, msgs)) { return false }
+    Some(processed) => if !(p28_eq(processed, msgs)) { return false }
     None => return false
   }
   // 串行视角：逐步 step，每步处理一条 → trace 长度每步加一。
@@ -61,7 +61,7 @@ fn p28_serial_fifo(rng : @infra_pbt.Rng) -> Bool {
   }
   for i in 0..<n {
     let did = sys2.step()
-    if not(did) {
+    if !(did) {
       return false
     }
     if sys2.trace_of().length() != i + 1 {
@@ -69,7 +69,7 @@ fn p28_serial_fifo(rng : @infra_pbt.Rng) -> Bool {
     }
   }
   // 处理完毕后再 step 应空闲。
-  not(sys2.step())
+  !(sys2.step())
 }
 
 ///|

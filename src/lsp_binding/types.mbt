@@ -86,9 +86,9 @@ pub fn RpcError::with_data(
 ///   * `Response`     —— 对某请求的响应，`result` 与 `error` 二者恰有其一；
 ///   * `Notification` —— 无 id 的通知，不期待响应。
 pub(all) enum JsonRpcMessage {
-  Request(id~ : Id, method~ : String, params~ : Json)
+  Request(id~ : Id, method_name~ : String, params~ : Json)
   Response(id~ : Id, result~ : Json?, error~ : RpcError?)
-  Notification(method~ : String, params~ : Json)
+  Notification(method_name~ : String, params~ : Json)
 } derive(Eq, Show)
 
 ///|
@@ -113,24 +113,24 @@ pub struct Router {
 ///|
 /// 构造空路由表。
 pub fn Router::new() -> Router {
-  { handlers: Map::new() }
+  { handlers: Map([]) }
 }
 
 ///|
 /// 注册某 `method` 的处理器（已存在则覆盖）。
 pub fn Router::register(
   self : Router,
-  method : String,
+  method_name : String,
   handler : (JsonRpcMessage) -> JsonRpcMessage?,
 ) -> Unit {
-  self.handlers[method] = handler
+  self.handlers[method_name] = handler
 }
 
 ///|
 /// 查询某 `method` 的处理器；无则返回 `None`。
 pub fn Router::lookup(
   self : Router,
-  method : String,
+  method_name : String,
 ) -> ((JsonRpcMessage) -> JsonRpcMessage?)? {
-  self.handlers.get(method)
+  self.handlers.get(method_name)
 }

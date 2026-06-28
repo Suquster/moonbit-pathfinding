@@ -53,7 +53,7 @@ pub struct GraphBuilder[N, W] {
 /// 阶段统一校验，构造期间不拒绝悬挂边的声明。类型参数 `N` 为节点标识
 /// （要求 `Eq + Hash`），`W` 为边权类型。
 pub fn[N : Eq + Hash, W] GraphBuilder::new() -> GraphBuilder[N, W] {
-  GraphBuilder::{ order: [], declared: Map::new(), edges: Map::new() }
+  GraphBuilder::{ order: [], declared: Map([]), edges: Map([]) }
 }
 
 ///|
@@ -153,7 +153,7 @@ pub fn[N : Eq + Hash, W] GraphBuilder::build(
     let (u, v) = key
     let u_ok = self.declared.get(u) is Some(_)
     let v_ok = self.declared.get(v) is Some(_)
-    if not(u_ok) || not(v_ok) {
+    if !(u_ok) || !(v_ok) {
       dangling = dangling + 1
     }
   }
@@ -173,7 +173,7 @@ pub fn[N : Eq + Hash, W] GraphBuilder::build(
     nodes.push(n)
   }
   // —— 阶段三：物化邻接表（每条有向边追加到其源节点的出边数组）。 ——
-  let adj : Map[N, Array[(N, W)]] = Map::new()
+  let adj : Map[N, Array[(N, W)]] = Map([])
   for key, w in self.edges {
     let (u, v) = key
     match adj.get(u) {

@@ -25,12 +25,12 @@ test "Feature: codegen-infra, Property 9: phi placed only on dominance frontier"
       let defb = t_def_blocks(blocks, reach)
       let sites = t_phi_sites(ssa)
       for site in sites {
-        let (block, var) = site
+        let (block, def_var) = site
         if block == "" {
           continue // 无法定位的死 φ：跳过
         }
-        let idf = t_iterated_df(df, defb.get(var).unwrap_or([]))
-        if not(idf.contains(block)) {
+        let idf = t_iterated_df(df, defb.get(def_var).unwrap_or([]))
+        if !(idf.contains(block)) {
           return false
         }
       }

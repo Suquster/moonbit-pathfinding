@@ -91,7 +91,7 @@ pub fn build_dom_tree(blocks : Array[BasicBlock], entry~ : String) -> DomTree {
       let ss = succ.get(v).unwrap_or([])
       let mut i = ss.length() - 1
       while i >= 0 {
-        if succ.contains(ss[i]) && not(visited.contains(ss[i])) {
+        if succ.contains(ss[i]) && !(visited.contains(ss[i])) {
           stack.push((ss[i], v))
         }
         i = i - 1
@@ -217,7 +217,7 @@ pub fn dominance_frontier(
     preds[r] = []
   }
   for b in blocks {
-    if not(reach.contains(b.label)) {
+    if !(reach.contains(b.label)) {
       continue
     }
     for s in b.succs {
@@ -245,7 +245,7 @@ pub fn dominance_frontier(
       let mut steps = 0
       while runner != stop && steps <= limit {
         let lst = df.get(runner).unwrap_or([])
-        if not(array_contains_str(lst, b)) {
+        if !(array_contains_str(lst, b)) {
           lst.push(b)
           df[runner] = lst
         }

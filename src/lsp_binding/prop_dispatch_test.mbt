@@ -87,7 +87,7 @@ fn gen_dispatch_method(rng : @infra_pbt.Rng) -> String {
 fn gen_dispatch_request(rng : @infra_pbt.Rng) -> JsonRpcMessage {
   JsonRpcMessage::Request(
     id=gen_id(rng),
-    method=gen_dispatch_method(rng),
+    method_name=gen_dispatch_method(rng),
     params=gen_json(rng, 2),
   )
 }
@@ -113,8 +113,8 @@ fn gen_dispatch_request_gen() -> @infra_pbt.Gen[JsonRpcMessage] {
 ///     （Requirements 2.7, 2.9）。
 fn dispatch_correct(msg : JsonRpcMessage, router : Router) -> Bool {
   match msg {
-    Request(id~, method~, ..) =>
-      match router.lookup(method) {
+    Request(id~, method_name~, ..) =>
+      match router.lookup(method_name) {
         // 命中：dispatch 必与直接调用 lookup 取得的处理器结果一致。
         Some(handler) => dispatch(msg, router) == handler(msg)
         // 未命中：dispatch 必合成 id 一致的 method_not_found 错误响应。
@@ -124,7 +124,7 @@ fn dispatch_correct(msg : JsonRpcMessage, router : Router) -> Bool {
             error_response(
               id,
               method_not_found_code,
-              "Method not found: " + method,
+              "Method not found: " + method_name,
             ),
           )
       }
@@ -167,7 +167,7 @@ test "Feature: lsp, Property 2: miss response carries request id and method_not_
   let gen_miss = @infra_pbt.Gen::new(fn(rng) {
     JsonRpcMessage::Request(
       id=gen_id(rng),
-      method="pd/definitely-missing/" + gen_ascii_string(rng, 4),
+      method_name="pd/definitely-missing/" + gen_ascii_string(rng, 4),
       params=gen_json(rng, 1),
     )
   })

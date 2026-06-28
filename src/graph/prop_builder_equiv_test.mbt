@@ -79,13 +79,13 @@ fn p19_legacy_successors(
   edges : Array[(Int, Int, Int)],
 ) -> (Int) -> Array[(Int, Int)] {
   // 1) 去重：(源, 目标) -> 末次权重，等价于 GraphBuilder 的边集语义。
-  let dedup : Map[(Int, Int), Int] = Map::new()
+  let dedup : Map[(Int, Int), Int] = Map([])
   for e in edges {
     let (u, v, w) = e
     dedup[(u, v)] = w
   }
   // 2) 物化为邻接表（无出边的节点缺省，查询时返回空数组）。
-  let adj : Map[Int, Array[(Int, Int)]] = Map::new()
+  let adj : Map[Int, Array[(Int, Int)]] = Map([])
   for key, w in dedup {
     let (u, v) = key
     match adj.get(u) {

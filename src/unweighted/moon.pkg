@@ -12,3 +12,6 @@
 
 import {
 }
+import {
+  "moonbitlang/core/test" @test
+} for "test"

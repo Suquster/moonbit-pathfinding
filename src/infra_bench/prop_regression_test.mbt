@@ -211,7 +211,7 @@ test "Feature: championship-v1-upgrade, Property 8: regression verdict and speed
             let speedup_ok = v.speedup() == Some(bm / cm)
             // 两侧中位口径应与设定值逐位一致。
             let median_ok = v.baseline_median == bm && v.current_median == cm
-            if not(failed_ok && pct_ok && speedup_ok && median_ok) {
+            if !(failed_ok && pct_ok && speedup_ok && median_ok) {
               all_ok = false
             }
           }

@@ -136,7 +136,7 @@ fn prop_iso_error_isolation(rng : @infra_pbt.Rng) -> Bool {
   }
   match sched.state_of(bad) {
     Some(processed) =>
-      if not(iso_int_arrays_eq(processed, expected_bad)) {
+      if !(iso_int_arrays_eq(processed, expected_bad)) {
         return false
       }
     None => return false
@@ -152,7 +152,7 @@ fn prop_iso_error_isolation(rng : @infra_pbt.Rng) -> Bool {
     return false
   }
   // (4) 错误隔离：正常 actor 不受影响——仍运行、完整处理全部消息、邮箱清空。
-  if not(sched.is_running(good)) {
+  if !(sched.is_running(good)) {
     return false
   }
   if sched.pending(good) != 0 {

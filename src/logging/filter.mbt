@@ -44,7 +44,7 @@ pub(all) struct FilterError {
 /// 「先完整校验后构造」：任一项非法（缺 `=`、target 为空、级别标签不可识别）
 /// 返回 `Err(FilterError{pos, message})`，且不登记任何阈值（Requirement 4.4）。
 pub fn parse_env_filter(spec : String) -> Result[EnvFilter, FilterError] {
-  let directives : Map[String, Level] = Map::new()
+  let directives : Map[String, Level] = Map([])
   let mut fallback : Level = Trace
   let chars : Array[Char] = []
   for c in spec {

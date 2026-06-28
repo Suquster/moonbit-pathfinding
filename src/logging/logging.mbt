@@ -35,7 +35,7 @@
 /// 激活 span 栈、当前 trace 上下文、跨任务继承的父 span，以及已发射事件与
 /// 已结束 span 的记录（供 sink / 测试观测）。所有字段为 `mut`，绑定 `logger`
 /// 本身不可重新赋值，符合「单一可变运行时 + 纯函数操作」的最小模型。
-struct Logger {
+priv struct Logger {
   mut threshold : Level
   mut clock : Int64
   mut span_id_source : Int64
@@ -178,12 +178,12 @@ pub fn current_trace() -> TraceId {
 ///   4. 事件含调用方提供的全部结构化字段（7.1），原字段优先级高于保留键。
 pub fn log(level : Level, fields : Map[String, Value]) -> Unit {
   // Requirement 7.2：低于阈值的事件被丢弃。
-  if not(level.is_enabled(logger.threshold)) {
+  if !(level.is_enabled(logger.threshold)) {
     return
   }
   let ts = tick()
   // 复制调用方字段，避免就地修改其入参 Map。
-  let merged : Map[String, Value] = Map::new()
+  let merged : Map[String, Value] = Map([])
   // 先写入上下文保留键，再写入调用方字段——调用方显式字段优先（覆盖保留键）。
   merged[trace_field] = VInt(logger.current_trace.value)
   match current_span() {
@@ -453,7 +453,7 @@ fn hex4(n : Int) -> String {
 ///
 /// 旗舰深化加性追加 `JArr`（JSON 数组），并使 `JObj` 在字段取值域内可还原为
 /// 嵌套 `VMap`（Requirement 1.4）。
-enum JVal {
+priv enum JVal {
   JStr(String)
   JNum(String)
   JBool(Bool)
@@ -463,7 +463,7 @@ enum JVal {
 
 ///|
 /// 极简 JSON 读取器：以字符数组 + 游标的形式做递归下降解析。
-struct JsonReader {
+priv struct JsonReader {
   chars : Array[Char]
   mut pos : Int
 }
@@ -540,7 +540,7 @@ fn build_event(pairs : Array[(String, JVal)]) -> Event? {
 ///|
 /// 将 `fields` 对象的键值对转换为 `Map[String, Value]`；类型不符则返回 None。
 fn build_fields(fpairs : Array[(String, JVal)]) -> Map[String, Value]? {
-  let m : Map[String, Value] = Map::new()
+  let m : Map[String, Value] = Map([])
   for i = 0; i < fpairs.length(); i = i + 1 {
     let (k, v) = fpairs[i]
     match jval_to_value(v) {
@@ -575,7 +575,7 @@ fn jval_to_value(v : JVal) -> Value? {
       }
     JObj(pairs) => {
       // 嵌套对象 → VMap（Requirement 1.4），递归还原成员取值。
-      let m : Map[String, Value] = Map::new()
+      let m : Map[String, Value] = Map([])
       for i = 0; i < pairs.length(); i = i + 1 {
         let (k, jv) = pairs[i]
         match jval_to_value(jv) {
@@ -613,18 +613,16 @@ fn num_is_float(s : String) -> Bool {
 ///|
 /// 解析 Int64（包装 @strconv，失败返回 None）。
 fn parse_int64(s : String) -> Int64? {
-  match (try? @strconv.parse_int64(s)) {
-    Ok(n) => Some(n)
-    Err(_) => None
+  try Some(@string.parse_int64(s)) catch {
+    _ => None
   }
 }
 
 ///|
 /// 解析 Double（包装 @strconv，失败返回 None）。
 fn parse_double(s : String) -> Double? {
-  match (try? @strconv.parse_double(s)) {
-    Ok(f) => Some(f)
-    Err(_) => None
+  try Some(@string.parse_double(s)) catch {
+    _ => None
   }
 }
 
@@ -843,7 +841,7 @@ fn parse_num(r : JsonReader) -> JVal? {
       break
     }
   }
-  if not(seen_digit) {
+  if !(seen_digit) {
     return None
   }
   let num = @infra_text.TextBuilder::new()

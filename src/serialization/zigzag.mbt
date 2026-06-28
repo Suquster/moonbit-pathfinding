@@ -20,27 +20,27 @@
 /// 以算术右移 `asr(31)` 得到全 0（非负）或全 1（负）的符号掩码，与左移一位的
 /// 结果异或，从而把符号位折叠到最低位。`-1 → 1`、`1 → 2`、`0 → 0`。
 pub fn zigzag_encode_32(n : Int) -> UInt {
-  (n.shl(1) ^ n.asr(31)).reinterpret_as_uint()
+  ((n << 1) ^ (n >> 31)).reinterpret_as_uint()
 }
 
 ///|
 /// zigzag 解码：上述映射的逆 `(u >>> 1) ^ -(u & 1)`（逻辑右移 + 最低位符号还原）。
 pub fn zigzag_decode_32(u : UInt) -> Int {
   let n = u.reinterpret_as_int()
-  n.lsr(1) ^ -(n & 1)
+  (u >> 1).reinterpret_as_int() ^ -(n & 1)
 }
 
 ///|
 /// zigzag 编码 64 位有符号整数为无符号：`(n << 1) ^ (n >> 63)`。
 pub fn zigzag_encode_64(n : Int64) -> UInt64 {
-  (n.shl(1) ^ n.asr(63)).reinterpret_as_uint64()
+  ((n << 1) ^ (n >> 63)).reinterpret_as_uint64()
 }
 
 ///|
 /// zigzag 解码 64 位：`(u >>> 1) ^ -(u & 1)`。
 pub fn zigzag_decode_64(u : UInt64) -> Int64 {
   let n = u.reinterpret_as_int64()
-  n.lsr(1) ^ -(n & 1L)
+  (u >> 1).reinterpret_as_int64() ^ -(n & 1L)
 }
 
 ///|

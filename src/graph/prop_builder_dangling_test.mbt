@@ -83,7 +83,7 @@ fn p18_gen() -> @infra_pbt.Gen[P18Case] {
 /// 由边添加序列计算「期望边集」：以 `(源, 目标)` 为键写入权重，后写覆盖先写，
 /// 从而天然实现「去重 + 末次权重」（与 Property 17 的物化语义一致）。
 fn p18_expected(edges : Array[(Int, Int, Int)]) -> Map[(Int, Int), Int] {
-  let expected : Map[(Int, Int), Int] = Map::new()
+  let expected : Map[(Int, Int), Int] = Map([])
   for e in edges {
     let (u, v, w) = e
     expected[(u, v)] = w // 末次覆盖
@@ -95,7 +95,7 @@ fn p18_expected(edges : Array[(Int, Int, Int)]) -> Map[(Int, Int), Int] {
 /// 收集用例中应当出现的全部节点标识：已声明的 `0..k-1` 与所有边端点之并集。
 /// 用于「补全缺失声明后再次 build」的状态完好性佐证。
 fn p18_all_nodes(case : P18Case) -> Map[Int, Unit] {
-  let all_nodes : Map[Int, Unit] = Map::new()
+  let all_nodes : Map[Int, Unit] = Map([])
   for n in 0..<case.k {
     all_nodes[n] = ()
   }

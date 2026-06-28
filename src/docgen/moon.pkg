@@ -15,7 +15,6 @@
 //   * @graph —— 复用结构化错误类型 `PathError`（含 `InvalidArgument` 变体），
 //     不新增错误类型、不改既有公开签名（bypass 新增 · Requirement 13.8）。
 import {
-  "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/infra_text",
   "Suquster/moonbit-pathfinding/src/graph",
 }

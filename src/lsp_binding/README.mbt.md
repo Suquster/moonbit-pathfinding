@@ -28,8 +28,8 @@
 > toolchain 识别可运行代码块的标记；块首的 `///|` 是 top-level marker，用于
 > 声明一个独立条目。
 >
-> **关于保留字 `method`**：`JsonRpcMessage` 的 `method~` 为带标签字段，构造与
-> 解构时统一使用标签形式（`method=...` / `method~`），避免与保留字冲突。
+> **关于保留字 `method_name`**：`JsonRpcMessage` 的 `method_name~` 为带标签字段，构造与
+> 解构时统一使用标签形式（`method_name=...` / `method_name~`），避免与保留字冲突。
 
 ---
 
@@ -149,7 +149,7 @@ test "README · 头部帧编解码往返" {
   // 一条 initialize 请求消息。
   let msg = JsonRpcMessage::Request(
     id=Id::IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=Json::JObj([("rootUri", Json::JStr("file:///proj"))]),
   )
 
@@ -191,11 +191,11 @@ test "README · 头部帧编解码往返" {
 test "README · FrameReader 逐条切出连续多帧" {
   let m1 = JsonRpcMessage::Request(
     id=Id::IdStr("a"),
-    method="ping",
+    method_name="ping",
     params=Json::JNull,
   )
   let m2 = JsonRpcMessage::Notification(
-    method="note",
+    method_name="note",
     params=Json::JObj([("n", Json::JNum("1"))]),
   )
 
@@ -345,8 +345,8 @@ test "README · 批量解码分发编码（顺序保持/通知略去）" {
 
   // 编码响应数组：顶层为 JSON 数组。
   let out = from_bytes(encode_batch(responses))
-  assert_eq(out.get(0), Some('['))
-  assert_eq(out.get(out.length() - 1), Some(']'))
+  assert_eq(out.get_char(0), Some('['))
+  assert_eq(out.get_char(out.length() - 1), Some(']'))
 }
 ```
 
@@ -374,7 +374,7 @@ test "README · 批量单元素失败被隔离" {
   assert_eq(decoded.length(), 2)
   // 第一个元素合法。
   match decoded[0] {
-    Ok(Request(method~, ..)) => assert_eq(method, "ping")
+    Ok(Request(method_name~, ..)) => assert_eq(method_name, "ping")
     _ => fail("第一个元素应为合法请求")
   }
   // 第二个元素被隔离为 invalid_request_code 错误，未影响第一个。
@@ -412,7 +412,7 @@ test "README · 取消标记与取消响应" {
   let reg = CancelRegistry::new().cancel(target)
   assert_true(reg.is_cancelled(Id::IdNum(2)))
   // 未被取消的 id 不受影响。
-  assert_true(not(reg.is_cancelled(Id::IdNum(3))))
+  assert_true(!(reg.is_cancelled(Id::IdNum(3))))
 
   // 为被取消的请求合成取消错误响应：携带 request_cancelled_code 且 id 一致。
   match cancelled_response(target) {
@@ -440,7 +440,7 @@ JSON-RPC 2.0 §5 要求响应 `id` 必与触发它的请求 `id` 相等。`id_of
 test "README · id 关联校验" {
   let request = JsonRpcMessage::Request(
     id=Id::IdNum(7),
-    method="hover",
+    method_name="hover",
     params=Json::JNull,
   )
   let response = JsonRpcMessage::Response(
@@ -454,7 +454,7 @@ test "README · id 关联校验" {
     error=None,
   )
   let notification = JsonRpcMessage::Notification(
-    method="note",
+    method_name="note",
     params=Json::JNull,
   )
 
@@ -465,9 +465,9 @@ test "README · id 关联校验" {
 
   // correlate：id 相等才关联。
   assert_true(correlate(request, response))
-  assert_true(not(correlate(request, mismatch)))
+  assert_true(!(correlate(request, mismatch)))
   // 通知无 id，永不关联。
-  assert_true(not(correlate(request, notification)))
+  assert_true(!(correlate(request, notification)))
 }
 ```
 

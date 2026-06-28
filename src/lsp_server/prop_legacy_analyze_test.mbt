@@ -95,9 +95,9 @@ fn p11_contains(xs : Array[String], s : String) -> Bool {
 fn p11_gen_expected(rng : @infra_pbt.Rng) -> (TextDocument, Analysis) {
   // 运行期构造 '$' / '{' / '}'，避免源码出现被常量折叠的悬空 `${`（JS 后端会
   // 误判为模板字符串插值起始）；运行期仍得到 `${name}`。
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
-  let rbrace = Char::from_int(0x7D).to_string() // '}'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+  let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
   let symbols : Array[Symbol] = []
   let references : Array[Reference] = []
   // 第一遍诊断（行顺序）。
@@ -219,7 +219,7 @@ fn p11_gen_expected(rng : @infra_pbt.Rng) -> (TextDocument, Analysis) {
     diagnostics.push(d)
   }
   for r in references {
-    if not(p11_contains(defined, r.name)) {
+    if !(p11_contains(defined, r.name)) {
       diagnostics.push({
         range: r.range,
         severity: Warning,

@@ -203,14 +203,14 @@ test "README · 惰性量词：a+ 取最长、a+? 取最短" {
     Ok(v) => v
     Err(_) => fail("compile a+ failed")
   }
-  let lazy = match Pattern::compile("a+?", kind=LeftmostFirst) {
+  let lazy_pat = match Pattern::compile("a+?", kind=LeftmostFirst) {
     Ok(v) => v
     Err(_) => fail("compile a+? failed")
   }
   // 贪婪取最长 [0,3)
   assert_true(greedy.find("aaa") == Some({ start: 0, end: 3 }))
   // 惰性取最短 [0,1)
-  assert_true(lazy.find("aaa") == Some({ start: 0, end: 1 }))
+  assert_true(lazy_pat.find("aaa") == Some({ start: 0, end: 1 }))
 }
 ```
 

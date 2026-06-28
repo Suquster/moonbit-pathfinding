@@ -114,7 +114,7 @@ fn prop_ff_serial_one_at_a_time(rng : @infra_pbt.Rng) -> Bool {
     }
     let did = sched.step()
     // 有待处理消息时，step 必然有进展（处理了一条）。
-    if not(did) {
+    if !(did) {
       return false
     }
     // 步后：恰处理一条 —— 待处理数减一。
@@ -128,7 +128,7 @@ fn prop_ff_serial_one_at_a_time(rng : @infra_pbt.Rng) -> Bool {
     }
     match sched.state_of(a) {
       Some(processed) =>
-        if not(ff_int_arrays_eq(processed, expected_prefix)) {
+        if !(ff_int_arrays_eq(processed, expected_prefix)) {
           return false
         }
       None => return false

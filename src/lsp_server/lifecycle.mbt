@@ -42,8 +42,8 @@ pub(all) enum LifecycleEvent {
   EvInitialized // initialized 通知
   EvShutdown // shutdown 请求
   EvExit // exit 通知
-  EvRequest(method~ : String) // 任意其他请求
-  EvNotification(method~ : String) // 任意其他通知
+  EvRequest(method_name~ : String) // 任意其他请求
+  EvNotification(method_name~ : String) // 任意其他通知
 } derive(Eq, Show)
 
 ///|
@@ -176,14 +176,14 @@ pub fn step(
         exit_code: Some(if shutdown_seen { 0 } else { 1 }),
       }
     // 其他请求：未声明转移，保持状态并回 invalid_request_code（1.3/1.5/1.8 健全性）。
-    EvRequest(method=_) =>
+    EvRequest(method_name=_) =>
       StepResult::{
         state,
         reply: Some(invalid_request_reply(reply_id)),
         exit_code: None,
       }
     // 其他通知：未声明转移，保持状态且无应答（通知无响应）。
-    EvNotification(method=_) =>
+    EvNotification(method_name=_) =>
       StepResult::{ state, reply: None, exit_code: None }
   }
 }
@@ -220,25 +220,25 @@ fn message_to_event(
   msg : @lsp_binding.JsonRpcMessage,
 ) -> (LifecycleEvent, @lsp_binding.Id) {
   match msg {
-    @lsp_binding.Request(id~, method~, params~) =>
-      if method == "initialize" {
+    @lsp_binding.Request(id~, method_name~, params~) =>
+      if method_name == "initialize" {
         (EvInitialize(parse_init_params(params)), id)
-      } else if method == "shutdown" {
+      } else if method_name == "shutdown" {
         (EvShutdown, id)
       } else {
-        (EvRequest(method~), id)
+        (EvRequest(method_name~), id)
       }
-    @lsp_binding.Notification(method~, params=_) =>
-      if method == "initialized" {
+    @lsp_binding.Notification(method_name~, params=_) =>
+      if method_name == "initialized" {
         (EvInitialized, @lsp_binding.IdNull)
-      } else if method == "exit" {
+      } else if method_name == "exit" {
         (EvExit, @lsp_binding.IdNull)
       } else {
-        (EvNotification(method~), @lsp_binding.IdNull)
+        (EvNotification(method_name~), @lsp_binding.IdNull)
       }
     // 响应消息不驱动生命周期（视为无关通知，无应答、状态不变）。
     @lsp_binding.Response(_) =>
-      (EvNotification(method="$/response"), @lsp_binding.IdNull)
+      (EvNotification(method_name="$/response"), @lsp_binding.IdNull)
   }
 }
 

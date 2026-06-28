@@ -38,7 +38,7 @@ pub(all) struct EvalResult {
 ///
 /// `block` 为 φ 所在汇合块标签；`var_name` 为 φ 的变量名；`dest` 为 φ 目标版本号；
 /// `args` 为各前驱到达版本号，与 `preds`（前驱标签，块序）一一对应。
-struct PhiSite {
+priv struct PhiSite {
   block : String
   var_name : String
   dest : Int
@@ -82,7 +82,7 @@ fn split_versioned(tok : String) -> (String, Int)? {
 fn preds_in_order(blocks : Array[BasicBlock]) -> Map[String, Array[String]] {
   let preds : Map[String, Array[String]] = Map([])
   for b in blocks {
-    if not(preds.contains(b.label)) {
+    if !(preds.contains(b.label)) {
       preds[b.label] = []
     }
   }

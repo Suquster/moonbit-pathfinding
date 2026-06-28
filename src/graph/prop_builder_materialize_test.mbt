@@ -66,7 +66,7 @@ fn p17_gen() -> @infra_pbt.Gen[P17Case] {
 ///
 /// 返回的 `Map` 大小即去重后边数，逐项即每条边的末次权重。
 fn p17_expected(edges : Array[(Int, Int, Int)]) -> Map[(Int, Int), Int] {
-  let expected : Map[(Int, Int), Int] = Map::new()
+  let expected : Map[(Int, Int), Int] = Map([])
   for e in edges {
     let (u, v, w) = e
     expected[(u, v)] = w // 末次覆盖
@@ -113,7 +113,7 @@ fn p17_check(case : P17Case) -> Bool {
   for u in 0..<case.k {
     let actual = succ(u)
     // 实际邻居：目标 -> 权重；同时检测重复目标（无重复引入）。
-    let actual_map : Map[Int, Int] = Map::new()
+    let actual_map : Map[Int, Int] = Map([])
     for pair in actual {
       let (v, w) = pair
       if actual_map.get(v) is Some(_) {
@@ -122,7 +122,7 @@ fn p17_check(case : P17Case) -> Bool {
       actual_map[v] = w
     }
     // 期望中以 u 为源的子集。
-    let exp_map : Map[Int, Int] = Map::new()
+    let exp_map : Map[Int, Int] = Map([])
     for key, w in expected {
       let (eu, ev) = key
       if eu == u {

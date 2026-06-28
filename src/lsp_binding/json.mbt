@@ -65,7 +65,7 @@ fn text_to_bytes(s : String) -> Bytes {
 
 ///|
 /// 解析游标：不可变字符序列 + 可变偏移。
-struct JParser {
+priv struct JParser {
   chars : Array[Char]
   mut pos : Int
 }

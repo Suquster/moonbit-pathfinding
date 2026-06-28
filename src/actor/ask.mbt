@@ -98,7 +98,7 @@ pub fn[R] AskBroker::poll(
 pub fn[R] AskBroker::has_reply(self : AskBroker[R], id : CorrelationId) -> Bool {
   match self.consumed.get(id.value) {
     Some(true) => false
-    _ => not(self.pending.get(id.value) is None)
+    _ => !(self.pending.get(id.value) is None)
   }
 }
 
@@ -130,7 +130,7 @@ pub fn[S, M, R] ask(
     if broker.has_reply(id) {
       break
     }
-    if not(system.step()) {
+    if !(system.step()) {
       break
     }
     steps = steps + 1

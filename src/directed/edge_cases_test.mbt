@@ -6,7 +6,7 @@
 test "floyd_warshall on empty node set returns empty map" {
   let edges : Array[(Int, Int, Int)] = []
   let result = floyd_warshall([], edges)
-  assert_eq(result.size(), 0)
+  assert_eq(result.length(), 0)
 }
 
 ///|

@@ -227,11 +227,11 @@ fn bc_compare_all(
     let cell = cells[i]
     // 状态数组逐位一致。
     match sched.state_of(r) {
-      Some(st) => if not(bc_int_arrays_eq(st, cell.state)) { return false }
+      Some(st) => if !(bc_int_arrays_eq(st, cell.state)) { return false }
       None => return false
     }
     // 生命周期状态逐字段一致。
-    if not(bc_status_eq(sched.status_of(r), cell.status, cell.reason)) {
+    if !(bc_status_eq(sched.status_of(r), cell.status, cell.reason)) {
       return false
     }
     // 待处理条数一致。
@@ -273,7 +273,7 @@ fn prop_bc_backward_compat(rng : @infra_pbt.Rng) -> Bool {
     cells.push(bc_cell_new())
   }
   // 初始状态即应一致。
-  if not(bc_compare_all(sched, refs, cells)) {
+  if !(bc_compare_all(sched, refs, cells)) {
     return false
   }
   // 逐操作驱动并逐字段比对。
@@ -299,7 +299,7 @@ fn prop_bc_backward_compat(rng : @infra_pbt.Rng) -> Bool {
       }
     }
     // 每个操作后逐字段比对全部 actor。
-    if not(bc_compare_all(sched, refs, cells)) {
+    if !(bc_compare_all(sched, refs, cells)) {
       return false
     }
   }

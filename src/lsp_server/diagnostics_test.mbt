@@ -95,8 +95,8 @@ test "publish_diagnostics_notification carries uri and diagnostics array" {
   }
   let msg = publish_diagnostics_notification("file:///a.conf", [d1, d2])
   match msg {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_eq(method_name, "textDocument/publishDiagnostics")
       // params 必为携带 uri 与 diagnostics 数组的对象。
       assert_true(
         params ==
@@ -121,8 +121,8 @@ test "publish_diagnostics_notification carries uri and diagnostics array" {
 test "publish_diagnostics_notification carries empty array when no diagnostics" {
   let msg = publish_diagnostics_notification("file:///empty.conf", [])
   match msg {
-    @lsp_binding.Notification(method~, params~) => {
-      assert_eq(method, "textDocument/publishDiagnostics")
+    @lsp_binding.Notification(method_name~, params~) => {
+      assert_eq(method_name, "textDocument/publishDiagnostics")
       assert_true(
         params ==
         @lsp_binding.JObj([

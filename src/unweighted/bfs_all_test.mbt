@@ -1,6 +1,9 @@
 // Tests for full single-source BFS (bfs_all).
 
 ///|
+using @test { assert_eq }
+
+///|
 test "bfs_all computes hop counts for every reachable node" {
   let adj : Array[Array[Int]] = [[1, 2], [3], [3], [4], [], [0]]
   let tree = bfs_all(0, fn(n : Int) { adj[n] })

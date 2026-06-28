@@ -162,7 +162,7 @@ pub(all) struct RateLimiter {
 ///|
 /// 构造一个限流器：窗口长度 `window`（逻辑时间单位）与每窗配额 `limit`。
 pub fn RateLimiter::new(window : Int64, limit : Int) -> RateLimiter {
-  { window, limit, state: Map::new() }
+  { window, limit, state: Map([]) }
 }
 
 ///|

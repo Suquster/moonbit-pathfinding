@@ -115,7 +115,7 @@ test "decode_framed insufficient body yields parse error" {
 test "FrameReader returns None on insufficient body then cuts after refill" {
   let msg = JsonRpcMessage::Request(
     id=IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=JObj([("k", JStr("v"))]),
   )
   let frame = encode_framed(msg)
@@ -153,7 +153,7 @@ test "FrameReader returns None on insufficient body then cuts after refill" {
 /// 单帧：`decode_framed(encode_framed(msg))` 还原为原消息。
 test "decode_framed cuts a single valid frame" {
   let msg = JsonRpcMessage::Notification(
-    method="textDocument/didChange",
+    method_name="textDocument/didChange",
     params=JArr([JNum("1"), JNum("2")]),
   )
   match decode_framed(encode_framed(msg)) {
@@ -167,7 +167,7 @@ test "decode_framed cuts a single valid frame" {
 test "FrameReader cuts a single frame and then yields None" {
   let msg = JsonRpcMessage::Request(
     id=IdStr("req-1"),
-    method="textDocument/hover",
+    method_name="textDocument/hover",
     params=JObj([("line", JNum("3"))]),
   )
   let reader = FrameReader::new().push(encode_framed(msg))
@@ -190,10 +190,10 @@ test "FrameReader cuts a single frame and then yields None" {
 test "FrameReader cuts consecutive multiple frames in order" {
   let m1 = JsonRpcMessage::Request(
     id=IdNum(1),
-    method="initialize",
+    method_name="initialize",
     params=JNull,
   )
-  let m2 = JsonRpcMessage::Notification(method="initialized", params=JObj([]))
+  let m2 = JsonRpcMessage::Notification(method_name="initialized", params=JObj([]))
   let m3 = JsonRpcMessage::Response(
     id=IdNum(1),
     result=Some(JBool(true)),
@@ -249,8 +249,8 @@ test "FrameReader cuts consecutive multiple frames in order" {
 ///|
 /// 多帧 + 末尾出现不完整帧：前两帧正常切出，尾部不完整帧返回 `Ok(None)`。
 test "FrameReader cuts complete frames and stops at a trailing partial frame" {
-  let m1 = JsonRpcMessage::Notification(method="a", params=JNull)
-  let m2 = JsonRpcMessage::Notification(method="b", params=JNull)
+  let m1 = JsonRpcMessage::Notification(method_name="a", params=JNull)
+  let m2 = JsonRpcMessage::Notification(method_name="b", params=JNull)
   let full = fr_concat(encode_framed(m1), encode_framed(m2))
   // 追加一个不完整的第三帧（仅头部、声明长度未满足）。
   let partial = fr_bytes("Content-Length: 50\r\n\r\n{")

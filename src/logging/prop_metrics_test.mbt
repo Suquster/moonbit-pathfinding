@@ -59,12 +59,12 @@ fn mt_determinism(rng : @infra_pbt.Rng) -> Bool {
   // 两次派生逐项相等。
   let c1 = count_by_level(events)
   let c2 = count_by_level(events)
-  if not(c1 == c2) {
+  if !(c1 == c2) {
     return false
   }
   let h1 = histogram(events, "v", boundaries)
   let h2 = histogram(events, "v", boundaries)
-  if not(h1 == h2) {
+  if !(h1 == h2) {
     return false
   }
   // 直方图仅计入数值字段事件：桶计数之和 == 数值事件数。

@@ -118,7 +118,7 @@ fn typed_is_default(v : TypedValue) -> Bool {
   match v {
     TInt(n) => n == 0L
     TUInt(u) => u == 0UL
-    TBoolV(b) => not(b)
+    TBoolV(b) => !(b)
     TEnumV(e) => e == 0
     TFloatV(f) => f == (0.0 : Float)
     TDoubleV(d) => d == 0.0
@@ -201,17 +201,17 @@ fn bytes_to_string(b : Bytes) -> String {
   while i < n {
     let b0 = b[i].to_int()
     if b0 < 0x80 {
-      chars.push(Char::from_int(b0))
+      chars.push(Int::unsafe_to_char(b0))
       i = i + 1
     } else if (b0 & 0xE0) == 0xC0 && i + 1 < n {
       let b1 = b[i + 1].to_int()
-      chars.push(Char::from_int(((b0 & 0x1F) << 6) | (b1 & 0x3F)))
+      chars.push(Int::unsafe_to_char(((b0 & 0x1F) << 6) | (b1 & 0x3F)))
       i = i + 2
     } else if (b0 & 0xF0) == 0xE0 && i + 2 < n {
       let b1 = b[i + 1].to_int()
       let b2 = b[i + 2].to_int()
       chars.push(
-        Char::from_int(((b0 & 0x0F) << 12) | ((b1 & 0x3F) << 6) | (b2 & 0x3F)),
+        Int::unsafe_to_char(((b0 & 0x0F) << 12) | ((b1 & 0x3F) << 6) | (b2 & 0x3F)),
       )
       i = i + 3
     } else if (b0 & 0xF8) == 0xF0 && i + 3 < n {
@@ -219,7 +219,7 @@ fn bytes_to_string(b : Bytes) -> String {
       let b2 = b[i + 2].to_int()
       let b3 = b[i + 3].to_int()
       chars.push(
-        Char::from_int(
+        Int::unsafe_to_char(
           ((b0 & 0x07) << 18) |
           ((b1 & 0x3F) << 12) |
           ((b2 & 0x3F) << 6) |
@@ -228,7 +228,7 @@ fn bytes_to_string(b : Bytes) -> String {
       )
       i = i + 4
     } else {
-      chars.push(Char::from_int(0xFFFD))
+      chars.push(Int::unsafe_to_char(0xFFFD))
       i = i + 1
     }
   }

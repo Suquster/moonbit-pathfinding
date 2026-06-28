@@ -59,9 +59,9 @@ let p10_ref_pool : Array[String] = ["k0", "k1", "zzz", "und", "a"]
 /// 被常量折叠成字面 `${` 的片段（JS 后端会把悬空的 `${` 当作模板字符串插值起始，
 /// 导致生成代码语法错误）；运行期仍得到 `${name}`。
 fn p10_gen_value(rng : @infra_pbt.Rng) -> String {
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
-  let rbrace = Char::from_int(0x7D).to_string() // '}'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+  let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
   let mut v = p10_literal_pool[rng.next_below(p10_literal_pool.length())]
   let refs = rng.next_below(3) // 0..2 处引用
   let mut i = 0
@@ -82,8 +82,8 @@ fn p10_gen_value(rng : @infra_pbt.Rng) -> String {
 /// 生成一份随机 DSL 文档，逐行随机产出多种行型以覆盖各类诊断路径。
 fn p10_gen_doc(rng : @infra_pbt.Rng) -> TextDocument {
   let n_lines = rng.next_range(2, 8) // 2..7 行
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
   let mut text = ""
   let mut li = 0
   while li < n_lines {
@@ -153,12 +153,12 @@ fn p10_diagnostics_deterministic(doc : TextDocument) -> Bool {
   let mut round = 0
   while round < 4 {
     let again = analyze(doc).diagnostics
-    if not(p10_diagnostics_equal(baseline, again)) {
+    if !(p10_diagnostics_equal(baseline, again)) {
       return false
     }
     // pull 入口同样走 analyze 投影，亦应与基线逐条相同。
     let pulled = pull_diagnostics(doc)
-    if not(p10_diagnostics_equal(baseline, pulled)) {
+    if !(p10_diagnostics_equal(baseline, pulled)) {
       return false
     }
     round = round + 1

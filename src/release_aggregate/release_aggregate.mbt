@@ -111,7 +111,7 @@ pub fn suite_release_ready(
     return false
   }
   for d in directions {
-    if not(d.release_ready) {
+    if !(d.release_ready) {
       return false
     }
   }

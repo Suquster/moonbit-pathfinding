@@ -134,7 +134,7 @@ fn cap_check(caps : Captures, spec : CapSpec) -> Bool {
   while g <= spec.total {
     match caps.group(g) {
       Some(m) =>
-        if not(m.start >= g0.start && m.end <= g0.end && m.start <= m.end) {
+        if !(m.start >= g0.start && m.end <= g0.end && m.start <= m.end) {
           return false
         }
       None => () // 未参与匹配 → 未设置（合法，R1.5）。

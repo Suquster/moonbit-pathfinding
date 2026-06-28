@@ -155,7 +155,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
   let (s1, r1) = s0.handle(
     @lsp_binding.Request(
       id=@lsp_binding.IdNum(1),
-      method="initialize",
+      method_name="initialize",
       params=@lsp_binding.JNull,
     ),
   )
@@ -167,7 +167,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
 
   // initialized 通知 → Initialized，无应答。
   let (s2, r2) = s1.handle(
-    @lsp_binding.Notification(method="initialized", params=@lsp_binding.JNull),
+    @lsp_binding.Notification(method_name="initialized", params=@lsp_binding.JNull),
   )
   assert_eq(s2.state(), Initialized)
   assert_eq(r2, None)
@@ -176,7 +176,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
   let (s3, r3) = s2.handle(
     @lsp_binding.Request(
       id=@lsp_binding.IdNum(2),
-      method="shutdown",
+      method_name="shutdown",
       params=@lsp_binding.JNull,
     ),
   )
@@ -194,7 +194,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
 
   // exit 通知 → Exited（已 shutdown，退出码语义见 step 测试）。
   let (s4, r4) = s3.handle(
-    @lsp_binding.Notification(method="exit", params=@lsp_binding.JNull),
+    @lsp_binding.Notification(method_name="exit", params=@lsp_binding.JNull),
   )
   assert_eq(s4.state(), Exited)
   assert_eq(r4, None)

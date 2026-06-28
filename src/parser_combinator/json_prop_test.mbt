@@ -219,9 +219,9 @@ test "parse_json handles representative documents" {
     _ => fail("expected object parse")
   }
   // 空白宽容。
-  assert_true(parse_json("  [ 1 , 2 ]  ").is_ok())
+  assert_true(parse_json("  [ 1 , 2 ]  ") is Ok(_))
   // 语法错误 → Err。
-  assert_true(parse_json("[1,2").is_err())
+  assert_true(parse_json("[1,2") is Err(_))
 }
 
 ///|

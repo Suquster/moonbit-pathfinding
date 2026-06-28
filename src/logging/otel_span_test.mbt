@@ -11,7 +11,7 @@ test "span data defaults to unset status and internal kind" {
   let sd = SpanData::new(s)
   assert_true(sd.status == SpanStatus::Unset)
   assert_true(sd.kind == SpanKind::Internal)
-  assert_eq(sd.attributes.size(), 0)
+  assert_eq(sd.attributes.length(), 0)
   assert_eq(sd.events.length(), 0)
   exit_span(s)
 }

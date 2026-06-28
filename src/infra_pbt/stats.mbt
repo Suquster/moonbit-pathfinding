@@ -48,7 +48,7 @@ pub struct Stats {
 ///|
 /// 构造一个空统计（无任何分类记录）。
 pub fn Stats::new() -> Stats {
-  { counts: Map::new() }
+  { counts: Map([]) }
 }
 
 ///|

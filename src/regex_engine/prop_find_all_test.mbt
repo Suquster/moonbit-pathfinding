@@ -23,7 +23,7 @@ fn fa_check(p : Pattern, input : String) -> Bool {
   while i < ms.length() {
     let m = ms[i]
     // 区间合法且落在 [0, n] 内。
-    if not(m.start >= 0 && m.start <= m.end && m.end <= n) {
+    if !(m.start >= 0 && m.start <= m.end && m.end <= n) {
       return false
     }
     // 不重叠：后一匹配 start 不小于前一匹配 end。

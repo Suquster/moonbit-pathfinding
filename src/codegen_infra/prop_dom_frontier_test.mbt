@@ -25,7 +25,7 @@ test "Feature: codegen-infra, Property 8: dominance frontier correctness" {
       for d in dom.reachable {
         let dfd = df.get(d).unwrap_or([])
         for n in dom.reachable {
-          let member = t_contains_str(dfd, n)
+          let is_member = t_contains_str(dfd, n)
           // 参考：∃ n 的可达前驱 p 使 d 支配 p；且 d 不严格支配 n。
           let mut dominates_some_pred = false
           for p in preds_of(blocks, n) {
@@ -35,8 +35,8 @@ test "Feature: codegen-infra, Property 8: dominance frontier correctness" {
             }
           }
           let strictly = reference_dominates(blocks, entry, d, n) && d != n
-          let expected = dominates_some_pred && not(strictly)
-          if member != expected {
+          let expected = dominates_some_pred && !(strictly)
+          if is_member != expected {
             return false
           }
         }

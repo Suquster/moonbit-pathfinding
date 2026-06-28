@@ -59,7 +59,7 @@ pub(all) struct SpanData {
 pub fn SpanData::new(span : Span) -> SpanData {
   {
     span,
-    attributes: Map::new(),
+    attributes: Map([]),
     events: [],
     status: SpanStatus::Unset,
     kind: SpanKind::Internal,

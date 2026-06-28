@@ -89,7 +89,7 @@ test "johnson detects negative cycles" {
 ///|
 test "johnson on an empty graph" {
   match johnson(([] : Array[Int]), []) {
-    Ok(dist) => assert_eq(dist.size(), 0)
+    Ok(dist) => assert_eq(dist.length(), 0)
     Err(_) => assert_true(false)
   }
 }

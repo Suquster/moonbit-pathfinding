@@ -110,7 +110,7 @@ pub fn Grid::set_start(
   self : Grid,
   cell : Int,
 ) -> Result[Grid, @graph.PathError] {
-  if not(self.in_bounds(cell)) {
+  if !(self.in_bounds(cell)) {
     return Err(
       @graph.PathError::InvalidArgument(
         "起点目标单元格越界，无法放置",
@@ -147,7 +147,7 @@ pub fn Grid::set_goal(
   self : Grid,
   cell : Int,
 ) -> Result[Grid, @graph.PathError] {
-  if not(self.in_bounds(cell)) {
+  if !(self.in_bounds(cell)) {
     return Err(
       @graph.PathError::InvalidArgument(
         "终点目标单元格越界，无法放置",
@@ -186,7 +186,7 @@ pub fn Grid::toggle_obstacle(
   self : Grid,
   cell : Int,
 ) -> Result[Grid, @graph.PathError] {
-  if not(self.in_bounds(cell)) {
+  if !(self.in_bounds(cell)) {
     return Err(
       @graph.PathError::InvalidArgument("障碍切换目标单元格越界"),
     )
@@ -199,7 +199,7 @@ pub fn Grid::toggle_obstacle(
     )
   }
   let blocked = self.clone_blocked()
-  blocked[cell] = not(blocked[cell])
+  blocked[cell] = !(blocked[cell])
   Ok({
     rows: self.rows,
     cols: self.cols,
@@ -224,11 +224,11 @@ pub fn Grid::to_successors(self : Grid) -> (Int) -> Array[(Int, Int)] {
   let blocked = self.blocked
   let total = rows * cols
   fn passable(cell : Int) -> Bool {
-    cell >= 0 && cell < total && not(blocked[cell])
+    cell >= 0 && cell < total && !(blocked[cell])
   }
 
   fn(n : Int) -> Array[(Int, Int)] {
-    if not(passable(n)) {
+    if !(passable(n)) {
       return []
     }
     let row = n / cols

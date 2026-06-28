@@ -28,7 +28,7 @@ fn pst_span_tree(rng : @infra_pbt.Rng) -> Bool {
     sd.set_kind(SpanKind::Server)
     sd.add_event("entered", s.start, { "d": VInt(d.to_int64()) })
     if d == 0 {
-      if not(s.parent is None) {
+      if !(s.parent is None) {
         return false
       }
     } else if s.parent != prev {

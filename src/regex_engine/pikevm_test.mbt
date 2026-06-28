@@ -161,9 +161,9 @@ test "pikevm word boundary" {
 /// 贪婪 vs 惰性（在 LeftmostFirst 策略下区分）：`a+` 取最长，`a+?` 取最短。
 test "pikevm greedy vs lazy under leftmost-first" {
   let greedy = prog_of("a+")
-  let lazy = prog_of("a+?")
+  let lazy_prog = prog_of("a+?")
   assert_true(grp(greedy.exec("aaa", kind=LeftmostFirst), 0) == Some((0, 3)))
-  assert_true(grp(lazy.exec("aaa", kind=LeftmostFirst), 0) == Some((0, 1)))
+  assert_true(grp(lazy_prog.exec("aaa", kind=LeftmostFirst), 0) == Some((0, 1)))
 }
 
 ///|

@@ -12,7 +12,7 @@
 //   * `SignatureInfo` 派生 Eq+Show，`Array[Int]` 有 Show → 直接 `assert_eq`。
 //   * `Range` 仅派生 Eq（无 Show）→ 以 Int 字段（line/character，有 Show）逐项见证。
 //   * 源码禁止裸美元-花括号引用前缀（部分后端报错）：需要引用文本时以
-//     `Char::from_int(36)`（'$'）拼接构造，避免在字面量中直接书写。
+//     `Int::unsafe_to_char(36)`（'$'）拼接构造，避免在字面量中直接书写。
 
 // ───────────────────────── signatureHelp（5.7） ───────────────────────
 
@@ -41,7 +41,7 @@ test "signature_help off any symbol yields None" {
 /// 文档 "k = 1\nv = ${k}\n"：第 1 行引用 ${k} 范围为 [4,8)，pos=(1,5) 落在其内，
 /// 键 k 已定义为 1，故签名为 "k = 1"。
 test "signature_help on a reference to a defined key yields its definition" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "k = 1\nv = " + dollar + "{k}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
@@ -53,7 +53,7 @@ test "signature_help on a reference to a defined key yields its definition" {
 /// pos 落在引用上、但其定义不存在 → 仅返回引用名 "name"。
 /// 文档 "v = ${x}\n"：第 0 行引用 ${x} 范围为 [4,8)，键 x 未定义，签名为 "x"。
 test "signature_help on a reference to an undefined key yields just the name" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "v = " + dollar + "{x}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
@@ -84,7 +84,7 @@ test "semantic_tokens encodes two symbol rows with delta line" {
 ///   * ${k} 引用：line1 char4 len4 type1 → 同行 deltaLine=0、deltaStart=4 → [0,4,4,1,0]。
 /// 合并为 [0,0,1,0,0, 1,0,1,0,0, 0,4,4,1,0]。
 test "semantic_tokens encodes a reference token with type 1 and same-line delta" {
-  let dollar = Char::from_int(36).to_string()
+  let dollar = Int::unsafe_to_char(36).to_string()
   let text = "k = 1\nv = " + dollar + "{k}\n"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)

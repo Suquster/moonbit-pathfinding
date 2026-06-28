@@ -67,7 +67,7 @@ let token_type_reference : Int = 1
 ///|
 /// 一个待编码的语义 token（同行 token）：行号 `line`、起始列 `start`、字符长度
 /// `length`、类型 `ttype`。
-struct SemTok {
+priv struct SemTok {
   line : Int
   start : Int
   length : Int

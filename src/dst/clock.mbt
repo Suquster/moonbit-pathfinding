@@ -35,9 +35,9 @@ pub type LogicalTime = UInt64
 /// 三后端一致：仅使用 `UInt64` / `Int64` 整数运算与比较，无浮点、无平台差异。
 pub fn skewed_time(base : LogicalTime, offset : Int64) -> LogicalTime {
   if offset >= 0L {
-    base + offset.to_uint64()
+    base + offset.reinterpret_as_uint64()
   } else {
-    let dec = (-offset).to_uint64()
+    let dec = (-offset).reinterpret_as_uint64()
     if base >= dec {
       base - dec
     } else {

@@ -55,7 +55,7 @@ pub fn can_coalesce_george(
     if t.id == b.id {
       continue
     }
-    if degree_of(adj, t) >= k && not(interferes(adj, t, b)) {
+    if degree_of(adj, t) >= k && !(interferes(adj, t, b)) {
       return false
     }
   }
@@ -178,7 +178,7 @@ pub fn coalesce(
     if a.id == b.id {
       continue
     }
-    if not(nodes_contain(cur, a)) || not(nodes_contain(cur, b)) {
+    if !(nodes_contain(cur, a)) || !(nodes_contain(cur, b)) {
       continue
     }
     let ok = match strategy {

@@ -25,7 +25,7 @@ fn st_coherent(rng : @infra_pbt.Rng) -> Bool {
   if sample_trace(0.0, trace, seed) {
     return false
   }
-  if not(sample_trace(1.0, trace, seed)) {
+  if !(sample_trace(1.0, trace, seed)) {
     return false
   }
   true

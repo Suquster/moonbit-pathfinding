@@ -240,13 +240,13 @@ fn gen_dag_dynamic() -> @infra_pbt.Gen[(BuildGraph, Target, Array[Target])] {
       }
     }
     let t = 1 + rng.next_below(n - 1)
-    let dyn : Array[Target] = []
+    let dyn_deps : Array[Target] = []
     for i in 0..<t {
       if rng.next_bool() {
-        dyn.push(nodes[i])
+        dyn_deps.push(nodes[i])
       }
     }
-    (BuildGraph::new(nodes, edges), nodes[t], dyn)
+    (BuildGraph::new(nodes, edges), nodes[t], dyn_deps)
   })
 }
 

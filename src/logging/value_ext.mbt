@@ -25,7 +25,7 @@ pub fn Value::is_scalar(self : Value) -> Bool {
 ///|
 /// 判断取值是否为嵌套复合取值（`VMap` / `VList`）。`is_scalar` 的逻辑补。
 pub fn Value::is_nested(self : Value) -> Bool {
-  not(self.is_scalar())
+  !(self.is_scalar())
 }
 
 ///|

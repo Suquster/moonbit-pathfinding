@@ -391,7 +391,7 @@ test "README · 脱敏 / PII 过滤" {
   let policy = RedactionPolicy::by_names(["password", "card"])
   let red = redact(policy, e)
   // 键集合不变；敏感字段整体掩码；非敏感字段不变
-  assert_eq(red.fields.size(), e.fields.size())
+  assert_eq(red.fields.length(), e.fields.length())
   assert_true(red.fields.get("password") == Some(redaction_mask))
   assert_true(red.fields.get("card") == Some(redaction_mask)) // 嵌套整体替换
   assert_true(red.fields.get("user") == Some(Value::VStr("alice")))

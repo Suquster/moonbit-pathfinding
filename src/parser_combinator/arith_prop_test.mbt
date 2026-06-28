@@ -81,7 +81,7 @@ test "arithmetic precedence and associativity golden cases" {
 ///|
 /// 语法错误返回 Err（尾随未消费 / 缺失操作数）。
 test "arithmetic reports errors on malformed input" {
-  assert_true(parse_and_eval("1+").is_err())
-  assert_true(parse_and_eval("(1+2").is_err())
-  assert_true(parse_and_eval("1 2").is_err()) // 尾随未消费
+  assert_true(parse_and_eval("1+") is Err(_))
+  assert_true(parse_and_eval("(1+2") is Err(_))
+  assert_true(parse_and_eval("1 2") is Err(_)) // 尾随未消费
 }

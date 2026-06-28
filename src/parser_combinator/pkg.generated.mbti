@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/parser_combinator"
 import {
   "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -189,14 +190,14 @@ pub struct Pos {
   line : Int
   col : Int
   offset : Int
-} derive(Eq)
+} derive(Eq, @debug.Debug)
 pub fn Pos::start() -> Self
 pub impl Show for Pos
 
 pub enum RecoveryStrategy {
   SkipUntil(Char)
   SyncTo(Array[Char])
-} derive(Eq)
+} derive(Eq, @debug.Debug)
 pub impl Show for RecoveryStrategy
 
 pub(all) enum Step[T] {

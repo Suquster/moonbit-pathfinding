@@ -65,6 +65,7 @@ import {
 // design.md「infra_pbt 为横切测试期共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"
 
 // 白盒属性测试（task 10.3 Property 9：编译器增强—优化等价 / TCO 帧深 / 类型错误

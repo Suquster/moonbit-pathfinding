@@ -5,7 +5,7 @@
 ///|
 test "path_cost of empty path is zero" {
   let ew = fn(_u : Int, _v : Int) -> Int? { None }
-  assert_eq(path_cost(([] : Array[Int]), ew), Some(0))
+  @test.assert_eq(path_cost(([] : Array[Int]), ew), Some(0))
 }
 
 ///|

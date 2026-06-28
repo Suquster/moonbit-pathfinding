@@ -38,7 +38,7 @@ test "serialize/deserialize round-trips a rich result" {
     finals: [(0, { log: [1, 2], kv: [("k", 3)] }), (1, NodeApp::empty())],
   }
   match deserialize_result(serialize_result(r)) {
-    Ok(r2) => assert_eq(r2, r)
+    Ok(r2) => @test.assert_eq(r2, r)
     Err(_) => fail("round-trip should succeed")
   }
 }

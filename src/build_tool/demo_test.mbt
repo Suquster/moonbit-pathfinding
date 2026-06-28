@@ -30,7 +30,7 @@ test "demo schedule respects topology and intra-batch independence" {
   let batches = schedule(g, 0)
   let pos = position_map(batches)
   let bi = batch_index_map(batches)
-  assert_eq(flatten_order(batches).length(), g.nodes.length())
+  @test.assert_eq(flatten_order(batches).length(), g.nodes.length())
   for edge in g.edges {
     let (u, v) = edge
     assert_true(pos.get(u).unwrap() < pos.get(v).unwrap())
@@ -44,7 +44,7 @@ test "demo single-source change yields a reduced rebuild set" {
   let g = demo_graph()
   let set = minimal_rebuild_set(g, [Target::new("util_a.c")])
   // util_a.c → util_a.o → libutil.a → app（4 个，相对 10 个全量目标缩减）
-  assert_eq(set.length(), 4)
+  @test.assert_eq(set.length(), 4)
   assert_true(set.length() < g.nodes.length())
   assert_true(list_contains_target(set, Target::new("util_a.c")))
   assert_true(list_contains_target(set, Target::new("util_a.o")))

@@ -30,19 +30,15 @@ fn t_liveness_eq(
   b : LivenessResult,
 ) -> Bool {
   for blk in blocks {
-    if not(
-        t_var_arr_eq(
-          a.live_in.get(blk.label).unwrap_or([]),
-          b.live_in.get(blk.label).unwrap_or([]),
-        ),
+    if !t_var_arr_eq(
+        a.live_in.get(blk.label).unwrap_or([]),
+        b.live_in.get(blk.label).unwrap_or([]),
       ) {
       return false
     }
-    if not(
-        t_var_arr_eq(
-          a.live_out.get(blk.label).unwrap_or([]),
-          b.live_out.get(blk.label).unwrap_or([]),
-        ),
+    if !t_var_arr_eq(
+        a.live_out.get(blk.label).unwrap_or([]),
+        b.live_out.get(blk.label).unwrap_or([]),
       ) {
       return false
     }

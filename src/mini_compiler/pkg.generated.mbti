@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/mini_compiler"
 
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
   "moonbitlang/core/immut/sorted_map",
   "moonbitlang/core/immut/sorted_set",
   "moonbitlang/core/list",
@@ -142,7 +143,7 @@ pub(all) enum CmpOp {
   Ge
   Eq_
   Ne
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct DemoTrace {
   principal_type : Ty
@@ -221,7 +222,7 @@ pub(all) enum Instr {
 pub(all) enum LogicOp {
   And
   Or
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum MlToken {
   TkInt(Int, Span)
@@ -265,7 +266,7 @@ pub(all) struct Scheme {
 pub(all) struct Span {
   line : Int
   col : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Subst {
   map : @sorted_map.SortedMap[Int, Ty]
@@ -306,7 +307,8 @@ pub(all) enum Ty {
   TyVar(Int)
   TyFun(Ty, Ty)
   TyTuple(Array[Ty])
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
+pub impl Show for Ty
 
 pub(all) struct TyEnv {
   schemes : @list.List[(String, Scheme)]

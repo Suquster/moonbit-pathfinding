@@ -83,7 +83,7 @@ fn assert_holds(
     LineStart => pos == 0 || (pos > 0 && chars[pos - 1] == '\n')
     LineEnd => pos == n || (pos < n && chars[pos] == '\n')
     WordBoundary => word_boundary(chars, n, pos)
-    NotWordBoundary => not(word_boundary(chars, n, pos))
+    NotWordBoundary => !word_boundary(chars, n, pos)
   }
 }
 
@@ -320,7 +320,7 @@ pub fn Program::exec_steps(self : Program, input : String) -> Int {
   let mut pos = 0
   let mut matched = false
   while true {
-    if not(matched) {
+    if !matched {
       let init = Array::make(slots_len, -1)
       self.add_thread(clist, 0, init, chars, n, pos)
     }

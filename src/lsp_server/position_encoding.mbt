@@ -42,7 +42,7 @@ pub(all) enum PositionEncoding {
   Utf16 // LSP 默认：BMP 内 1 码元 / BMP 外 2 码元
   Utf8 // 按 UTF-8 字节数：1..4
   Utf32 // 按 Unicode 码位：恒 1
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 单个码位 `cp` 在编码 `enc` 下对列号 / offset 的贡献（码元数）。

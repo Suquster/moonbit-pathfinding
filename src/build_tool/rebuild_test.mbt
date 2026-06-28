@@ -27,7 +27,7 @@ test "rebuild_schedule only schedules rebuild-set targets in topo order" {
   let d = Target::new("d")
   let g = BuildGraph::new([a, b, c, d], [(a, b), (b, c)])
   let batches = rebuild_schedule(g, [b], 0)
-  assert_eq(batches.length(), 2)
+  @test.assert_eq(batches.length(), 2)
   assert_true(batches[0][0] == b)
   assert_true(batches[1][0] == c)
 }

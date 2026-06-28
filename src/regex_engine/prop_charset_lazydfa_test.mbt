@@ -98,8 +98,8 @@ test "Feature: moonbit-infra-suite, Property B: LazyDfa eviction preserves match
     let (r, s) = pair
     let nfa = build_nfa(r)
     let dfa = to_dfa(nfa)
-    let lazy = LazyDfa::new(build_nfa(r))
-    lazy.find_with_limit(s, 1) == dfa.find(s)
+    let lazy_dfa = LazyDfa::new(build_nfa(r))
+    lazy_dfa.find_with_limit(s, 1) == dfa.find(s)
   })
   assert_true(ok)
 }

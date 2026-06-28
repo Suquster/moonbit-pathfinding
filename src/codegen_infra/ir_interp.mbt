@@ -22,7 +22,7 @@
 //     `Call` 实参求和为整数累加，非字符串拼接；
 //   * 无字符串模拟结构化数据 —— 结果以 `IrEvalResult` 结构体表达；
 //   * `Show` 手写（`derive(Eq)` + `pub impl Show ... with fn output`）以规避
-//     `derive(Show)` 弃用告警，与 typed_ir.mbt / ir_validator.mbt 保持一致。
+//     `derive(Debug)` 弃用告警，与 typed_ir.mbt / ir_validator.mbt 保持一致。
 
 // ───────────────────────────── 命名常量 ─────────────────────────────
 
@@ -55,14 +55,14 @@ let default_cell_value : Int = 0
 ///     执行到 `Ret(None)` 或因触顶/缺终结指令等非正常路径停机时为 `None`。
 ///
 /// 派生 `Eq` 以支持测试与确定性比对（`Map` 的相等与遍历顺序无关，故结果相等性
-/// 不受寄存器写入顺序影响）；`Show` 手写以规避 `derive(Show)` 弃用告警。
+/// 不受寄存器写入顺序影响）；`Show` 手写以规避 `derive(Debug)` 弃用告警。
 pub struct IrEvalResult {
   regs : Map[Int, Int]
   returned : Int?
 } derive(Eq)
 
 ///|
-/// 以可读形式展示求值结果（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示求值结果（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 ///
 /// 逐字段经 `logger.write_string` 直写日志缓冲，无 `out = out + ...` 循环拼接；
 /// `regs` 的渲染顺序依 `Map` 遍历顺序（仅用于展示，确定性比对走派生 `Eq`）。

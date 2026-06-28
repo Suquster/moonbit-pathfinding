@@ -21,8 +21,7 @@ test "Feature: codegen-infra, Property 5: linear scan and coloring agree on no-s
       let by_coloring = allocate_coloring_briggs(g, k)
       let by_linear = allocate_linear_scan(intervals, k)
       // 均判无需溢出（结论一致）。
-      not(allocation_has_spill(by_coloring)) &&
-      not(allocation_has_spill(by_linear))
+      !allocation_has_spill(by_coloring) && !allocation_has_spill(by_linear)
     },
     iters=100,
   )

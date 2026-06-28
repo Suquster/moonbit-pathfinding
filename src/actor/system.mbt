@@ -258,7 +258,7 @@ fn[S, M] ActorSystem::enqueue_msg(
 ) -> Unit {
   match self.cell_by_id(target_id) {
     Some(c) =>
-      if c.status is Running && not(c.mailbox.is_closed()) {
+      if c.status is Running && !c.mailbox.is_closed() {
         c.mailbox.enqueue(msg)
       }
     None => ()
@@ -501,7 +501,7 @@ fn[S, M] ActorSystem::pick_ready(
   let ready : Array[Int] = []
   for i in 0..<self.cells.length() {
     let cell = self.cells[i]
-    if cell.status is Running && not(cell.mailbox.is_closed()) {
+    if cell.status is Running && !cell.mailbox.is_closed() {
       self.sync_bounded(cell)
       if self.cell_pending(cell) > 0 {
         ready.push(i)
@@ -546,7 +546,7 @@ fn[S, M] ActorSystem::process_one(
   cell : SupervisedCell[S, M],
 ) -> Unit {
   // 懒启动：处理首条消息前调用一次 pre_start（R3.1 / 3.7）。
-  if not(cell.started) {
+  if !cell.started {
     cell.state = start_state(cell.init_state, cell.hooks)
     cell.started = true
   }

@@ -104,7 +104,7 @@ test "Feature: championship-v1-upgrade, Property 27: algorithms robust on nonneg
   // 锚点 1：固定种子 / 规模下整套非负权电池鲁棒，且报告携带正确种子与算法数。
   let r_anchor = fuzz_run_from_seed_nonneg(0xC0FF_EE00_1234_5678, 24, 80)
   assert_true(r_anchor.robust)
-  assert_eq(r_anchor.seed, 0xC0FF_EE00_1234_5678)
+  @test.assert_eq(r_anchor.seed, 0xC0FF_EE00_1234_5678)
   // n>=1 时覆盖 8 个算法；n==0（空图）时为 2 个子集——两种皆为合法电池规模。
   assert_true(
     r_anchor.verdicts.length() == 8 || r_anchor.verdicts.length() == 2,
@@ -137,7 +137,7 @@ test "Feature: championship-v1-upgrade, Property 27: algorithms robust on signed
   // 锚点 1：固定种子 / 规模下有符号权电池鲁棒，且报告携带正确种子。
   let r_anchor = fuzz_run_from_seed_signed(0x1357_9BDF_2468_ACE0, 20, 60)
   assert_true(r_anchor.robust)
-  assert_eq(r_anchor.seed, 0x1357_9BDF_2468_ACE0)
+  @test.assert_eq(r_anchor.seed, 0x1357_9BDF_2468_ACE0)
 
   // 锚点 2：退化边界——空图有符号权电池仍鲁棒（仅空矩阵 Floyd-Warshall）。
   let r_empty = fuzz_run_from_seed_signed(11, 0, 0)

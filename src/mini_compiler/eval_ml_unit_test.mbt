@@ -190,8 +190,8 @@ test "scope_check_ml: lone free variable yields TypeError carrying its span and 
   let d = scope_err("x")
   assert_true(d.kind == TypeError)
   assert_true(d.msg.contains("x"))
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 1)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 1)
 }
 
 ///|
@@ -202,8 +202,8 @@ test "scope_check_ml: nested free variable yields TypeError at its column" {
   let d = scope_err("let y = 1 in y + z")
   assert_true(d.kind == TypeError)
   assert_true(d.msg.contains("z"))
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 18)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 18)
 }
 
 ///|

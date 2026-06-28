@@ -62,17 +62,17 @@ test "parse_proto_full handles oneof, map, nested, reserved, options" {
     _ => fail("字段 3 应为 repeated")
   }
   // oneof 成员归组。
-  assert_eq(outer.oneofs.length(), 1)
-  assert_eq(outer.oneofs[0].name, "choice")
+  @test.assert_eq(outer.oneofs.length(), 1)
+  @test.assert_eq(outer.oneofs[0].name, "choice")
   assert_true(outer.oneofs[0].members == [5, 6])
   match tg_field(outer, 5).unwrap().label {
-    LOneof(group~) => assert_eq(group, "choice")
+    LOneof(group~) => @test.assert_eq(group, "choice")
     _ => fail("字段 5 应属 oneof")
   }
   // map 字段。
-  assert_eq(outer.maps.length(), 1)
-  assert_eq(outer.maps[0].name, "meta")
-  assert_eq(outer.maps[0].number, 7)
+  @test.assert_eq(outer.maps.length(), 1)
+  @test.assert_eq(outer.maps[0].name, "meta")
+  @test.assert_eq(outer.maps[0].number, 7)
   assert_true(outer.maps[0].key == PString)
   assert_true(outer.maps[0].value == PInt32)
   // reserved 号区间与名。
@@ -92,7 +92,7 @@ test "parse_proto_full reports error with line and column on syntax error" {
     Ok(_) => fail("非法 .proto 不应解析成功")
     Err(e) => {
       // 错误定位在第 2 行（含字段号缺失处）。
-      assert_eq(e.line, 2)
+      @test.assert_eq(e.line, 2)
       assert_true(e.col >= 1)
     }
   }
@@ -110,8 +110,8 @@ test "parse_proto_full skips comments and top-level statements" {
     #|}
   match parse_proto_full(src) {
     Ok(s) => {
-      assert_eq(s.messages.length(), 1)
-      assert_eq(s.messages[0].name, "M")
+      @test.assert_eq(s.messages.length(), 1)
+      @test.assert_eq(s.messages[0].name, "M")
     }
     Err(e) => fail("含注释的合法 .proto 不应失败：\{e}")
   }

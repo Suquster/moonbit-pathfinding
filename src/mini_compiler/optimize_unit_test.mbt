@@ -50,13 +50,16 @@ fn op_eval(e : Expr) -> Val {
 ///|
 /// 常量算术折叠：`1 + 2 * 3` → `1 + (2 * 3)` → `1 + 6` → `7`（自底向上）。
 test "const_fold: arithmetic folds to single literal '7'" {
-  assert_eq(print_expr(erase_span(const_fold(op_parse("1 + 2 * 3")))), "7")
+  @test.assert_eq(
+    print_expr(erase_span(const_fold(op_parse("1 + 2 * 3")))),
+    "7",
+  )
 }
 
 ///|
 /// 常量比较 + 逻辑折叠：`(1 < 2) && (3 > 4)` → `true && false` → `false`。
 test "const_fold: comparison and logic fold to 'false'" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(const_fold(op_parse("(1 < 2) && (3 > 4)")))),
     "false",
   )
@@ -66,7 +69,7 @@ test "const_fold: comparison and logic fold to 'false'" {
 /// 常量 `if` 条件做分支选择：`if 1 < 2 then 10 else 20` → cond 折叠为 true →
 /// 选取 then 分支 `10`。
 test "const_fold: constant if-condition selects then-branch" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(const_fold(op_parse("if 1 < 2 then 10 else 20")))),
     "10",
   )
@@ -75,13 +78,16 @@ test "const_fold: constant if-condition selects then-branch" {
 ///|
 /// 除零定义为 0（与 ml_eval.mbt 一致）：`10 / 0` → `0`。
 test "const_fold: division by zero folds to '0'" {
-  assert_eq(print_expr(erase_span(const_fold(op_parse("10 / 0")))), "0")
+  @test.assert_eq(print_expr(erase_span(const_fold(op_parse("10 / 0")))), "0")
 }
 
 ///|
 /// 非常量子表达式原样保留：`x + 1`（x 自由）不可折叠，仍为 `(x + 1)`。
 test "const_fold: non-constant expression is preserved" {
-  assert_eq(print_expr(erase_span(const_fold(op_parse("x + 1")))), "(x + 1)")
+  @test.assert_eq(
+    print_expr(erase_span(const_fold(op_parse("x + 1")))),
+    "(x + 1)",
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -92,7 +98,7 @@ test "const_fold: non-constant expression is preserved" {
 /// 死 `let` 消除：`let x = 5 in 42`，x 在 body 中自由出现零次 → 整个 `let` 由
 /// body `42` 取代。
 test "dead_let_elim: removes unused let binding" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(dead_let_elim(op_parse("let x = 5 in 42")))),
     "42",
   )
@@ -101,7 +107,7 @@ test "dead_let_elim: removes unused let binding" {
 ///|
 /// 活 `let` 保留：`let x = 5 in x + 1`，x 被引用 → `let` 原样保留。
 test "dead_let_elim: keeps used let binding" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(dead_let_elim(op_parse("let x = 5 in x + 1")))),
     "(let x = 5 in (x + 1))",
   )
@@ -111,7 +117,7 @@ test "dead_let_elim: keeps used let binding" {
 /// 嵌套逐层判定：`let x = 1 in let y = 2 in x`，内层 `y` 未被使用被消除，外层
 /// `x` 被使用保留 → `(let x = 1 in x)`。
 test "dead_let_elim: nested elimination removes inner unused binding" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(
       erase_span(dead_let_elim(op_parse("let x = 1 in let y = 2 in x"))),
     ),
@@ -126,7 +132,7 @@ test "dead_let_elim: nested elimination removes inner unused binding" {
 ///|
 /// 基本 beta 化简：`(fun x -> x + 1) 41` → `41 + 1`（替换 x ↦ 41）。
 test "beta_reduce: substitutes argument into lambda body" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(beta_reduce(op_parse("(fun x -> x + 1) 41")))),
     "(41 + 1)",
   )
@@ -138,7 +144,7 @@ test "beta_reduce: substitutes argument into lambda body" {
 /// `y` 同名，必须 alpha 重命名为新鲜名（fresh_name 方案以 `#0` 计数），避免捕获
 /// 外层 `y`。结果内层形参重命名为 `y#0`，外层 `y` 仍自由引用 let 绑定。
 test "beta_reduce: capture-avoiding rename of inner binder" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(
       erase_span(
         beta_reduce(op_parse("let y = 7 in (fun x -> (fun y -> x + y)) y")),
@@ -169,7 +175,7 @@ test "beta_reduce: capture-avoidance preserves evaluation result" {
 /// 组合管线 `const_fold ∘ dead_let_elim`：`let x = 5 in 1 + 2 * 3`，先死 `let`
 /// 消除（x 未使用）得 `1 + 2 * 3`，再常量折叠为 `7`。
 test "optimize: dead-let elimination then constant folding yields '7'" {
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(optimize(op_parse("let x = 5 in 1 + 2 * 3")))),
     "7",
   )

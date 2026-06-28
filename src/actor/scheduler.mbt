@@ -54,7 +54,7 @@ pub(all) enum ActorStatus {
   Stopped
   /// 因未捕获错误被终止（错误隔离）。
   Failed(String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── actor 单元（内部） ────────────────────────
 

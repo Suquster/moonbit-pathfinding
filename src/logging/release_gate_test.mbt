@@ -47,8 +47,8 @@ test "release_info identity is stable across gate evaluation" {
     proofs_passing: false,
     docs_passing: false,
   })
-  assert_eq(blocked.name, "logging")
-  assert_eq(blocked.version, logging_version)
-  assert_eq(blocked.changelog_path, "src/logging/CHANGELOG.md")
+  @test.assert_eq(blocked.name, "logging")
+  @test.assert_eq(blocked.version, logging_version)
+  @test.assert_eq(blocked.changelog_path, "src/logging/CHANGELOG.md")
   assert_false(blocked.release_ready)
 }

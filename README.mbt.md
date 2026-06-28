@@ -86,7 +86,7 @@ test "README · Dijkstra picks cheapest of three candidate paths" {
   match result {
     Some((path, cost)) => {
       inspect(cost, content="4")
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
     }
     None => inspect("unreachable", content="should have found a path")
   }
@@ -509,7 +509,7 @@ test "Cookbook 网络路由 1 · Dijkstra 最便宜路由" {
   match result {
     Some((path, cost)) => {
       inspect(cost, content="8")
-      inspect(path, content="[0, 1, 2, 3, 4]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3, 4]")
     }
     None => assert_true(false)
   }
@@ -532,7 +532,7 @@ test "Cookbook 网络路由 2 · Dijkstra 多跳优于直连" {
   match result {
     Some((path, cost)) => {
       inspect(cost, content="3")
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
     }
     None => assert_true(false)
   }
@@ -555,8 +555,8 @@ test "Cookbook 网络路由 3 · Bellman-Ford 负权边距离" {
   let result = @dir.bellman_ford(nodes, edges, 0)
   match result {
     Ok(dist) => {
-      inspect(dist.get(2), content="Some(1)")
-      inspect(dist.get(3), content="Some(3)")
+      @debug.debug_inspect(dist.get(2), content="Some(1)")
+      @debug.debug_inspect(dist.get(3), content="Some(3)")
     }
     Err(_) => assert_true(false)
   }
@@ -591,8 +591,8 @@ test "Cookbook 网络路由 5 · Dijkstra 单源最短路树" {
     [],
   ]
   let tree = @dir.dijkstra_all(0, fn(n) { adj[n] })
-  inspect(tree.distance_to(4), content="Some(8)")
-  inspect(tree.path_to(4), content="Some([0, 1, 2, 3, 4])")
+  @debug.debug_inspect(tree.distance_to(4), content="Some(8)")
+  @debug.debug_inspect(tree.path_to(4), content="Some([0, 1, 2, 3, 4])")
 }
 ```
 
@@ -689,7 +689,7 @@ test "Cookbook 任务调度 4 · DAG 唯一关键路径" {
   match result {
     Ok(Some((path, cost))) => {
       inspect(cost, content="5")
-      inspect(path, content="[0, 1, 2, 3, 4]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3, 4]")
     }
     Ok(None) => assert_true(false)
     Err(_) => assert_true(false)
@@ -852,7 +852,7 @@ test "Cookbook 匹配 3 · Kuhn-Munkres 最小代价指派 3x3" {
   match @und.kuhn_munkres(cost) {
     Ok((assign, total)) => {
       // assign[i] = 分配给工人 i 的工作编号。
-      inspect(assign, content="[1, 0, 2]")
+      @debug.debug_inspect(assign, content="[1, 0, 2]")
       assert_true((total - 5.0).abs() < 1.0e-9)
     }
     Err(_) => assert_true(false)
@@ -869,7 +869,7 @@ test "Cookbook 匹配 4 · Kuhn-Munkres 最小代价指派 2x2" {
   let cost : Array[Array[Double]] = [[3.0, 1.0], [2.0, 4.0]]
   match @und.kuhn_munkres(cost) {
     Ok((assign, total)) => {
-      inspect(assign, content="[1, 0]")
+      @debug.debug_inspect(assign, content="[1, 0]")
       assert_true((total - 3.0).abs() < 1.0e-9)
     }
     Err(_) => assert_true(false)

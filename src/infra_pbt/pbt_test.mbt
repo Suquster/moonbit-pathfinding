@@ -11,7 +11,7 @@ test "rng same seed yields identical sequence" {
   let b = rng_new(42)
   let mut i = 0
   while i < 16 {
-    assert_eq(a.next(), b.next())
+    @test.assert_eq(a.next(), b.next())
     i += 1
   }
 }
@@ -48,7 +48,7 @@ test "next_range stays within bounds" {
 test "gen generate uses sample function" {
   let g = gen_int_range(10, 10)
   let r = rng_new(1)
-  assert_eq(g.generate(r), 10)
+  @test.assert_eq(g.generate(r), 10)
 }
 
 ///|

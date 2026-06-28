@@ -34,7 +34,7 @@ fn make_cfg(rng : @pbt.Rng, n : Int) -> Array[@cg.BasicBlock] {
             dup = true
           }
         }
-        if not(dup) {
+        if !dup {
           succ[j].push(i)
           break
         }
@@ -125,9 +125,9 @@ test "guard: dominator tree and minimal SSA on a 64-block CFG" {
   assert_true(dom.reachable.length() <= blocks.length())
   let ssa = @cg.build_ssa_minimal(blocks, entry="b0")
   // 最小 SSA 保持块数与块标签（结构守恒）。
-  assert_eq(ssa.blocks.length(), blocks.length())
+  @test.assert_eq(ssa.blocks.length(), blocks.length())
   for i in 0..<blocks.length() {
-    assert_eq(ssa.blocks[i].label, blocks[i].label)
+    @test.assert_eq(ssa.blocks[i].label, blocks[i].label)
   }
 }
 

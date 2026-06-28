@@ -90,7 +90,7 @@ test "run_session_demo: step count and label sequence are fixed" {
     "initialize", "initialized", "didOpen", "didChange", "diagnostics", "completion",
     "definition", "references", "rename", "hover", "shutdown", "exit",
   ]
-  assert_eq(steps.length(), 12)
+  @test.assert_eq(steps.length(), 12)
   assert_true(labels == expected)
 }
 

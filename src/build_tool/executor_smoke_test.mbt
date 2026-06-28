@@ -19,7 +19,7 @@ test "action fingerprint is deterministic and field-sensitive" {
   let a = mk_action("c", ["a.c"], ["a.o"], "cc -c a.c")
   let b = mk_action("c", ["a.c"], ["a.o"], "cc -c a.c")
   // 相同动作 → 相同指纹。
-  assert_eq(a.fingerprint(), b.fingerprint())
+  @test.assert_eq(a.fingerprint(), b.fingerprint())
   // 命令不同 → 指纹不同。
   let c = mk_action("c", ["a.c"], ["a.o"], "cc -O2 -c a.c")
   assert_true(a.fingerprint() != c.fingerprint())
@@ -37,8 +37,8 @@ test "dry-run executor records actions and skips" {
   let dry = DryRunExecutor::new()
   let a = mk_action("t", [], ["t.o"], "build t")
   let r = dry.execute(a)
-  assert_eq(r, Skipped)
-  assert_eq(dry.recorded().length(), 1)
+  @test.assert_eq(r, Skipped)
+  @test.assert_eq(dry.recorded().length(), 1)
 }
 
 ///|
@@ -46,7 +46,7 @@ test "dry-run executor records actions and skips" {
 test "callback executor uses callback output hash" {
   let exec = CallbackExecutor::new(fn(action) { "out:" + action.id })
   let r = exec.execute(mk_action("x", [], ["x.o"], "cmd"))
-  assert_eq(r, Executed(output_hash="out:x"))
+  @test.assert_eq(r, Executed(output_hash="out:x"))
 }
 
 ///|
@@ -73,13 +73,13 @@ test "parallel schedule layers by dependency, no dup or miss" {
   seen.sort()
   // 比较以 join 后的字符串进行（String 的相等断言不触发 Array Show 弃用告警），
   // 语义等价于逐元素比较有序的动作 id 序列。
-  assert_eq(seen.join(","), "a,b,c,d")
+  @test.assert_eq(seen.join(","), "a,b,c,d")
   // 首波仅含无依赖的 a；末波仅含 d。
-  assert_eq(sched.waves[0].length(), 1)
-  assert_eq(sched.waves[0][0].id, "a")
+  @test.assert_eq(sched.waves[0].length(), 1)
+  @test.assert_eq(sched.waves[0][0].id, "a")
   let last = sched.waves[sched.waves.length() - 1]
-  assert_eq(last.length(), 1)
-  assert_eq(last[0].id, "d")
+  @test.assert_eq(last.length(), 1)
+  @test.assert_eq(last[0].id, "d")
 }
 
 ///|
@@ -94,10 +94,10 @@ test "run_actions executes then incrementally skips" {
     "h:" + action.id
   })
   let log = run_actions(sched, exec as &Executor, BuildLog::new())
-  assert_eq(calls, 2)
+  @test.assert_eq(calls, 2)
   assert_true(log.is_up_to_date(a))
   assert_true(log.is_up_to_date(b))
   // 再次运行：指纹未变，全部跳过，回调不再触发。
   let _ = run_actions(sched, exec as &Executor, log)
-  assert_eq(calls, 2)
+  @test.assert_eq(calls, 2)
 }

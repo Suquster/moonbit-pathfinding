@@ -84,7 +84,7 @@ test "base64 encode/decode round-trips" {
     }
   }
   // 经典向量。
-  assert_eq(base64_encode(b"foobar"), "Zm9vYmFy")
+  @test.assert_eq(base64_encode(b"foobar"), "Zm9vYmFy")
 }
 
 ///|

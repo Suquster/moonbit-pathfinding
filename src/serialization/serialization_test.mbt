@@ -17,10 +17,10 @@
 ///|
 /// WireType 的数值编码与还原一一对应，未支持的取值返回 None。
 test "wire type code and from_code roundtrip" {
-  assert_eq(WireType::Varint.code(), 0)
-  assert_eq(WireType::I64.code(), 1)
-  assert_eq(WireType::Len.code(), 2)
-  assert_eq(WireType::I32.code(), 5)
+  @test.assert_eq(WireType::Varint.code(), 0)
+  @test.assert_eq(WireType::I64.code(), 1)
+  @test.assert_eq(WireType::Len.code(), 2)
+  @test.assert_eq(WireType::I32.code(), 5)
   assert_true(WireType::from_code(0) == Some(WireType::Varint))
   assert_true(WireType::from_code(2) == Some(WireType::Len))
   assert_true(WireType::from_code(5) == Some(WireType::I32))
@@ -36,7 +36,7 @@ test "wire type code and from_code roundtrip" {
 test "encode and decode empty message" {
   let msg = Message::empty()
   let bytes = encode(msg)
-  assert_eq(bytes.length(), 0)
+  @test.assert_eq(bytes.length(), 0)
   match decode(bytes, Schema::empty()) {
     Ok(out) => assert_true(out == Message::empty())
     Err(e) => fail("空消息不应解码失败：\{e}")
@@ -71,7 +71,7 @@ test "decode truncated varint reports offset and yields no object" {
       fail("截断 varint 不应解码成功（不得产生部分对象）")
     Err(e) => {
       // 错误携带出错字节偏移（此处为 tag varint 起始 0）。
-      assert_eq(e.offset(), 0)
+      @test.assert_eq(e.offset(), 0)
       match e {
         UnexpectedEof(..) => assert_true(true)
         _ => fail("期望 UnexpectedEof，实际：\{e}")
@@ -86,7 +86,7 @@ test "decode invalid wire type reports offset" {
   let bytes = b"\x0b" // 字段号 1、wire 类型 3（不支持）。
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("非法 wire 类型不应解码成功")
-    Err(InvalidWireType(offset~, ..)) => assert_eq(offset, 0)
+    Err(InvalidWireType(offset~, ..)) => @test.assert_eq(offset, 0)
     Err(other) => fail("期望 InvalidWireType，实际：\{other}")
   }
 }
@@ -98,8 +98,8 @@ test "decode invalid field number reports offset" {
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("字段号 0 不应解码成功")
     Err(InvalidFieldNumber(offset~, number~)) => {
-      assert_eq(offset, 0)
-      assert_eq(number, 0)
+      @test.assert_eq(offset, 0)
+      @test.assert_eq(number, 0)
     }
     Err(other) => fail("期望 InvalidFieldNumber，实际：\{other}")
   }
@@ -111,7 +111,7 @@ test "decode truncated fixed32 reports offset" {
   let bytes = b"\x0d\x01\x02" // 字段号 1、wire I32(5)，但仅 2 字节（需 4）。
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("定长字节不足不应解码成功")
-    Err(UnexpectedEof(offset~)) => assert_eq(offset, 1) // tag 占 1 字节，数据从偏移 1 起。
+    Err(UnexpectedEof(offset~)) => @test.assert_eq(offset, 1) // tag 占 1 字节，数据从偏移 1 起。
     Err(other) => fail("期望 UnexpectedEof，实际：\{other}")
   }
 }
@@ -155,20 +155,20 @@ test "parse_proto extracts messages, fields and enums" {
   match parse_proto(src) {
     Err(e) => fail("合法 .proto 不应解析失败：\{e}")
     Ok(schema) => {
-      assert_eq(schema.messages.length(), 2)
+      @test.assert_eq(schema.messages.length(), 2)
       let point = schema.messages[0]
-      assert_eq(point.name, "Point")
-      assert_eq(point.fields.length(), 3)
-      assert_eq(point.fields[0].name, "x")
-      assert_eq(point.fields[0].number, 1)
+      @test.assert_eq(point.name, "Point")
+      @test.assert_eq(point.fields.length(), 3)
+      @test.assert_eq(point.fields[0].name, "x")
+      @test.assert_eq(point.fields[0].number, 1)
       assert_true(point.fields[0].ftype == FieldType::TInt32)
       assert_false(point.fields[0].repeated)
       // repeated string tags = 3
       assert_true(point.fields[2].ftype == FieldType::TString)
       assert_true(point.fields[2].repeated)
       // 枚举
-      assert_eq(schema.enums.length(), 1)
-      assert_eq(schema.enums[0].name, "Color")
+      @test.assert_eq(schema.enums.length(), 1)
+      @test.assert_eq(schema.enums[0].name, "Color")
       assert_true(schema.enums[0].values == [("RED", 0), ("GREEN", 1)])
       // 枚举引用解析后处理：Pixel.color 应为 TEnum，pos 应为 TMessage。
       let pixel = schema.messages[1]
@@ -185,7 +185,7 @@ test "parse_proto reports parse error with position" {
   match parse_proto(src) {
     Ok(_) => fail("缺少消息名的 .proto 不应解析成功")
     Err(e) => {
-      assert_eq(e.line, 1)
+      @test.assert_eq(e.line, 1)
       assert_true(e.col > 0)
     }
   }
@@ -223,6 +223,6 @@ test "gen_moonbit emits struct skeleton from schema" {
   }
   let code = gen_moonbit(schema)
   let expected = "// 由 gen_moonbit 生成（骨架）—— 请勿手工编辑\n" +
-    "\npub struct Pt {\n  x : Int\n  tags : Array[String]\n} derive(Eq, Show)\n"
+    "\npub struct Pt {\n  x : Int\n  tags : Array[String]\n} derive(Eq, Debug)\n"
   assert_true(code == expected)
 }

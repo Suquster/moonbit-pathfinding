@@ -26,6 +26,8 @@
 //     用于在 release.mbt 中登记本方向的 `DirectionRelease`（R11.5，任务 13.5）。
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  // @debug —— 用于 `SimStatus` 等公开类型的 `Show` 委托其 `Debug` 表示。
+  "moonbitlang/core/debug",
 }
 
 // 属性测试（任务 13.3）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
@@ -34,4 +36,5 @@ import {
 // 测试期共享约定」的定位；DST 运行时仍使用其自有的确定性随机源（rng.mbt）。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"

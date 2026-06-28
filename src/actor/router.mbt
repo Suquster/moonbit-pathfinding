@@ -15,7 +15,7 @@ pub(all) enum RoutingStrategy {
   RoundRobin
   Broadcast
   ConsistentHash
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 路由器（router）—— 以一组 worker 与策略构造。

@@ -57,7 +57,7 @@ test "smoke: high-frequency log respects threshold at scale" {
     @log.log(levels[i % 5], { "i": @log.Value::VInt(i.to_int64()) })
   }
   // i%5 ∈ {2,3,4} 即 Info/Warn/Error 被保留：每 5 个中 3 个 → 1200 条。
-  assert_eq(@log.captured_events().length(), 1200)
+  @test.assert_eq(@log.captured_events().length(), 1200)
   @log.reset_logger()
 }
 

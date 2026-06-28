@@ -21,11 +21,11 @@
 fn pc_random_char(rng : @infra_pbt.Rng) -> Char {
   let k = rng.next_below(62)
   if k < 10 {
-    Char::from_int(48 + k) // '0'..'9'
+    Int::unsafe_to_char(48 + k) // '0'..'9'
   } else if k < 36 {
-    Char::from_int(65 + (k - 10)) // 'A'..'Z'
+    Int::unsafe_to_char(65 + (k - 10)) // 'A'..'Z'
   } else {
-    Char::from_int(97 + (k - 36)) // 'a'..'z'
+    Int::unsafe_to_char(97 + (k - 36)) // 'a'..'z'
   }
 }
 
@@ -81,7 +81,7 @@ fn pc_lines(s : String) -> Array[String] {
     }
   }
   // 若末尾无尾随换行而仍有残留，也作为一行补入（稳健兜底）。
-  if not(tb.is_empty()) {
+  if !tb.is_empty() {
     lines.push(tb.build())
   }
   lines
@@ -130,11 +130,11 @@ fn pc_content_determined(metas : Array[AlgoMeta]) -> Bool {
           return false
         }
         // (b) 子串见证：5 个字段值均出现在该行。
-        if not(row.contains(m.name)) ||
-          not(row.contains(m.worst_time)) ||
-          not(row.contains(m.avg_time)) ||
-          not(row.contains(m.space)) ||
-          not(row.contains(m.applicability)) {
+        if !row.contains(m.name) ||
+          !row.contains(m.worst_time) ||
+          !row.contains(m.avg_time) ||
+          !row.contains(m.space) ||
+          !row.contains(m.applicability) {
           return false
         }
       }
@@ -170,9 +170,9 @@ test "Feature: championship-v1-upgrade, Property 30: table content is determined
   match complexity_table(metas) {
     Ok(table) => {
       let lines = pc_lines(table)
-      assert_eq(lines.length(), 4) // 2 表头 + 2 数据
-      assert_eq(lines[2], pc_expected_row(metas[0]))
-      assert_eq(lines[3], pc_expected_row(metas[1]))
+      @test.assert_eq(lines.length(), 4) // 2 表头 + 2 数据
+      @test.assert_eq(lines[2], pc_expected_row(metas[0]))
+      @test.assert_eq(lines[3], pc_expected_row(metas[1]))
     }
     Err(_) => abort("complexity_table 对合法元数据不应失败")
   }

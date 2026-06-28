@@ -50,22 +50,22 @@ test "Feature: serialization, Property 3: zigzag bijection (64-bit)" {
 /// 具体见证：边界与代表性取值的双射（小幅负值映射为短无符号编码）。
 test "zigzag encodes small magnitudes compactly and round-trips boundaries" {
   // 经典映射：0→0、-1→1、1→2、-2→3、2→4。
-  assert_eq(zigzag_encode_32(0), 0U)
-  assert_eq(zigzag_encode_32(-1), 1U)
-  assert_eq(zigzag_encode_32(1), 2U)
-  assert_eq(zigzag_encode_32(-2), 3U)
-  assert_eq(zigzag_encode_32(2), 4U)
+  @test.assert_eq(zigzag_encode_32(0), 0U)
+  @test.assert_eq(zigzag_encode_32(-1), 1U)
+  @test.assert_eq(zigzag_encode_32(1), 2U)
+  @test.assert_eq(zigzag_encode_32(-2), 3U)
+  @test.assert_eq(zigzag_encode_32(2), 4U)
   // 32 位边界往返。
-  assert_eq(zigzag_decode_32(zigzag_encode_32(2147483647)), 2147483647)
-  assert_eq(zigzag_decode_32(zigzag_encode_32(-2147483648)), -2147483648)
+  @test.assert_eq(zigzag_decode_32(zigzag_encode_32(2147483647)), 2147483647)
+  @test.assert_eq(zigzag_decode_32(zigzag_encode_32(-2147483648)), -2147483648)
   // 64 位边界往返。
-  assert_eq(zigzag_encode_64(-1L), 1UL)
-  assert_eq(zigzag_encode_64(1L), 2UL)
-  assert_eq(
+  @test.assert_eq(zigzag_encode_64(-1L), 1UL)
+  @test.assert_eq(zigzag_encode_64(1L), 2UL)
+  @test.assert_eq(
     zigzag_decode_64(zigzag_encode_64(9223372036854775807L)),
     9223372036854775807L,
   )
-  assert_eq(
+  @test.assert_eq(
     zigzag_decode_64(zigzag_encode_64(-9223372036854775808L)),
     -9223372036854775808L,
   )

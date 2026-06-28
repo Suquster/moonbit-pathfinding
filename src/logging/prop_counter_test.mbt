@@ -53,9 +53,9 @@ test "count_by_level conserves total (witness)" {
     Event::new(3L, Level::Trace, {}),
   ]
   let counts = count_by_level(events)
-  assert_eq(level_count(counts, Level::Info), 2)
-  assert_eq(level_count(counts, Level::Error), 1)
-  assert_eq(level_count(counts, Level::Trace), 1)
-  assert_eq(level_count(counts, Level::Debug), 0)
-  assert_eq(level_count(counts, Level::Warn), 0)
+  @test.assert_eq(level_count(counts, Level::Info), 2)
+  @test.assert_eq(level_count(counts, Level::Error), 1)
+  @test.assert_eq(level_count(counts, Level::Trace), 1)
+  @test.assert_eq(level_count(counts, Level::Debug), 0)
+  @test.assert_eq(level_count(counts, Level::Warn), 0)
 }

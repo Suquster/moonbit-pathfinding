@@ -165,7 +165,7 @@ fn prop15_workspace_symbols_reliable(
         break
       }
     }
-    if not(witnessed) {
+    if !witnessed {
       return false
     }
   }

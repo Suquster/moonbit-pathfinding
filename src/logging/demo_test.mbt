@@ -9,10 +9,10 @@
 test "run_demo produces nested spans, sampling, redaction and multi-format output" {
   let outcome = run_demo()
   // 嵌套 span：root + db = 2 个已结束 span。
-  assert_eq(outcome.span_count, 2)
+  @test.assert_eq(outcome.span_count, 2)
   // 3 条事件（Info/Debug/Warn）→ 3 行 JSON + 3 行 logfmt。
-  assert_eq(outcome.json_lines.length(), 3)
-  assert_eq(outcome.logfmt_lines.length(), 3)
+  @test.assert_eq(outcome.json_lines.length(), 3)
+  @test.assert_eq(outcome.logfmt_lines.length(), 3)
   // 脱敏：password / token 原值不出现在任何输出行；掩码至少出现在含敏感字段的行。
   let mut redacted_count = 0
   for line in outcome.json_lines {
@@ -23,7 +23,7 @@ test "run_demo produces nested spans, sampling, redaction and multi-format outpu
     }
   }
   // Info（password）与 Debug（token）两行被脱敏；Warn 行无敏感字段。
-  assert_eq(redacted_count, 2)
+  @test.assert_eq(redacted_count, 2)
   for line in outcome.logfmt_lines {
     assert_false(line.contains("hunter2"))
     assert_false(line.contains("secret-bearer"))
@@ -31,7 +31,7 @@ test "run_demo produces nested spans, sampling, redaction and multi-format outpu
   // 嵌套字段（headers）以 JSON 对象出现（未脱敏）。
   assert_true(outcome.json_lines[0].contains("\"accept\":\"application/json\""))
   // traceparent 形态：长度 55、可被严格提取。
-  assert_eq(outcome.traceparent.length(), 55)
+  @test.assert_eq(outcome.traceparent.length(), 55)
   assert_true(extract_traceparent(outcome.traceparent) is Some(_))
 }
 
@@ -40,7 +40,7 @@ test "run_demo produces nested spans, sampling, redaction and multi-format outpu
 test "run_downstream shares trace id with run_demo (cross-process)" {
   let outcome = run_demo()
   match run_downstream(outcome.traceparent) {
-    Some(tid) => assert_eq(tid.value, outcome.trace.value)
+    Some(tid) => @test.assert_eq(tid.value, outcome.trace.value)
     None => fail("下游应能从 traceparent 提取上下文")
   }
 }

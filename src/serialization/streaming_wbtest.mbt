@@ -16,7 +16,7 @@ test "encode_any/decode_any 往返（非空）" {
     Ok(v) => v
     Err(_) => fail("decode_any 不应失败")
   }
-  assert_eq(decoded, any)
+  @test.assert_eq(decoded, any)
 }
 
 ///|
@@ -27,7 +27,7 @@ test "encode_any/decode_any 往返（空字段）" {
     Ok(v) => v
     Err(_) => fail("decode_any 不应失败")
   }
-  assert_eq(decoded, any)
+  @test.assert_eq(decoded, any)
 }
 
 ///|
@@ -49,7 +49,7 @@ test "encode_to/decode_from 单条往返" {
   // 与既有 encode_typed/decode_typed 语义一致的往返不动点。
   let re = encode_typed(schema, name, decoded).unwrap()
   let direct = encode_typed(schema, name, msg).unwrap()
-  assert_eq(re, direct)
+  @test.assert_eq(re, direct)
   assert_true(source.is_exhausted())
 }
 
@@ -68,6 +68,6 @@ test "encode_to/decode_from 多条顺序往返" {
   let second = decode_from(source, schema, name).unwrap()
   assert_true(source.is_exhausted())
   let direct = encode_typed(schema, name, msg).unwrap()
-  assert_eq(encode_typed(schema, name, first).unwrap(), direct)
-  assert_eq(encode_typed(schema, name, second).unwrap(), direct)
+  @test.assert_eq(encode_typed(schema, name, first).unwrap(), direct)
+  @test.assert_eq(encode_typed(schema, name, second).unwrap(), direct)
 }

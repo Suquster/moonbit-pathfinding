@@ -52,16 +52,16 @@ fn bt_router() -> Router {
 test "dispatch_batch collects responses in order and skips notifications" {
   let router = bt_router()
   let msgs : Array[JsonRpcMessage] = [
-    Request(id=IdNum(1), method="echo", params=JObj([])),
-    Notification(method="note", params=JNull),
-    Request(id=IdNum(2), method="echo", params=JObj([])),
-    Request(id=IdNum(3), method="unknown", params=JNull),
+    Request(id=IdNum(1), method_name="echo", params=JObj([])),
+    Notification(method_name="note", params=JNull),
+    Request(id=IdNum(2), method_name="echo", params=JObj([])),
+    Request(id=IdNum(3), method_name="unknown", params=JNull),
   ]
   let responses = dispatch_batch(msgs, router)
   // 通知略去：4 条输入 → 3 条响应。
-  assert_eq(responses.length(), 3)
+  @test.assert_eq(responses.length(), 3)
   // 第 1 条：echo#1 的回显响应。
-  assert_eq(
+  @test.assert_eq(
     responses[0],
     JsonRpcMessage::Response(
       id=IdNum(1),
@@ -70,7 +70,7 @@ test "dispatch_batch collects responses in order and skips notifications" {
     ),
   )
   // 第 2 条：echo#2 的回显响应（顺序保持，note 已被略去）。
-  assert_eq(
+  @test.assert_eq(
     responses[1],
     JsonRpcMessage::Response(
       id=IdNum(2),
@@ -81,9 +81,9 @@ test "dispatch_batch collects responses in order and skips notifications" {
   // 第 3 条：unknown#3 的方法未找到错误响应，id 与请求一致。
   match responses[2] {
     JsonRpcMessage::Response(id~, error~, ..) => {
-      assert_eq(id, IdNum(3))
+      @test.assert_eq(id, IdNum(3))
       match error {
-        Some(e) => assert_eq(e.code, method_not_found_code)
+        Some(e) => @test.assert_eq(e.code, method_not_found_code)
         None => fail("expected an error object for unknown method")
       }
     }
@@ -96,13 +96,13 @@ test "dispatch_batch collects responses in order and skips notifications" {
 test "dispatch_batch with only notifications yields empty responses" {
   let router = bt_router()
   let msgs : Array[JsonRpcMessage] = [
-    Notification(method="note", params=JNull),
-    Notification(method="note", params=JArr([JNum("1")])),
+    Notification(method_name="note", params=JNull),
+    Notification(method_name="note", params=JArr([JNum("1")])),
     // 未注册的通知同样不产生响应。
-    Notification(method="unregistered", params=JNull),
+    Notification(method_name="unregistered", params=JNull),
   ]
   let responses = dispatch_batch(msgs, router)
-  assert_eq(responses.length(), 0)
+  @test.assert_eq(responses.length(), 0)
 }
 
 // ───────────────────── 批量解码：单个非法元素被隔离标记 ────────────────
@@ -120,24 +120,24 @@ test "decode_batch isolates a single invalid element" {
   )
   match decode_batch(bytes) {
     Ok(results) => {
-      assert_eq(results.length(), 3)
+      @test.assert_eq(results.length(), 3)
       // 元素 0：合法请求。
       match results[0] {
-        Ok(JsonRpcMessage::Request(id~, method~, ..)) => {
-          assert_eq(id, IdNum(1))
-          assert_eq(method, "echo")
+        Ok(JsonRpcMessage::Request(id~, method_name~, ..)) => {
+          @test.assert_eq(id, IdNum(1))
+          @test.assert_eq(method_name, "echo")
         }
         _ => fail("element 0 should decode as a valid Request")
       }
       // 元素 1：非法（缺 jsonrpc）→ 就地标记为该元素 Err，且不影响其余元素。
       match results[1] {
-        Err(e) => assert_eq(e.code, invalid_request_code)
+        Err(e) => @test.assert_eq(e.code, invalid_request_code)
         Ok(_) => fail("element 1 should be isolated as an Err")
       }
       // 元素 2：合法通知（在非法元素之后仍正常解码）。
       match results[2] {
-        Ok(JsonRpcMessage::Notification(method~, ..)) =>
-          assert_eq(method, "note")
+        Ok(JsonRpcMessage::Notification(method_name~, ..)) =>
+          @test.assert_eq(method_name, "note")
         _ => fail("element 2 should decode as a valid Notification")
       }
     }
@@ -153,7 +153,7 @@ test "decode_batch non-array top-level yields invalid request" {
     "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"echo\",\"params\":{}}",
   )
   match decode_batch(bytes) {
-    Err(e) => assert_eq(e.code, invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, invalid_request_code)
     Ok(_) => fail("expected a top-level invalid request error for a non-array")
   }
 }
@@ -163,7 +163,7 @@ test "decode_batch non-array top-level yields invalid request" {
 test "decode_batch invalid json yields parse error" {
   let bytes = bt_bytes("[ this is not json ")
   match decode_batch(bytes) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a top-level parse error for invalid JSON")
   }
 }
@@ -199,8 +199,8 @@ test "decode_batch then dispatch_batch preserves request order" {
   }
   let responses = dispatch_batch(msgs, router)
   // 两个 echo 请求 → 两条响应，note 通知略去；id 按出现顺序保持。
-  assert_eq(responses.length(), 2)
-  assert_eq(
+  @test.assert_eq(responses.length(), 2)
+  @test.assert_eq(
     responses[0],
     JsonRpcMessage::Response(
       id=IdStr("a"),
@@ -208,7 +208,7 @@ test "decode_batch then dispatch_batch preserves request order" {
       error=None,
     ),
   )
-  assert_eq(
+  @test.assert_eq(
     responses[1],
     JsonRpcMessage::Response(
       id=IdStr("b"),

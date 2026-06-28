@@ -117,8 +117,8 @@ test "smoke: pathological workload differential consistency" {
     assert_true(match_eq(min_m, pike_m))
     match nfa_m {
       Some(m) => {
-        assert_eq(m.start, 0)
-        assert_eq(m.end, rep)
+        @test.assert_eq(m.start, 0)
+        @test.assert_eq(m.end, rep)
       }
       None => fail("pathological pattern did not match a^rep")
     }
@@ -141,7 +141,7 @@ test "smoke: real workload demo patterns match scaled input" {
     let input = scaled_input(sample, copies)
     let ms = p.find_all(input)
     // 每份样例恰好一次不重叠匹配（空格分隔不被 demo 模式匹配）。
-    assert_eq(ms.length(), copies)
+    @test.assert_eq(ms.length(), copies)
   }
 }
 

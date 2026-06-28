@@ -187,7 +187,7 @@ test "callback sink 级别通过时恰好调用一次" {
   let hits = []
   let sink = SinkHandle::callback(fn(e) { hits.push(e) })
   sink.emit(smoke_event(Info))
-  assert_eq(hits.length(), 1)
+  @test.assert_eq(hits.length(), 1)
 }
 
 ///|
@@ -195,7 +195,7 @@ test "callback sink 级别不足时不调用（AC6）" {
   let hits = []
   let sink = SinkHandle::callback(fn(e) { hits.push(e) }, level=Warn)
   sink.emit(smoke_event(Info)) // Info < Warn，应被丢弃
-  assert_eq(hits.length(), 0)
+  @test.assert_eq(hits.length(), 0)
 }
 
 ///|
@@ -204,10 +204,10 @@ test "buffered sink 阈值前不下发、达阈值按序全发（AC3/AC4）" {
   let down = SinkHandle::callback(fn(e) { received.push(e.level) })
   let buf = SinkHandle::buffered(2, down)
   buf.emit(smoke_event(Info))
-  assert_eq(received.length(), 0) // 未达阈值，暂存不下发
+  @test.assert_eq(received.length(), 0) // 未达阈值，暂存不下发
   buf.emit(smoke_event(Warn))
-  assert_eq(received, [Info, Warn]) // 达阈值，按到达顺序全部下发
-  assert_eq(buf.buffer.length(), 0) // 缓冲已清空
+  @test.assert_eq(received, [Info, Warn]) // 达阈值，按到达顺序全部下发
+  @test.assert_eq(buf.buffer.length(), 0) // 缓冲已清空
 }
 
 ///|
@@ -216,9 +216,9 @@ test "buffered sink 显式 flush 下发剩余缓冲（AC4）" {
   let down = SinkHandle::callback(fn(e) { received.push(e.level) })
   let buf = SinkHandle::buffered(10, down)
   buf.emit(smoke_event(Error))
-  assert_eq(received.length(), 0)
+  @test.assert_eq(received.length(), 0)
   buf.flush()
-  assert_eq(received, [Error])
+  @test.assert_eq(received, [Error])
 }
 
 ///|
@@ -227,7 +227,7 @@ test "set_level 运行时调级后丢弃低级别记录（AC5）" {
   let sink = SinkHandle::callback(fn(e) { hits.push(e) })
   sink.set_level(Error)
   sink.emit(smoke_event(Info)) // 调级后 Info < Error，应丢弃
-  assert_eq(hits.length(), 0)
+  @test.assert_eq(hits.length(), 0)
   sink.emit(smoke_event(Error))
-  assert_eq(hits.length(), 1)
+  @test.assert_eq(hits.length(), 1)
 }

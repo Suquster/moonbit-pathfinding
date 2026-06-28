@@ -19,7 +19,7 @@ pub type Schedule = Array[Int]
 pub(all) struct ExploreReport {
   explored : Int
   failing : (UInt64, Array[SimEvent])?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 探索累加器（DFS 期间就地累计计数与首个失败交错）。

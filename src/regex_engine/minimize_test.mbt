@@ -45,7 +45,7 @@ test "Dfa::minimize is idempotent" {
   let dfa = to_dfa(build_nfa(pr_min("a(b|c)*d")))
   let small = dfa.minimize()
   let twice = small.minimize()
-  assert_eq(twice.num_states, small.num_states)
+  @test.assert_eq(twice.num_states, small.num_states)
 }
 
 ///|

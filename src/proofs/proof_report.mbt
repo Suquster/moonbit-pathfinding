@@ -48,7 +48,7 @@ pub(all) struct ProofEntry {
   property : String
   passed : Bool
   evidence : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整证明报告（Requirement 11.1 / 11.3）。
@@ -66,7 +66,7 @@ pub(all) struct ProofReport {
   moon_version : String
   generated_at : String
   entries : Array[ProofEntry]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 失败聚合 ─────────────────────────────
 
@@ -78,7 +78,7 @@ pub(all) struct ProofReport {
 /// 复杂度 O(n)，`n` 为证明条目数；可在任意时刻安全地重复调用。
 pub fn ProofReport::any_failed(self : ProofReport) -> Bool {
   for e in self.entries {
-    if not(e.passed) {
+    if !e.passed {
       return true
     }
   }
@@ -219,7 +219,7 @@ fn pr_json_push_field_str(
   value : String,
   leading : Bool,
 ) -> Unit {
-  if not(leading) {
+  if !leading {
     tb.push_char(',')
   }
   pr_json_push_string(tb, key)
@@ -285,6 +285,11 @@ fn pr_hex_digit_char(d : Int) -> Char {
 
 ///|
 /// 包内最小 JSON 值模型。`PObj` 以「有序键值对数组」保留键顺序，便于确定性与往返。
+///
+/// `PNull` / `PNum` 由解析器在遇到 `null` / 数值字面量时构造，以保证对合法
+/// JSON 输入的完整接受；本文件的字段提取器不读取这两类取值（数值仅保留文本、
+/// 不做映射），故抑制 `unused_constructor`（移除会破坏解析鲁棒性）。
+#warnings("-unused_constructor")
 priv enum PJson {
   PNull
   PBool(Bool)

@@ -106,12 +106,12 @@ test "streaming reports failure at EOF when unsatisfied" {
   let g = stream_num_grammar()
   // "<12" 缺失 '>'：分段耗尽并 close → 失败。
   match drive(g.run_incremental("<12"), [], closed=true) {
-    Fail(pos, ..) => assert_eq(pos.offset, 3)
+    Fail(pos, ..) => @test.assert_eq(pos.offset, 3)
     Ok(_, _) => fail("expected failure at EOF for incomplete input")
   }
   // 补足 ">" 后结束 → 成功产出 12。
   match drive(g.run_incremental("<12"), [">"], closed=true) {
-    Ok(v, _) => assert_eq(v, 12)
+    Ok(v, _) => @test.assert_eq(v, 12)
     Fail(_, ..) => fail("expected success once '>' arrives")
   }
 }

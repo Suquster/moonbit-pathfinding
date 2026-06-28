@@ -44,7 +44,7 @@ pub(all) struct QualityGates {
   tests_passing : Bool
   proofs_passing : Bool
   docs_passing : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 方向发布元数据模型（design.md「数据模型 → 发布元数据模型」）。
@@ -56,7 +56,7 @@ pub(all) struct DirectionRelease {
   version : String
   changelog_path : String
   release_ready : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 语义化版本号（SemVer）的结构化表示：`MAJOR.MINOR.PATCH`。
@@ -64,7 +64,7 @@ pub(all) struct SemVer {
   major : Int
   minor : Int
   patch : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 聚合判定纯函数：给定质量门禁三要素，返回该方向是否可进入 release-ready。

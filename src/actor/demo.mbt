@@ -40,7 +40,7 @@ let demo_ask_budget : Int = 16
 pub(all) struct Task {
   id : Int
   payload : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 工作池运行报告（worker pool report）—— 端到端场景的可观测结果（R11）：
@@ -54,7 +54,7 @@ pub(all) struct WorkerPoolReport {
   restarts : Int
   terminated_seen : Array[ActorId]
   ask_results : Array[AskResult[Int]]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 工作池消息协议 ───────────────────────────
 
@@ -74,7 +74,7 @@ pub(all) enum PoolMsg {
   AskCount(CorrelationId)
   WatchWorker(ActorId)
   WorkerDown(ActorId, TerminationReason)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 行为构造 ─────────────────────────────────
 

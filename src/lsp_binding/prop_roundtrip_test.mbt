@@ -177,12 +177,12 @@ fn gen_message(rng : @infra_pbt.Rng) -> JsonRpcMessage {
     0 =>
       JsonRpcMessage::Request(
         id=gen_id(rng),
-        method=gen_ascii_string(rng, 6),
+        method_name=gen_ascii_string(rng, 6),
         params=gen_json(rng, 2),
       )
     1 =>
       JsonRpcMessage::Notification(
-        method=gen_ascii_string(rng, 6),
+        method_name=gen_ascii_string(rng, 6),
         params=gen_json(rng, 2),
       )
     _ =>

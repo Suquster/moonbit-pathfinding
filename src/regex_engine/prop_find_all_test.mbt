@@ -23,7 +23,7 @@ fn fa_check(p : Pattern, input : String) -> Bool {
   while i < ms.length() {
     let m = ms[i]
     // 区间合法且落在 [0, n] 内。
-    if not(m.start >= 0 && m.start <= m.end && m.end <= n) {
+    if !(m.start >= 0 && m.start <= m.end && m.end <= n) {
       return false
     }
     // 不重叠：后一匹配 start 不小于前一匹配 end。
@@ -57,7 +57,7 @@ test "find_all representative witnesses" {
   match Pattern::compile("a") {
     Ok(p) => {
       let ms = p.find_all("banana")
-      assert_eq(ms.length(), 3)
+      @test.assert_eq(ms.length(), 3)
       assert_true(ms[0] == { start: 1, end: 2 })
       assert_true(ms[1] == { start: 3, end: 4 })
       assert_true(ms[2] == { start: 5, end: 6 })

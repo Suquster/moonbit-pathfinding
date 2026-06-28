@@ -30,7 +30,7 @@ fn sd_replay(rng : @infra_pbt.Rng) -> Bool {
     return false
   }
   for i in 0..<run1.length() {
-    if not(run1[i] == run2[i]) {
+    if !(run1[i] == run2[i]) {
       return false
     }
   }
@@ -52,7 +52,7 @@ test "sample_stream replays identically under same seed (witness)" {
   let events = sd_events(13)
   let r1 = sample_stream(0.4, events, @infra_pbt.rng_new(99UL))
   let r2 = sample_stream(0.4, events, @infra_pbt.rng_new(99UL))
-  assert_eq(r1.length(), r2.length())
+  @test.assert_eq(r1.length(), r2.length())
   for i in 0..<r1.length() {
     assert_true(r1[i] == r2[i])
   }

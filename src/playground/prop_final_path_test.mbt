@@ -223,7 +223,7 @@ test "Property 4 示例：3×3 无障碍网格 BFS 终止路径合法" {
     start: 0,
     goal: 8,
   }
-  assert_eq(grid_reachable(grid), true)
+  @test.assert_eq(grid_reachable(grid), true)
   assert_true(check_property4(grid, @playground.PlaygroundAlgo::BFS, true))
 }
 
@@ -238,7 +238,7 @@ test "Property 4 示例：障碍隔断时目标不可达" {
   blocked[1] = true
   blocked[4] = true
   let grid = GridCase::{ rows: 2, cols: 3, blocked, start: 0, goal: 2 }
-  assert_eq(grid_reachable(grid), false)
+  @test.assert_eq(grid_reachable(grid), false)
   assert_true(
     check_property4(grid, @playground.PlaygroundAlgo::Dijkstra, false),
   )

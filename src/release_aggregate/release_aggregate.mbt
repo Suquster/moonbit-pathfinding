@@ -32,7 +32,7 @@ pub let direction_count : Int = 10
 pub(all) struct SuiteReleaseReport {
   directions : Array[@release_meta.DirectionRelease]
   release_ready : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 每个方向各自质量门禁三要素的入参集合。
@@ -51,7 +51,7 @@ pub(all) struct SuiteGates {
   lsp : @release_meta.QualityGates
   mini_compiler : @release_meta.QualityGates
   actor : @release_meta.QualityGates
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 收集全部 10 个方向**默认登记**的发布元数据（`release_info()`）。
@@ -111,7 +111,7 @@ pub fn suite_release_ready(
     return false
   }
   for d in directions {
-    if not(d.release_ready) {
+    if !d.release_ready {
       return false
     }
   }

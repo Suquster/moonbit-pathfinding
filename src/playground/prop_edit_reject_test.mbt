@@ -195,14 +195,14 @@ test "Feature: championship-v1-upgrade, Property 3: illegal edits are rejected a
   assert_true(base.toggle_obstacle(0) is Err(_))
   assert_true(base.toggle_obstacle(8) is Err(_))
   // 以上非法操作均未改动入参网格。
-  assert_eq(base, snap)
+  @test.assert_eq(base, snap)
 
   // 落在障碍：先在下标 4 合法置障碍，再尝试把起点放上去。
   let withobs = base.toggle_obstacle(4).unwrap()
   let withobs_snap = p3_snapshot(withobs)
   assert_true(withobs.set_start(4) is Err(_))
   assert_true(withobs.set_goal(4) is Err(_))
-  assert_eq(withobs, withobs_snap)
+  @test.assert_eq(withobs, withobs_snap)
 
   // 属性：随机合法网格 × 四类非法操作上，恒「被拒且状态不变」。迭代 128 次。
   let ok = @infra_pbt.holds_for_all(p3_gen(), p3_check, iters=128)

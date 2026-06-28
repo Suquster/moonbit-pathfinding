@@ -48,8 +48,8 @@ test "smoke: DPOR reduction ratio for independent tasks" {
   let sc = indep_scenario(6)
   let b = @dst.explore_bounded(1, sc, 6)
   let d = @dst.explore_dpor(1, sc, 6)
-  assert_eq(b.explored, 720)
-  assert_eq(d.explored, 1)
+  @test.assert_eq(b.explored, 720)
+  @test.assert_eq(d.explored, 1)
   assert_true(d.explored <= b.explored)
 }
 

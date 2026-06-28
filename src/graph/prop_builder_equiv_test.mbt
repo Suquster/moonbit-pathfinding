@@ -79,13 +79,13 @@ fn p19_legacy_successors(
   edges : Array[(Int, Int, Int)],
 ) -> (Int) -> Array[(Int, Int)] {
   // 1) 去重：(源, 目标) -> 末次权重，等价于 GraphBuilder 的边集语义。
-  let dedup : Map[(Int, Int), Int] = Map::new()
+  let dedup : Map[(Int, Int), Int] = Map([])
   for e in edges {
     let (u, v, w) = e
     dedup[(u, v)] = w
   }
   // 2) 物化为邻接表（无出边的节点缺省，查询时返回空数组）。
-  let adj : Map[Int, Array[(Int, Int)]] = Map::new()
+  let adj : Map[Int, Array[(Int, Int)]] = Map([])
   for key, w in dedup {
     let (u, v) = key
     match adj.get(u) {
@@ -179,8 +179,8 @@ test "Feature: championship-v1-upgrade, Property 19: builder graph equals equiva
       let rb = @directed.dijkstra(0, succ_b, goal)
       match (ra, rb) {
         (Some((_, ca)), Some((_, cb))) => {
-          assert_eq(ca, 5) // 0->1->2 = 5，优于直达 0->2 = 10
-          assert_eq(cb, 5)
+          @test.assert_eq(ca, 5) // 0->1->2 = 5，优于直达 0->2 = 10
+          @test.assert_eq(cb, 5)
         }
         _ => assert_true(false) // 锚点：两者都应可达
       }

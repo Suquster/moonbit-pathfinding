@@ -57,11 +57,11 @@ test "demo email captures user and domain" {
           assert_true(caps.group(1) == caps.name("user"))
           assert_true(caps.group(2) == caps.name("domain"))
           match caps.name("user") {
-            Some(m) => assert_eq(dt_slice(input, m), "user_1")
+            Some(m) => @test.assert_eq(dt_slice(input, m), "user_1")
             None => fail("user unset")
           }
           match caps.name("domain") {
-            Some(m) => assert_eq(dt_slice(input, m), "example.com")
+            Some(m) => @test.assert_eq(dt_slice(input, m), "example.com")
             None => fail("domain unset")
           }
         }
@@ -76,7 +76,7 @@ test "demo email captures user and domain" {
 test "demo email replace references" {
   match Pattern::compile(demo_email()) {
     Ok(p) =>
-      assert_eq(
+      @test.assert_eq(
         p.replace_all("user_1@example.com", "$2 at $1"),
         "example.com at user_1",
       )
@@ -93,10 +93,10 @@ test "demo ipv4 four octet captures" {
       match p.captures(input) {
         Some(caps) => {
           assert_true(caps.group(0) == Some({ start: 0, end: 11 }))
-          assert_eq(dt_slice_opt(input, caps.group(1)), "192")
-          assert_eq(dt_slice_opt(input, caps.group(2)), "168")
-          assert_eq(dt_slice_opt(input, caps.group(3)), "0")
-          assert_eq(dt_slice_opt(input, caps.group(4)), "1")
+          @test.assert_eq(dt_slice_opt(input, caps.group(1)), "192")
+          @test.assert_eq(dt_slice_opt(input, caps.group(2)), "168")
+          @test.assert_eq(dt_slice_opt(input, caps.group(3)), "0")
+          @test.assert_eq(dt_slice_opt(input, caps.group(4)), "1")
         }
         None => fail("ipv4 did not match")
       }
@@ -113,14 +113,17 @@ test "demo iso date captures and rearrange" {
       match p.captures(input) {
         Some(caps) => {
           assert_true(caps.group(0) == Some({ start: 0, end: 10 }))
-          assert_eq(dt_slice_opt(input, caps.name("year")), "2026")
-          assert_eq(dt_slice_opt(input, caps.name("month")), "06")
-          assert_eq(dt_slice_opt(input, caps.name("day")), "12")
+          @test.assert_eq(dt_slice_opt(input, caps.name("year")), "2026")
+          @test.assert_eq(dt_slice_opt(input, caps.name("month")), "06")
+          @test.assert_eq(dt_slice_opt(input, caps.name("day")), "12")
         }
         None => fail("iso date did not match")
       }
       // 命名引用重排。
-      assert_eq(p.replace_all(input, "${day}/${month}/${year}"), "12/06/2026")
+      @test.assert_eq(
+        p.replace_all(input, "${day}/${month}/${year}"),
+        "12/06/2026",
+      )
     }
     Err(_) => fail("iso date compile failed")
   }
@@ -136,8 +139,8 @@ test "demo number integer decimal exponent" {
         Some(caps) => {
           assert_true(caps.group(0) == Some({ start: 0, end: 8 }))
           // 小数部分子组 ".5"、指数部分子组 "e+3"。
-          assert_eq(dt_slice_opt(input, caps.group(1)), ".5")
-          assert_eq(dt_slice_opt(input, caps.group(2)), "e+3")
+          @test.assert_eq(dt_slice_opt(input, caps.group(1)), ".5")
+          @test.assert_eq(dt_slice_opt(input, caps.group(2)), "e+3")
         }
         None => fail("number did not match")
       }

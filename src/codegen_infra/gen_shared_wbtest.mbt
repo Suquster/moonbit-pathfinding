@@ -68,7 +68,7 @@ fn gen_cfg_wb() -> @infra_pbt.Gen[Array[BasicBlock]] {
       let start = rng.next_below(i)
       for off in 0..<i {
         let j = (start + off) % i
-        if succ[j].length() < 2 && not(wb_contains_int(succ[j], i)) {
+        if succ[j].length() < 2 && !wb_contains_int(succ[j], i) {
           succ[j].push(i)
           break
         }
@@ -79,7 +79,7 @@ fn gen_cfg_wb() -> @infra_pbt.Gen[Array[BasicBlock]] {
     while e < extra {
       let a = rng.next_below(n - 1)
       let b = rng.next_range(a + 1, n - 1)
-      if succ[a].length() < 2 && not(wb_contains_int(succ[a], b)) {
+      if succ[a].length() < 2 && !wb_contains_int(succ[a], b) {
         succ[a].push(b)
       }
       e = e + 1

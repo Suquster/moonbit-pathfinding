@@ -23,6 +23,7 @@ import {
   // `Pattern::replace_fn` 以其 `TextBuilder` 物化替换结果，消除循环内字符串
   // `+` 的 O(n²) 拼接（Requirement 1.5 / 5.5 / 质量门禁）。
   "Suquster/moonbit-pathfinding/src/infra_text",
+  "moonbitlang/core/test",
 }
 
 // 属性测试（task 6.3 / 6.4 / 6.5）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
@@ -31,4 +32,9 @@ import {
 // 共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

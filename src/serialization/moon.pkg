@@ -27,6 +27,10 @@ import {
   // 4.3 / 1.5）以其顺序追加片段并一次性 `build` 物化目标源码，禁止循环内字符串
   // `+`，对总输出长度线性。作为运行时依赖引入不破坏既有 API。
   "Suquster/moonbit-pathfinding/src/infra_text",
+  // @debug —— 仅用于公开错误类型（DecodeError / ParseError 等）的 `Show` 实现
+  // 委托其 `Debug` 结构化表示，避免重复手写格式且与历史 `derive` 输出一致。
+  "moonbitlang/core/debug",
+  "moonbitlang/core/test",
 }
 
 // 属性测试（task 7.3 / 7.4）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
@@ -35,6 +39,8 @@ import {
 // 共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+  "moonbitlang/core/debug",
 } for "test"
 
 // 任务 7.4 的「序列化增强属性测试」需在包内构造只读 `pub struct`
@@ -44,4 +50,6 @@ import {
 // （`for "wbtest"`）；同样不进入运行时产物。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/test",
 } for "wbtest"

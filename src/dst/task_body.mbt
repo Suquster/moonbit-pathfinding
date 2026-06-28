@@ -82,7 +82,7 @@ pub(all) enum TaskResult {
 } derive(Eq)
 
 ///|
-/// 手写 `Show`（当前 MoonBit 版本 `derive(Show)` 已弃用，按规格要求手写以保持
+/// 手写 `Show`（当前 MoonBit 版本 `derive(Debug)` 已弃用，按规格要求手写以保持
 /// 新文件零警告）：以与派生实现一致的形态输出构造子名称与字段。
 pub impl Show for TaskResult with fn output(self : TaskResult, logger : &Logger) -> Unit {
   match self {

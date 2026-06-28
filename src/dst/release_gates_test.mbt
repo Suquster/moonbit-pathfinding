@@ -40,6 +40,6 @@ test "release gates preserve direction identity" {
     proofs_passing: true,
     docs_passing: true,
   })
-  assert_eq(ready.name, "dst")
-  assert_eq(ready.version, dst_version)
+  @test.assert_eq(ready.name, "dst")
+  @test.assert_eq(ready.version, dst_version)
 }

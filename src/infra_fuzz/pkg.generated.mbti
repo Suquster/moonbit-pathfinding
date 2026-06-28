@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/infra_fuzz"
 
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -25,12 +26,12 @@ pub(all) enum EquivClass {
   BfsVsDijkstraUnit
   DijkstraVsBellmanFord
   FloydWarshallVsJohnson
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct FuzzGraph {
   n : Int
   edges : Array[(Int, Int, Double)]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

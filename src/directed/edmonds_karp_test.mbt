@@ -65,7 +65,7 @@ test "edmonds_karp CLRS 6-node multi-path network" {
 ///|
 /// whitebox: source == sink —— BFS 从 source 出发,visited[source]=true 已被置位;
 /// 遍历 v in nodes 时 sink(== source) 立刻命中 `if visited.contains(v) { continue }` 冷分支,
-/// 不会有任何 parent 指针被写入,found 保持 false,外层 while 通过 `not(found) { break }` 退出,
+/// 不会有任何 parent 指针被写入,found 保持 false,外层 while 通过 `!(found) { break }` 退出,
 /// 最终返回 `total_flow = 0`。覆盖 `edmonds_karp.mbt` 中 "源汇同点" 的边界路径。
 test "whitebox: edmonds_karp source equals sink returns zero flow" {
   // 3 个节点带容量;source 和 sink 都是 0。

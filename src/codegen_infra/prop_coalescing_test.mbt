@@ -19,7 +19,7 @@ test "Feature: codegen-infra, Property 3: conservative coalescing is safe" {
       let merged = coalesce(g, moves, k, strategy=Briggs)
       let alloc_after = allocate_coloring_briggs(merged, k)
       // (1) 合并后再分配满足干涉不变量。
-      if not(t_coloring_respects(merged, alloc_after)) {
+      if !t_coloring_respects(merged, alloc_after) {
         return false
       }
       // (2) 溢出数量不大于合并前。

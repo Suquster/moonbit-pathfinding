@@ -12,7 +12,7 @@
 pub(all) struct TraceEvent {
   actor : ActorId
   seq : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 重放校验（Requirement 10.2 / 10.6）—— 以同一种子 `seed` 调用构造函数 `build`

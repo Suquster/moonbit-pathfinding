@@ -17,9 +17,9 @@ test "compat: allocate_coloring K3 k=3 全部着色" {
     ],
   }
   let alloc = allocate_coloring(g, 3)
-  inspect(alloc.get({ id: 0 }), content="Some(Reg(0))")
-  inspect(alloc.get({ id: 1 }), content="Some(Reg(1))")
-  inspect(alloc.get({ id: 2 }), content="Some(Reg(2))")
+  @debug.debug_inspect(alloc.get({ id: 0 }), content="Some(Reg(0))")
+  @debug.debug_inspect(alloc.get({ id: 1 }), content="Some(Reg(1))")
+  @debug.debug_inspect(alloc.get({ id: 2 }), content="Some(Reg(2))")
 }
 
 ///|
@@ -31,9 +31,9 @@ test "compat: allocate_linear_scan 非重叠区间复用寄存器" {
     LiveInterval::{ variable: { id: 2 }, start: 4, end: 6 },
   ]
   let alloc = allocate_linear_scan(intervals, 2)
-  inspect(alloc.get({ id: 0 }), content="Some(Reg(0))")
-  inspect(alloc.get({ id: 1 }), content="Some(Reg(1))")
-  inspect(alloc.get({ id: 2 }), content="Some(Reg(0))")
+  @debug.debug_inspect(alloc.get({ id: 0 }), content="Some(Reg(0))")
+  @debug.debug_inspect(alloc.get({ id: 1 }), content="Some(Reg(1))")
+  @debug.debug_inspect(alloc.get({ id: 2 }), content="Some(Reg(0))")
 }
 
 ///|

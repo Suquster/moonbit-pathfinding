@@ -45,7 +45,7 @@ fn p24_consistent_hash_stable(rng : @infra_pbt.Rng) -> Bool {
         found = true
       }
     }
-    if not(found) {
+    if !found {
       return false
     }
   }

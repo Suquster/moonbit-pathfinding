@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/playground"
 import {
   "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/graph",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -48,7 +49,7 @@ pub(all) struct Grid {
   blocked : Array[Bool]
   start : Int
   goal : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Grid::cell_count(Self) -> Int
 pub fn Grid::manhattan(Self, Int) -> (Int) -> Int
 pub fn Grid::new(Int, Int) -> Result[Self, @graph.PathError]
@@ -57,15 +58,13 @@ pub fn Grid::set_start(Self, Int) -> Result[Self, @graph.PathError]
 pub fn Grid::to_successors(Self) -> (Int) -> Array[(Int, Int)]
 pub fn Grid::toggle_obstacle(Self, Int) -> Result[Self, @graph.PathError]
 
-type PgSession
-
 pub(all) enum PlaygroundAlgo {
   BFS
   DFS
   Dijkstra
   AStar
   JPS
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct StepState[N] {
   visited : Array[N]
@@ -73,14 +72,14 @@ pub struct StepState[N] {
   current : N?
   done : Bool
   found : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct StepTrace[N] {
   algo : PlaygroundAlgo
   steps : Array[StepState[N]]
   final_path : Array[N]?
   reachable : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

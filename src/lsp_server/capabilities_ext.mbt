@@ -37,7 +37,7 @@ pub(all) struct ServerCapabilitiesExt {
   semantic_tokens_provider : Bool
   folding_range_provider : Bool
   document_highlight_provider : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 全 `false` 的扩展能力（不声明任何能力）。作为能力协商的累积起点。
@@ -96,7 +96,7 @@ pub fn ServerCapabilitiesExt::default() -> ServerCapabilitiesExt {
 pub(all) struct InitializeParamsExt {
   capabilities : Array[String]
   position_encodings : Array[String]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个空的扩展初始化参数（客户端未声明任何能力或位置编码）。

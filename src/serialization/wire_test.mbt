@@ -36,7 +36,7 @@ test "varint max u64 roundtrips" {
   ])
   let bytes = encode(msg)
   // tag 1 字节 + 10 字节 varint。
-  assert_eq(bytes.length(), 11)
+  @test.assert_eq(bytes.length(), 11)
   match decode(bytes, Schema::empty()) {
     Ok(out) => assert_true(out == msg)
     Err(e) => fail("最大 varint 往返不应失败：\{e}")
@@ -135,7 +135,7 @@ test "binary bytes with embedded nul roundtrip" {
 /// 空消息编码为空字节，解码回空消息。
 test "empty message encodes to empty bytes" {
   let bytes = encode(Message::empty())
-  assert_eq(bytes.length(), 0)
+  @test.assert_eq(bytes.length(), 0)
   match decode(bytes, Schema::empty()) {
     Ok(out) => assert_true(out == Message::empty())
     Err(e) => fail("空消息不应解码失败：\{e}")
@@ -170,7 +170,7 @@ test "max field number roundtrips" {
   ])
   match decode(encode(msg), Schema::empty()) {
     Ok(out) => {
-      assert_eq(out.fields[0].number, 536870911)
+      @test.assert_eq(out.fields[0].number, 536870911)
       assert_true(out == msg)
     }
     Err(e) => fail("最大字段号往返不应失败：\{e}")
@@ -187,7 +187,7 @@ test "repeated entries with same field number roundtrip" {
   ])
   match decode(encode(msg), Schema::empty()) {
     Ok(out) => {
-      assert_eq(out.fields.length(), 3)
+      @test.assert_eq(out.fields.length(), 3)
       assert_true(out == msg)
     }
     Err(e) => fail("同号重复字段往返不应失败：\{e}")
@@ -202,7 +202,7 @@ test "decode overlong varint reports malformed with offset" {
   let bytes = b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("过长 varint 不应解码成功")
-    Err(MalformedVarint(offset~)) => assert_eq(offset, 0)
+    Err(MalformedVarint(offset~)) => @test.assert_eq(offset, 0)
     Err(other) => fail("期望 MalformedVarint，实际：\{other}")
   }
 }
@@ -214,7 +214,7 @@ test "decode truncated fixed64 reports offset" {
   let bytes = b"\x09\x01\x02\x03"
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("I64 字节不足不应解码成功")
-    Err(UnexpectedEof(offset~)) => assert_eq(offset, 1) // tag 占 1 字节。
+    Err(UnexpectedEof(offset~)) => @test.assert_eq(offset, 1) // tag 占 1 字节。
     Err(other) => fail("期望 UnexpectedEof，实际：\{other}")
   }
 }

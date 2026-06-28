@@ -186,13 +186,13 @@ test "Feature: production-hardening, Property 11d: stats counts consistent with 
       iters=n,
     )
     // 总数等于迭代次数。
-    assert_eq(stats.total(), n)
+    @test.assert_eq(stats.total(), n)
     // 各分类计数之和等于 total。
     let mut sum = 0
     for label in labels {
       sum += stats.count(label)
     }
-    assert_eq(sum, n)
-    assert_eq(sum, stats.total())
+    @test.assert_eq(sum, n)
+    @test.assert_eq(sum, stats.total())
   }
 }

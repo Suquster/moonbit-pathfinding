@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/codegen_infra"
 
 import {
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -97,36 +98,36 @@ pub(all) struct BasicBlock {
   label : String
   instrs : Array[String]
   succs : Array[String]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) enum CoalesceStrategy {
   George
   Briggs
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct CostRule {
   pattern : String
   template : String
   cost : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct DomTree {
   root : String
   idom : Map[String, String]
   children : Map[String, Array[String]]
   reachable : Array[String]
-} derive(Show)
+} derive(@debug.Debug)
 pub fn DomTree::dominates(Self, String, String) -> Bool
 
 pub(all) struct EvalResult {
   values : Map[String, Int]
   output : Array[Int]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct InterferenceGraph {
   nodes : Array[Var]
   edges : Array[(Var, Var)]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub enum IrError {
   SsaViolation(reg~ : Int)
@@ -145,38 +146,38 @@ pub(all) enum IrNode {
   Const(Int)
   VarRef(Var)
   BinOp(String, IrNode, IrNode)
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) struct IselRule {
   pattern : String
   template : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum LatticeValue {
   Top
   Const(Int)
   Bottom
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct LiveInterval {
   variable : Var
   start : Int
   end : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct LivenessResult {
   live_in : Map[String, Array[Var]]
   live_out : Map[String, Array[Var]]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) enum Location {
   Reg(Int)
   Spill(Int)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct MoveSet {
   moves : Array[(Var, Var)]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) enum Operand {
   Reg(Int)
@@ -191,20 +192,18 @@ pub(all) enum OptPass {
   CopyProp
   Sccp
   Gvn
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Pass {
   ConstFold
   DeadCodeElim
   CopyProp
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Phi {
   dest : Var
   args : Array[Var]
-} derive(Show)
-
-type PhiSite
+} derive(@debug.Debug)
 
 pub(all) struct PipelineStages {
   liveness : LivenessResult
@@ -214,22 +213,22 @@ pub(all) struct PipelineStages {
   coloring : Map[Var, Location]
   linear_scan : Map[Var, Location]
   instrs : Array[TargetInstr]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) struct SpillCost {
   cost : Map[Var, Double]
-} derive(Show)
+} derive(@debug.Debug)
 pub fn SpillCost::uniform() -> Self
 
 pub(all) struct SsaProgram {
   blocks : Array[BasicBlock]
   phis : Array[Phi]
-} derive(Show)
+} derive(@debug.Debug)
 
 pub(all) struct TargetInstr {
   op : String
   operands : Array[String]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TypedBlock {
   label : String
@@ -263,7 +262,7 @@ pub impl Show for TypedInstr
 
 pub(all) struct Var {
   id : Int
-} derive(Compare, Eq, Hash, Show)
+} derive(Compare, Eq, Hash, @debug.Debug)
 
 // Type aliases
 

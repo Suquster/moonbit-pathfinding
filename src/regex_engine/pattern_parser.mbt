@@ -342,7 +342,7 @@ fn p_named_group(
 fn p_finish_group(
   st : PState,
   input : @pc.Input,
-  open : Int,
+  _open : Int,
   index : Int?,
   name : String?,
 ) -> Result[(Ast, @pc.Input), ParseError] {

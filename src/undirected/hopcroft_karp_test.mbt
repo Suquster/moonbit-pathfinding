@@ -13,7 +13,7 @@ test "hopcroft_karp finds a perfect matching" {
     }
   }
   let matching = hopcroft_karp(left, right, adj)
-  assert_eq(matching.length(), 3)
+  @test.assert_eq(matching.length(), 3)
   // Every pair must be a real edge; sides must be distinct.
   let seen_l : Map[Int, Bool] = Map([])
   let seen_r : Map[Int, Bool] = Map([])
@@ -46,7 +46,7 @@ test "hopcroft_karp needs augmenting paths to reach the maximum" {
       _ => []
     }
   }
-  assert_eq(hopcroft_karp(left, right, adj).length(), 2)
+  @test.assert_eq(hopcroft_karp(left, right, adj).length(), 2)
 }
 
 ///|
@@ -62,9 +62,9 @@ test "hopcroft_karp handles imbalance and unknown neighbors" {
       _ => []
     }
   }
-  assert_eq(hopcroft_karp(left, right, adj).length(), 1)
+  @test.assert_eq(hopcroft_karp(left, right, adj).length(), 1)
   // Empty partitions.
-  assert_eq(
+  @test.assert_eq(
     hopcroft_karp(([] : Array[Int]), ([] : Array[Int]), fn(_) {
       ([] : Array[Int])
     }).length(),

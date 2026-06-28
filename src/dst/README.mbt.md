@@ -63,7 +63,7 @@ test "README · 同种子两次运行结果逐事件一致" {
   // 调度序列（事件轨迹）逐事件一致。
   assert_true(first.trace == second.trace)
   // SimResult 整体（种子 + 轨迹 + 终态）逐项一致。
-  assert_eq(first, second)
+  @test.assert_eq(first, second)
   // 无故障场景：终态为 Completed，四个任务全部完成。
   match first.status {
     Completed => ()
@@ -82,7 +82,7 @@ test "README · 调度序列与输入任务排列无关" {
   let reversed = [Task::new(2, "c"), Task::new(1, "b"), Task::new(0, "a")]
   let r1 = run(42, Scenario::new(forward, [], 8))
   let r2 = run(42, Scenario::new(reversed, [], 8))
-  assert_eq(r1, r2)
+  @test.assert_eq(r1, r2)
 }
 ```
 
@@ -101,7 +101,7 @@ test "README · rng_new 同种子产生逐位一致序列" {
   let b = rng_new(0xC0FFEE)
   // 两个同种子随机源逐字一致。
   for _ in 0..<5 {
-    assert_eq(a.next(), b.next())
+    @test.assert_eq(a.next(), b.next())
   }
   // next_below 将随机字约束到 [0, n)，供调度器从待运行任务集选择下一任务。
   let r = rng_new(7)
@@ -167,13 +167,13 @@ test "README · replay 以种子与轨迹复现相同失败" {
   // 以失败运行输出的种子 + 事件轨迹重放。
   let replayed = replay(original.seed, original.trace)
   // 种子、逐事件轨迹与终态完全一致。
-  assert_eq(replayed, original)
+  @test.assert_eq(replayed, original)
   // 正常完成的运行同样可被精确重放。
   let ok_run = run(
     2024,
     Scenario::new([Task::new(0, "x"), Task::new(1, "y")], [], 8),
   )
-  assert_eq(replay(ok_run.seed, ok_run.trace), ok_run)
+  @test.assert_eq(replay(ok_run.seed, ok_run.trace), ok_run)
 }
 ```
 
@@ -269,8 +269,8 @@ test "README · 有界穷尽探索 vs DPOR 偏序约简" {
   let sc = DesScenario::new(tasks, [], [], null_protocol(), 8)
   let bounded = explore_bounded(1, sc, 3)
   let dpor = explore_dpor(1, sc, 3)
-  assert_eq(bounded.explored, 6)
-  assert_eq(dpor.explored, 1)
+  @test.assert_eq(bounded.explored, 6)
+  @test.assert_eq(dpor.explored, 1)
 }
 ```
 

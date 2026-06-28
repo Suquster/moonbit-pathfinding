@@ -277,24 +277,24 @@ test "parse_ml: let rec binding" {
 /// 原子打印：整数 / 布尔 / 变量。
 test "print_expr: atoms" {
   let z = fe_z()
-  assert_eq(print_expr(EInt(42, z)), "42")
-  assert_eq(print_expr(EBool(true, z)), "true")
-  assert_eq(print_expr(EBool(false, z)), "false")
-  assert_eq(print_expr(EVar("x", z)), "x")
+  @test.assert_eq(print_expr(EInt(42, z)), "42")
+  @test.assert_eq(print_expr(EBool(true, z)), "true")
+  @test.assert_eq(print_expr(EBool(false, z)), "false")
+  @test.assert_eq(print_expr(EVar("x", z)), "x")
 }
 
 ///|
 /// 算术 / 比较 / 逻辑节点完全括号化。
 test "print_expr: arithmetic, comparison, logic fully parenthesized" {
   let z = fe_z()
-  assert_eq(
+  @test.assert_eq(
     print_expr(
       EArith(Add, EInt(1, z), EArith(Mul, EInt(2, z), EInt(3, z), z), z),
     ),
     "(1 + (2 * 3))",
   )
-  assert_eq(print_expr(ECmp(Le, EInt(1, z), EInt(2, z), z)), "(1 <= 2)")
-  assert_eq(
+  @test.assert_eq(print_expr(ECmp(Le, EInt(1, z), EInt(2, z), z)), "(1 <= 2)")
+  @test.assert_eq(
     print_expr(ELogic(Or, EBool(true, z), EBool(false, z), z)),
     "(true || false)",
   )
@@ -304,7 +304,7 @@ test "print_expr: arithmetic, comparison, logic fully parenthesized" {
 /// 应用完全括号化：`((a b) c)`。
 test "print_expr: application fully parenthesized" {
   let z = fe_z()
-  assert_eq(
+  @test.assert_eq(
     print_expr(EApp(EApp(EVar("a", z), EVar("b", z), z), EVar("c", z), z)),
     "((a b) c)",
   )
@@ -314,19 +314,19 @@ test "print_expr: application fully parenthesized" {
 /// `if` / `fun` / `let` / `let rec` 整体外包括号。
 test "print_expr: if, fun, let, let rec wrapped" {
   let z = fe_z()
-  assert_eq(
+  @test.assert_eq(
     print_expr(EIf(EVar("x", z), EInt(1, z), EInt(2, z), z)),
     "(if x then 1 else 2)",
   )
-  assert_eq(
+  @test.assert_eq(
     print_expr(ELam("x", EArith(Add, EVar("x", z), EInt(1, z), z), z)),
     "(fun x -> (x + 1))",
   )
-  assert_eq(
+  @test.assert_eq(
     print_expr(ELet("x", EInt(1, z), EVar("x", z), z)),
     "(let x = 1 in x)",
   )
-  assert_eq(
+  @test.assert_eq(
     print_expr(ELetRec("f", ELam("n", EVar("n", z), z), EVar("f", z), z)),
     "(let rec f = (fun n -> n) in f)",
   )
@@ -336,7 +336,7 @@ test "print_expr: if, fun, let, let rec wrapped" {
 /// 元组打印为 `(e1, e2, ...)`。
 test "print_expr: tuple" {
   let z = fe_z()
-  assert_eq(
+  @test.assert_eq(
     print_expr(ETuple([EInt(1, z), EInt(2, z), EBool(true, z)], z)),
     "(1, 2, true)",
   )
@@ -351,8 +351,8 @@ test "print_expr: tuple" {
 test "lex_ml: illegal char '@' yields LexError at its column" {
   let d = fe_lex_err("1 @ 2")
   assert_true(d.kind == LexError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -360,8 +360,8 @@ test "lex_ml: illegal char '@' yields LexError at its column" {
 test "lex_ml: lone '!' yields LexError" {
   let d = fe_lex_err("a ! b")
   assert_true(d.kind == LexError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -369,8 +369,8 @@ test "lex_ml: lone '!' yields LexError" {
 test "lex_ml: lone '&' yields LexError" {
   let d = fe_lex_err("a & b")
   assert_true(d.kind == LexError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -378,8 +378,8 @@ test "lex_ml: lone '&' yields LexError" {
 test "lex_ml: lone '|' yields LexError" {
   let d = fe_lex_err("a | b")
   assert_true(d.kind == LexError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -387,8 +387,8 @@ test "lex_ml: lone '|' yields LexError" {
 test "parse_ml: missing rhs yields SyntaxError" {
   let d = fe_parse_err("1 +")
   assert_true(d.kind == SyntaxError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -396,8 +396,8 @@ test "parse_ml: missing rhs yields SyntaxError" {
 test "parse_ml: leftover token yields SyntaxError" {
   let d = fe_parse_err("1 )")
   assert_true(d.kind == SyntaxError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 3)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 3)
 }
 
 ///|
@@ -405,8 +405,8 @@ test "parse_ml: leftover token yields SyntaxError" {
 test "parse_ml: extra close paren yields SyntaxError" {
   let d = fe_parse_err("(1))")
   assert_true(d.kind == SyntaxError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 4)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 4)
 }
 
 ///|
@@ -414,8 +414,8 @@ test "parse_ml: extra close paren yields SyntaxError" {
 test "parse_ml: incomplete let yields SyntaxError" {
   let d = fe_parse_err("let")
   assert_true(d.kind == SyntaxError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 1)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 1)
 }
 
 ///|
@@ -423,8 +423,8 @@ test "parse_ml: incomplete let yields SyntaxError" {
 test "parse_ml: missing else yields SyntaxError" {
   let d = fe_parse_err("if x then 1")
   assert_true(d.kind == SyntaxError)
-  assert_eq(d.line, 1)
-  assert_eq(d.col, 11)
+  @test.assert_eq(d.line, 1)
+  @test.assert_eq(d.col, 11)
 }
 
 ///|
@@ -434,8 +434,8 @@ test "parse_ml: empty input yields SyntaxError at (0,0)" {
     Ok(_) => abort("期望空输入 SyntaxError")
     Err(d) => {
       assert_true(d.kind == SyntaxError)
-      assert_eq(d.line, 0)
-      assert_eq(d.col, 0)
+      @test.assert_eq(d.line, 0)
+      @test.assert_eq(d.col, 0)
     }
   }
 }

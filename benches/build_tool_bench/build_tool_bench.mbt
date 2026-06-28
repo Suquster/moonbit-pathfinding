@@ -105,7 +105,7 @@ test "smoke: topo_order on a 1000-node chain is fully ordered" {
   let g = chain_graph(1000)
   match @bt.topo_order(g) {
     Ok(order) => {
-      assert_eq(order.length(), 1000)
+      @test.assert_eq(order.length(), 1000)
       assert_true(order[0] == @bt.Target::new("n0"))
       assert_true(order[999] == @bt.Target::new("n999"))
     }
@@ -119,9 +119,9 @@ test "smoke: fanout graph schedules into source then leaves" {
   let width = 256
   let g = fanout_graph(width)
   let batches = @bt.schedule(g, 0)
-  assert_eq(batches.length(), 2)
-  assert_eq(batches[0].length(), 1)
-  assert_eq(batches[1].length(), width)
+  @test.assert_eq(batches.length(), 2)
+  @test.assert_eq(batches[0].length(), 1)
+  @test.assert_eq(batches[1].length(), width)
 }
 
 // ---------------------------------------------------------------------------

@@ -53,7 +53,7 @@ pub(all) struct BenchCase {
   seed : UInt64
   raw_ns : Array[Double]
   stats : BenchStats
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整基准报告（Requirement 5.1 / 5.2）。
@@ -81,7 +81,7 @@ pub(all) struct BenchReport {
   generator : String
   warmup_count : Int
   cases : Array[BenchCase]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── Markdown 序列化 ─────────────────────────
 
@@ -267,7 +267,7 @@ fn json_push_field_str(
   value : String,
   leading : Bool,
 ) -> Unit {
-  if not(leading) {
+  if !leading {
     tb.push_char(',')
   }
   json_push_string(tb, key)
@@ -296,7 +296,7 @@ fn json_push_field_double(
   value : Double,
   leading : Bool,
 ) -> Unit {
-  if not(leading) {
+  if !leading {
     tb.push_char(',')
   }
   json_push_string(tb, key)
@@ -363,6 +363,11 @@ fn hex_digit_char(d : Int) -> Char {
 ///|
 /// 包内最小 JSON 值模型（精确枚举，不以字符串模拟结构 · Requirement 22.6）。
 /// `JObj` 以「有序键值对数组」保留键顺序，便于确定性与往返。
+///
+/// `JNull` / `JBool` 由解析器在遇到 `null` / `true` / `false` 字面量时构造，
+/// 以保证对合法 JSON 输入的完整接受；本报告的字段提取器不读取这两类取值，
+/// 故抑制 `unused_constructor`（移除会破坏解析鲁棒性）。
+#warnings("-unused_constructor")
 priv enum BJson {
   JNull
   JBool(Bool)
@@ -707,11 +712,7 @@ fn bj_as_string(j : BJson) -> String? {
 /// 取整型字段（须为 `JNum` 且为十进制整数字面量）；否则返回 `None`。
 fn bj_as_int(j : BJson) -> Int? {
   match j {
-    JNum(s) =>
-      match (try? @strconv.parse_int(s)) {
-        Ok(n) => Some(n)
-        Err(_) => None
-      }
+    JNum(s) => Some(@string.parse_int(s)) catch { _ => None }
     _ => None
   }
 }
@@ -720,11 +721,7 @@ fn bj_as_int(j : BJson) -> Int? {
 /// 取无符号 64 位整型字段（须为 `JNum`）；否则返回 `None`。
 fn bj_as_uint64(j : BJson) -> UInt64? {
   match j {
-    JNum(s) =>
-      match (try? @strconv.parse_uint64(s)) {
-        Ok(n) => Some(n)
-        Err(_) => None
-      }
+    JNum(s) => Some(@string.parse_uint64(s)) catch { _ => None }
     _ => None
   }
 }
@@ -734,11 +731,7 @@ fn bj_as_uint64(j : BJson) -> UInt64? {
 /// `Double::to_string` 互逆，保证逐位往返无损。
 fn bj_as_double(j : BJson) -> Double? {
   match j {
-    JNum(s) =>
-      match (try? @strconv.parse_double(s)) {
-        Ok(f) => Some(f)
-        Err(_) => None
-      }
+    JNum(s) => Some(@string.parse_double(s)) catch { _ => None }
     _ => None
   }
 }

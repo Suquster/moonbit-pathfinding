@@ -5,20 +5,20 @@
 ///|
 /// 正偏移：向未来推移。
 test "skewed_time applies positive offset" {
-  assert_eq(skewed_time(10UL, 5L), 15UL)
-  assert_eq(skewed_time(0UL, 7L), 7UL)
+  @test.assert_eq(skewed_time(10UL, 5L), 15UL)
+  @test.assert_eq(skewed_time(0UL, 7L), 7UL)
 }
 
 ///|
 /// 负偏移：向过去推移，但下钳到 0（不回退为非法值）。
 test "skewed_time clamps negative offset to zero" {
-  assert_eq(skewed_time(10UL, -4L), 6UL)
-  assert_eq(skewed_time(3UL, -10L), 0UL)
-  assert_eq(skewed_time(0UL, -1L), 0UL)
+  @test.assert_eq(skewed_time(10UL, -4L), 6UL)
+  @test.assert_eq(skewed_time(3UL, -10L), 0UL)
+  @test.assert_eq(skewed_time(0UL, -1L), 0UL)
 }
 
 ///|
 /// 零偏移：恒等。
 test "skewed_time with zero offset is identity" {
-  assert_eq(skewed_time(42UL, 0L), 42UL)
+  @test.assert_eq(skewed_time(42UL, 0L), 42UL)
 }

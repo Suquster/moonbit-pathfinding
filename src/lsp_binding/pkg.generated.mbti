@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "Suquster/moonbit-pathfinding/src/lsp_binding"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn cancel_id_of(Json) -> Id?
 
@@ -54,7 +58,7 @@ pub fn CancelRegistry::new() -> Self
 
 pub struct FrameReader {
   buf : Bytes
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn FrameReader::new() -> Self
 pub fn FrameReader::next(Self) -> Result[(JsonRpcMessage, Self)?, RpcError]
 pub fn FrameReader::push(Self, Bytes) -> Self
@@ -63,9 +67,7 @@ pub(all) enum Id {
   IdNum(Int)
   IdStr(String)
   IdNull
-} derive(Eq, Show)
-
-type JParser
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Json {
   JNull
@@ -74,13 +76,13 @@ pub(all) enum Json {
   JStr(String)
   JArr(Array[Json])
   JObj(Array[(String, Json)])
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum JsonRpcMessage {
-  Request(id~ : Id, method~ : String, params~ : Json)
+  Request(id~ : Id, method_name~ : String, params~ : Json)
   Response(id~ : Id, result~ : Json?, error~ : RpcError?)
-  Notification(method~ : String, params~ : Json)
-} derive(Eq, Show)
+  Notification(method_name~ : String, params~ : Json)
+} derive(Eq, @debug.Debug)
 
 pub struct Router {
   handlers : Map[String, (JsonRpcMessage) -> JsonRpcMessage?]
@@ -93,7 +95,7 @@ pub(all) struct RpcError {
   code : Int
   message : String
   data : Json?
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn RpcError::new(Int, String) -> Self
 pub fn RpcError::with_data(Int, String, Json) -> Self
 

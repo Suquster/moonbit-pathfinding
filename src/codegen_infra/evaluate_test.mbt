@@ -16,9 +16,9 @@ test "evaluate 直线算术求值" {
     phis: [],
   }
   let r = evaluate(p, Map([]), ["b0"])
-  inspect(r.output, content="[5]")
-  inspect(r.values.get("x#0"), content="Some(2)")
-  inspect(r.values.get("y#1"), content="Some(5)")
+  @debug.debug_inspect(r.output, content="[5]")
+  @debug.debug_inspect(r.values.get("x#0"), content="Some(2)")
+  @debug.debug_inspect(r.values.get("y#1"), content="Some(5)")
 }
 
 ///|
@@ -32,8 +32,8 @@ test "evaluate 沿指定分支解释执行 cbr" {
     ],
     phis: [],
   }
-  inspect(evaluate(p, Map([]), ["b0", "b1"]).output, content="[1]")
-  inspect(evaluate(p, Map([]), ["b0", "b2"]).output, content="[2]")
+  @debug.debug_inspect(evaluate(p, Map([]), ["b0", "b1"]).output, content="[1]")
+  @debug.debug_inspect(evaluate(p, Map([]), ["b0", "b2"]).output, content="[2]")
 }
 
 ///|
@@ -49,7 +49,13 @@ test "evaluate φ 按来路前驱选择实参" {
     entry="entry",
   )
   // 沿 then 来路：φ 选 then 的定义 → 输出 1。
-  inspect(evaluate(p, Map([]), ["entry", "then", "join"]).output, content="[1]")
+  @debug.debug_inspect(
+    evaluate(p, Map([]), ["entry", "then", "join"]).output,
+    content="[1]",
+  )
   // 沿 else 来路：φ 选 else 的定义 → 输出 2。
-  inspect(evaluate(p, Map([]), ["entry", "else", "join"]).output, content="[2]")
+  @debug.debug_inspect(
+    evaluate(p, Map([]), ["entry", "else", "join"]).output,
+    content="[2]",
+  )
 }

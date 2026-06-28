@@ -107,23 +107,23 @@ fn gen_non_object_toplevel(rng : @infra_pbt.Rng) -> String {
 ///|
 /// 类别 2：对象缺失 `jsonrpc` 字段 → invalid_request。
 fn gen_missing_jsonrpc(rng : @infra_pbt.Rng) -> String {
-  let method = gen_err_ident(rng, 6)
+  let method_name = gen_err_ident(rng, 6)
   match rng.next_below(2) {
-    0 => "{\"method\":\"" + method + "\",\"params\":[]}"
-    _ => "{\"id\":1,\"method\":\"" + method + "\"}"
+    0 => "{\"method\":\"" + method_name + "\",\"params\":[]}"
+    _ => "{\"id\":1,\"method\":\"" + method_name + "\"}"
   }
 }
 
 ///|
 /// 类别 3：`jsonrpc` 字段缺省值非 "2.0"（错误版本 / 非字符串）→ invalid_request。
 fn gen_bad_jsonrpc(rng : @infra_pbt.Rng) -> String {
-  let method = gen_err_ident(rng, 6)
-  let tail = "\",\"method\":\"" + method + "\"}"
+  let method_name = gen_err_ident(rng, 6)
+  let tail = "\",\"method\":\"" + method_name + "\"}"
   match rng.next_below(4) {
     0 => "{\"jsonrpc\":\"1.0" + tail
     1 => "{\"jsonrpc\":\"2.1" + tail
-    2 => "{\"jsonrpc\":2,\"method\":\"" + method + "\"}" // 数值版本
-    _ => "{\"jsonrpc\":true,\"method\":\"" + method + "\"}" // 布尔版本
+    2 => "{\"jsonrpc\":2,\"method\":\"" + method_name + "\"}" // 数值版本
+    _ => "{\"jsonrpc\":true,\"method\":\"" + method_name + "\"}" // 布尔版本
   }
 }
 
@@ -142,8 +142,8 @@ fn gen_non_string_method(rng : @infra_pbt.Rng) -> String {
 ///|
 /// 类别 5：请求 `id` 字段非法（小数 / 指数 / 数组 / 对象 / 布尔）→ invalid_request。
 fn gen_bad_id(rng : @infra_pbt.Rng) -> String {
-  let method = gen_err_ident(rng, 6)
-  let head = "{\"jsonrpc\":\"2.0\",\"method\":\"" + method + "\",\"id\":"
+  let method_name = gen_err_ident(rng, 6)
+  let head = "{\"jsonrpc\":\"2.0\",\"method\":\"" + method_name + "\",\"id\":"
   match rng.next_below(5) {
     0 => head + "1.5}" // 小数 id
     1 => head + "2e3}" // 指数 id

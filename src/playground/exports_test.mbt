@@ -45,123 +45,129 @@ let sentinel : Int = -1
 ///|
 test "pg_reset 合法返回 0、非法（行列非正）返回 InvalidArgument 码" {
   // 合法网格：3×3 全通行，返回成功码。
-  assert_eq(@playground.pg_reset(3, 3), ok)
-  assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_last_error(), ok)
   // 行数非正：Grid::new 拒绝，映射为 InvalidArgument 码且不改动既有网格。
-  assert_eq(@playground.pg_reset(0, 3), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_reset(0, 3), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 列数为负：同样拒绝。
-  assert_eq(@playground.pg_reset(3, -1), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_reset(3, -1), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 单元格不足 2（1×1 无法容纳互异起终点）：拒绝。
-  assert_eq(@playground.pg_reset(1, 1), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_reset(1, 1), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
 }
 
 ///|
 test "编辑 + 选择算法 + pg_compute 返回正步数" {
-  assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
   // 在既非起点（0）也非终点（8）的可通行格上设置一个障碍。
-  assert_eq(@playground.pg_set_obstacle(4, 1), ok)
-  assert_eq(@playground.pg_last_error(), ok)
-  assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
+  @test.assert_eq(@playground.pg_set_obstacle(4, 1), ok)
+  @test.assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
   // 计算逐步轨迹：起点必被弹出至少一帧，故步数恒为正。
   let count = @playground.pg_compute()
-  assert_eq(count > 0, true)
-  assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(count > 0, true)
+  @test.assert_eq(@playground.pg_last_error(), ok)
 }
 
 ///|
 test "pg_step_* 读取首帧与末帧（visited/frontier/current/flags）" {
-  assert_eq(@playground.pg_reset(3, 3), ok)
-  assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
   let count = @playground.pg_compute()
-  assert_eq(count > 0, true)
+  @test.assert_eq(count > 0, true)
 
   // —— 首帧（step 0）：起点刚被弹出并 closed ——
   // 已访问恰含起点一个节点。
-  assert_eq(@playground.pg_step_visited_len(0), 1)
+  @test.assert_eq(@playground.pg_step_visited_len(0), 1)
   // 已访问下标 0 即起点（线性下标 0）。
-  assert_eq(@playground.pg_step_visited_at(0, 0), 0)
+  @test.assert_eq(@playground.pg_step_visited_at(0, 0), 0)
   // 当前扩展节点为起点。
-  assert_eq(@playground.pg_step_current(0), 0)
+  @test.assert_eq(@playground.pg_step_current(0), 0)
   // 边界长度为合法非负读取（不是 -1 错误哨兵）。
-  assert_eq(@playground.pg_step_frontier_len(0) >= 0, true)
+  @test.assert_eq(@playground.pg_step_frontier_len(0) >= 0, true)
   // 首帧通常未终止（起点非终点）。
-  assert_eq(@playground.pg_step_flags(0) & flag_done_bit, 0)
-  assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_step_flags(0) & flag_done_bit, 0)
+  @test.assert_eq(@playground.pg_last_error(), ok)
 
   // —— 末帧（step count-1）：目标可达，命中并终止 ——
   let last = count - 1
   // done 位置位（终止帧）。
-  assert_eq(@playground.pg_step_flags(last) & flag_done_bit, flag_done_bit)
+  @test.assert_eq(
+    @playground.pg_step_flags(last) & flag_done_bit,
+    flag_done_bit,
+  )
   // found 位置位（命中目标帧）。
-  assert_eq(@playground.pg_step_flags(last) & flag_found_bit, flag_found_bit)
+  @test.assert_eq(
+    @playground.pg_step_flags(last) & flag_found_bit,
+    flag_found_bit,
+  )
   // 末帧当前节点即终点（3×3 网格终点线性下标 8）。
-  assert_eq(@playground.pg_step_current(last), 8)
-  assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_step_current(last), 8)
+  @test.assert_eq(@playground.pg_last_error(), ok)
 
   // —— 最终路径读取：含起点与终点 ——
   let path_len = @playground.pg_final_path_len()
-  assert_eq(path_len > 0, true)
-  assert_eq(@playground.pg_last_error(), ok)
-  assert_eq(@playground.pg_final_path_at(0), 0)
-  assert_eq(@playground.pg_final_path_at(path_len - 1), 8)
+  @test.assert_eq(path_len > 0, true)
+  @test.assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_final_path_at(0), 0)
+  @test.assert_eq(@playground.pg_final_path_at(path_len - 1), 8)
 }
 
 ///|
 test "pg_step_* 越界读取返回 -1 并置 InvalidArgument 错误码" {
-  assert_eq(@playground.pg_reset(3, 3), ok)
-  assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
   let count = @playground.pg_compute()
-  assert_eq(count > 0, true)
+  @test.assert_eq(count > 0, true)
   // 帧序越界：返回 -1 并置错误码。
-  assert_eq(@playground.pg_step_visited_len(count), sentinel)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_step_visited_len(count), sentinel)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 帧内下标越界：返回 -1 并置错误码。
-  assert_eq(@playground.pg_step_visited_at(0, 999), sentinel)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
-  assert_eq(@playground.pg_step_frontier_at(0, 999), sentinel)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_step_visited_at(0, 999), sentinel)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_step_frontier_at(0, 999), sentinel)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
 }
 
 ///|
 test "不可达布局下 pg_final_path_len 返回 -1 且 pg_last_error 为 0" {
   // 2×2 网格：起点 0=(0,0)、终点 3=(1,1)。封死终点的两个正交邻居（1 与 2），
   // 使终点孤立、从起点不可达。
-  assert_eq(@playground.pg_reset(2, 2), ok)
-  assert_eq(@playground.pg_set_obstacle(1, 1), ok)
-  assert_eq(@playground.pg_set_obstacle(2, 1), ok)
-  assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
+  @test.assert_eq(@playground.pg_reset(2, 2), ok)
+  @test.assert_eq(@playground.pg_set_obstacle(1, 1), ok)
+  @test.assert_eq(@playground.pg_set_obstacle(2, 1), ok)
+  @test.assert_eq(@playground.pg_select_algo(algo_code_bfs), ok)
   let count = @playground.pg_compute()
   // 仍至少产出一帧（起点被弹出）。
-  assert_eq(count > 0, true)
+  @test.assert_eq(count > 0, true)
   // 不可达是合法计算结果：路径长度返回 -1，错误码保持成功（非操作失败）。
-  assert_eq(@playground.pg_final_path_len(), sentinel)
-  assert_eq(@playground.pg_last_error(), ok)
+  @test.assert_eq(@playground.pg_final_path_len(), sentinel)
+  @test.assert_eq(@playground.pg_last_error(), ok)
 }
 
 ///|
 test "非法算法码 pg_select_algo 返回 InvalidArgument 且 last_error 映射正确" {
-  assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
   // 算法码超出 0..4：缺失算法入口，返回 InvalidArgument 码而非静默落空（R1.3）。
-  assert_eq(@playground.pg_select_algo(99), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_select_algo(99), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 负算法码：同样拒绝。
-  assert_eq(@playground.pg_select_algo(-1), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_select_algo(-1), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
 }
 
 ///|
 test "编辑非法时 pg_last_error 映射为 InvalidArgument" {
-  assert_eq(@playground.pg_reset(3, 3), ok)
+  @test.assert_eq(@playground.pg_reset(3, 3), ok)
   // 障碍格越界：返回 InvalidArgument 码。
-  assert_eq(@playground.pg_set_obstacle(999, 1), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_set_obstacle(999, 1), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 起点拖到终点（重叠）：拒绝并置错误码。
-  assert_eq(@playground.pg_set_start(8), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_set_start(8), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
   // 终点越界：拒绝并置错误码。
-  assert_eq(@playground.pg_set_goal(999), invalid_argument)
-  assert_eq(@playground.pg_last_error(), invalid_argument)
+  @test.assert_eq(@playground.pg_set_goal(999), invalid_argument)
+  @test.assert_eq(@playground.pg_last_error(), invalid_argument)
 }

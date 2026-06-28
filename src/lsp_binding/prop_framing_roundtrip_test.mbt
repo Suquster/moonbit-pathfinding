@@ -88,7 +88,7 @@ fn drain_frames(msgs : Array[JsonRpcMessage]) -> Array[JsonRpcMessage]? {
   let out : Array[JsonRpcMessage] = []
   let mut reader = FrameReader::new().push(stream)
   let mut done = false
-  while not(done) {
+  while !done {
     match reader.next() {
       Ok(Some((msg, rest))) => {
         out.push(msg)

@@ -96,7 +96,7 @@ let ascii_case_gap : Int = 0x20 // 大小写字母码位差
 /// 成帧解析错误（Requirement 10.2）。
 ///
 /// `Show` 一律手写（`derive(Eq)` + `pub impl Show ... with fn output`）以规避
-/// `derive(Show)` 弃用告警，与本仓 mini_compiler / codegen_infra 等方向一致。
+/// `derive(Debug)` 弃用告警，与本仓 mini_compiler / codegen_infra 等方向一致。
 pub(all) enum FrameError {
   MissingContentLength // 头部缺失 Content-Length
   InvalidContentLength(raw~ : String) // Content-Length 值非数字（携带原始文本）
@@ -124,7 +124,7 @@ fn write_frame_error(logger : &Logger, err : FrameError) -> Unit {
 }
 
 ///|
-/// 以可读形式展示成帧错误（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示成帧错误（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for FrameError with fn output(self : FrameError, logger : &Logger) -> Unit {
   write_frame_error(logger, self)
 }
@@ -332,7 +332,7 @@ pub(all) enum JsonRpcError {
 } derive(Eq)
 
 ///|
-/// 以可读形式展示 JSON-RPC 校验错误（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示 JSON-RPC 校验错误（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for JsonRpcError with fn output(
   self : JsonRpcError,
   logger : &Logger,

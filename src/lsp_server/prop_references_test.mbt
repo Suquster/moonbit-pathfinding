@@ -79,9 +79,9 @@ fn gen_dsl_value(rng : @infra_pbt.Rng, declared : Array[String]) -> String {
       // 注：经 `Char::from_int` 在**运行期**构造 `$` / `{` / `}`，避免源码中出现
       // 被常量折叠成字面 `${` 的片段（JS 后端会把悬空的 `${` 当作模板字符串插值
       // 起始，导致生成代码语法错误）；运行期仍得到 `${name}`。
-      let dollar = Char::from_int(0x24).to_string() // '$'
-      let lbrace = Char::from_int(0x7B).to_string() // '{'
-      let rbrace = Char::from_int(0x7D).to_string() // '}'
+      let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+      let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+      let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
       v = v + dollar + lbrace + name + rbrace
     }
     i = i + 1
@@ -132,7 +132,7 @@ fn gen_dsl_doc(rng : @infra_pbt.Rng) -> (TextDocument, String) {
     let key = dsl_key_pool[rng.next_below(dsl_key_pool.length())]
     let value = gen_dsl_value(rng, declared)
     text = text + key + " = " + value + "\n"
-    if not(declared_has(declared, key)) {
+    if !declared_has(declared, key) {
       declared.push(key)
     }
     emitted = emitted + 1
@@ -187,7 +187,7 @@ fn prop8_reference_definition_consistent(
           has_def = true
         }
       }
-      if not(has_def) {
+      if !has_def {
         return false
       }
       // 断言 2：refs 每个位置都落在 k 的某次出现上。
@@ -201,7 +201,7 @@ fn prop8_reference_definition_consistent(
             on_occurrence = true
           }
         }
-        if not(on_occurrence) {
+        if !on_occurrence {
           return false
         }
       }

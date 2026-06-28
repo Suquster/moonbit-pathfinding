@@ -395,10 +395,10 @@ test "Feature: championship-v1-upgrade, Property 9: large-scale path validity an
   // 锚点 2：同种子生成逐元素确定性（可复现性，R7.5 诊断种子可重放的前提）。
   let g1 = anchor_gen.generate(@infra_pbt.rng_new(0xABCD_1234_5678_9F0E))
   let g2 = anchor_gen.generate(@infra_pbt.rng_new(0xABCD_1234_5678_9F0E))
-  assert_eq(g1.side, g2.side)
-  assert_eq(g1.source, g2.source)
-  assert_eq(g1.target, g2.target)
-  assert_eq(p9_checksum(g1.adj), p9_checksum(g2.adj))
+  @test.assert_eq(g1.side, g2.side)
+  @test.assert_eq(g1.source, g2.source)
+  @test.assert_eq(g1.target, g2.target)
+  @test.assert_eq(p9_checksum(g1.adj), p9_checksum(g2.adj))
   // 锚点 3：恒满足的属性下，可复现重扫不应产生伪反例（found=None）。
   assert_true(p9_seeded_report(p9_base_seed, 256) is None)
 

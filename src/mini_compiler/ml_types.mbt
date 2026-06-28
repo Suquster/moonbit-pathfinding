@@ -25,7 +25,7 @@
 pub(all) struct Span {
   line : Int
   col : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// MiniML 词法单元（携带 span）。旁路新增，独立于既有冻结 `Token`（R12.1）。
@@ -61,7 +61,7 @@ pub(all) enum CmpOp {
   Eq_
   /// 不等于 `!=`。
   Ne
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 逻辑运算符（旁路新增）。
@@ -70,7 +70,7 @@ pub(all) enum LogicOp {
   And
   /// 逻辑或 `||`。
   Or
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// MiniML 抽象语法树。每个节点携带 span（R1.1, R1.2）。既有算术运算复用冻结的
@@ -115,7 +115,40 @@ pub(all) enum Ty {
   TyFun(Ty, Ty)
   /// 元组类型（可选特性 R1.5）。
   TyTuple(Array[Ty])
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// `Ty` 的文本表示用于对外类型诊断信息（如 "cannot unify .. with .."，R8.3），
+/// 属领域专用显示文本，故手工实现 `Show`；其格式与历史 `derive(Show)` 完全一致
+/// （构造子式），调试 / 测试比较走 `Debug`。逐段经 `logger` 写出，无字符串拼接。
+pub impl Show for Ty with fn output(self, logger) {
+  match self {
+    TyInt => logger.write_string("TyInt")
+    TyBool => logger.write_string("TyBool")
+    TyVar(id) => {
+      logger.write_string("TyVar(")
+      logger.write_string(id.to_string())
+      logger.write_string(")")
+    }
+    TyFun(a, b) => {
+      logger.write_string("TyFun(")
+      Show::output(a, logger)
+      logger.write_string(", ")
+      Show::output(b, logger)
+      logger.write_string(")")
+    }
+    TyTuple(ts) => {
+      logger.write_string("TyTuple([")
+      for i, t in ts {
+        if i > 0 {
+          logger.write_string(", ")
+        }
+        Show::output(t, logger)
+      }
+      logger.write_string("])")
+    }
+  }
+}
 
 ///|
 /// 类型方案 `∀a1..an. t`（let 多态，R4）。`vars` 为被全称量化的类型变量 id。

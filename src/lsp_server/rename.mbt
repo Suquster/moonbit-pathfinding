@@ -60,9 +60,9 @@ pub(all) struct WorkspaceEdit {
 ///|
 /// 在运行期构造 `${name}`（避免源码字面 `${`）。
 fn wrap_reference(name : String) -> String {
-  let dollar = Char::from_int(0x24).to_string() // '$'
-  let lbrace = Char::from_int(0x7B).to_string() // '{'
-  let rbrace = Char::from_int(0x7D).to_string() // '}'
+  let dollar = Int::unsafe_to_char(0x24).to_string() // '$'
+  let lbrace = Int::unsafe_to_char(0x7B).to_string() // '{'
+  let rbrace = Int::unsafe_to_char(0x7D).to_string() // '}'
   dollar + lbrace + name + rbrace
 }
 

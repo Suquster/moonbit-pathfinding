@@ -28,7 +28,7 @@ test "dag shortest path on diamond graph" {
   let result = dag_shortest_path(nodes, 0, dag_succ(edges), fn(n) { n == 3 })
   match result {
     Ok(Some((path, cost))) => {
-      inspect(path, content="[0, 1, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 3]")
       inspect(cost, content="3")
     }
     _ => fail("expected a path")
@@ -43,7 +43,7 @@ test "dag shortest path handles negative edges" {
   let result = dag_shortest_path(nodes, 0, dag_succ(edges), fn(n) { n == 1 })
   match result {
     Ok(Some((path, cost))) => {
-      inspect(path, content="[0, 2, 1]")
+      @debug.debug_inspect(path, content="[0, 2, 1]")
       inspect(cost, content="-2")
     }
     _ => fail("expected a path")
@@ -73,7 +73,7 @@ test "dag shortest path with start as goal" {
   let result = dag_shortest_path(nodes, 0, dag_succ(edges), fn(n) { n == 0 })
   match result {
     Ok(Some((path, cost))) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     _ => fail("expected trivial path")
@@ -90,7 +90,7 @@ test "dag shortest path picks cheapest among multiple goals" {
   })
   match result {
     Ok(Some((path, cost))) => {
-      inspect(path, content="[0, 1, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 3]")
       inspect(cost, content="2")
     }
     _ => fail("expected a path")

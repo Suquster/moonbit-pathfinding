@@ -43,7 +43,7 @@ pub(all) enum PathError {
   NegativeCycle
   /// 输入参数非法，附带诊断细节（Requirement 13.6）。
   InvalidArgument(String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 返回该错误变体对应的、人类可读的诊断消息字符串。

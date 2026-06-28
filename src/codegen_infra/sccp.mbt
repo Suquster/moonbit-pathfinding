@@ -24,7 +24,7 @@ pub(all) enum LatticeValue {
   Top
   Const(Int)
   Bottom
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 格的 meet（greatest lower bound）：Top 为单位元；同值常量相遇仍为该常量，
@@ -157,7 +157,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
     sites_by_block[s.block] = lst
   }
   // ---- 工作表不动点：交替更新可达性与格值，直至稳定 ----
-  let limit = defset.size() * 2 + p.blocks.length() * 2 + 8
+  let limit = defset.length() * 2 + p.blocks.length() * 2 + 8
   let mut prev_reach_size = -1
   let mut iter = 0
   let mut reach_block : Map[String, Bool] = Map([])
@@ -179,7 +179,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
         Some(b) =>
           for s in reachable_succs(b, values, defset) {
             re[(lbl, s)] = true
-            if not(rb.contains(s)) {
+            if !rb.contains(s) {
               rb[s] = true
               queue.push(s)
             }
@@ -190,7 +190,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
     // 2) 重算可达块内定义的格值（含 φ）。
     let mut changed = false
     for b in p.blocks {
-      if not(rb.contains(b.label)) {
+      if !rb.contains(b.label) {
         continue
       }
       for instr in b.instrs {
@@ -225,10 +225,10 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
     }
     reach_block = rb
     reach_edge = re
-    if not(changed) && rb.size() == prev_reach_size {
+    if !changed && rb.length() == prev_reach_size {
       break
     }
-    prev_reach_size = rb.size()
+    prev_reach_size = rb.length()
     iter = iter + 1
   }
   let _ = reach_block

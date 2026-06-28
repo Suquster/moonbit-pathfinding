@@ -34,7 +34,7 @@ test "redact preserves field key set" {
   })
   let policy = RedactionPolicy::by_names(["password"])
   let red = redact(policy, e)
-  assert_eq(red.fields.size(), e.fields.size())
+  @test.assert_eq(red.fields.length(), e.fields.length())
   assert_true(red.fields.get("password") == Some(redaction_mask))
   assert_true(red.fields.get("user") == Some(VStr("alice")))
   assert_true(red.fields.get("id") == Some(VInt(7L)))

@@ -17,14 +17,14 @@ test "Captures::group returns overall and sub-group spans, None for unset" {
   assert_true(caps.group(2) == None)
   assert_true(caps.group(3) == Some({ start: 3, end: 5 }))
   // 含第 0 组共 4 组。
-  assert_eq(caps.group_count(), 4)
+  @test.assert_eq(caps.group_count(), 4)
 }
 
 ///|
 /// 越界查询返回 `None`。
 test "Captures::group out of range returns None" {
   let caps : Captures = { slots: [0, 3], names: Map([]) }
-  assert_eq(caps.group_count(), 1)
+  @test.assert_eq(caps.group_count(), 1)
   assert_true(caps.group(0) == Some({ start: 0, end: 3 }))
   assert_true(caps.group(1) == None)
   assert_true(caps.group(-1) == None)

@@ -7,18 +7,18 @@
 /// 三策略处置范围见证（child_count = 5, failed = 2）。
 test "affected_children covers the three strategies (witness)" {
   // OneForOne：仅失败者。
-  assert_eq(affected_children(OneForOne, 5, 2), [2])
+  @test.assert_eq(affected_children(OneForOne, 5, 2), [2])
   // OneForAll：全部。
-  assert_eq(affected_children(OneForAll, 5, 2), [0, 1, 2, 3, 4])
+  @test.assert_eq(affected_children(OneForAll, 5, 2), [0, 1, 2, 3, 4])
   // RestForOne：失败者及其后。
-  assert_eq(affected_children(RestForOne, 5, 2), [2, 3, 4])
+  @test.assert_eq(affected_children(RestForOne, 5, 2), [2, 3, 4])
 }
 
 ///|
 /// 越界失败下标返回空范围。
 test "affected_children with out-of-range index yields empty" {
-  assert_eq(affected_children(OneForOne, 3, -1), [])
-  assert_eq(affected_children(OneForAll, 3, 5), [])
+  @test.assert_eq(affected_children(OneForOne, 3, -1), [])
+  @test.assert_eq(affected_children(OneForAll, 3, 5), [])
 }
 
 ///|
@@ -40,9 +40,9 @@ test "within_intensity respects the sliding window boundary (witness)" {
 /// RestartIntensity / SupervisorSpec 构造与派生见证。
 test "RestartIntensity and SupervisorSpec construct and derive Eq/Show" {
   let intensity = RestartIntensity::new(3, 10)
-  assert_eq(intensity, RestartIntensity::new(3, 10))
+  @test.assert_eq(intensity, RestartIntensity::new(3, 10))
   let spec = SupervisorSpec::new(OneForOne, intensity, Restart)
-  assert_eq(spec.strategy, OneForOne)
-  assert_eq(spec.default_directive, Restart)
-  assert_eq(spec.intensity.max_restarts, 3)
+  @test.assert_eq(spec.strategy, OneForOne)
+  @test.assert_eq(spec.default_directive, Restart)
+  @test.assert_eq(spec.intensity.max_restarts, 3)
 }

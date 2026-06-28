@@ -25,4 +25,11 @@ import {
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/infra_bench",
   "Suquster/moonbit-pathfinding/src/infra_text",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+  "moonbitlang/core/debug",
+} for "wbtest"

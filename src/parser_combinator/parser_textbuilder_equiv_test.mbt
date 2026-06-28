@@ -24,36 +24,36 @@
 /// `out = out + ...` → `TextBuilder.push_str` / `push_char` 改造后逐字符不变。
 test "textbuilder equiv: print_json_string escape loop" {
   // 普通字符串：仅首尾引号。
-  assert_eq(print_json(JString("abc")), "\"abc\"")
+  @test.assert_eq(print_json(JString("abc")), "\"abc\"")
   // 全部转义分支逐字符还原。
-  assert_eq(
+  @test.assert_eq(
     print_json(JString("\"\\\n\r\t\u{0008}\u{000C}")),
     "\"\\\"\\\\\\n\\r\\t\\b\\f\"",
   )
   // 混合：普通字符与转义交错。
-  assert_eq(print_json(JString("a\nb\tc")), "\"a\\nb\\tc\"")
+  @test.assert_eq(print_json(JString("a\nb\tc")), "\"a\\nb\\tc\"")
   // 空字符串：仅一对引号。
-  assert_eq(print_json(JString("")), "\"\"")
+  @test.assert_eq(print_json(JString("")), "\"\"")
 }
 
 ///|
 /// print_json：JArray / JObject 元素循环改造后逐字符等价（黄金串）。
 test "textbuilder equiv: print_json array/object loops" {
   // 空数组 / 空对象。
-  assert_eq(print_json(JArray([])), "[]")
-  assert_eq(print_json(JObject([])), "{}")
+  @test.assert_eq(print_json(JArray([])), "[]")
+  @test.assert_eq(print_json(JObject([])), "{}")
   // 多元素数组：逗号分隔，无尾随逗号。
-  assert_eq(
+  @test.assert_eq(
     print_json(JArray([JNumber(1.0), JBool(true), JNull])),
     "[1,true,null]",
   )
   // 多键对象：键经 print_json_string 转义，`key:value` 以逗号分隔。
-  assert_eq(
+  @test.assert_eq(
     print_json(JObject([("a", JNumber(1.0)), ("b", JArray([JNull]))])),
     "{\"a\":1,\"b\":[null]}",
   )
   // 嵌套结构：递归打印 + 循环拼接组合。
-  assert_eq(
+  @test.assert_eq(
     print_json(JArray([JObject([("x", JArray([JNumber(2.0)]))])])),
     "[{\"x\":[2]}]",
   )
@@ -65,17 +65,17 @@ test "textbuilder equiv: print_json array/object loops" {
 /// `s = s + "\{c}"` → `TextBuilder.push_char` 改造后，解码出的字符串值不变。
 test "textbuilder equiv: json_string_raw decode loop via parse_json" {
   match parse_json("\"hello world\"") {
-    Ok(JString(s)) => assert_eq(s, "hello world")
+    Ok(JString(s)) => @test.assert_eq(s, "hello world")
     _ => fail("期望 JString，实得其他结果")
   }
   // 转义序列解码：\n \t \" \\ \uXXXX。
   match parse_json("\"a\\nb\\tc\\\"\\\\\\u0041\"") {
-    Ok(JString(s)) => assert_eq(s, "a\nb\tc\"\\A")
+    Ok(JString(s)) => @test.assert_eq(s, "a\nb\tc\"\\A")
     _ => fail("期望 JString（含转义解码），实得其他结果")
   }
   // 空字符串解码。
   match parse_json("\"\"") {
-    Ok(JString(s)) => assert_eq(s, "")
+    Ok(JString(s)) => @test.assert_eq(s, "")
     _ => fail("期望空 JString，实得其他结果")
   }
 }
@@ -108,14 +108,29 @@ test "textbuilder equiv: print_json/parse_json roundtrip" {
 /// `ExampleExpr` 的同名构造子（`Num` / `Add` 等）冲突。
 test "textbuilder equiv: print_expr fully parenthesized" {
   // 单一二元节点。
-  assert_eq(print_expr(Expr::Add(Expr::Num(1.0), Expr::Num(2.0))), "(1+2)")
+  @test.assert_eq(
+    print_expr(Expr::Add(Expr::Num(1.0), Expr::Num(2.0))),
+    "(1+2)",
+  )
   // 全部运算符。
-  assert_eq(print_expr(Expr::Sub(Expr::Num(3.0), Expr::Num(1.0))), "(3-1)")
-  assert_eq(print_expr(Expr::Mul(Expr::Num(2.0), Expr::Num(4.0))), "(2*4)")
-  assert_eq(print_expr(Expr::Div(Expr::Num(8.0), Expr::Num(2.0))), "(8/2)")
-  assert_eq(print_expr(Expr::Pow(Expr::Num(2.0), Expr::Num(3.0))), "(2^3)")
+  @test.assert_eq(
+    print_expr(Expr::Sub(Expr::Num(3.0), Expr::Num(1.0))),
+    "(3-1)",
+  )
+  @test.assert_eq(
+    print_expr(Expr::Mul(Expr::Num(2.0), Expr::Num(4.0))),
+    "(2*4)",
+  )
+  @test.assert_eq(
+    print_expr(Expr::Div(Expr::Num(8.0), Expr::Num(2.0))),
+    "(8/2)",
+  )
+  @test.assert_eq(
+    print_expr(Expr::Pow(Expr::Num(2.0), Expr::Num(3.0))),
+    "(2^3)",
+  )
   // 嵌套：左/右子树递归。
-  assert_eq(
+  @test.assert_eq(
     print_expr(
       Expr::Add(
         Expr::Mul(Expr::Num(1.0), Expr::Num(2.0)),
@@ -132,9 +147,9 @@ test "textbuilder equiv: print_expr eval roundtrip" {
   // (2*3)+4 = 10
   let e = Expr::Add(Expr::Mul(Expr::Num(2.0), Expr::Num(3.0)), Expr::Num(4.0))
   let printed = print_expr(e)
-  assert_eq(printed, "((2*3)+4)")
+  @test.assert_eq(printed, "((2*3)+4)")
   match parse_and_eval(printed) {
-    Ok(v) => assert_eq(v, 10.0)
+    Ok(v) => @test.assert_eq(v, 10.0)
     Err(_) => fail("求值往返失败：\{printed}")
   }
 }

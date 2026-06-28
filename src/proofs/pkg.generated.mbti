@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/proofs"
 
 import {
   "Suquster/moonbit-pathfinding/src/core",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -150,14 +151,14 @@ pub(all) struct ProofEntry {
   property : String
   passed : Bool
   evidence : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ProofReport {
   backends : Array[String]
   moon_version : String
   generated_at : String
   entries : Array[ProofEntry]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn ProofReport::any_failed(Self) -> Bool
 pub fn ProofReport::from_json(String) -> Result[Self, String]
 pub fn ProofReport::to_json(Self) -> String

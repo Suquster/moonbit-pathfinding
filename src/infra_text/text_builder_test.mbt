@@ -8,8 +8,8 @@
 test "TextBuilder 空构建器" {
   let tb = TextBuilder::new()
   assert_true(tb.is_empty())
-  assert_eq(tb.len(), 0)
-  assert_eq(tb.build(), "")
+  @test.assert_eq(tb.len(), 0)
+  @test.assert_eq(tb.build(), "")
 }
 
 ///|
@@ -21,9 +21,9 @@ test "TextBuilder 混合追加等价于顺序拼接" {
   tb.push_char('d')
   tb.push_str("ef")
   let expected = "ab" + "c".to_string() + "d".to_string() + "ef"
-  assert_eq(tb.build(), expected)
-  assert_eq(tb.build(), "abcdef")
-  assert_eq(tb.len(), 6)
+  @test.assert_eq(tb.build(), expected)
+  @test.assert_eq(tb.build(), "abcdef")
+  @test.assert_eq(tb.len(), 6)
   assert_true(!tb.is_empty())
 }
 
@@ -33,11 +33,11 @@ test "TextBuilder build 后再追加保持全部历史片段" {
   let tb = TextBuilder::new()
   tb.push_str("hello")
   let first = tb.build()
-  assert_eq(first, "hello")
+  @test.assert_eq(first, "hello")
   tb.push_char(' ')
   tb.push_str("world")
-  assert_eq(tb.build(), "hello world")
-  assert_eq(tb.len(), 11)
+  @test.assert_eq(tb.build(), "hello world")
+  @test.assert_eq(tb.len(), 11)
 }
 
 ///|
@@ -46,13 +46,13 @@ test "TextBuilder reset 清空状态" {
   let tb = TextBuilder::with_capacity(4)
   tb.push_str("abc")
   tb.push_char('d')
-  assert_eq(tb.build(), "abcd")
+  @test.assert_eq(tb.build(), "abcd")
   tb.reset()
   assert_true(tb.is_empty())
-  assert_eq(tb.len(), 0)
-  assert_eq(tb.build(), "")
+  @test.assert_eq(tb.len(), 0)
+  @test.assert_eq(tb.build(), "")
   tb.push_str("xyz")
-  assert_eq(tb.build(), "xyz")
+  @test.assert_eq(tb.build(), "xyz")
 }
 
 ///|
@@ -62,6 +62,6 @@ test "TextBuilder 空串追加不破坏顺序" {
   tb.push_char('a')
   tb.push_str("")
   tb.push_char('b')
-  assert_eq(tb.build(), "ab")
-  assert_eq(tb.len(), 2)
+  @test.assert_eq(tb.build(), "ab")
+  @test.assert_eq(tb.len(), 2)
 }

@@ -32,7 +32,7 @@ pub(all) enum NetFaultKind {
   Duplicate
   ClockSkew(offset~ : Int64)
   Byzantine
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 扩展故障策略——注入点由「(步序号, 目标任务)」精确定位（R3.7）。
@@ -40,7 +40,7 @@ pub(all) struct FaultPolicyEx {
   at_step : Int
   task_id : Int
   kind : NetFaultKind
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由注入点、目标任务与扩展故障类型构造故障策略。

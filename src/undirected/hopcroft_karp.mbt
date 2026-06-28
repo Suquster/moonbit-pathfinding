@@ -25,7 +25,7 @@ const HK_INF : Int = 2147483647
 ///
 /// ## Complexity
 /// Time: O(E * sqrt(V)). Space: O(V + E).
-pub fn[L : Eq + Hash, R : Eq + Hash] hopcroft_karp(
+pub fn[L, R : Eq + Hash] hopcroft_karp(
   left : Array[L],
   right : Array[R],
   neighbors : (L) -> Array[R],

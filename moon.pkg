@@ -17,4 +17,5 @@ import {
   "Suquster/moonbit-pathfinding/src/advanced",
   "Suquster/moonbit-pathfinding/src/proofs",
   "Suquster/moonbit-pathfinding/src/docgen",
+  "moonbitlang/core/debug",
 } for "test"

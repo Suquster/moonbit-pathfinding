@@ -255,23 +255,23 @@ test "Feature: championship-v1-upgrade, Property 2: legal edit updates layout an
   let base = @playground.Grid::new(3, 3).unwrap()
   let case_a = P2Case::{ grid: base, op: 0, target: 4 }
   let after_a = base.set_start(4).unwrap()
-  assert_eq(after_a.start, 4)
-  assert_eq(after_a.goal, 8)
+  @test.assert_eq(after_a.start, 4)
+  @test.assert_eq(after_a.goal, 8)
   assert_true(p2_check(case_a))
 
   // 锚点 B：set_goal 把终点移到中心。
   let case_b = P2Case::{ grid: base, op: 1, target: 4 }
   let after_b = base.set_goal(4).unwrap()
-  assert_eq(after_b.goal, 4)
-  assert_eq(after_b.start, 0)
+  @test.assert_eq(after_b.goal, 4)
+  @test.assert_eq(after_b.start, 0)
   assert_true(p2_check(case_b))
 
   // 锚点 C：toggle_obstacle 在非端点格 1 切障碍。
   let case_c = P2Case::{ grid: base, op: 2, target: 1 }
   let after_c = base.toggle_obstacle(1).unwrap()
-  assert_eq(after_c.blocked[1], true)
-  assert_eq(after_c.start, 0)
-  assert_eq(after_c.goal, 8)
+  @test.assert_eq(after_c.blocked[1], true)
+  @test.assert_eq(after_c.start, 0)
+  @test.assert_eq(after_c.goal, 8)
   assert_true(p2_check(case_c))
 
   // 属性：随机网格 × 三种合法编辑 × 五种算法重算上，契约恒成立。迭代 128 次。

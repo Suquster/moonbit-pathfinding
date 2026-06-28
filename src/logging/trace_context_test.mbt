@@ -79,13 +79,13 @@ test "to_trace_context bridges into with_context preserving trace" {
     }
   }
   let bridged = extracted.to_trace_context()
-  assert_eq(bridged.trace.value, ctx.trace.value)
+  @test.assert_eq(bridged.trace.value, ctx.trace.value)
   // 在桥接上下文下续记，事件归属同一 trace。
   let tid = with_context(bridged, fn() {
     log(Level::Info, { "msg": VStr("downstream") })
     current_trace()
   })
-  assert_eq(tid.value, ctx.trace.value)
+  @test.assert_eq(tid.value, ctx.trace.value)
   let e = captured_events()[0]
   assert_true(e.fields.get("trace") == Some(VInt(ctx.trace.value)))
 }

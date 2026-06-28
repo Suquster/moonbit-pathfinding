@@ -253,7 +253,7 @@ test "Feature: championship-v1-upgrade, Property 1: step trace structural invari
   let steps_a = trace_a.steps
   assert_true(steps_a.length() > 0)
   // 首帧 visited 仅含起点。
-  assert_eq(steps_a[0].visited, [0])
+  @test.assert_eq(steps_a[0].visited, [0])
   // 末帧终止且命中。
   let last_a = steps_a[steps_a.length() - 1]
   assert_true(last_a.done)

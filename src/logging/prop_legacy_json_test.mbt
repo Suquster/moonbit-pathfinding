@@ -41,7 +41,7 @@ test "legacy scalar format_json is byte-identical to 0.1.0 (witness)" {
   //   ok(2) < msg(3) < count(5) < ratio(5，同长再按码元 c<r）。
   let expected = "{\"ts\":7,\"level\":\"WARN\",\"fields\":{" +
     "\"ok\":true,\"msg\":\"hi\",\"count\":42,\"ratio\":0.5}}"
-  assert_eq(json, expected)
+  @test.assert_eq(json, expected)
   // 同时验证往返（往返与字段顺序无关：Map 相等按内容判定）。
   assert_true(parse_json_log(json) == Some(e))
 }
@@ -50,5 +50,5 @@ test "legacy scalar format_json is byte-identical to 0.1.0 (witness)" {
 /// 空字段标量事件的字节级见证（边界）。
 test "legacy empty-fields format_json byte-identical (witness)" {
   let e = Event::new(0L, Level::Info, {})
-  assert_eq(format_json(e), "{\"ts\":0,\"level\":\"INFO\",\"fields\":{}}")
+  @test.assert_eq(format_json(e), "{\"ts\":0,\"level\":\"INFO\",\"fields\":{}}")
 }

@@ -78,8 +78,8 @@ fn cc_names_all_distinct(metas : Array[AlgoMeta]) -> Bool {
 test "Feature: championship-v1-upgrade, Property 29: metadata is complete, unique and non-blank (deterministic)" {
   let metas = algorithm_metadata()
   // (1) 总数恰为 33（以命名常量 algorithm_count 表达，单点维护）。
-  assert_eq(metas.length(), algorithm_count)
-  assert_eq(metas.length(), 33)
+  @test.assert_eq(metas.length(), algorithm_count)
+  @test.assert_eq(metas.length(), 33)
   // (2) 名称两两互异（无重复无遗漏）。
   assert_true(cc_names_all_distinct(metas))
   // (3) 每条 5 个字段全部非空。
@@ -88,7 +88,7 @@ test "Feature: championship-v1-upgrade, Property 29: metadata is complete, uniqu
   }
   // 附加：complexity_table 物化为 2 行表头 + 33 行数据 = 35 行。
   match complexity_table(metas) {
-    Ok(table) => assert_eq(cc_count_newlines(table), 35)
+    Ok(table) => @test.assert_eq(cc_count_newlines(table), 35)
     Err(_) => abort("complexity_table 对合法 33 条元数据不应失败")
   }
 }

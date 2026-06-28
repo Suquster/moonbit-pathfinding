@@ -19,7 +19,7 @@ pub(all) enum Pending {
   PDeliver(from~ : Int, to~ : Int, msg~ : Message)
   /// 唤醒任务 `task_id` 执行一步。
   PWake(task_id~ : Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 队列中的待处理事件（内部调度元素），按全序 `(time, task_id, order_key)` 比较。
@@ -28,7 +28,7 @@ pub(all) struct QueuedEvent {
   task_id : Int
   order_key : UInt64
   pending : Pending
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 全序事件队列：以数组承载待处理事件，按 `(time, task_id, order_key)` 取最小。

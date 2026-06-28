@@ -23,7 +23,7 @@ pub(all) struct CostRule {
   pattern : String
   template : String
   cost : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一个规则的 pattern 是否匹配给定节点种类与运算符。

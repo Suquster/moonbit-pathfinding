@@ -22,7 +22,7 @@
 ///|
 /// actor 运行时的可变状态。骨架阶段仅承载单调递增的 actor id 分配源；
 /// 任务 16.2 将在此基础上扩展确定性调度所需的运行时状态（就绪队列等）。
-struct ActorRuntime {
+priv struct ActorRuntime {
   mut next_id : Int
 }
 

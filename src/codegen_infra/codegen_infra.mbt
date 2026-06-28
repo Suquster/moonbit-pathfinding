@@ -17,7 +17,7 @@
 /// `Hash`；派生 `Compare` 以支持确定性排序，`Show` 便于诊断输出。
 pub(all) struct Var {
   id : Int
-} derive(Eq, Hash, Compare, Show)
+} derive(Eq, Hash, Compare, Debug)
 
 ///|
 /// 物理存储位置：分配到物理寄存器编号 `Reg`，或溢出到栈槽编号 `Spill`。
@@ -25,7 +25,7 @@ pub(all) struct Var {
 pub(all) enum Location {
   Reg(Int)
   Spill(Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 干涉图（Interference Graph）。
@@ -36,7 +36,7 @@ pub(all) enum Location {
 pub(all) struct InterferenceGraph {
   nodes : Array[Var]
   edges : Array[(Var, Var)]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 活跃区间（Live Interval）—— 线性扫描寄存器分配的输入单元。
@@ -44,7 +44,7 @@ pub(all) struct LiveInterval {
   variable : Var
   start : Int
   end : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 基本块（Basic Block）—— SSA 构造的输入单元。
@@ -55,14 +55,14 @@ pub(all) struct BasicBlock {
   label : String
   instrs : Array[String]
   succs : Array[String]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// φ 函数（SSA 形式在控制流汇合点合并多个到达定义）。
 pub(all) struct Phi {
   dest : Var
   args : Array[Var]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// SSA 程序（Static Single Assignment Program）。
@@ -72,7 +72,7 @@ pub(all) struct Phi {
 pub(all) struct SsaProgram {
   blocks : Array[BasicBlock]
   phis : Array[Phi]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 优化 pass 标识。`run_passes` 按声明顺序执行并保持 SSA 不变量（任务 11.2）。
@@ -80,14 +80,14 @@ pub(all) enum Pass {
   ConstFold // 常量折叠
   DeadCodeElim // 死代码消除
   CopyProp // 复制传播
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 指令选择规则（Instruction Selection Rule）—— isel DSL 的一条模式→模板映射。
 pub(all) struct IselRule {
   pattern : String
   template : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 中间表示节点（IR Node）—— `select` 的输入树。
@@ -95,14 +95,14 @@ pub(all) enum IrNode {
   Const(Int)
   VarRef(Var)
   BinOp(String, IrNode, IrNode)
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 目标指令（Target Instruction）—— `select` 的输出单元。
 pub(all) struct TargetInstr {
   op : String
   operands : Array[String]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ---------------------------------------------------------------------------
 // 复用接缝（Reuse Seam）：依赖既有 @directed 干涉图资产

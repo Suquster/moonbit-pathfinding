@@ -26,7 +26,7 @@ pub(all) struct W3CContext {
   trace_id : String
   span_id : String
   flags : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 将既有 `TraceContext` 注入为 traceparent 文本（Requirement 6.1）。
@@ -80,10 +80,10 @@ pub fn extract_traceparent(s : String) -> W3CContext? {
     flags_str.length() != 2 {
     return None
   }
-  if not(is_hex(version)) ||
-    not(is_hex(trace_id)) ||
-    not(is_hex(span_id)) ||
-    not(is_hex(flags_str)) {
+  if !is_hex(version) ||
+    !is_hex(trace_id) ||
+    !is_hex(span_id) ||
+    !is_hex(flags_str) {
     return None
   }
   let flags = match hex_to_int(flags_str) {
@@ -138,7 +138,7 @@ fn is_hex(s : String) -> Bool {
     let ok = (c >= '0' && c <= '9') ||
       (c >= 'a' && c <= 'f') ||
       (c >= 'A' && c <= 'F')
-    if not(ok) {
+    if !ok {
       return false
     }
   }

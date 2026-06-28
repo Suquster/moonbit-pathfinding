@@ -31,7 +31,7 @@
 pub(all) enum TextDocumentSyncKind {
   Full // 每次发送全文
   Incremental // 每次发送变更区间
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一条内容变更（LSP `TextDocumentContentChangeEvent`）：

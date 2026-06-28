@@ -58,7 +58,7 @@ pub fn parse_logfmt(s : String) -> Event? {
   let reader : JsonReader = { chars, pos: 0 }
   let mut ts_val : Int64? = None
   let mut level_val : Level? = None
-  let fields : Map[String, Value] = Map::new()
+  let fields : Map[String, Value] = Map([])
   reader.skip_ws()
   while reader.pos < reader.chars.length() {
     // 读取键：到 '=' 为止；键中不得含空格（裸键约定）。
@@ -78,7 +78,7 @@ pub fn parse_logfmt(s : String) -> Event? {
       reader.pos = reader.pos + 1
     }
     let key = key_buf.build()
-    if not(saw_eq) || key == "" {
+    if !saw_eq || key == "" {
       return None
     }
     if key == "ts" {

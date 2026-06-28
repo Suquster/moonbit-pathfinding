@@ -37,7 +37,7 @@ pub enum CodeNode {
   CBlock(header~ : String, body~ : Array[CodeNode], close~ : String)
   CSeq(Array[CodeNode])
   CIndent(CodeNode)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ──────────────────────────────── 渲染（物化） ─────────────────────────────
 
@@ -161,7 +161,7 @@ pub fn gen_moonbit_ast(schema : ProtoSchema) -> CodeNode {
       CBlock(
         header="pub struct \{sname} {",
         body=struct_body,
-        close="} derive(Eq, Show)",
+        close="} derive(Eq, Debug)",
       ),
     )
     // 配套编解码函数，委托共享类型化模型（与 gen_moonbit_full 一致语义）。
@@ -203,16 +203,16 @@ test "render_code 缩进算法冒烟" {
   let node = CBlock(
     header="pub struct P {",
     body=[CLine("x : Int"), CIndent(CLine("y : Int"))],
-    close="} derive(Eq, Show)",
+    close="} derive(Eq, Debug)",
   )
   // header 不缩进；body 第一行缩进一级；CIndent 再加一级（共两级）；close 回到本级。
   let expected =
     #|pub struct P {
     #|  x : Int
     #|    y : Int
-    #|} derive(Eq, Show)
+    #|} derive(Eq, Debug)
     #|
-  assert_eq(render_code(node), expected)
+  @test.assert_eq(render_code(node), expected)
 }
 
 ///|
@@ -224,7 +224,7 @@ test "render_code 自定义缩进单元冒烟" {
     #|    b
     #|}
     #|
-  assert_eq(render_code(node, indent_unit="    "), expected)
+  @test.assert_eq(render_code(node, indent_unit="    "), expected)
 }
 
 ///|
@@ -259,7 +259,7 @@ test "gen_moonbit_structured 生成关键字冒烟" {
   assert_true(code.contains("pub struct Pt {"))
   assert_true(code.contains("x : Int"))
   assert_true(code.contains("tags : Array[String]"))
-  assert_true(code.contains("} derive(Eq, Show)"))
+  assert_true(code.contains("} derive(Eq, Debug)"))
   assert_true(code.contains("Pt_encode"))
   assert_true(code.contains("Pt_decode"))
 }

@@ -6,14 +6,14 @@
 ///|
 /// shrink_int(0) 无可收缩，返回空数组。
 test "shrink_int of zero is empty" {
-  assert_eq(shrink_int(0).length(), 0)
+  @test.assert_eq(shrink_int(0).length(), 0)
 }
 
 ///|
 /// shrink_int 的所有候选都严格比原值更接近 0，且不含原值、首项为 0。
 test "shrink_int candidates move toward zero" {
   let cs = shrink_int(8)
-  assert_eq(cs[0], 0)
+  @test.assert_eq(cs[0], 0)
   for c in cs {
     assert_true(c != 8)
     // 落在 [0, 8) 内，即比原值更接近 0。
@@ -25,7 +25,7 @@ test "shrink_int candidates move toward zero" {
 /// shrink_int 对负值同样朝 0 收缩。
 test "shrink_int handles negative values" {
   let cs = shrink_int(-8)
-  assert_eq(cs[0], 0)
+  @test.assert_eq(cs[0], 0)
   for c in cs {
     assert_true(c != -8)
     // 落在 (-8, 0] 内，即比原值更接近 0。
@@ -69,7 +69,7 @@ test "check_with_shrink returns a shrunk failing counterexample" {
       // 关键不变量：收缩产物仍使属性失败。
       assert_true(!pred(c))
       // 朝 0 收缩后，最小失败反例应为 5（首个使 x<=4 为假的非负整数）。
-      assert_eq(c, 5)
+      @test.assert_eq(c, 5)
     }
     None => assert_true(false)
   }
@@ -79,6 +79,6 @@ test "check_with_shrink returns a shrunk failing counterexample" {
 /// Shrinkable：可携带值与惰性候选集，candidates 求值返回收缩候选。
 test "shrinkable carries value and lazy candidates" {
   let s = Shrinkable::new(6, fn() { shrink_int(6) })
-  assert_eq(s.value, 6)
+  @test.assert_eq(s.value, 6)
   assert_true(s.candidates().length() > 0)
 }

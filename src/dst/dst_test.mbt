@@ -13,7 +13,7 @@ test "rng is deterministic for the same seed" {
   let b = rng_new(0x1234_5678_9ABC_DEF0)
   let mut i = 0
   while i < 64 {
-    assert_eq(a.next(), b.next())
+    @test.assert_eq(a.next(), b.next())
     i += 1
   }
 }
@@ -23,14 +23,14 @@ test "rng is deterministic for the same seed" {
 test "rng diverges for different seeds" {
   let a = rng_new(1)
   let b = rng_new(2)
-  assert_not_eq(a.next(), b.next())
+  @test.assert_not_eq(a.next(), b.next())
 }
 
 ///|
 /// 零种子被安全地回退为非零状态，仍能产生非零随机序列（规避 xorshift 零不动点）。
 test "rng_new handles zero seed without collapsing to zero" {
   let r = rng_new(0)
-  assert_not_eq(r.next(), 0)
+  @test.assert_not_eq(r.next(), 0)
 }
 
 ///|
@@ -43,7 +43,7 @@ test "rng next_below stays within bounds" {
     assert_true(v >= 0 && v < 10)
     i += 1
   }
-  assert_eq(rng_new(7).next_below(0), 0)
+  @test.assert_eq(rng_new(7).next_below(0), 0)
 }
 
 ///|
@@ -57,7 +57,7 @@ test "skeleton stubs expose the designed interface shape" {
   // run / replay 桩回填种子，锁定 SimResult 数据流形态。
   let scenario = Scenario::new(tasks, [], 16)
   let result = run(123, scenario)
-  assert_eq(result.seed, 123)
+  @test.assert_eq(result.seed, 123)
   let replayed = replay(123, result.trace)
-  assert_eq(replayed.seed, 123)
+  @test.assert_eq(replayed.seed, 123)
 }

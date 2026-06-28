@@ -11,16 +11,16 @@
 /// 登记的发布元数据身份字段正确，版本为旗舰深化版 0.2.0。
 test "lsp release_info registers identity at 0.2.0" {
   let info = release_info()
-  assert_eq(info.name, "lsp")
-  assert_eq(info.version, "0.2.0")
-  assert_eq(info.changelog_path, "src/lsp_server/CHANGELOG.md")
+  @test.assert_eq(info.name, "lsp")
+  @test.assert_eq(info.version, "0.2.0")
+  @test.assert_eq(info.changelog_path, "src/lsp_server/CHANGELOG.md")
 }
 
 ///|
 /// 登记的版本号是合法 SemVer，且恰为 0.2.0。
 test "lsp version is a well-formed 0.2.0 semver" {
   assert_true(@release_meta.is_valid_semver(lsp_version))
-  assert_eq(
+  @test.assert_eq(
     @release_meta.parse_semver(lsp_version),
     Some({ major: 0, minor: 2, patch: 0 }),
   )
@@ -29,8 +29,8 @@ test "lsp version is a well-formed 0.2.0 semver" {
 ///|
 /// 发布单元名为 "lsp"，changelog 指向方向入口子包实际维护路径。
 test "lsp release identity uses unit name and entry-package changelog" {
-  assert_eq(lsp_name, "lsp")
-  assert_eq(lsp_changelog_path, "src/lsp_server/CHANGELOG.md")
+  @test.assert_eq(lsp_name, "lsp")
+  @test.assert_eq(lsp_changelog_path, "src/lsp_server/CHANGELOG.md")
 }
 
 ///|
@@ -42,8 +42,8 @@ test "lsp release_info_with_gates matches aggregate gate" {
     docs_passing: true,
   })
   assert_true(ready.release_ready)
-  assert_eq(ready.name, "lsp")
-  assert_eq(ready.version, "0.2.0")
+  @test.assert_eq(ready.name, "lsp")
+  @test.assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: true,
@@ -119,10 +119,10 @@ test "lsp release gate truth table: any failing gate blocks release-ready" {
           proofs_passing: p,
           docs_passing: d,
         })
-        assert_eq(dr.release_ready, t && p && d)
-        assert_eq(dr.name, "lsp")
-        assert_eq(dr.version, "0.2.0")
-        assert_eq(dr.changelog_path, "src/lsp_server/CHANGELOG.md")
+        @test.assert_eq(dr.release_ready, t && p && d)
+        @test.assert_eq(dr.name, "lsp")
+        @test.assert_eq(dr.version, "0.2.0")
+        @test.assert_eq(dr.changelog_path, "src/lsp_server/CHANGELOG.md")
       }
     }
   }

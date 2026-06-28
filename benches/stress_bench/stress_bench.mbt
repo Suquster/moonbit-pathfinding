@@ -253,7 +253,7 @@ pub(all) enum StressAlgo {
   Bfs
   Dijkstra
   Astar
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 算法可读名称（用于诊断渲染）。
@@ -569,7 +569,7 @@ pub fn run_stress_suite(side : Int) -> StressReport {
 test "smoke: stress suite on small grid passes all R7 checks" {
   let report = run_stress_suite(smoke_grid_side)
   // 用例数恒为 6（3 算法 × {可达, 不可达}）。
-  assert_eq(report.cases.length(), 6)
+  @test.assert_eq(report.cases.length(), 6)
   if !report.all_passed() {
     println(report.failure_diagnostics())
   }

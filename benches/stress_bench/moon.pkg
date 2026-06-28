@@ -25,6 +25,7 @@ import {
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/infra_text",
+  "moonbitlang/core/test",
 }
 
 // 属性测试依赖（task 20.2，Property 9）：仅测试期引入统一的 `Gen` / `Rng` /
@@ -32,4 +33,9 @@ import {
 // （stress_bench.mbt）不依赖 PBT 框架，故以 `for "test"` 作用域引入、不进入产物。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

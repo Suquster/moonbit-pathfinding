@@ -13,10 +13,10 @@ test "histogram buckets values by ascending boundaries" {
     Event::new(4L, Level::Info, { "lat": VInt(99L) }), // 桶2
   ]
   let h = histogram(events, "lat", [10.0, 20.0])
-  assert_eq(h.buckets.length(), 3)
-  assert_eq(h.buckets[0], 1) // <10
-  assert_eq(h.buckets[1], 2) // [10,20)
-  assert_eq(h.buckets[2], 2) // >=20
+  @test.assert_eq(h.buckets.length(), 3)
+  @test.assert_eq(h.buckets[0], 1) // <10
+  @test.assert_eq(h.buckets[1], 2) // [10,20)
+  @test.assert_eq(h.buckets[2], 2) // >=20
 }
 
 ///|
@@ -36,9 +36,9 @@ test "histogram skips missing and non-numeric fields" {
   for b in h.buckets {
     sum = sum + b
   }
-  assert_eq(sum, 2)
-  assert_eq(h.buckets[0], 1) // <10
-  assert_eq(h.buckets[1], 1) // >=10
+  @test.assert_eq(sum, 2)
+  @test.assert_eq(h.buckets[0], 1) // <10
+  @test.assert_eq(h.buckets[1], 1) // >=10
 }
 
 ///|
@@ -50,6 +50,6 @@ test "histogram with no boundaries is a single bucket" {
     Event::new(2L, Level::Info, { "v": VStr("skip") }),
   ]
   let h = histogram(events, "v", [])
-  assert_eq(h.buckets.length(), 1)
-  assert_eq(h.buckets[0], 2)
+  @test.assert_eq(h.buckets.length(), 1)
+  @test.assert_eq(h.buckets[0], 2)
 }

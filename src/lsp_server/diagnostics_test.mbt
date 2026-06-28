@@ -96,7 +96,7 @@ test "publish_diagnostics_notification carries uri and diagnostics array" {
   let msg = publish_diagnostics_notification("file:///a.conf", [d1, d2])
   match msg {
     @lsp_binding.Notification(method_name~, params~) => {
-      assert_eq(method_name, "textDocument/publishDiagnostics")
+      @test.assert_eq(method_name, "textDocument/publishDiagnostics")
       // params 必为携带 uri 与 diagnostics 数组的对象。
       assert_true(
         params ==
@@ -122,7 +122,7 @@ test "publish_diagnostics_notification carries empty array when no diagnostics" 
   let msg = publish_diagnostics_notification("file:///empty.conf", [])
   match msg {
     @lsp_binding.Notification(method_name~, params~) => {
-      assert_eq(method_name, "textDocument/publishDiagnostics")
+      @test.assert_eq(method_name, "textDocument/publishDiagnostics")
       assert_true(
         params ==
         @lsp_binding.JObj([
@@ -150,18 +150,18 @@ test "pull_diagnostics returns current document diagnostics" {
   // pull 路径与 analyze 投影一致。
   assert_true(pulled == analyze(doc).diagnostics)
   // 具体见证：两条诊断。
-  assert_eq(pulled.length(), 2)
+  @test.assert_eq(pulled.length(), 2)
   // 第一条：line 1 缺 '=' → Error，范围覆盖整行 [0, 11)。
   assert_true(pulled[0].severity == Error)
   assert_true(pulled[0].range == diag_span(1, 0, 11))
-  assert_eq(
+  @test.assert_eq(
     pulled[0].message,
     "缺少 '='：期望形如 key = value 的赋值",
   )
   // 第二条：未定义引用 ${b} → Warning，范围覆盖 line 0 的 ${b} [4, 8)。
   assert_true(pulled[1].severity == Warning)
   assert_true(pulled[1].range == diag_span(0, 4, 8))
-  assert_eq(pulled[1].message, "引用了未定义的键：b")
+  @test.assert_eq(pulled[1].message, "引用了未定义的键：b")
 }
 
 ///|
@@ -173,5 +173,5 @@ test "pull_diagnostics returns empty for a valid document" {
   }
   let pulled = pull_diagnostics(doc)
   assert_true(pulled == analyze(doc).diagnostics)
-  assert_eq(pulled.length(), 0)
+  @test.assert_eq(pulled.length(), 0)
 }

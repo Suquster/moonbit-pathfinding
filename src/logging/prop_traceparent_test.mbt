@@ -38,7 +38,7 @@ test "Feature: logging, Property 11: traceparent inject/extract round-trip (hold
     match extract_traceparent(s) {
       Some(w) => {
         // 严格提取成功即蕴含 32hex/16hex/2hex 形态；再校验采样位与往返。
-        if !(w.is_sampled()) {
+        if !w.is_sampled() {
           return false
         }
         let back = w.to_trace_context()
@@ -65,14 +65,14 @@ test "traceparent round-trips identifiers (witness)" {
     span: Some({ value: 0x1122334455667788L }),
   }
   let s = inject_traceparent(ctx)
-  assert_eq(s.length(), 55)
+  @test.assert_eq(s.length(), 55)
   assert_true(s.contains("0123456789abcdef")) // trace 低 64 位 hex
   assert_true(s.contains("1122334455667788")) // span hex
   match extract_traceparent(s) {
     Some(w) => {
       assert_true(w.is_sampled())
       let back = w.to_trace_context()
-      assert_eq(back.trace.value, ctx.trace.value)
+      @test.assert_eq(back.trace.value, ctx.trace.value)
       assert_true(back.span == ctx.span)
     }
     None => fail("合法 traceparent 应提取成功")

@@ -48,7 +48,7 @@ pub(all) struct ProofEntry {
   property : String
   passed : Bool
   evidence : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整证明报告（Requirement 11.1 / 11.3）。
@@ -66,7 +66,7 @@ pub(all) struct ProofReport {
   moon_version : String
   generated_at : String
   entries : Array[ProofEntry]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 失败聚合 ─────────────────────────────
 
@@ -78,7 +78,7 @@ pub(all) struct ProofReport {
 /// 复杂度 O(n)，`n` 为证明条目数；可在任意时刻安全地重复调用。
 pub fn ProofReport::any_failed(self : ProofReport) -> Bool {
   for e in self.entries {
-    if !(e.passed) {
+    if !e.passed {
       return true
     }
   }
@@ -219,7 +219,7 @@ fn pr_json_push_field_str(
   value : String,
   leading : Bool,
 ) -> Unit {
-  if !(leading) {
+  if !leading {
     tb.push_char(',')
   }
   pr_json_push_string(tb, key)

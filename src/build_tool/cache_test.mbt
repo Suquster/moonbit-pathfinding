@@ -48,7 +48,7 @@ test "deserialize_cache round-trips a serialized cache" {
 test "deserialize_cache reports illegal marker with line number" {
   match deserialize_cache("# recorded_mtimes\nX app 100\n") {
     Ok(_) => fail("非法标记应报错")
-    Err(e) => assert_eq(e.line, 2)
+    Err(e) => @test.assert_eq(e.line, 2)
   }
 }
 
@@ -57,6 +57,6 @@ test "deserialize_cache reports illegal marker with line number" {
 test "deserialize_cache reports non-numeric mtime" {
   match deserialize_cache("M app notanumber\n") {
     Ok(_) => fail("非法 mtime 应报错")
-    Err(e) => assert_eq(e.line, 1)
+    Err(e) => @test.assert_eq(e.line, 1)
   }
 }

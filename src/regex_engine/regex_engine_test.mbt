@@ -107,8 +107,8 @@ test "parse escaped metacharacter" {
 test "illegal unbalanced group" {
   match parse_regex("(a") {
     Err(Unbalanced(pos~, what~)) => {
-      assert_eq(what, "(")
-      assert_eq(pos, 2)
+      @test.assert_eq(what, "(")
+      @test.assert_eq(pos, 2)
     }
     _ => fail("expected Unbalanced error")
   }
@@ -119,8 +119,8 @@ test "illegal unbalanced group" {
 test "illegal unbalanced class" {
   match parse_regex("[a") {
     Err(Unbalanced(pos~, what~)) => {
-      assert_eq(what, "[")
-      assert_eq(pos, 0)
+      @test.assert_eq(what, "[")
+      @test.assert_eq(pos, 0)
     }
     _ => fail("expected Unbalanced error")
   }
@@ -130,7 +130,7 @@ test "illegal unbalanced class" {
 /// 量词无作用对象 → `DanglingQuantifier`，位置指向该量词。
 test "illegal dangling quantifier" {
   match parse_regex("*") {
-    Err(DanglingQuantifier(pos~)) => assert_eq(pos, 0)
+    Err(DanglingQuantifier(pos~)) => @test.assert_eq(pos, 0)
     _ => fail("expected DanglingQuantifier error")
   }
 }
@@ -139,7 +139,7 @@ test "illegal dangling quantifier" {
 /// 残余未消费输入（多余的 `)`）→ `TrailingInput`。
 test "illegal trailing input" {
   match parse_regex("a)") {
-    Err(TrailingInput(pos~)) => assert_eq(pos, 1)
+    Err(TrailingInput(pos~)) => @test.assert_eq(pos, 1)
     _ => fail("expected TrailingInput error")
   }
 }
@@ -148,7 +148,7 @@ test "illegal trailing input" {
 /// 计数量词缺少数字 → `InvalidRepeat`。
 test "illegal counted repeat" {
   match parse_regex("a{}") {
-    Err(InvalidRepeat(pos~)) => assert_eq(pos, 1)
+    Err(InvalidRepeat(pos~)) => @test.assert_eq(pos, 1)
     _ => fail("expected InvalidRepeat error")
   }
 }
@@ -157,7 +157,7 @@ test "illegal counted repeat" {
 /// 输入末尾的悬空反斜杠 → `Unexpected`。
 test "illegal dangling escape" {
   match parse_regex("\\") {
-    Err(Unexpected(pos~, ..)) => assert_eq(pos, 1)
+    Err(Unexpected(pos~, ..)) => @test.assert_eq(pos, 1)
     _ => fail("expected Unexpected error")
   }
 }
@@ -166,7 +166,7 @@ test "illegal dangling escape" {
 /// `ParseError::pos` 一致地提取各变体的偏移位置。
 test "parse error pos accessor" {
   match parse_regex("(a") {
-    Err(e) => assert_eq(e.pos(), 2)
+    Err(e) => @test.assert_eq(e.pos(), 2)
     Ok(_) => fail("expected error")
   }
 }

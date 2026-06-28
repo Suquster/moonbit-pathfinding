@@ -24,7 +24,7 @@ test "explore_dpor reduces independent interleavings" {
   let sc = DesScenario::new(tasks, [], [], null_protocol(), 8)
   let b = explore_bounded(1, sc, 3)
   let d = explore_dpor(1, sc, 3)
-  assert_eq(b.explored, 6)
-  assert_eq(d.explored, 1)
+  @test.assert_eq(b.explored, 6)
+  @test.assert_eq(d.explored, 1)
   assert_true(d.explored <= b.explored)
 }

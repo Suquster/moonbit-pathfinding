@@ -87,7 +87,7 @@ fn gen_cfg() -> @infra_pbt.Gen[Array[BasicBlock]] {
       let mut placed = false
       for off in 0..<i {
         let j = (start + off) % i
-        if succ[j].length() < 2 && !(t_contains_int(succ[j], i)) {
+        if succ[j].length() < 2 && !t_contains_int(succ[j], i) {
           succ[j].push(i)
           placed = true
           break
@@ -101,7 +101,7 @@ fn gen_cfg() -> @infra_pbt.Gen[Array[BasicBlock]] {
     while e < extra {
       let a = rng.next_below(n - 1)
       let b = rng.next_range(a + 1, n - 1)
-      if succ[a].length() < 2 && !(t_contains_int(succ[a], b)) {
+      if succ[a].length() < 2 && !t_contains_int(succ[a], b) {
         succ[a].push(b)
       }
       e = e + 1
@@ -158,7 +158,7 @@ fn reachable_avoiding(
       return true
     }
     for s in sm.get(cur).unwrap_or([]) {
-      if s != blocked && !(seen.contains(s)) {
+      if s != blocked && !seen.contains(s) {
         seen[s] = true
         queue.push(s)
       }
@@ -182,7 +182,7 @@ fn reference_dominates(
   if d == entry {
     return true
   }
-  !(reachable_avoiding(blocks, entry, n, d))
+  !reachable_avoiding(blocks, entry, n, d)
 }
 
 ///|
@@ -421,9 +421,9 @@ fn t_iterated_df(
   while worklist.length() > 0 {
     let x = worklist.pop().unwrap()
     for y in df.get(x).unwrap_or([]) {
-      if !(has_phi.contains(y)) {
+      if !has_phi.contains(y) {
         has_phi[y] = true
-        if !(on_work.contains(y)) {
+        if !on_work.contains(y) {
           on_work[y] = true
           worklist.push(y)
         }
@@ -441,7 +441,7 @@ fn t_def_blocks(
 ) -> Map[String, Array[String]] {
   let m : Map[String, Array[String]] = Map([])
   for b in blocks {
-    if !(reach.contains(b.label)) {
+    if !reach.contains(b.label) {
       continue
     }
     for instr in b.instrs {
@@ -449,7 +449,7 @@ fn t_def_blocks(
       if toks.length() >= 2 && toks[1] == "=" {
         let name = toks[0]
         let lst = m.get(name).unwrap_or([])
-        if !(t_contains_str(lst, b.label)) {
+        if !t_contains_str(lst, b.label) {
           lst.push(b.label)
         }
         m[name] = lst

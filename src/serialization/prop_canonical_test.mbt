@@ -71,8 +71,8 @@ test "encode_canonical orders fields by ascending number" {
   // 解码回 wire，校验字段号升序（号 1 先于号 3）。
   match decode(bytes, Schema::empty()) {
     Ok(msg) => {
-      assert_eq(msg.fields[0].number, 1)
-      assert_eq(msg.fields[1].number, 3)
+      @test.assert_eq(msg.fields[0].number, 1)
+      @test.assert_eq(msg.fields[1].number, 3)
     }
     Err(e) => fail("解码不应失败：\{e}")
   }

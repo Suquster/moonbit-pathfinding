@@ -30,6 +30,7 @@ import {
 // 代码「仅依赖 @core」的叶子性与 wasm-gc 体积约束（design.md §体积优化策略）。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"
 
 // wasm-gc 链接导出配置（任务 27.2 / R1.1）：

@@ -132,7 +132,7 @@ fn gen_dsl_doc(rng : @infra_pbt.Rng) -> (TextDocument, String) {
     let key = dsl_key_pool[rng.next_below(dsl_key_pool.length())]
     let value = gen_dsl_value(rng, declared)
     text = text + key + " = " + value + "\n"
-    if !(declared_has(declared, key)) {
+    if !declared_has(declared, key) {
       declared.push(key)
     }
     emitted = emitted + 1
@@ -187,7 +187,7 @@ fn prop8_reference_definition_consistent(
           has_def = true
         }
       }
-      if !(has_def) {
+      if !has_def {
         return false
       }
       // 断言 2：refs 每个位置都落在 k 的某次出现上。
@@ -201,7 +201,7 @@ fn prop8_reference_definition_consistent(
             on_occurrence = true
           }
         }
-        if !(on_occurrence) {
+        if !on_occurrence {
           return false
         }
       }

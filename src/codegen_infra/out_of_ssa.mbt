@@ -48,7 +48,7 @@ pub fn sequentialize_parallel_copy(
           break
         }
       }
-      if !(used) {
+      if !used {
         idx = i
         break
       }

@@ -6,14 +6,14 @@
 test "floyd_warshall on empty node set returns empty map" {
   let edges : Array[(Int, Int, Int)] = []
   let result = floyd_warshall([], edges)
-  assert_eq(result.length(), 0)
+  @test.assert_eq(result.length(), 0)
 }
 
 ///|
 test "floyd_warshall ignores edges touching unknown nodes" {
   let edges : Array[(Int, Int, Int)] = [(0, 1, 2), (5, 1, 1), (0, 9, 1)]
   let result = floyd_warshall([0, 1], edges)
-  assert_eq(result.get((0, 1)), Some(2))
+  @test.assert_eq(result.get((0, 1)), Some(2))
   assert_true(result.get((5, 1)) is None)
 }
 
@@ -41,10 +41,10 @@ test "yen keeps the cheaper of parallel edges" {
   let result = yen_k_shortest(0, 2, edges, 1)
   match result {
     Ok(paths) => {
-      assert_eq(paths.length(), 1)
+      @test.assert_eq(paths.length(), 1)
       let (path, cost) = paths[0]
-      assert_eq(path, [0, 1, 2])
-      assert_eq(cost, 2)
+      @test.assert_eq(path, [0, 1, 2])
+      @test.assert_eq(cost, 2)
     }
     Err(_) => assert_true(false)
   }
@@ -63,10 +63,10 @@ test "yen enumerates equal-cost alternatives deterministically" {
   let result = yen_k_shortest(0, 3, edges, 3)
   match result {
     Ok(paths) => {
-      assert_eq(paths.length(), 3)
-      assert_eq(paths[0].1, 2)
-      assert_eq(paths[1].1, 2)
-      assert_eq(paths[2].1, 5)
+      @test.assert_eq(paths.length(), 3)
+      @test.assert_eq(paths[0].1, 2)
+      @test.assert_eq(paths[1].1, 2)
+      @test.assert_eq(paths[2].1, 5)
       // Equal-cost paths must not be duplicates of each other.
       assert_true(paths[0].0 != paths[1].0)
     }
@@ -121,9 +121,9 @@ test "yen spur search skips banned root-path nodes" {
   let result = yen_k_shortest(0, 2, edges, 2)
   match result {
     Ok(paths) => {
-      assert_eq(paths.length(), 2)
-      assert_eq(paths[0].1, 2)
-      assert_eq(paths[1].1, 5)
+      @test.assert_eq(paths.length(), 2)
+      @test.assert_eq(paths[0].1, 2)
+      @test.assert_eq(paths[1].1, 5)
     }
     Err(_) => assert_true(false)
   }
@@ -149,9 +149,9 @@ test "bidirectional_bfs ignores already-visited duplicate successors" {
   }
   match bidirectional_bfs(0, 3, succ, pred) {
     Some(path) => {
-      assert_eq(path.length(), 3)
-      assert_eq(path[0], 0)
-      assert_eq(path[2], 3)
+      @test.assert_eq(path.length(), 3)
+      @test.assert_eq(path[0], 0)
+      @test.assert_eq(path[2], 3)
     }
     None => assert_true(false)
   }
@@ -177,8 +177,8 @@ test "bidirectional_dijkstra on a long chain meets in the middle" {
   let pred = fn(n : Int) { radj[n] }
   match bidirectional_dijkstra(0, 4, succ, pred) {
     Some((path, cost)) => {
-      assert_eq(cost, 4)
-      assert_eq(path, [0, 1, 2, 3, 4])
+      @test.assert_eq(cost, 4)
+      @test.assert_eq(path, [0, 1, 2, 3, 4])
     }
     None => assert_true(false)
   }
@@ -223,8 +223,8 @@ test "bidirectional_dijkstra skips stale heap entries" {
   let pred = fn(n : Int) { radj[n] }
   match bidirectional_dijkstra(0, 3, succ, pred) {
     Some((path, cost)) => {
-      assert_eq(cost, 3)
-      assert_eq(path, [0, 1, 2, 3])
+      @test.assert_eq(cost, 3)
+      @test.assert_eq(path, [0, 1, 2, 3])
     }
     None => assert_true(false)
   }
@@ -257,9 +257,9 @@ test "bidirectional_bfs expands the backward frontier when smaller" {
   let result = bidirectional_bfs(0, 5, succ, pred)
   match result {
     Some(path) => {
-      assert_eq(path.length(), 4)
-      assert_eq(path[0], 0)
-      assert_eq(path[3], 5)
+      @test.assert_eq(path.length(), 4)
+      @test.assert_eq(path[0], 0)
+      @test.assert_eq(path[3], 5)
     }
     None => assert_true(false)
   }

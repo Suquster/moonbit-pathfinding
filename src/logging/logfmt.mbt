@@ -78,7 +78,7 @@ pub fn parse_logfmt(s : String) -> Event? {
       reader.pos = reader.pos + 1
     }
     let key = key_buf.build()
-    if !(saw_eq) || key == "" {
+    if !saw_eq || key == "" {
       return None
     }
     if key == "ts" {

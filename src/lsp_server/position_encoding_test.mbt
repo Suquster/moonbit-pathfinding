@@ -22,15 +22,15 @@
 ///|
 /// 客户端无声明（空列表）时回退到 UTF-16（LSP 默认）。
 test "negotiate_encoding: empty client list falls back to Utf16" {
-  assert_eq(negotiate_encoding([]), Utf16)
+  @test.assert_eq(negotiate_encoding([]), Utf16)
 }
 
 ///|
 /// 客户端有声明时取其声明列表中的首选（服务端支持全部三种编码）。
 test "negotiate_encoding: picks client's first declared encoding" {
-  assert_eq(negotiate_encoding([Utf8, Utf16, Utf32]), Utf8)
-  assert_eq(negotiate_encoding([Utf32, Utf8]), Utf32)
-  assert_eq(negotiate_encoding([Utf16]), Utf16)
+  @test.assert_eq(negotiate_encoding([Utf8, Utf16, Utf32]), Utf8)
+  @test.assert_eq(negotiate_encoding([Utf32, Utf8]), Utf32)
+  @test.assert_eq(negotiate_encoding([Utf16]), Utf16)
 }
 
 // ───────────────────── R4.4 代理对码元数（emoji / CJK 扩展区）─────────
@@ -39,18 +39,18 @@ test "negotiate_encoding: picks client's first declared encoding" {
 /// emoji U+1F600（😀，BMP 外，UTF-16 需代理对）在三编码下的码元数见证：
 /// UTF-16 = 2、UTF-8 = 4、UTF-32 = 1。
 test "code_units: emoji U+1F600 occupies 2 / 4 / 1 across utf16/utf8/utf32" {
-  assert_eq(code_units(0x1F600, Utf16), 2)
-  assert_eq(code_units(0x1F600, Utf8), 4)
-  assert_eq(code_units(0x1F600, Utf32), 1)
+  @test.assert_eq(code_units(0x1F600, Utf16), 2)
+  @test.assert_eq(code_units(0x1F600, Utf8), 4)
+  @test.assert_eq(code_units(0x1F600, Utf32), 1)
 }
 
 ///|
 /// CJK 扩展 B 区 U+20000（𠀀，BMP 外）在三编码下的码元数见证：
 /// UTF-16 = 2、UTF-8 = 4、UTF-32 = 1。
 test "code_units: CJK ext-B U+20000 occupies 2 / 4 / 1 across utf16/utf8/utf32" {
-  assert_eq(code_units(0x20000, Utf16), 2)
-  assert_eq(code_units(0x20000, Utf8), 4)
-  assert_eq(code_units(0x20000, Utf32), 1)
+  @test.assert_eq(code_units(0x20000, Utf16), 2)
+  @test.assert_eq(code_units(0x20000, Utf8), 4)
+  @test.assert_eq(code_units(0x20000, Utf32), 1)
 }
 
 ///|
@@ -60,17 +60,17 @@ test "code_units: CJK ext-B U+20000 occupies 2 / 4 / 1 across utf16/utf8/utf32" 
 ///   * 拉丁补充 'é'(U+00E9，UTF-8 占 2 字节)：UTF-16=1 / UTF-8=2 / UTF-32=1。
 test "code_units: BMP characters across encodings" {
   // ASCII 'a'
-  assert_eq(code_units(0x61, Utf16), 1)
-  assert_eq(code_units(0x61, Utf8), 1)
-  assert_eq(code_units(0x61, Utf32), 1)
+  @test.assert_eq(code_units(0x61, Utf16), 1)
+  @test.assert_eq(code_units(0x61, Utf8), 1)
+  @test.assert_eq(code_units(0x61, Utf32), 1)
   // CJK '中'（BMP 内，UTF-8 三字节）
-  assert_eq(code_units(0x4E2D, Utf16), 1)
-  assert_eq(code_units(0x4E2D, Utf8), 3)
-  assert_eq(code_units(0x4E2D, Utf32), 1)
+  @test.assert_eq(code_units(0x4E2D, Utf16), 1)
+  @test.assert_eq(code_units(0x4E2D, Utf8), 3)
+  @test.assert_eq(code_units(0x4E2D, Utf32), 1)
   // 'é'（UTF-8 两字节）
-  assert_eq(code_units(0x00E9, Utf16), 2 - 1) // 1 码元
-  assert_eq(code_units(0x00E9, Utf8), 2)
-  assert_eq(code_units(0x00E9, Utf32), 1)
+  @test.assert_eq(code_units(0x00E9, Utf16), 2 - 1) // 1 码元
+  @test.assert_eq(code_units(0x00E9, Utf8), 2)
+  @test.assert_eq(code_units(0x00E9, Utf32), 1)
 }
 
 // ───────────── 含 emoji 行的 Position↔offset 列号见证（R4.4）──────────
@@ -87,17 +87,17 @@ test "position_to_offset: column of 'b' after emoji differs per encoding" {
 
   // UTF-16：'b' 在 character = 3。
   let pos16 : Position = { line: 0, character: 3 }
-  assert_eq(position_to_offset(text, pos16, Utf16), Some(3))
+  @test.assert_eq(position_to_offset(text, pos16, Utf16), Some(3))
   assert_true(offset_to_position(text, 3, Utf16) == Some(pos16))
 
   // UTF-8：'b' 在 character = 5。
   let pos8 : Position = { line: 0, character: 5 }
-  assert_eq(position_to_offset(text, pos8, Utf8), Some(5))
+  @test.assert_eq(position_to_offset(text, pos8, Utf8), Some(5))
   assert_true(offset_to_position(text, 5, Utf8) == Some(pos8))
 
   // UTF-32：'b' 在 character = 2。
   let pos32 : Position = { line: 0, character: 2 }
-  assert_eq(position_to_offset(text, pos32, Utf32), Some(2))
+  @test.assert_eq(position_to_offset(text, pos32, Utf32), Some(2))
   assert_true(offset_to_position(text, 2, Utf32) == Some(pos32))
 }
 
@@ -128,5 +128,8 @@ test "convert_position: 'b' after emoji converts across encodings" {
 test "position_to_offset: column inside a surrogate pair is rejected" {
   let text = "a\u{1F600}b"
   // UTF-16 下 character=2 落在 emoji 两码元中间。
-  assert_eq(position_to_offset(text, { line: 0, character: 2 }, Utf16), None)
+  @test.assert_eq(
+    position_to_offset(text, { line: 0, character: 2 }, Utf16),
+    None,
+  )
 }

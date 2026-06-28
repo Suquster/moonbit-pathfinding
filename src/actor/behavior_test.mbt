@@ -9,7 +9,7 @@ test "behavior stack starts with the initial behavior only" {
   let stack : Array[Behavior[Int, Int]] = behavior_stack_new(
     Behavior::new(fn(_ctx, s, _m) { Updated(s) }),
   )
-  assert_eq(behavior_stack_depth(stack), 1)
+  @test.assert_eq(behavior_stack_depth(stack), 1)
 }
 
 ///|
@@ -20,7 +20,7 @@ test "unbecome on initial-only stack is a no-op witness" {
   )
   behavior_stack_pop(stack)
   behavior_stack_pop(stack)
-  assert_eq(behavior_stack_depth(stack), 1)
+  @test.assert_eq(behavior_stack_depth(stack), 1)
 }
 
 ///|
@@ -30,22 +30,22 @@ test "behavior stack push and pop change depth and top" {
     Behavior::new(fn(_ctx, _s, _m) { Updated(0) }),
   )
   behavior_stack_push(stack, Behavior::new(fn(_ctx, _s, _m) { Updated(1) }))
-  assert_eq(behavior_stack_depth(stack), 2)
+  @test.assert_eq(behavior_stack_depth(stack), 2)
   let ctx : ActorContext[Int, Int] = ActorContext::new({ value: 1 })
   match behavior_stack_top(stack) {
     Some(b) =>
       match b.apply(ctx, 0, 0) {
-        Updated(v) => assert_eq(v, 1)
+        Updated(v) => @test.assert_eq(v, 1)
         Errored(_) => fail("expected Updated")
       }
     None => fail("expected a top behavior")
   }
   behavior_stack_pop(stack)
-  assert_eq(behavior_stack_depth(stack), 1)
+  @test.assert_eq(behavior_stack_depth(stack), 1)
   match behavior_stack_top(stack) {
     Some(b) =>
       match b.apply(ctx, 0, 0) {
-        Updated(v) => assert_eq(v, 0)
+        Updated(v) => @test.assert_eq(v, 0)
         Errored(_) => fail("expected Updated")
       }
     None => fail("expected a top behavior")
@@ -57,7 +57,7 @@ test "behavior stack push and pop change depth and top" {
 /// 记录顺序与调用顺序一致（由 ActorSystem 在 step 末尾按此顺序应用）。
 test "context records effects in invocation order witness" {
   let ctx : ActorContext[Int, Int] = ActorContext::new({ value: 7 })
-  assert_eq(ctx.id(), { value: 7 })
+  @test.assert_eq(ctx.id(), { value: 7 })
   ctx.become_(Behavior::new(fn(_c, s, _m) { Updated(s) }))
   ctx.stash()
   ctx.unstash_all()
@@ -65,5 +65,5 @@ test "context records effects in invocation order witness" {
   ctx.unwatch({ value: 9 })
   ctx.unbecome()
   // 6 个效果被依序记录。
-  assert_eq(ctx.effect_count(), 6)
+  @test.assert_eq(ctx.effect_count(), 6)
 }

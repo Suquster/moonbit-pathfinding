@@ -36,14 +36,14 @@ fn find_diagnostic(a : Analysis, needle : String) -> Diagnostic? {
 test "formatting normalizes spacing around '=' into one edit" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a=1\n" }
   let edits = formatting(doc)
-  assert_eq(edits.length(), 1)
+  @test.assert_eq(edits.length(), 1)
   let e = edits[0]
-  assert_eq(e.new_text, "a = 1")
+  @test.assert_eq(e.new_text, "a = 1")
   // Range 无 Show：以字段（Int，有 Show）逐项见证整行替换范围 [ (0,0), (0,3) )。
-  assert_eq(e.range.start.line, 0)
-  assert_eq(e.range.start.character, 0)
-  assert_eq(e.range.end.line, 0)
-  assert_eq(e.range.end.character, 3)
+  @test.assert_eq(e.range.start.line, 0)
+  @test.assert_eq(e.range.start.character, 0)
+  @test.assert_eq(e.range.end.line, 0)
+  @test.assert_eq(e.range.end.character, 3)
 }
 
 ///|
@@ -52,7 +52,7 @@ test "formatting normalizes spacing around '=' into one edit" {
 test "formatting yields no edits for already-normalized line" {
   let doc : TextDocument = { uri: "file:///b.conf", text: "a = 1\n" }
   let edits = formatting(doc)
-  assert_eq(edits.length(), 0)
+  @test.assert_eq(edits.length(), 0)
 }
 
 // ───────────────────────── R5.6 缺少 '=' → 插入动作 ───────────────────
@@ -68,22 +68,22 @@ test "code_actions provides insert '=' action for missing '=' diagnostic" {
   match find_diagnostic(a, "缺少 '='") {
     Some(d) => {
       let actions = code_actions(a, d)
-      assert_eq(actions.length(), 1)
-      assert_eq(actions[0].title, "插入 '='")
+      @test.assert_eq(actions.length(), 1)
+      @test.assert_eq(actions[0].title, "插入 '='")
       // WorkspaceEdit/TextEdit/Range 无 Show：字段访问取出 String 见证。
       let changes = actions[0].edit.changes
-      assert_eq(changes.length(), 1)
-      assert_eq(changes[0].0, "file:///c.conf")
+      @test.assert_eq(changes.length(), 1)
+      @test.assert_eq(changes[0].0, "file:///c.conf")
       let edits = changes[0].1
-      assert_eq(edits.length(), 1)
+      @test.assert_eq(edits.length(), 1)
       // 替换文本含 " = "（纯插入：空范围 [end, end)）。
-      assert_eq(edits[0].new_text, " = ")
+      @test.assert_eq(edits[0].new_text, " = ")
       assert_true(edits[0].new_text.contains(" = "))
       // 插入点为诊断范围末尾：空范围 start == end。
-      assert_eq(edits[0].range.start.line, d.range.end.line)
-      assert_eq(edits[0].range.start.character, d.range.end.character)
-      assert_eq(edits[0].range.end.line, d.range.end.line)
-      assert_eq(edits[0].range.end.character, d.range.end.character)
+      @test.assert_eq(edits[0].range.start.line, d.range.end.line)
+      @test.assert_eq(edits[0].range.start.character, d.range.end.character)
+      @test.assert_eq(edits[0].range.end.line, d.range.end.line)
+      @test.assert_eq(edits[0].range.end.character, d.range.end.character)
     }
     None => fail("expected a '缺少 =' diagnostic from analyze")
   }
@@ -103,19 +103,19 @@ test "code_actions provides delete action for duplicate-definition diagnostic" {
     Some(d) => {
       let li = d.range.start.line
       let actions = code_actions(a, d)
-      assert_eq(actions.length(), 1)
-      assert_eq(actions[0].title, "删除重复定义")
+      @test.assert_eq(actions.length(), 1)
+      @test.assert_eq(actions[0].title, "删除重复定义")
       let changes = actions[0].edit.changes
-      assert_eq(changes.length(), 1)
-      assert_eq(changes[0].0, "file:///d.conf")
+      @test.assert_eq(changes.length(), 1)
+      @test.assert_eq(changes[0].0, "file:///d.conf")
       let edits = changes[0].1
-      assert_eq(edits.length(), 1)
+      @test.assert_eq(edits.length(), 1)
       // 删除整行：替换为空串，范围覆盖 [ (li,0), (li+1,0) )。
-      assert_eq(edits[0].new_text, "")
-      assert_eq(edits[0].range.start.line, li)
-      assert_eq(edits[0].range.start.character, 0)
-      assert_eq(edits[0].range.end.line, li + 1)
-      assert_eq(edits[0].range.end.character, 0)
+      @test.assert_eq(edits[0].new_text, "")
+      @test.assert_eq(edits[0].range.start.line, li)
+      @test.assert_eq(edits[0].range.start.character, 0)
+      @test.assert_eq(edits[0].range.end.line, li + 1)
+      @test.assert_eq(edits[0].range.end.character, 0)
     }
     None => fail("expected a '重复定义键' diagnostic from analyze")
   }
@@ -133,7 +133,7 @@ test "code_actions returns empty list for diagnostics without a fix" {
   match find_diagnostic(a, "非法的键名") {
     Some(d) => {
       let actions = code_actions(a, d)
-      assert_eq(actions.length(), 0)
+      @test.assert_eq(actions.length(), 0)
     }
     None => fail("expected a '非法的键名' diagnostic from analyze")
   }

@@ -60,7 +60,7 @@ fn any_len_tag(field_number : Int) -> UInt64 {
 pub struct AnyValue {
   type_url : String
   value : Bytes
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 将 `AnyValue` 编码为 `google.protobuf.Any` 形态的字节序列。

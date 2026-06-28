@@ -17,7 +17,7 @@
 /// 溢出代价度量：变量 → 代价（代价越低越优先作为乐观溢出候选）。
 pub(all) struct SpillCost {
   cost : Map[Var, Double]
-} derive(Show)
+} derive(Debug)
 
 ///|
 /// 均匀溢出代价（空表，所有变量查得缺省值 1.0），用作默认参数。
@@ -85,7 +85,7 @@ pub fn allocate_coloring_briggs(
     // simplify：取最小 id 的未移除、工作度 < k 的节点。
     let mut chosen : Var? = None
     for v in nodes {
-      if !(removed.contains(v)) && working.get(v).unwrap_or(0) < k {
+      if !removed.contains(v) && working.get(v).unwrap_or(0) < k {
         chosen = Some(v)
         break
       }
@@ -119,7 +119,7 @@ pub fn allocate_coloring_briggs(
     removed[pick] = true
     stack.push(pick)
     for u in adj.get(pick).unwrap_or([]) {
-      if !(removed.contains(u)) {
+      if !removed.contains(u) {
         working[u] = working.get(u).unwrap_or(1) - 1
       }
     }
@@ -139,7 +139,7 @@ pub fn allocate_coloring_briggs(
     }
     let mut chosen = -1
     for c in 0..<k {
-      if !(forbidden.contains(c)) {
+      if !forbidden.contains(c) {
         chosen = c
         break
       }

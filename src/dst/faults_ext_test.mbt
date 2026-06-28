@@ -15,7 +15,7 @@ test "Partition blocks cross-group delivery" {
   ]
   let sc = DesScenario::new(tasks, faults, [], one_send_protocol(), 30)
   let r = run_des(7, sc)
-  assert_eq(count_deliveries(r.trace), 0)
+  @test.assert_eq(count_deliveries(r.trace), 0)
 }
 
 ///|
@@ -25,7 +25,7 @@ test "Duplicate fault delivers a message twice" {
   let faults = [FaultPolicyEx::new(0, 0, NetFaultKind::Duplicate)]
   let sc = DesScenario::new(tasks, faults, [], one_send_protocol(), 30)
   let r = run_des(123, sc)
-  assert_eq(count_deliveries_to(r.trace, 1), 2)
+  @test.assert_eq(count_deliveries_to(r.trace, 1), 2)
 }
 
 ///|
@@ -47,9 +47,9 @@ test "ClockSkew shifts scheduling yet preserves delivery" {
   )
   let r0 = run_des(9, base)
   let r1 = run_des(9, skewed)
-  assert_eq(count_deliveries(r1.trace), 1)
+  @test.assert_eq(count_deliveries(r1.trace), 1)
   // 注入时钟偏移使轨迹有别于无故障运行（至少多出 EvFaulted 记录）。
-  assert_not_eq(r0.trace, r1.trace)
+  @test.assert_not_eq(r0.trace, r1.trace)
 }
 
 ///|
@@ -71,8 +71,8 @@ test "Reorder swaps co-temporal delivery order without loss" {
   )
   let rn = run_des(5, normal)
   let rr = run_des(5, reordered)
-  assert_eq(node_log_from_finals(rn.finals, 1), [7, 8])
-  assert_eq(node_log_from_finals(rr.finals, 1), [8, 7])
+  @test.assert_eq(node_log_from_finals(rn.finals, 1), [7, 8])
+  @test.assert_eq(node_log_from_finals(rr.finals, 1), [8, 7])
 }
 
 ///|
@@ -92,7 +92,10 @@ test "of_legacy bridges Crash/Delay/Drop equivalently to legacy run" {
     42,
     DesScenario::of_legacy(scenario, protocol=null_protocol()),
   )
-  assert_eq(des_scheduled_ids(des.trace), legacy_scheduled_ids(legacy.trace))
+  @test.assert_eq(
+    des_scheduled_ids(des.trace),
+    legacy_scheduled_ids(legacy.trace),
+  )
   // 崩溃使两条流水线终态同为 Failed。
   let leg_failed = match legacy.status {
     Failed(..) => true
@@ -102,16 +105,19 @@ test "of_legacy bridges Crash/Delay/Drop equivalently to legacy run" {
     Failed(..) => true
     _ => false
   }
-  assert_eq(leg_failed, des_failed)
+  @test.assert_eq(leg_failed, des_failed)
 }
 
 ///|
 /// NetFaultKind::of_legacy 的逐项映射见证。
 test "NetFaultKind::of_legacy maps each legacy kind" {
-  assert_eq(NetFaultKind::of_legacy(FaultKind::Crash), NetFaultKind::Crash)
-  assert_eq(
+  @test.assert_eq(
+    NetFaultKind::of_legacy(FaultKind::Crash),
+    NetFaultKind::Crash,
+  )
+  @test.assert_eq(
     NetFaultKind::of_legacy(FaultKind::Delay),
     NetFaultKind::Delay(by=1UL),
   )
-  assert_eq(NetFaultKind::of_legacy(FaultKind::Drop), NetFaultKind::Drop)
+  @test.assert_eq(NetFaultKind::of_legacy(FaultKind::Drop), NetFaultKind::Drop)
 }

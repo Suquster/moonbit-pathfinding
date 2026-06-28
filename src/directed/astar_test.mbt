@@ -108,7 +108,7 @@ test "whitebox: astar with inflated heuristic still reaches goal correctly" {
   let result = astar(0, successors, heuristic, fn(n) { n == 3 })
   match result {
     Some((path, cost)) => {
-      inspect(path, content="[0, 1, 2, 3]")
+      @debug.debug_inspect(path, content="[0, 1, 2, 3]")
       inspect(cost, content="3")
     }
     None => inspect(false, content="true")

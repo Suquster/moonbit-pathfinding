@@ -35,7 +35,7 @@ test "Feature: codegen-infra, Property 8: dominance frontier correctness" {
             }
           }
           let strictly = reference_dominates(blocks, entry, d, n) && d != n
-          let expected = dominates_some_pred && !(strictly)
+          let expected = dominates_some_pred && !strictly
           if is_member != expected {
             return false
           }

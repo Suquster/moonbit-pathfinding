@@ -136,7 +136,7 @@ fn prop_iso_error_isolation(rng : @infra_pbt.Rng) -> Bool {
   }
   match sched.state_of(bad) {
     Some(processed) =>
-      if !(iso_int_arrays_eq(processed, expected_bad)) {
+      if !iso_int_arrays_eq(processed, expected_bad) {
         return false
       }
     None => return false
@@ -152,7 +152,7 @@ fn prop_iso_error_isolation(rng : @infra_pbt.Rng) -> Bool {
     return false
   }
   // (4) 错误隔离：正常 actor 不受影响——仍运行、完整处理全部消息、邮箱清空。
-  if !(sched.is_running(good)) {
+  if !sched.is_running(good) {
     return false
   }
   if sched.pending(good) != 0 {
@@ -199,17 +199,17 @@ test "uncaught error isolates the failed actor while others keep running (witnes
   good.send(3)
   sched.run_until_idle()
   // 崩溃 actor 被隔离终止。
-  assert_eq(sched.status_of(bad), Some(Failed("boom")))
-  assert_eq(sched.state_of(bad), Some([5, 7]))
-  assert_eq(sched.pending(bad), 0)
+  @test.assert_eq(sched.status_of(bad), Some(Failed("boom")))
+  @test.assert_eq(sched.state_of(bad), Some([5, 7]))
+  @test.assert_eq(sched.pending(bad), 0)
   assert_false(sched.is_running(bad))
   // supervisor 恰好收到一次通知。
-  assert_eq(notices.length(), 1)
-  assert_eq(notices[0], (bad.id.value, "boom"))
+  @test.assert_eq(notices.length(), 1)
+  @test.assert_eq(notices[0], (bad.id.value, "boom"))
   // 正常 actor 不受影响，完整处理其全部消息。
   assert_true(sched.is_running(good))
-  assert_eq(sched.state_of(good), Some([1, 2, 3]))
-  assert_eq(sched.pending(good), 0)
+  @test.assert_eq(sched.state_of(good), Some([1, 2, 3]))
+  @test.assert_eq(sched.pending(good), 0)
 }
 
 ///|
@@ -237,11 +237,11 @@ test "actor crashing on its first message is isolated (witness)" {
   bad.send(-1)
   good.send(42)
   sched.run_until_idle()
-  assert_eq(sched.status_of(bad), Some(Failed("boom")))
-  assert_eq(sched.state_of(bad), Some([]))
-  assert_eq(notices.length(), 1)
+  @test.assert_eq(sched.status_of(bad), Some(Failed("boom")))
+  @test.assert_eq(sched.state_of(bad), Some([]))
+  @test.assert_eq(notices.length(), 1)
   assert_true(sched.is_running(good))
-  assert_eq(sched.state_of(good), Some([42]))
+  @test.assert_eq(sched.state_of(good), Some([42]))
 }
 
 // ---------------------------------------------------------------------------

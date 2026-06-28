@@ -15,7 +15,7 @@ test "input peek and start position" {
   assert_false(input.is_eof())
   assert_true(input.peek() == Some('a'))
   inspect(input.pos, content="1:1")
-  assert_eq(input.pos.offset, 0)
+  @test.assert_eq(input.pos.offset, 0)
 }
 
 ///|
@@ -24,10 +24,10 @@ test "input advance tracks line and column" {
   let input = Input::from_string("a\nb")
   let after_a = input.advance()
   inspect(after_a.pos, content="1:2")
-  assert_eq(after_a.pos.offset, 1)
+  @test.assert_eq(after_a.pos.offset, 1)
   let after_nl = after_a.advance()
   inspect(after_nl.pos, content="2:1")
-  assert_eq(after_nl.pos.offset, 2)
+  @test.assert_eq(after_nl.pos.offset, 2)
   assert_true(after_nl.peek() == Some('b'))
 }
 
@@ -60,7 +60,7 @@ test "pchar fails without consuming on mismatch" {
   match result {
     Fail(pos, expected~) => {
       inspect(pos, content="1:1")
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["'x'"])
     }
     Ok(_, _) => fail("expected failure")
@@ -107,7 +107,7 @@ test "ptoken fails at token start on mismatch" {
   match result {
     Fail(pos, expected~) => {
       inspect(pos, content="1:1")
-      assert_eq(pos.offset, 0)
+      @test.assert_eq(pos.offset, 0)
       assert_true(expected == ["\"let\""])
     }
     Ok(_, _) => fail("expected failure")

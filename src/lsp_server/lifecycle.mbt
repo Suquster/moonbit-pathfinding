@@ -32,7 +32,22 @@ pub(all) enum LifecycleState {
   Initialized // 已就绪，可处理常规请求
   ShuttingDown // 已收到 shutdown，等待 exit
   Exited // 已退出
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// `LifecycleState` 的文本表示用于对外协议 / JSON 输出（领域专用显示文本），
+/// 故手工实现 `Show`（变体名），与历史 `derive(Show)` 行为一致；调试输出走 `Debug`。
+pub impl Show for LifecycleState with fn output(self, logger) {
+  logger.write_string(
+    match self {
+      Uninitialized => "Uninitialized"
+      Initializing => "Initializing"
+      Initialized => "Initialized"
+      ShuttingDown => "ShuttingDown"
+      Exited => "Exited"
+    },
+  )
+}
 
 ///|
 /// 驱动生命周期状态机的事件。`EvRequest` / `EvNotification` 承载除生命周期消息之外
@@ -44,7 +59,7 @@ pub(all) enum LifecycleEvent {
   EvExit // exit 通知
   EvRequest(method_name~ : String) // 任意其他请求
   EvNotification(method_name~ : String) // 任意其他通知
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一步转移的结果：新状态 `state` + 可选应答 `reply`（请求才有；通知为 None）+
@@ -53,7 +68,7 @@ pub(all) struct StepResult {
   state : LifecycleState
   reply : @lsp_binding.JsonRpcMessage?
   exit_code : Int?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 能力 JSON 合成 ─────────────────────────
 

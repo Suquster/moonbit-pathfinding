@@ -24,9 +24,9 @@ test "step: initialize transitions Uninitialized to Initializing with capabiliti
     @lsp_binding.IdNum(1),
   )
   // 状态推进到 Initializing。
-  assert_eq(result.state, Initializing)
+  @test.assert_eq(result.state, Initializing)
   // 无退出码。
-  assert_eq(result.exit_code, None)
+  @test.assert_eq(result.exit_code, None)
   // 回成功响应：id 一致、result 为携带 capabilities 的对象、error 为 None。
   match result.reply {
     Some(@lsp_binding.Response(id~, result~, error~)) => {
@@ -59,7 +59,7 @@ test "step: initialize in Initialized is rejected and state unchanged" {
     EvInitialize(InitializeParamsExt::empty()),
     @lsp_binding.IdNum(9),
   )
-  assert_eq(result.state, Initialized)
+  @test.assert_eq(result.state, Initialized)
   match result.reply {
     Some(@lsp_binding.Response(id~, result~, error~)) => {
       assert_true(id == @lsp_binding.IdNum(9))
@@ -79,9 +79,9 @@ test "step: initialize in Initialized is rejected and state unchanged" {
 /// Initializing + EvInitialized → Initialized，通知无应答。
 test "step: initialized notification transitions Initializing to Initialized" {
   let result = step(Initializing, false, EvInitialized, @lsp_binding.IdNull)
-  assert_eq(result.state, Initialized)
-  assert_eq(result.reply, None)
-  assert_eq(result.exit_code, None)
+  @test.assert_eq(result.state, Initialized)
+  @test.assert_eq(result.reply, None)
+  @test.assert_eq(result.exit_code, None)
 }
 
 // ───────────────────────────── R1.4 shutdown→ShuttingDown ─────────────
@@ -90,8 +90,8 @@ test "step: initialized notification transitions Initializing to Initialized" {
 /// Initialized + EvShutdown → ShuttingDown，回 result=null 成功响应，id 一致。
 test "step: shutdown transitions Initialized to ShuttingDown with null result" {
   let result = step(Initialized, false, EvShutdown, @lsp_binding.IdNum(2))
-  assert_eq(result.state, ShuttingDown)
-  assert_eq(result.exit_code, None)
+  @test.assert_eq(result.state, ShuttingDown)
+  @test.assert_eq(result.exit_code, None)
   // 回 result=Some(JNull)、error=None 的成功响应。
   assert_true(
     result.reply ==
@@ -109,7 +109,7 @@ test "step: shutdown transitions Initialized to ShuttingDown with null result" {
 /// shutdown 在非 Initialized 状态属非法请求：状态不变，回 invalid_request_code。
 test "step: shutdown in Uninitialized is rejected and state unchanged" {
   let result = step(Uninitialized, false, EvShutdown, @lsp_binding.IdNum(3))
-  assert_eq(result.state, Uninitialized)
+  @test.assert_eq(result.state, Uninitialized)
   match result.reply {
     Some(@lsp_binding.Response(id~, result=_, error~)) => {
       assert_true(id == @lsp_binding.IdNum(3))
@@ -128,18 +128,18 @@ test "step: shutdown in Uninitialized is rejected and state unchanged" {
 /// 已收到 shutdown（shutdown_seen=true）时 exit 报退出码 0。
 test "step: exit after shutdown reports exit code 0" {
   let result = step(ShuttingDown, true, EvExit, @lsp_binding.IdNull)
-  assert_eq(result.state, Exited)
-  assert_eq(result.reply, None)
-  assert_eq(result.exit_code, Some(0))
+  @test.assert_eq(result.state, Exited)
+  @test.assert_eq(result.reply, None)
+  @test.assert_eq(result.exit_code, Some(0))
 }
 
 ///|
 /// 未收到 shutdown（shutdown_seen=false）时 exit 报退出码 1。
 test "step: exit without shutdown reports exit code 1" {
   let result = step(Initialized, false, EvExit, @lsp_binding.IdNull)
-  assert_eq(result.state, Exited)
-  assert_eq(result.reply, None)
-  assert_eq(result.exit_code, Some(1))
+  @test.assert_eq(result.state, Exited)
+  @test.assert_eq(result.reply, None)
+  @test.assert_eq(result.exit_code, Some(1))
 }
 
 // ───────────────────── LspSession::handle 端到端推进 ──────────────────
@@ -149,7 +149,7 @@ test "step: exit without shutdown reports exit code 1" {
 /// 验证 state() 依次推进，且 shutdown 后 exit 报退出码 0。
 test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
   let s0 = LspSession::new()
-  assert_eq(s0.state(), Uninitialized)
+  @test.assert_eq(s0.state(), Uninitialized)
 
   // initialize 请求 → Initializing，回成功响应。
   let (s1, r1) = s0.handle(
@@ -159,7 +159,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
       params=@lsp_binding.JNull,
     ),
   )
-  assert_eq(s1.state(), Initializing)
+  @test.assert_eq(s1.state(), Initializing)
   match r1 {
     Some(@lsp_binding.Response(error~, ..)) => assert_true(error == None)
     _ => fail("expected initialize success response")
@@ -167,10 +167,13 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
 
   // initialized 通知 → Initialized，无应答。
   let (s2, r2) = s1.handle(
-    @lsp_binding.Notification(method_name="initialized", params=@lsp_binding.JNull),
+    @lsp_binding.Notification(
+      method_name="initialized",
+      params=@lsp_binding.JNull,
+    ),
   )
-  assert_eq(s2.state(), Initialized)
-  assert_eq(r2, None)
+  @test.assert_eq(s2.state(), Initialized)
+  @test.assert_eq(r2, None)
 
   // shutdown 请求 → ShuttingDown，回 result=null。
   let (s3, r3) = s2.handle(
@@ -180,7 +183,7 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
       params=@lsp_binding.JNull,
     ),
   )
-  assert_eq(s3.state(), ShuttingDown)
+  @test.assert_eq(s3.state(), ShuttingDown)
   assert_true(
     r3 ==
     Some(
@@ -196,6 +199,6 @@ test "LspSession: drives initialize -> initialized -> shutdown -> exit" {
   let (s4, r4) = s3.handle(
     @lsp_binding.Notification(method_name="exit", params=@lsp_binding.JNull),
   )
-  assert_eq(s4.state(), Exited)
-  assert_eq(r4, None)
+  @test.assert_eq(s4.state(), Exited)
+  @test.assert_eq(r4, None)
 }

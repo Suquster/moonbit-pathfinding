@@ -33,12 +33,12 @@
 ///|
 /// 一个会话步骤：人类可读标签 `label` + 该步骤的确定性输出 `output`（JSON 值）。
 ///
-/// `output` 复用 `@lsp_binding.Json`（`derive(Eq, Show)`），故本结构亦可
-/// `derive(Eq, Show)`，便于在单元测试中断言确定性与逐步对照。
+/// `output` 复用 `@lsp_binding.Json`（`derive(Eq, Debug)`），故本结构亦可
+/// `derive(Eq, Debug)`，便于在单元测试中断言确定性与逐步对照。
 pub(all) struct SessionStep {
   label : String
   output : @lsp_binding.Json
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── JSON 编码辅助 ──────────────────────────
 //

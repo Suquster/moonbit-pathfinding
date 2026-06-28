@@ -47,7 +47,7 @@ pub(all) enum Id {
   IdNum(Int) // 数值 id（整数）
   IdStr(String) // 字符串 id
   IdNull // null id（如解析错误时的错误响应）
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 错误对象 RpcError ──────────────────────
 
@@ -59,7 +59,7 @@ pub(all) struct RpcError {
   code : Int
   message : String
   data : Json?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个无附加数据的错误对象。
@@ -89,7 +89,7 @@ pub(all) enum JsonRpcMessage {
   Request(id~ : Id, method_name~ : String, params~ : Json)
   Response(id~ : Id, result~ : Json?, error~ : RpcError?)
   Notification(method_name~ : String, params~ : Json)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个错误响应（result 为空、error 非空），供分发与调用方在非法消息 /

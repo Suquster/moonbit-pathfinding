@@ -186,7 +186,10 @@ pub fn publish_diagnostics_notification(
     ("uri", @lsp_binding.JStr(uri)),
     ("diagnostics", @lsp_binding.JArr(arr)),
   ])
-  @lsp_binding.Notification(method_name="textDocument/publishDiagnostics", params~)
+  @lsp_binding.Notification(
+    method_name="textDocument/publishDiagnostics",
+    params~,
+  )
 }
 
 ///|

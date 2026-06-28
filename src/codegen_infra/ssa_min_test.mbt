@@ -54,14 +54,14 @@ test "build_ssa_minimal 与 build_ssa 在菱形上逐字段一致" {
   ]
   let bs = build_ssa(diamond)
   let bm = build_ssa_minimal(diamond, entry="entry")
-  assert_eq(bm.phis.length(), bs.phis.length())
-  assert_eq(bm.blocks.length(), bs.blocks.length())
+  @test.assert_eq(bm.phis.length(), bs.phis.length())
+  @test.assert_eq(bm.blocks.length(), bs.blocks.length())
   for i in 0..<bm.blocks.length() {
     assert_true(t_str_arr_eq(bm.blocks[i].instrs, bs.blocks[i].instrs))
-    assert_eq(bm.blocks[i].label, bs.blocks[i].label)
+    @test.assert_eq(bm.blocks[i].label, bs.blocks[i].label)
   }
   // φ 实参逐一致。
-  assert_eq(bm.phis[0].args.length(), bs.phis[0].args.length())
+  @test.assert_eq(bm.phis[0].args.length(), bs.phis[0].args.length())
 }
 
 ///|

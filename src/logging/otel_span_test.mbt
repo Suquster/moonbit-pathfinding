@@ -11,8 +11,8 @@ test "span data defaults to unset status and internal kind" {
   let sd = SpanData::new(s)
   assert_true(sd.status == SpanStatus::Unset)
   assert_true(sd.kind == SpanKind::Internal)
-  assert_eq(sd.attributes.length(), 0)
-  assert_eq(sd.events.length(), 0)
+  @test.assert_eq(sd.attributes.length(), 0)
+  @test.assert_eq(sd.events.length(), 0)
   exit_span(s)
 }
 
@@ -39,11 +39,11 @@ test "span events retain name timestamp and fields in order" {
   let sd = SpanData::new(s)
   sd.add_event("cache.miss", 11L, { "key": VStr("user:1") })
   sd.add_event("db.query", 12L, { "rows": VInt(3L) })
-  assert_eq(sd.events.length(), 2)
-  assert_eq(sd.events[0].name, "cache.miss")
-  assert_eq(sd.events[0].ts, 11L)
+  @test.assert_eq(sd.events.length(), 2)
+  @test.assert_eq(sd.events[0].name, "cache.miss")
+  @test.assert_eq(sd.events[0].ts, 11L)
   assert_true(sd.events[0].fields.get("key") == Some(VStr("user:1")))
-  assert_eq(sd.events[1].name, "db.query")
+  @test.assert_eq(sd.events[1].name, "db.query")
   assert_true(sd.events[1].fields.get("rows") == Some(VInt(3L)))
   exit_span(s)
 }

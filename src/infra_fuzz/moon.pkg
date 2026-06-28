@@ -39,10 +39,12 @@ import {
 //   * @infra_text        —— 失败/差分报告文本构建（TextBuilder，禁止循环内
 //                           `+` 拼接 · R22.4）。
 import {
-  "Suquster/moonbit-pathfinding/src/core" @core,
+  "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
   "Suquster/moonbit-pathfinding/src/advanced" @adv,
   "Suquster/moonbit-pathfinding/src/graph",
   "Suquster/moonbit-pathfinding/src/infra_text",
+  "moonbitlang/core/test",
+  "moonbitlang/core/debug",
 } for "test"

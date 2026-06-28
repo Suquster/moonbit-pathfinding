@@ -20,7 +20,7 @@ pub(all) enum TerminationReason {
   StoppedNormally
   /// 因错误失败，附带原因。
   FailedWith(String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 生命周期钩子 ──────────────────────────────
 

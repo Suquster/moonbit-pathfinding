@@ -15,7 +15,7 @@
 pub(all) enum OpKind {
   Invoke
   Return
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 操作事件（operation event）—— 历史的基本元素。
@@ -33,7 +33,7 @@ pub(all) struct OpEvent {
   arg : Int
   ret : Int
   time : LogicalTime
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个调用事件。
@@ -65,7 +65,7 @@ pub type History = Array[OpEvent]
 /// 顺序规约：单寄存器 / 单键 KV，`init` 为初始值。
 pub(all) struct RegisterModel {
   init : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 线性一致性判定结果：线性一致 `Linearizable`，或非线性一致 `NotLinearizable`
@@ -73,7 +73,7 @@ pub(all) struct RegisterModel {
 pub(all) enum LinResult {
   Linearizable
   NotLinearizable(conflict~ : Array[OpEvent])
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 内部完成操作（complete operation）：由配对的调用 / 返回事件构成。

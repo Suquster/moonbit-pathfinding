@@ -53,7 +53,7 @@ pub(all) struct BenchCase {
   seed : UInt64
   raw_ns : Array[Double]
   stats : BenchStats
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 完整基准报告（Requirement 5.1 / 5.2）。
@@ -81,7 +81,7 @@ pub(all) struct BenchReport {
   generator : String
   warmup_count : Int
   cases : Array[BenchCase]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── Markdown 序列化 ─────────────────────────
 
@@ -267,7 +267,7 @@ fn json_push_field_str(
   value : String,
   leading : Bool,
 ) -> Unit {
-  if !(leading) {
+  if !leading {
     tb.push_char(',')
   }
   json_push_string(tb, key)
@@ -296,7 +296,7 @@ fn json_push_field_double(
   value : Double,
   leading : Bool,
 ) -> Unit {
-  if !(leading) {
+  if !leading {
     tb.push_char(',')
   }
   json_push_string(tb, key)
@@ -712,10 +712,7 @@ fn bj_as_string(j : BJson) -> String? {
 /// 取整型字段（须为 `JNum` 且为十进制整数字面量）；否则返回 `None`。
 fn bj_as_int(j : BJson) -> Int? {
   match j {
-    JNum(s) =>
-      try Some(@string.parse_int(s)) catch {
-        _ => None
-      }
+    JNum(s) => Some(@string.parse_int(s)) catch { _ => None }
     _ => None
   }
 }
@@ -724,10 +721,7 @@ fn bj_as_int(j : BJson) -> Int? {
 /// 取无符号 64 位整型字段（须为 `JNum`）；否则返回 `None`。
 fn bj_as_uint64(j : BJson) -> UInt64? {
   match j {
-    JNum(s) =>
-      try Some(@string.parse_uint64(s)) catch {
-        _ => None
-      }
+    JNum(s) => Some(@string.parse_uint64(s)) catch { _ => None }
     _ => None
   }
 }
@@ -737,10 +731,7 @@ fn bj_as_uint64(j : BJson) -> UInt64? {
 /// `Double::to_string` 互逆，保证逐位往返无损。
 fn bj_as_double(j : BJson) -> Double? {
   match j {
-    JNum(s) =>
-      try Some(@string.parse_double(s)) catch {
-        _ => None
-      }
+    JNum(s) => Some(@string.parse_double(s)) catch { _ => None }
     _ => None
   }
 }

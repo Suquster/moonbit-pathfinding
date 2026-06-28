@@ -213,7 +213,7 @@ fn p18_push_pull_equivalent(doc : TextDocument) -> Bool {
   let pushed = on_did_change(doc)
   let pulled = pull_diagnostics(doc)
   // (1) 诊断序列逐条相等。
-  if !(p18_diagnostics_equal(pushed, pulled)) {
+  if !p18_diagnostics_equal(pushed, pulled) {
     return false
   }
   // (2) push 通知嵌入的诊断 JSON 与 pull 诊断编码数组相等。

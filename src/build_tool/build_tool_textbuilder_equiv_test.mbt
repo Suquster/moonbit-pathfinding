@@ -54,7 +54,7 @@ test "print_rules output is byte-identical to pre-refactor (golden)" {
     "\tgcc -c $*.c\n" +
     "app: main.o util.o\n" +
     "\tgcc -o app main.o util.o\n"
-  assert_eq(print_rules(rs), expected)
+  @test.assert_eq(print_rules(rs), expected)
 }
 
 ///|
@@ -80,7 +80,7 @@ test "print_rules round-trip is idempotent" {
       return
     }
   }
-  assert_eq(printed1, printed2)
+  @test.assert_eq(printed1, printed2)
 }
 
 ///|
@@ -94,7 +94,7 @@ test "expand_vars accumulates variable name and expands correctly" {
       assert_true(rs.variables.get("LONGVARNAME") == Some("x.o y.o"))
       let g = rs.to_graph()
       // 展开为两个依赖 x.o / y.o，加目标 app 共 3 个节点。
-      assert_eq(g.nodes.length(), 3)
+      @test.assert_eq(g.nodes.length(), 3)
     }
     Err(e) => fail("合法规则文本不应解析失败：\{e}")
   }
@@ -107,7 +107,7 @@ test "expand_vars expands undefined variable to empty string" {
     Ok(rs) => {
       let g = rs.to_graph()
       // 依赖为 "prepost"（中间空串），加目标 app 共 2 个节点。
-      assert_eq(g.nodes.length(), 2)
+      @test.assert_eq(g.nodes.length(), 2)
       let mut found = false
       for n in g.nodes {
         if n.name == "prepost" {
@@ -132,7 +132,7 @@ test "PatternRule::instantiate substitutes stem byte-identically" {
     recipe: { lines: ["gcc -c $*.c -o $*.o"] },
   }
   let r = pr.instantiate("foo")
-  assert_eq(r.target, "foo.o")
+  @test.assert_eq(r.target, "foo.o")
   assert_true(r.deps == ["foo.c", "common.h"])
   assert_true(r.recipe.lines == ["gcc -c foo.c -o foo.o"])
 }
@@ -157,7 +157,7 @@ test "serialize_cache output is byte-identical to pre-refactor (golden)" {
     "# current_hashes\n" +
     "h app h1\n" +
     "h lib h0\n"
-  assert_eq(serialize_cache(c), expected)
+  @test.assert_eq(serialize_cache(c), expected)
 }
 
 ///|
@@ -168,7 +168,7 @@ test "serialize_cache output is byte-identical to pre-refactor (golden)" {
 test "cache_key output is byte-identical to pre-refactor (golden)" {
   // lp("app")="3|app", lp("2")="1|2", lp("h1")="2|h1", lp("h2")="2|h2",
   // lp("fp")="2|fp"，顺序拼接得：
-  assert_eq(cache_key("app", ["h1", "h2"], "fp"), "3|app1|22|h12|h22|fp")
+  @test.assert_eq(cache_key("app", ["h1", "h2"], "fp"), "3|app1|22|h12|h22|fp")
 }
 
 ///|
@@ -178,7 +178,7 @@ test "cache_key output is byte-identical to pre-refactor (golden)" {
 /// 输入数 / 各输入哈希的编码顺序与内容逐字符不变。
 test "derive_output_hash output is byte-identical to pre-refactor (golden)" {
   // lp("fp")="2|fp", lp("2")="1|2", lp("h1")="2|h1", lp("h2")="2|h2"。
-  assert_eq(derive_output_hash(["h1", "h2"], "fp"), "2|fp1|22|h12|h2")
+  @test.assert_eq(derive_output_hash(["h1", "h2"], "fp"), "2|fp1|22|h12|h2")
 }
 
 ///|
@@ -190,5 +190,5 @@ test "action_fingerprint feeds identical length-prefixed encoding" {
   let recipe : Recipe = { lines: ["cc -c a", "ld a"] }
   // lp("cc -c a")="7|cc -c a", lp("ld a")="4|ld a"。
   let expected_enc = "7|cc -c a" + "4|ld a"
-  assert_eq(action_fingerprint(recipe), content_hash(expected_enc))
+  @test.assert_eq(action_fingerprint(recipe), content_hash(expected_enc))
 }

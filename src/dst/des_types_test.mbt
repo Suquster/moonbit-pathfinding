@@ -9,8 +9,8 @@ test "Message constructs and compares by fields" {
   let a : Message = { id: 1, payload: 7 }
   let b : Message = { id: 1, payload: 7 }
   let c : Message = { id: 2, payload: 7 }
-  assert_eq(a, b)
-  assert_not_eq(a, c)
+  @test.assert_eq(a, b)
+  @test.assert_not_eq(a, c)
 }
 
 ///|
@@ -18,16 +18,16 @@ test "Message constructs and compares by fields" {
 test "SimEvent variants expose time and actor" {
   let s : SimEvent = EvScheduled(time=3UL, task_id=5)
   let c : SimEvent = EvCompleted(time=3UL, task_id=5)
-  assert_not_eq(s, c)
-  assert_eq(s.time_of(), 3UL)
-  assert_eq(s.actor_of(), 5)
+  @test.assert_not_eq(s, c)
+  @test.assert_eq(s.time_of(), 3UL)
+  @test.assert_eq(s.actor_of(), 5)
   let snd : SimEvent = EvSend(time=4UL, from=1, to=2, msg={ id: 0, payload: 9 })
-  assert_eq(snd.actor_of(), 1)
+  @test.assert_eq(snd.actor_of(), 1)
   let dlv : SimEvent = EvDeliver(time=5UL, from=1, to=2, msg={
     id: 0,
     payload: 9,
   })
-  assert_eq(dlv.actor_of(), 2)
+  @test.assert_eq(dlv.actor_of(), 2)
 }
 
 ///|
@@ -35,10 +35,10 @@ test "SimEvent variants expose time and actor" {
 test "NodeApp and Action construct and compare" {
   let app : NodeApp = { log: [1, 2], kv: [("k", 3)] }
   let app2 = NodeApp::empty()
-  assert_not_eq(app, app2)
+  @test.assert_not_eq(app, app2)
   let a1 : Action = ActSend(to=1, payload=2, after=3UL)
   let a2 : Action = ActAppend(value=9)
-  assert_not_eq(a1, a2)
+  @test.assert_not_eq(a1, a2)
 }
 
 ///|
@@ -46,12 +46,12 @@ test "NodeApp and Action construct and compare" {
 test "DesResult compares by fields and reuses SimStatus" {
   let r1 : DesResult = { seed: 1, trace: [], status: Completed, finals: [] }
   let r2 : DesResult = { seed: 1, trace: [], status: Completed, finals: [] }
-  assert_eq(r1, r2)
+  @test.assert_eq(r1, r2)
   let r3 : DesResult = {
     seed: 1,
     trace: [],
     status: Failed(reason="x"),
     finals: [],
   }
-  assert_not_eq(r1, r3)
+  @test.assert_not_eq(r1, r3)
 }

@@ -62,7 +62,7 @@ test "decode_framed missing Content-Length yields parse error" {
   let body = "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"params\":[]}"
   let frame = fr_bytes("Content-Type: application/json\r\n\r\n" + body)
   match decode_framed(frame) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a parse error for missing Content-Length")
   }
 }
@@ -74,13 +74,13 @@ test "decode_framed non-integer Content-Length yields parse error" {
   // 值为非数字。
   let frame_abc = fr_bytes("Content-Length: abc\r\n\r\n" + body)
   match decode_framed(frame_abc) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a parse error for non-integer Content-Length")
   }
   // 值带负号（非「非负整数」）。
   let frame_neg = fr_bytes("Content-Length: -5\r\n\r\n" + body)
   match decode_framed(frame_neg) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a parse error for negative Content-Length")
   }
 }
@@ -92,7 +92,7 @@ test "FrameReader next surfaces malformed frame as parse error" {
   let frame = fr_bytes("X-Foo: bar\r\n\r\n" + body)
   let reader = FrameReader::new().push(frame)
   match reader.next() {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected FrameReader to surface a parse error")
   }
 }
@@ -105,7 +105,7 @@ test "decode_framed insufficient body yields parse error" {
   // 声明 100 字节，实际正文仅 2 字节。
   let frame = fr_bytes("Content-Length: 100\r\n\r\n{}")
   match decode_framed(frame) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a parse error for insufficient body")
   }
 }
@@ -136,7 +136,7 @@ test "FrameReader returns None on insufficient body then cuts after refill" {
   let reader2 = reader1.push(tail)
   match reader2.next() {
     Ok(Some((decoded, rest))) => {
-      assert_eq(decoded, msg)
+      @test.assert_eq(decoded, msg)
       match rest.next() {
         Ok(None) => ()
         _ => fail("expected empty reader after the only frame")
@@ -157,7 +157,7 @@ test "decode_framed cuts a single valid frame" {
     params=JArr([JNum("1"), JNum("2")]),
   )
   match decode_framed(encode_framed(msg)) {
-    Ok(decoded) => assert_eq(decoded, msg)
+    Ok(decoded) => @test.assert_eq(decoded, msg)
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
 }
@@ -173,7 +173,7 @@ test "FrameReader cuts a single frame and then yields None" {
   let reader = FrameReader::new().push(encode_framed(msg))
   match reader.next() {
     Ok(Some((decoded, rest))) => {
-      assert_eq(decoded, msg)
+      @test.assert_eq(decoded, msg)
       match rest.next() {
         Ok(None) => ()
         _ => fail("expected None after consuming the only frame")
@@ -193,7 +193,10 @@ test "FrameReader cuts consecutive multiple frames in order" {
     method_name="initialize",
     params=JNull,
   )
-  let m2 = JsonRpcMessage::Notification(method_name="initialized", params=JObj([]))
+  let m2 = JsonRpcMessage::Notification(
+    method_name="initialized",
+    params=JObj([]),
+  )
   let m3 = JsonRpcMessage::Response(
     id=IdNum(1),
     result=Some(JBool(true)),
@@ -209,7 +212,7 @@ test "FrameReader cuts consecutive multiple frames in order" {
   // 第 1 帧 == m1。
   let r1 = match r0.next() {
     Ok(Some((d, rest))) => {
-      assert_eq(d, m1)
+      @test.assert_eq(d, m1)
       rest
     }
     _ => {
@@ -220,7 +223,7 @@ test "FrameReader cuts consecutive multiple frames in order" {
   // 第 2 帧 == m2。
   let r2 = match r1.next() {
     Ok(Some((d, rest))) => {
-      assert_eq(d, m2)
+      @test.assert_eq(d, m2)
       rest
     }
     _ => {
@@ -231,7 +234,7 @@ test "FrameReader cuts consecutive multiple frames in order" {
   // 第 3 帧 == m3。
   let r3 = match r2.next() {
     Ok(Some((d, rest))) => {
-      assert_eq(d, m3)
+      @test.assert_eq(d, m3)
       rest
     }
     _ => {
@@ -258,7 +261,7 @@ test "FrameReader cuts complete frames and stops at a trailing partial frame" {
 
   let r1 = match r0.next() {
     Ok(Some((d, rest))) => {
-      assert_eq(d, m1)
+      @test.assert_eq(d, m1)
       rest
     }
     _ => {
@@ -268,7 +271,7 @@ test "FrameReader cuts complete frames and stops at a trailing partial frame" {
   }
   let r2 = match r1.next() {
     Ok(Some((d, rest))) => {
-      assert_eq(d, m2)
+      @test.assert_eq(d, m2)
       rest
     }
     _ => {

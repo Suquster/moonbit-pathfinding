@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/build_tool"
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -96,7 +97,7 @@ pub fn ActionCache::record(Self, String, String) -> Unit
 pub(all) enum ActionResult {
   Executed(output_hash~ : String)
   Skipped
-} derive(Eq)
+} derive(Eq, @debug.Debug)
 pub impl Show for ActionResult
 
 pub struct BuildCache {
@@ -144,8 +145,9 @@ pub(all) struct GrammarError {
   pos : @parser_combinator.Pos
   expected : Array[String]
   message : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn GrammarError::to_legacy(Self) -> ParseError
+pub impl Show for GrammarError
 
 pub(all) struct ParallelSchedule {
   waves : Array[Array[Action]]
@@ -161,7 +163,7 @@ pub(all) struct PatternRule {
   target_pattern : String
   dep_patterns : Array[String]
   recipe : Recipe
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn PatternRule::instantiate(Self, String) -> Rule
 
 pub(all) struct Provenance {
@@ -169,24 +171,24 @@ pub(all) struct Provenance {
   input_hashes : Array[String]
   action_fp : String
   output_hash : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Recipe {
   lines : Array[String]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Rule {
   target : String
   deps : Array[String]
   recipe : Recipe
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct RuleSet {
   rules : Array[Rule]
   pattern_rules : Array[PatternRule]
   variables : Map[String, String]
   phony : Array[String]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn RuleSet::is_phony(Self, String) -> Bool
 pub fn RuleSet::match_pattern(Self, String) -> Rule?
 pub fn RuleSet::recipe_of(Self, String) -> Recipe?

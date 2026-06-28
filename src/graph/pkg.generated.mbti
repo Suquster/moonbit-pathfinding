@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/graph"
 
 import {
   "Suquster/moonbit-pathfinding/src/core",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -29,8 +30,8 @@ pub struct Graph[N, W] {
   nodes : Array[N]
   adj : Map[N, Array[(N, W)]]
 }
-pub fn[N : Eq + Hash, W] Graph::edge_count(Self[N, W]) -> Int
-pub fn[N : Eq + Hash, W] Graph::node_count(Self[N, W]) -> Int
+pub fn[N, W] Graph::edge_count(Self[N, W]) -> Int
+pub fn[N, W] Graph::node_count(Self[N, W]) -> Int
 pub fn[N : Eq + Hash, W] Graph::successors(Self[N, W]) -> (N) -> Array[(N, W)]
 
 pub struct GraphBuilder[N, W] {
@@ -64,7 +65,7 @@ pub fn[N] LazyPath::next(Self[N]) -> N?
 pub(all) enum OsmDataSource {
   RealOsm
   SyntheticFallback
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct OsmLoadOutcome {
   graph : CsrGraph[Double]
@@ -80,7 +81,7 @@ pub(all) enum PathError {
   Unreachable
   NegativeCycle
   InvalidArgument(String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn PathError::message(Self) -> String
 
 // Type aliases

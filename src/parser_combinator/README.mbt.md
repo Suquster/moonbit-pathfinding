@@ -119,7 +119,7 @@ test "README · seq + many1 端到端解析带井号编号" {
   assert_true(ok.is_ok())
   match ok.value() {
     Some((hash, digits)) => {
-      assert_eq(hash, '#')
+      @test.assert_eq(hash, '#')
       assert_true(digits == ['1', '2', '3'])
     }
     None => fail("expected parsed value")
@@ -243,7 +243,7 @@ test "README · 错误处理 label 与最远失败" {
 test "README · 旗舰示例 JSON 解析 / 转义 / 往返 / 恢复" {
   // 解析嵌套结构
   match parse_json("{\"name\":\"kiro\",\"tags\":[1,2,3],\"ok\":true}") {
-    Ok(JObject(pairs)) => assert_eq(pairs.length(), 3)
+    Ok(JObject(pairs)) => @test.assert_eq(pairs.length(), 3)
     _ => fail("expected object")
   }
   // 转义解码：\n 解码为换行

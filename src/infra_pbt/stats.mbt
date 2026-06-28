@@ -139,24 +139,24 @@ test "stats record/count/total smoke" {
   stats.record("a")
   stats.record("a")
   stats.record("b")
-  assert_eq(stats.count("a"), 2)
-  assert_eq(stats.count("b"), 1)
-  assert_eq(stats.count("missing"), 0)
-  assert_eq(stats.total(), 3)
+  @test.assert_eq(stats.count("a"), 2)
+  @test.assert_eq(stats.count("b"), 1)
+  @test.assert_eq(stats.count("missing"), 0)
+  @test.assert_eq(stats.total(), 3)
 }
 
 ///|
 /// 内联烟雾测试：`ratio` 在空统计返回 0.0、非空时给出正确占比。
 test "stats ratio smoke" {
   let empty = Stats::new()
-  assert_eq(empty.ratio("x"), 0.0)
+  @test.assert_eq(empty.ratio("x"), 0.0)
   let stats = Stats::new()
   stats.record("x")
   stats.record("x")
   stats.record("y")
   stats.record("y")
-  assert_eq(stats.ratio("x"), 0.5)
-  assert_eq(stats.ratio("y"), 0.5)
+  @test.assert_eq(stats.ratio("x"), 0.5)
+  @test.assert_eq(stats.ratio("y"), 0.5)
 }
 
 ///|
@@ -169,8 +169,8 @@ test "holds_for_all_stats smoke" {
     fn(n) { if n % 2 == 0 { "even" } else { "odd" } },
     iters=100,
   )
-  assert_eq(passed, true)
+  @test.assert_eq(passed, true)
   // 每次迭代恰好记录一个样本，故总数等于迭代次数。
-  assert_eq(stats.total(), 100)
-  assert_eq(stats.count("even") + stats.count("odd"), 100)
+  @test.assert_eq(stats.total(), 100)
+  @test.assert_eq(stats.count("even") + stats.count("odd"), 100)
 }

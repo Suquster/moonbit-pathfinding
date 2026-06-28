@@ -20,7 +20,7 @@
 /// （见 actor.mbt 的 `spawn` / `reset_runtime`）。
 pub(all) struct ActorId {
   value : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 邮箱 ──────────────────────────────────────
 

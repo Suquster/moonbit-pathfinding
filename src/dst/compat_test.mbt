@@ -16,12 +16,12 @@ test "compat: legacy run is deterministic, fails on crash, and replays" {
   )
   let a = run(0xABCD, scenario)
   let b = run(0xABCD, scenario)
-  assert_eq(a, b)
+  @test.assert_eq(a, b)
   match a.status {
     Failed(..) => ()
     Completed => fail("injected crash should fail the run")
   }
-  assert_eq(replay(a.seed, a.trace), a)
+  @test.assert_eq(replay(a.seed, a.trace), a)
 }
 
 ///|
@@ -29,7 +29,7 @@ test "compat: legacy run is deterministic, fails on crash, and replays" {
 test "compat: legacy run normalizes by task id" {
   let forward = [Task::new(0, "a"), Task::new(1, "b"), Task::new(2, "c")]
   let reversed = [Task::new(2, "c"), Task::new(1, "b"), Task::new(0, "a")]
-  assert_eq(
+  @test.assert_eq(
     run(42, Scenario::new(forward, [], 8)),
     run(42, Scenario::new(reversed, [], 8)),
   )
@@ -41,7 +41,7 @@ test "compat: legacy rng is deterministic and bounded" {
   let r1 = rng_new(0x1234)
   let r2 = rng_new(0x1234)
   for _ in 0..<32 {
-    assert_eq(r1.next(), r2.next())
+    @test.assert_eq(r1.next(), r2.next())
   }
   let r = rng_new(7)
   for _ in 0..<50 {

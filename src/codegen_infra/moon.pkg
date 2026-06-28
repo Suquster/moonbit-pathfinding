@@ -32,6 +32,8 @@ import {
 // 「infra_pbt 为横切测试期共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/test",
 } for "test"
 
 // 白盒属性测试（task 11.4 Property 8 SSA 单赋值不变量的建立与保持）置于
@@ -39,4 +41,5 @@ import {
 // 故对 @infra_pbt 追加白盒测试期依赖（`for "wbtest"`）；同样不进入运行时产物。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/debug",
 } for "wbtest"

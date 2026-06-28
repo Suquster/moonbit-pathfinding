@@ -22,7 +22,7 @@ test "poll consumes a reply at most once" {
   broker.fulfill(id, "ok")
   assert_true(broker.has_reply(id))
   match broker.poll(id) {
-    Replied(v) => assert_eq(v, "ok")
+    Replied(v) => @test.assert_eq(v, "ok")
     Timeout => fail("expected Replied")
   }
   // 已消费：不再持有响应，再 poll 得 Timeout。
@@ -51,9 +51,9 @@ test "fulfill after consumption is ignored" {
 /// CorrelationId / AskResult 派生 Eq / Show 见证。
 test "CorrelationId and AskResult derive Eq and Show" {
   let a : CorrelationId = { value: 3 }
-  assert_eq(a, { value: 3 })
+  @test.assert_eq(a, { value: 3 })
   let r : AskResult[Int] = Replied(5)
-  assert_eq(r, Replied(5))
+  @test.assert_eq(r, Replied(5))
   let t : AskResult[Int] = Timeout
   assert_true(r != t)
 }

@@ -61,7 +61,7 @@ pub(all) struct Action {
 ///|
 /// 以可读形式展示动作（便于诊断与测试失败信息阅读）。
 ///
-/// 手写 `Show`（而非 `derive(Show)`）以规避 `derive(Show)` 的弃用告警，
+/// 手写 `Show`（而非 `derive(Debug)`）以规避 `derive(Debug)` 的弃用告警，
 /// 与本包 `Target` 的处理一致；逐字段经 `logger.write_string` 写出，
 /// 不做循环字符串拼接（无 `out = out + ...` 反模式）。
 pub impl Show for Action with fn output(self : Action, logger : &Logger) -> Unit {
@@ -107,10 +107,10 @@ pub fn Action::fingerprint(self : Action) -> String {
 pub(all) enum ActionResult {
   Executed(output_hash~ : String)
   Skipped
-} derive(Eq)
+} derive(Eq, Debug)
 
 ///|
-/// 以可读形式展示执行结果（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示执行结果（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for ActionResult with fn output(
   self : ActionResult,
   logger : &Logger,

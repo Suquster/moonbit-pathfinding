@@ -20,7 +20,7 @@ pub(all) enum SpanStatus {
   Unset
   Ok
   Error
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// span 类别（Requirement 5.4），默认 `Internal`。对应 OpenTelemetry span kind。
@@ -30,7 +30,7 @@ pub(all) enum SpanKind {
   Client
   Producer
   Consumer
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// span 事件（Requirement 5.2）：名称 + 逻辑时间戳 + 结构化字段。
@@ -40,7 +40,7 @@ pub(all) struct SpanEvent {
   name : String
   ts : Int64
   fields : Map[String, Value]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// OTel 语义包裹：在既有 `Span` 之上旁路叠加属性 / 事件 / 状态 / kind
@@ -51,7 +51,7 @@ pub(all) struct SpanData {
   mut events : Array[SpanEvent]
   mut status : SpanStatus
   mut kind : SpanKind
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由既有 `Span` 构造 OTel 包裹：默认 `status=Unset`、`kind=Internal`，空属性

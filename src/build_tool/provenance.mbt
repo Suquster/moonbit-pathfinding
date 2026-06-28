@@ -16,7 +16,7 @@ pub(all) struct Provenance {
   input_hashes : Array[String]
   action_fp : String
   output_hash : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 模型层可复现假设：输出哈希为 (输入哈希序列, 动作指纹) 的**长度前缀单射编码**。

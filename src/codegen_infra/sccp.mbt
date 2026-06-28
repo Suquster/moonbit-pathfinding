@@ -24,7 +24,7 @@ pub(all) enum LatticeValue {
   Top
   Const(Int)
   Bottom
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 格的 meet（greatest lower bound）：Top 为单位元；同值常量相遇仍为该常量，
@@ -179,7 +179,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
         Some(b) =>
           for s in reachable_succs(b, values, defset) {
             re[(lbl, s)] = true
-            if !(rb.contains(s)) {
+            if !rb.contains(s) {
               rb[s] = true
               queue.push(s)
             }
@@ -190,7 +190,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
     // 2) 重算可达块内定义的格值（含 φ）。
     let mut changed = false
     for b in p.blocks {
-      if !(rb.contains(b.label)) {
+      if !rb.contains(b.label) {
         continue
       }
       for instr in b.instrs {
@@ -225,7 +225,7 @@ pub fn sccp(p : SsaProgram) -> SsaProgram {
     }
     reach_block = rb
     reach_edge = re
-    if !(changed) && rb.length() == prev_reach_size {
+    if !changed && rb.length() == prev_reach_size {
       break
     }
     prev_reach_size = rb.length()

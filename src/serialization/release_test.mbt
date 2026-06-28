@@ -10,16 +10,16 @@
 /// 登记的发布元数据身份字段正确，版本为旗舰深化版 0.2.0。
 test "serialization release_info registers identity at 0.2.0" {
   let info = release_info()
-  assert_eq(info.name, "serialization")
-  assert_eq(info.version, "0.2.0")
-  assert_eq(info.changelog_path, "src/serialization/CHANGELOG.md")
+  @test.assert_eq(info.name, "serialization")
+  @test.assert_eq(info.version, "0.2.0")
+  @test.assert_eq(info.changelog_path, "src/serialization/CHANGELOG.md")
 }
 
 ///|
 /// 登记的版本号是合法 SemVer，且恰为 0.2.0。
 test "serialization version is a well-formed 0.2.0 semver" {
   assert_true(@release_meta.is_valid_semver(serialization_version))
-  assert_eq(
+  @test.assert_eq(
     @release_meta.parse_semver(serialization_version),
     Some({ major: 0, minor: 2, patch: 0 }),
   )
@@ -28,7 +28,7 @@ test "serialization version is a well-formed 0.2.0 semver" {
 ///|
 /// changelog 路径遵循 src/{方向}/CHANGELOG.md 约定。
 test "serialization changelog path follows convention" {
-  assert_eq(
+  @test.assert_eq(
     release_info().changelog_path,
     @release_meta.default_changelog_path("serialization"),
   )
@@ -43,8 +43,8 @@ test "serialization release_info_with_gates matches aggregate gate" {
     docs_passing: true,
   })
   assert_true(ready.release_ready)
-  assert_eq(ready.name, "serialization")
-  assert_eq(ready.version, "0.2.0")
+  @test.assert_eq(ready.name, "serialization")
+  @test.assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: true,

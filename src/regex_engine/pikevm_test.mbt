@@ -61,7 +61,7 @@ test "pikevm non-capturing group does not allocate index" {
   assert_true(grp(caps, 0) == Some((0, 3)))
   assert_true(grp(caps, 1) == Some((2, 3)))
   match caps {
-    Some(c) => assert_eq(c.group_count(), 2) // 含第 0 组
+    Some(c) => @test.assert_eq(c.group_count(), 2) // 含第 0 组
     None => fail("expected match")
   }
 }

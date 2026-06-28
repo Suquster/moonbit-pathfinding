@@ -88,7 +88,7 @@ pub struct BenchStats {
   p95 : Double
   stddev : Double
   sample_count : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由原始计时样本计算汇总统计量（Requirement 5.2）。

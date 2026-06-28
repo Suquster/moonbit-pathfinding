@@ -21,7 +21,7 @@ pub(all) enum SupervisionStrategy {
   OneForOne
   OneForAll
   RestForOne
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 重启指令（directive）—— 对失败子的处置（Requirement 2.1）。
@@ -33,7 +33,7 @@ pub(all) enum Directive {
   Restart
   Stop
   Escalate
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── 重启强度 ──────────────────────────────────
 
@@ -43,7 +43,7 @@ pub(all) enum Directive {
 pub(all) struct RestartIntensity {
   max_restarts : Int
   window : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造重启强度配置。
@@ -62,7 +62,7 @@ pub(all) struct SupervisorSpec {
   strategy : SupervisionStrategy
   intensity : RestartIntensity
   default_directive : Directive
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造监督者配置。

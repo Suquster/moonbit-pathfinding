@@ -20,7 +20,7 @@ pub(all) enum Json {
   JStr(String)
   JArr(Array[Json])
   JObj(Array[(String, Json)])
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 在有序键值对中按 key 查找首个匹配项；不存在返回 `None`。

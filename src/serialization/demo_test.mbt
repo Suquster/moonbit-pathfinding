@@ -30,7 +30,7 @@ test "demo end-to-end: parse, validate, codegen, binary and JSON round-trip agre
   // 2. 模式校验通过。
   match validate_schema(schema) {
     Ok(_) => assert_true(true)
-    Err(errs) => fail("demo 模式应通过校验：\{errs}")
+    Err(errs) => fail("demo 模式应通过校验：\{@debug.to_string(errs)}")
   }
 
   // 3. 代码生成冒烟。

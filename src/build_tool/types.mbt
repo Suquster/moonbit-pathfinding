@@ -20,7 +20,7 @@
 /// 名字通常是产物路径或规则名。派生 `Eq + Hash` 以便作为图节点参与
 /// `@directed` 的拓扑/强连通分量算法（其类型约束为 `N : Eq + Hash`）；
 /// `Show` 以手写 impl 提供（输出目标名），便于诊断与测试快照阅读，
-/// 同时规避 `derive(Show)` 的弃用告警。
+/// 同时规避 `derive(Debug)` 的弃用告警。
 pub struct Target {
   name : String
 } derive(Eq, Hash)

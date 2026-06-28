@@ -10,7 +10,7 @@ test "parse_env_filter rejects unrecognized bare level with position" {
     Ok(_) => fail("非法级别标签应解析失败")
     Err(err) => {
       // "http=warn," 共 10 字符，第二段从偏移 10 起。
-      assert_eq(err.pos, 10)
+      @test.assert_eq(err.pos, 10)
       assert_true(err.message.contains("notalevel"))
     }
   }
@@ -23,7 +23,7 @@ test "parse_env_filter rejects unrecognized directive level with position" {
     Ok(_) => fail("非法级别应解析失败")
     Err(err) => {
       // "db=" 后级别从偏移 3 起。
-      assert_eq(err.pos, 3)
+      @test.assert_eq(err.pos, 3)
       assert_true(err.message.contains("nope"))
     }
   }
@@ -70,9 +70,9 @@ test "route delivers to matching sinks and none on no match" {
   })
   let sinks = [errors]
   // Info 无匹配 → 空。
-  assert_eq(route(sinks, Event::new(0L, Level::Info, {})).length(), 0)
+  @test.assert_eq(route(sinks, Event::new(0L, Level::Info, {})).length(), 0)
   // Error 匹配 → [errors]。
   let m = route(sinks, Event::new(0L, Level::Error, {}))
-  assert_eq(m.length(), 1)
-  assert_eq(m[0], "errors")
+  @test.assert_eq(m.length(), 1)
+  @test.assert_eq(m[0], "errors")
 }

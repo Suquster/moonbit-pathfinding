@@ -39,7 +39,7 @@ pub fn gen_moonbit(schema : Schema) -> String {
       let ty = if field.repeated { "Array[\{base}]" } else { base }
       out.push_str("  \{field.name} : \{ty}\n")
     }
-    out.push_str("} derive(Eq, Show)\n")
+    out.push_str("} derive(Eq, Debug)\n")
   }
   out.build()
 }

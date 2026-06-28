@@ -30,6 +30,8 @@ import {
   // 动作指纹拼接（Action::fingerprint）以其 `TextBuilder` 物化，消除循环内
   // 字符串 `+` 的 O(n²) 拼接（Requirement 1.5 / 质量门禁）。
   "Suquster/moonbit-pathfinding/src/infra_text",
+  // @debug —— 用于 `GrammarError` 等公开类型的 `Show` 委托其 `Debug` 表示。
+  "moonbitlang/core/debug",
 }
 
 // 属性测试（task 9.3 拓扑不变量、9.4 环检测错误条件 + 增量幂等空操作）
@@ -39,4 +41,5 @@ import {
 // 共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"

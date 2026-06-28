@@ -45,7 +45,7 @@ pub fn level_count(counts : Array[Int], level : Level) -> Int {
 pub(all) struct Histogram {
   boundaries : Array[Double]
   buckets : Array[Int]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 对事件流就某数值字段按升序边界派生直方图（Requirement 8.2 / 8.3）。

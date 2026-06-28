@@ -246,7 +246,7 @@ test "to_path_error bridges failure with position and expected text" {
   // 失败：pchar('x') 对 "abc" 在 1:1（offset 0）失败，期望 'x'。
   match pchar('x').parse_string("abc").to_path_error() {
     Some(InvalidInput(msg)) =>
-      assert_eq(msg, "解析失败于 1:1（offset 0），期望 'x'")
+      @test.assert_eq(msg, "解析失败于 1:1（offset 0），期望 'x'")
     _ => fail("expected InvalidInput bridge")
   }
   // 成功：桥接为 None。

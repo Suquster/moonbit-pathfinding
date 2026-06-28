@@ -18,7 +18,16 @@
 import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/actor",
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "test"
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"
 
 options(
   targets: {

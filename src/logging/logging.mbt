@@ -178,7 +178,7 @@ pub fn current_trace() -> TraceId {
 ///   4. 事件含调用方提供的全部结构化字段（7.1），原字段优先级高于保留键。
 pub fn log(level : Level, fields : Map[String, Value]) -> Unit {
   // Requirement 7.2：低于阈值的事件被丢弃。
-  if !(level.is_enabled(logger.threshold)) {
+  if !level.is_enabled(logger.threshold) {
     return
   }
   let ts = tick()
@@ -249,7 +249,7 @@ pub fn exit_span(s : Span) -> Unit {
 pub(all) struct TraceContext {
   trace : TraceId
   span : SpanId?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 开启一条新的 trace（逻辑请求/任务链路），将其设为当前上下文并返回其标识。
@@ -613,7 +613,7 @@ fn num_is_float(s : String) -> Bool {
 ///|
 /// 解析 Int64（包装 @strconv，失败返回 None）。
 fn parse_int64(s : String) -> Int64? {
-  try Some(@string.parse_int64(s)) catch {
+  Some(@string.parse_int64(s)) catch {
     _ => None
   }
 }
@@ -621,7 +621,7 @@ fn parse_int64(s : String) -> Int64? {
 ///|
 /// 解析 Double（包装 @strconv，失败返回 None）。
 fn parse_double(s : String) -> Double? {
-  try Some(@string.parse_double(s)) catch {
+  Some(@string.parse_double(s)) catch {
     _ => None
   }
 }
@@ -841,7 +841,7 @@ fn parse_num(r : JsonReader) -> JVal? {
       break
     }
   }
-  if !(seen_digit) {
+  if !seen_digit {
     return None
   }
   let num = @infra_text.TextBuilder::new()

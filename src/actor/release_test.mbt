@@ -10,16 +10,16 @@
 /// 登记的发布元数据身份字段正确，版本为旗舰深化版 0.2.0。
 test "actor release_info registers identity at 0.2.0" {
   let info = release_info()
-  assert_eq(info.name, "actor")
-  assert_eq(info.version, "0.2.0")
-  assert_eq(info.changelog_path, "src/actor/CHANGELOG.md")
+  @test.assert_eq(info.name, "actor")
+  @test.assert_eq(info.version, "0.2.0")
+  @test.assert_eq(info.changelog_path, "src/actor/CHANGELOG.md")
 }
 
 ///|
 /// 登记的版本号是合法 SemVer，且恰为 0.2.0。
 test "actor version is a well-formed 0.2.0 semver" {
   assert_true(@release_meta.is_valid_semver(actor_version))
-  assert_eq(
+  @test.assert_eq(
     @release_meta.parse_semver(actor_version),
     Some({ major: 0, minor: 2, patch: 0 }),
   )
@@ -28,7 +28,7 @@ test "actor version is a well-formed 0.2.0 semver" {
 ///|
 /// changelog 路径遵循 src/{方向}/CHANGELOG.md 约定。
 test "actor changelog path follows convention" {
-  assert_eq(
+  @test.assert_eq(
     release_info().changelog_path,
     @release_meta.default_changelog_path("actor"),
   )
@@ -43,8 +43,8 @@ test "actor release_info_with_gates matches aggregate gate" {
     docs_passing: true,
   })
   assert_true(ready.release_ready)
-  assert_eq(ready.name, "actor")
-  assert_eq(ready.version, "0.2.0")
+  @test.assert_eq(ready.name, "actor")
+  @test.assert_eq(ready.version, "0.2.0")
   let blocked = release_info_with_gates({
     tests_passing: true,
     proofs_passing: true,
@@ -59,20 +59,20 @@ test "actor release_info_with_gates matches aggregate gate" {
 /// （Requirement 15.6 / 15.5）。
 test "actor 0.2.0 witnesses a minor-version bump over 0.1.0" {
   // 当前版本字段见证：actor_version 与登记元数据一致，且解析为 {0,2,0}。
-  assert_eq(actor_version, "0.2.0")
+  @test.assert_eq(actor_version, "0.2.0")
   let cur = @release_meta.parse_semver(actor_version)
-  assert_eq(cur, Some({ major: 0, minor: 2, patch: 0 }))
+  @test.assert_eq(cur, Some({ major: 0, minor: 2, patch: 0 }))
   // 取出前一骨架版本与当前版本的结构化字段，逐字段比较推进性质。
   let prev = @release_meta.parse_semver("0.1.0")
-  assert_eq(prev, Some({ major: 0, minor: 1, patch: 0 }))
+  @test.assert_eq(prev, Some({ major: 0, minor: 1, patch: 0 }))
   match (prev, cur) {
     (Some(p), Some(c)) => {
       // 次版本推进：主版本不变。
-      assert_eq(c.major, p.major)
+      @test.assert_eq(c.major, p.major)
       // 次版本推进：次版本号增加（严格大于）。
       assert_true(c.minor > p.minor)
       // 旗舰深化在 0.x 下新增向后兼容能力，patch 归零。
-      assert_eq(c.patch, 0)
+      @test.assert_eq(c.patch, 0)
     }
     _ => abort("两个版本号均应为合法 SemVer")
   }
@@ -121,7 +121,7 @@ test "actor release readiness aggregates gates as logical AND" {
   assert_false(no_docs.release_ready)
 
   // 与 release_meta 的纯聚合函数交叉见证：评估结果应与 AND 聚合逐一吻合。
-  assert_eq(
+  @test.assert_eq(
     all_green.release_ready,
     @release_meta.aggregate_release_ready({
       tests_passing: true,
@@ -129,23 +129,23 @@ test "actor release readiness aggregates gates as logical AND" {
       docs_passing: true,
     }),
   )
-  assert_eq(
+  @test.assert_eq(
     no_tests.release_ready,
     @release_meta.release_ready_of(false, true, true),
   )
-  assert_eq(
+  @test.assert_eq(
     no_proofs.release_ready,
     @release_meta.release_ready_of(true, false, true),
   )
-  assert_eq(
+  @test.assert_eq(
     no_docs.release_ready,
     @release_meta.release_ready_of(true, true, false),
   )
 
   // 身份字段（name / version / changelog_path）在各组合下保持不变。
   for info in [all_green, no_tests, no_proofs, no_docs] {
-    assert_eq(info.name, expect_name)
-    assert_eq(info.version, expect_version)
-    assert_eq(info.changelog_path, expect_changelog)
+    @test.assert_eq(info.name, expect_name)
+    @test.assert_eq(info.version, expect_version)
+    @test.assert_eq(info.changelog_path, expect_changelog)
   }
 }

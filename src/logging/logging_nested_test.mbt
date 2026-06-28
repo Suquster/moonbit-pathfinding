@@ -30,7 +30,7 @@ test "parse_json_log restores nested object and array" {
     "\"o\":{\"a\":1,\"b\":\"x\"},\"l\":[1,true,\"y\"]}}"
   match parse_json_log(json) {
     Some(e) => {
-      assert_eq(e.ts, 2L)
+      @test.assert_eq(e.ts, 2L)
       assert_true(
         e.fields.get("o") == Some(VMap({ "a": VInt(1L), "b": VStr("x") })),
       )
@@ -62,7 +62,7 @@ test "scalar-only events keep legacy rendering (regression)" {
     "c": VBool(false),
   })
   let json = format_json(e)
-  assert_eq(
+  @test.assert_eq(
     json, "{\"ts\":3,\"level\":\"ERROR\",\"fields\":{\"a\":\"x\",\"b\":-1,\"c\":false}}",
   )
 }

@@ -21,7 +21,7 @@ pub struct Pos {
   line : Int
   col : Int
   offset : Int
-} derive(Eq)
+} derive(Eq, Debug)
 
 ///|
 /// 以 `行:列` 形式展示位置（便于诊断信息与测试快照阅读）。

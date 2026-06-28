@@ -24,14 +24,14 @@ test "add_dynamic_deps appends edge and registers missing node" {
   let g = BuildGraph::new([a, b], [])
   let c = Target::new("c")
   let g2 = add_dynamic_deps(g, b, [c])
-  assert_eq(g2.nodes.length(), 3)
-  assert_eq(g2.edges.length(), 1)
+  @test.assert_eq(g2.nodes.length(), 3)
+  @test.assert_eq(g2.edges.length(), 1)
   let (u, v) = g2.edges[0]
   assert_true(u == c)
   assert_true(v == b)
   // 既有图不变。
-  assert_eq(g.nodes.length(), 2)
-  assert_eq(g.edges.length(), 0)
+  @test.assert_eq(g.nodes.length(), 2)
+  @test.assert_eq(g.edges.length(), 0)
 }
 
 ///|
@@ -43,7 +43,7 @@ test "reschedule_with_dynamic schedules acyclic augmented graph" {
   // 动态把 a 设为 b 的依赖 → 边 (a, b)
   match reschedule_with_dynamic(g, b, [a], 0) {
     Ok(batches) => {
-      assert_eq(batches.length(), 2)
+      @test.assert_eq(batches.length(), 2)
       assert_true(batches[0][0] == a)
       assert_true(batches[1][0] == b)
     }

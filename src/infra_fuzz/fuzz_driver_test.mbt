@@ -44,7 +44,7 @@ enum FuzzAlgo {
   TypedBfs
   Alt
   Ch
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 算法终止后的结果分类（精确枚举 · 携带规模信息便于报告与调试）。
@@ -60,7 +60,7 @@ enum FuzzResultKind {
   DistMap(Int)
   Matrix(Int)
   StructError
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 单算法鲁棒性裁决：`robust` 为真表示该算法在该图实例上安全终止并产出可接受
@@ -69,7 +69,7 @@ struct AlgoVerdict {
   algo : FuzzAlgo
   robust : Bool
   kind : FuzzResultKind
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一次模糊运行的聚合报告：携带触发用例的随机种子（R17.4 / R17.7）、图规模、
@@ -80,7 +80,7 @@ struct FuzzRunReport {
   graph_m : Int
   verdicts : Array[AlgoVerdict]
   robust : Bool
-} derive(Show)
+} derive(Debug)
 
 // ───────────────────────── 邻接预计算与图视图 ─────────────────────────
 
@@ -576,7 +576,7 @@ fn FuzzRunReport::describe(self : FuzzRunReport) -> String {
   tb.push_str("):")
   for v in self.verdicts {
     tb.push_str(" [")
-    tb.push_str(v.algo.to_string())
+    tb.push_str(@debug.to_string(v.algo))
     tb.push_str(" robust=")
     tb.push_str(v.robust.to_string())
     tb.push_str("]")
@@ -609,7 +609,7 @@ test "Feature: championship-v1-upgrade, task 16.1: nonneg battery robust across 
     let report = fuzz_run_from_seed_nonneg(s, 24, 80)
     // 全算法鲁棒；失败时输出报告（含种子）便于复现。
     assert_true(report.robust)
-    assert_eq(report.seed, s)
+    @test.assert_eq(report.seed, s)
     // 电池应覆盖 8 个算法（n>=1 时）或空图子集（n==0 时为 2 个）。
     assert_true(report.verdicts.length() == 8 || report.verdicts.length() == 2)
   }
@@ -623,7 +623,7 @@ test "Feature: championship-v1-upgrade, task 16.1: signed battery robust across 
   for s in seeds {
     let report = fuzz_run_from_seed_signed(s, 20, 60)
     assert_true(report.robust)
-    assert_eq(report.seed, s)
+    @test.assert_eq(report.seed, s)
   }
 }
 
@@ -633,7 +633,7 @@ test "Feature: championship-v1-upgrade, task 16.1: signed battery robust across 
 test "Feature: championship-v1-upgrade, task 16.1: reports reproducible by seed" {
   let a = fuzz_run_from_seed_nonneg(20240621, 24, 80)
   let b = fuzz_run_from_seed_nonneg(20240621, 24, 80)
-  assert_eq(a.to_string(), b.to_string())
+  @test.assert_eq(@debug.to_string(a), @debug.to_string(b))
 }
 
 ///|
@@ -643,7 +643,7 @@ test "Feature: championship-v1-upgrade, task 16.1: representative structural gra
   // 空图：仅运行 Floyd-Warshall（空矩阵）+ 结构化非法参数路径。
   let empty = fuzz_run_nonneg({ n: 0, edges: [] }, 0)
   assert_true(empty.robust)
-  assert_eq(empty.verdicts.length(), 2)
+  @test.assert_eq(empty.verdicts.length(), 2)
 
   // 单节点 + 自环：source == target == 0，各算法应返回平凡路径 [0] 或无解。
   let single = fuzz_run_nonneg({ n: 1, edges: [(0, 0, 2.5)] }, 0)
@@ -673,15 +673,15 @@ test "Feature: championship-v1-upgrade, task 16.1: valid result classification o
   // Dijkstra：0->3 可达，路径 [0,1,2,3]，代价 6.0。
   let dj = run_dijkstra(adj, 0, 3)
   assert_true(dj.robust)
-  assert_eq(dj.kind, PathFound(3))
+  @test.assert_eq(dj.kind, PathFound(3))
   // typed_shortest_path 同理。
   let tsp = run_typed_sp(adj, 0, 3, false)
   assert_true(tsp.robust)
-  assert_eq(tsp.kind, PathFound(3))
+  @test.assert_eq(tsp.kind, PathFound(3))
   // BFS（无权）：跳数 3。
   let bfs = run_bfs(adj, 0, 3)
   assert_true(bfs.robust)
-  assert_eq(bfs.kind, PathFound(3))
+  @test.assert_eq(bfs.kind, PathFound(3))
 }
 
 ///|
@@ -692,10 +692,10 @@ test "Feature: championship-v1-upgrade, task 16.1: unreachable classified as NoP
   let adj = build_adj({ n: 4, edges: [(0, 1, 1.0), (2, 3, 1.0)] })
   let bfs = run_bfs(adj, 0, 3)
   assert_true(bfs.robust)
-  assert_eq(bfs.kind, NoPath)
+  @test.assert_eq(bfs.kind, NoPath)
   let tsp = run_typed_sp(adj, 0, 3, false)
   assert_true(tsp.robust)
-  assert_eq(tsp.kind, StructError)
+  @test.assert_eq(tsp.kind, StructError)
 }
 
 ///|
@@ -707,11 +707,11 @@ test "Feature: championship-v1-upgrade, task 16.1: negative cycle handled struct
   let adj = build_adj({ n: 3, edges: [(0, 1, 1.0), (1, 2, -1.0), (2, 1, -1.0)] })
   let bf = run_bellman_ford(adj, 0, true)
   assert_true(bf.robust)
-  assert_eq(bf.kind, StructError)
+  @test.assert_eq(bf.kind, StructError)
   // typed_shortest_path：0 到 2 路径上存在负权环 → NegativeCycle（结构化）。
   let tsp = run_typed_sp(adj, 0, 2, true)
   assert_true(tsp.robust)
-  assert_eq(tsp.kind, StructError)
+  @test.assert_eq(tsp.kind, StructError)
 }
 
 ///|

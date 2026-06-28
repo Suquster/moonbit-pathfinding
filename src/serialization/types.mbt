@@ -28,7 +28,7 @@ pub(all) enum WireType {
   I64 // 1：定长 64 位（fixed64/sfixed64/double）
   Len // 2：长度前缀（string/bytes/嵌套消息/packed repeated）
   I32 // 5：定长 32 位（fixed32/sfixed32/float）
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 返回该 wire 类型在 tag 中编码的数值（0/1/2/5）。
@@ -63,7 +63,7 @@ pub(all) enum FieldValue {
   VI64(UInt64) // 来自 I64：原始 8 字节小端位
   VI32(UInt) // 来自 I32：原始 4 字节小端位
   VBytes(Bytes) // 来自 Len：长度前缀的原始字节
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一个 Varint 字段值（int*/uint*/bool/enum 的 wire 承载）。
@@ -105,7 +105,7 @@ pub fn FieldValue::wire_type(self : FieldValue) -> WireType {
 pub(all) struct FieldEntry {
   number : Int
   value : FieldValue
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造一条字段记录。
@@ -120,7 +120,7 @@ pub fn FieldEntry::new(number : Int, value : FieldValue) -> FieldEntry {
 /// 骨架以"字段记录序列"表示，保留 wire 顺序；模式化的命名字段视图属于 7.2。
 pub(all) struct Message {
   fields : Array[FieldEntry]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造空消息（无字段）。
@@ -148,7 +148,7 @@ pub(all) enum FieldType {
   TBytes
   TMessage(String) // 引用某消息类型（按名）
   TEnum(String) // 引用某枚举类型（按名）
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 字段定义：名称 / 字段号 / 类型 / 是否 repeated。
@@ -157,7 +157,7 @@ pub(all) struct FieldDef {
   number : Int
   ftype : FieldType
   repeated : Bool
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 消息定义：名称 + 字段定义序列。骨架阶段 `parse_proto` 仅填充名称，字段
@@ -165,21 +165,21 @@ pub(all) struct FieldDef {
 pub(all) struct MessageDef {
   name : String
   fields : Array[FieldDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 枚举定义：名称 + `(标识符, 取值)` 序列。
 pub(all) struct EnumDef {
   name : String
   values : Array[(String, Int)]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 模式描述（schema）—— `.proto` 解析产物，驱动编解码与代码生成。
 pub(all) struct Schema {
   messages : Array[MessageDef]
   enums : Array[EnumDef]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造空模式。
@@ -197,7 +197,14 @@ pub(all) enum DecodeError {
   MalformedVarint(offset~ : Int) // 起始于 offset 的 varint 编码非法（如超长/截断）
   InvalidWireType(offset~ : Int, tag~ : UInt64) // offset 处 tag 的 wire 类型非法
   InvalidFieldNumber(offset~ : Int, number~ : Int) // offset 处字段号非法（如 0）
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// 公开错误类型的 `Show` 委托其 `Debug` 结构化表示（与历史 `derive` 输出一致），
+/// 供错误信息展示 / 字符串插值使用；调试比较走 `Debug`。
+pub impl Show for DecodeError with fn output(self, logger) {
+  logger.write_string(@debug.to_string(self))
+}
 
 ///|
 /// 统一取出解码错误的出错字节偏移（供调用方与测试以稳定方式断言定位）。
@@ -218,7 +225,13 @@ pub(all) struct ParseError {
   col : Int
   offset : Int
   message : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// 公开错误类型的 `Show` 委托其 `Debug` 结构化表示（与历史 `derive` 输出一致）。
+pub impl Show for ParseError with fn output(self, logger) {
+  logger.write_string(@debug.to_string(self))
+}
 
 ///|
 /// 构造解析错误。

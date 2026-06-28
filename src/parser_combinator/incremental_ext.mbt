@@ -30,12 +30,12 @@
 pub enum RecoveryStrategy {
   SkipUntil(Char)
   SyncTo(Array[Char])
-} derive(Eq)
+} derive(Eq, Debug)
 
 ///|
 /// 以可读形式展示恢复策略（便于诊断与测试失败信息阅读）。
 ///
-/// 手写 `Show`（而非 `derive(Show)`）以规避 `derive(Show)` 的弃用告警，与
+/// 手写 `Show`（而非 `derive(Debug)`）以规避 `derive(Debug)` 的弃用告警，与
 /// `build_tool` 包 `Action` / `ActionResult` 的处理一致；逐字段经
 /// `logger.write_string` 写出，不做循环字符串拼接（无 `out = out + ...` 反模式）。
 pub impl Show for RecoveryStrategy with fn output(
@@ -167,12 +167,12 @@ fn char_in(markers : Array[Char], c : Char) -> Bool {
 test "with_recovery 成功路径原样返回" {
   let g = with_recovery(lift(pchar('a')), SkipUntil(','), '?')
   let r = g.run_naive_string("abc")
-  assert_eq(r.is_ok(), true)
-  assert_eq(r.value(), Some('a'))
+  @test.assert_eq(r.is_ok(), true)
+  @test.assert_eq(r.value(), Some('a'))
   // 成功消费一个字符，剩余游标在 offset 1。
   match r.rest() {
-    Some(rest) => assert_eq(rest.pos.offset, 1)
-    None => assert_eq(true, false)
+    Some(rest) => @test.assert_eq(rest.pos.offset, 1)
+    None => @test.assert_eq(true, false)
   }
 }
 
@@ -182,15 +182,15 @@ test "with_recovery SkipUntil 跳到标记前" {
   // 子解析期望 'x' 但输入以 'a' 开头，于 offset 0 失败。
   let g = with_recovery(lift(pchar('x')), SkipUntil(','), '?')
   let r = g.run_naive_string("ab,cd")
-  assert_eq(r.is_ok(), true)
-  assert_eq(r.value(), Some('?'))
+  @test.assert_eq(r.is_ok(), true)
+  @test.assert_eq(r.value(), Some('?'))
   // 跳过 'a' 'b'，停在 ',' 之前（offset 2，不消费 ','）。
   match r.rest() {
     Some(rest) => {
-      assert_eq(rest.pos.offset, 2)
-      assert_eq(rest.peek(), Some(','))
+      @test.assert_eq(rest.pos.offset, 2)
+      @test.assert_eq(rest.peek(), Some(','))
     }
-    None => assert_eq(true, false)
+    None => @test.assert_eq(true, false)
   }
 }
 
@@ -199,13 +199,13 @@ test "with_recovery SkipUntil 跳到标记前" {
 test "with_recovery SkipUntil 无标记扫描到末尾" {
   let g = with_recovery(lift(pchar('x')), SkipUntil(';'), '?')
   let r = g.run_naive_string("abc")
-  assert_eq(r.is_ok(), true)
+  @test.assert_eq(r.is_ok(), true)
   match r.rest() {
     Some(rest) => {
-      assert_eq(rest.is_eof(), true)
-      assert_eq(rest.pos.offset, 3)
+      @test.assert_eq(rest.is_eof(), true)
+      @test.assert_eq(rest.pos.offset, 3)
     }
-    None => assert_eq(true, false)
+    None => @test.assert_eq(true, false)
   }
 }
 
@@ -214,22 +214,22 @@ test "with_recovery SkipUntil 无标记扫描到末尾" {
 test "with_recovery SyncTo 同步到任一标记" {
   let g = with_recovery(lift(pchar('x')), SyncTo([')', ']', '}']), '_')
   let r = g.run_naive_string("abc] rest")
-  assert_eq(r.is_ok(), true)
-  assert_eq(r.value(), Some('_'))
+  @test.assert_eq(r.is_ok(), true)
+  @test.assert_eq(r.value(), Some('_'))
   // 跳过 'a' 'b' 'c'，停在 ']' 之前（offset 3）。
   match r.rest() {
     Some(rest) => {
-      assert_eq(rest.pos.offset, 3)
-      assert_eq(rest.peek(), Some(']'))
+      @test.assert_eq(rest.pos.offset, 3)
+      @test.assert_eq(rest.peek(), Some(']'))
     }
-    None => assert_eq(true, false)
+    None => @test.assert_eq(true, false)
   }
 }
 
 ///|
 /// 烟雾测试：RecoveryStrategy 派生 Eq / Show 正常。
 test "RecoveryStrategy 派生 Eq/Show" {
-  assert_eq(SkipUntil(','), SkipUntil(','))
-  assert_eq(SyncTo([',', ';']), SyncTo([',', ';']))
-  assert_eq("\{SkipUntil(',')}", "SkipUntil(,)")
+  @test.assert_eq(SkipUntil(','), SkipUntil(','))
+  @test.assert_eq(SyncTo([',', ';']), SyncTo([',', ';']))
+  @test.assert_eq("\{SkipUntil(',')}", "SkipUntil(,)")
 }

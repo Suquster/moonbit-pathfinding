@@ -22,7 +22,7 @@ pub(all) enum Formatter {
   Json
   Logfmt
   Pretty
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 将一条事件按指定格式器渲染为文本（Requirement 2.1 / 2.2）。

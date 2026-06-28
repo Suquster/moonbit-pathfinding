@@ -10,4 +10,9 @@ import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/codegen_infra" @cg,
   "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

@@ -14,10 +14,10 @@ test "parse_rules parses targets and dependency edges" {
   match parse_rules("app: main.o util.o") {
     Ok(g) => {
       // 节点：app、main.o、util.o（按首次出现）。
-      assert_eq(g.nodes.length(), 3)
+      @test.assert_eq(g.nodes.length(), 3)
       assert_true(g.nodes[0] == Target::new("app"))
       // 边：(main.o → app)、(util.o → app)。
-      assert_eq(g.edges.length(), 2)
+      @test.assert_eq(g.edges.length(), 2)
       let (d0, t0) = g.edges[0]
       assert_true(d0 == Target::new("main.o"))
       assert_true(t0 == Target::new("app"))
@@ -33,9 +33,9 @@ test "parse_rules skips comments and dedups shared nodes" {
   match parse_rules(src) {
     Ok(g) => {
       // 节点：app、a.o、b.o、common.h —— common.h 仅登记一次。
-      assert_eq(g.nodes.length(), 4)
+      @test.assert_eq(g.nodes.length(), 4)
       // 边：(a.o→app)、(b.o→app)、(common.h→a.o)、(common.h→b.o)。
-      assert_eq(g.edges.length(), 4)
+      @test.assert_eq(g.edges.length(), 4)
     }
     Err(_) => fail("合法规则不应解析失败")
   }
@@ -46,7 +46,7 @@ test "parse_rules skips comments and dedups shared nodes" {
 test "parse_rules reports missing colon with line number" {
   match parse_rules("app: a.o\nthis line has no colon\n") {
     Ok(_) => fail("非法规则应解析失败")
-    Err(e) => assert_eq(e.line, 2)
+    Err(e) => @test.assert_eq(e.line, 2)
   }
 }
 
@@ -60,7 +60,7 @@ test "topo_order reuses directed for linear dependency" {
   let g = BuildGraph::new([a, b, c], [(a, b), (b, c)])
   match topo_order(g) {
     Ok(order) => {
-      assert_eq(order.length(), 3)
+      @test.assert_eq(order.length(), 3)
       assert_true(order[0] == a)
       assert_true(order[2] == c)
     }
@@ -72,7 +72,7 @@ test "topo_order reuses directed for linear dependency" {
 /// topo_order 在空图上成功并返回空序列（边界）。
 test "topo_order on empty graph returns empty order" {
   match topo_order(BuildGraph::new([], [])) {
-    Ok(order) => assert_eq(order.length(), 0)
+    Ok(order) => @test.assert_eq(order.length(), 0)
     Err(_) => fail("空图不应报告环")
   }
 }
@@ -83,8 +83,8 @@ test "schedule groups independent targets into one batch" {
   let a = Target::new("a")
   let b = Target::new("b")
   let batches = schedule(BuildGraph::new([a, b], []), 4)
-  assert_eq(batches.length(), 1)
-  assert_eq(batches[0].length(), 2)
+  @test.assert_eq(batches.length(), 1)
+  @test.assert_eq(batches[0].length(), 2)
 }
 
 ///|
@@ -95,7 +95,7 @@ test "schedule produces topological layers for a linear chain" {
   let c = Target::new("c")
   // a 在 b 之前、b 在 c 之前。
   let batches = schedule(BuildGraph::new([a, b, c], [(a, b), (b, c)]), 4)
-  assert_eq(batches.length(), 3)
+  @test.assert_eq(batches.length(), 3)
   assert_true(batches[0][0] == a)
   assert_true(batches[1][0] == b)
   assert_true(batches[2][0] == c)
@@ -113,10 +113,10 @@ test "schedule splits a wide layer by the jobs limit" {
   ]
   // 五个相互无依赖的目标，并行度上限 2 → 切为 2 + 2 + 1 三批。
   let batches = schedule(BuildGraph::new(nodes, []), 2)
-  assert_eq(batches.length(), 3)
-  assert_eq(batches[0].length(), 2)
-  assert_eq(batches[1].length(), 2)
-  assert_eq(batches[2].length(), 1)
+  @test.assert_eq(batches.length(), 3)
+  @test.assert_eq(batches[0].length(), 2)
+  @test.assert_eq(batches[1].length(), 2)
+  @test.assert_eq(batches[2].length(), 1)
 }
 
 ///|
@@ -174,7 +174,7 @@ test "incremental no-op: nothing dirty after a build with no changes" {
       rebuilt += 1
     }
   }
-  assert_eq(rebuilt, 0)
+  @test.assert_eq(rebuilt, 0)
 }
 
 ///|
@@ -191,7 +191,7 @@ test "detect_cycle reports the nodes of a dependency cycle" {
   let b = Target::new("b")
   let g = BuildGraph::new([a, b], [(a, b), (b, a)])
   match detect_cycle(g) {
-    Some(cyc) => assert_eq(cyc.length(), 2)
+    Some(cyc) => @test.assert_eq(cyc.length(), 2)
     None => fail("应检出 a↔b 依赖环")
   }
 }
@@ -203,7 +203,7 @@ test "detect_cycle detects a self-loop" {
   let g = BuildGraph::new([a], [(a, a)])
   match detect_cycle(g) {
     Some(cyc) => {
-      assert_eq(cyc.length(), 1)
+      @test.assert_eq(cyc.length(), 1)
       assert_true(cyc[0] == a)
     }
     None => fail("应检出自环")
@@ -217,7 +217,7 @@ test "topo_order returns a cycle with node sequence on cyclic graph" {
   let b = Target::new("b")
   match topo_order(BuildGraph::new([a, b], [(a, b), (b, a)])) {
     Ok(_) => fail("有环图不应给出拓扑序")
-    Err(cyc) => assert_eq(cyc.nodes.length(), 2)
+    Err(cyc) => @test.assert_eq(cyc.nodes.length(), 2)
   }
 }
 
@@ -231,12 +231,12 @@ test "topo_order returns a cycle with node sequence on cyclic graph" {
 test "compat: parse_rules nodes and edges are field-stable" {
   match parse_rules("app: a.o b.o\na.o: common.h\n") {
     Ok(g) => {
-      assert_eq(g.nodes.length(), 4)
+      @test.assert_eq(g.nodes.length(), 4)
       assert_true(g.nodes[0] == Target::new("app"))
       assert_true(g.nodes[1] == Target::new("a.o"))
       assert_true(g.nodes[2] == Target::new("b.o"))
       assert_true(g.nodes[3] == Target::new("common.h"))
-      assert_eq(g.edges.length(), 3)
+      @test.assert_eq(g.edges.length(), 3)
       let (d0, t0) = g.edges[0]
       assert_true(d0 == Target::new("a.o"))
       assert_true(t0 == Target::new("app"))
@@ -249,8 +249,8 @@ test "compat: parse_rules nodes and edges are field-stable" {
 /// 回归：ParseError 形态不变（仅 message + line，Eq 仍成立）。
 test "compat: ParseError shape is unchanged" {
   let e = ParseError::new("boom", 7)
-  assert_eq(e.line, 7)
-  assert_eq(e.message, "boom")
+  @test.assert_eq(e.line, 7)
+  @test.assert_eq(e.message, "boom")
   assert_true(e == ParseError::new("boom", 7))
 }
 
@@ -261,8 +261,8 @@ test "compat: full grammar projects to the same graph on minimal text" {
   match (parse_rules(src), parse_rules_full(src)) {
     (Ok(g), Ok(rs)) => {
       let g2 = rs.to_graph()
-      assert_eq(g2.nodes.length(), g.nodes.length())
-      assert_eq(g2.edges.length(), g.edges.length())
+      @test.assert_eq(g2.nodes.length(), g.nodes.length())
+      @test.assert_eq(g2.edges.length(), g.edges.length())
       for i in 0..<g.nodes.length() {
         assert_true(g2.nodes[i] == g.nodes[i])
       }
@@ -279,7 +279,7 @@ test "compat: schedule detect_cycle topo_order is_dirty behavior frozen" {
   let g = BuildGraph::new([a, b], [(a, b)])
   // schedule：a→b 两批，各一元素。
   let batches = schedule(g, 0)
-  assert_eq(batches.length(), 2)
+  @test.assert_eq(batches.length(), 2)
   assert_true(batches[0][0] == a)
   assert_true(batches[1][0] == b)
   // detect_cycle：无环返回 None。
@@ -287,7 +287,7 @@ test "compat: schedule detect_cycle topo_order is_dirty behavior frozen" {
   // topo_order：[a, b]。
   match topo_order(g) {
     Ok(order) => {
-      assert_eq(order.length(), 2)
+      @test.assert_eq(order.length(), 2)
       assert_true(order[0] == a)
       assert_true(order[1] == b)
     }

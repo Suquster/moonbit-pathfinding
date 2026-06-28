@@ -50,7 +50,7 @@ fn p05_restart_semantics(rng : @infra_pbt.Rng) -> Bool {
   if sys.state_of(child) != Some(post_sum) {
     return false
   }
-  if !(sys.is_running(child)) {
+  if !sys.is_running(child) {
     return false
   }
   sys.restart_count(child) == 1

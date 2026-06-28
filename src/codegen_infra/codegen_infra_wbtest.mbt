@@ -133,8 +133,8 @@ test "allocate_coloring 相邻变量 k=1 时其一溢出" {
     edges: [({ id: 0 }, { id: 1 })],
   }
   let alloc = allocate_coloring(g, 1)
-  inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
-  inspect(alloc.get({ id: 1 }).unwrap(), content="Spill(0)")
+  @debug.debug_inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
+  @debug.debug_inspect(alloc.get({ id: 1 }).unwrap(), content="Spill(0)")
 }
 
 // ---------------------------------------------------------------------------
@@ -151,9 +151,9 @@ test "allocate_linear_scan 非重叠区间复用寄存器" {
   ]
   let alloc = allocate_linear_scan(intervals, 2)
   inspect(count_spills(alloc), content="0")
-  inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
-  inspect(alloc.get({ id: 1 }).unwrap(), content="Reg(1)")
-  inspect(alloc.get({ id: 2 }).unwrap(), content="Reg(0)")
+  @debug.debug_inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
+  @debug.debug_inspect(alloc.get({ id: 1 }).unwrap(), content="Reg(1)")
+  @debug.debug_inspect(alloc.get({ id: 2 }).unwrap(), content="Reg(0)")
 }
 
 ///|
@@ -164,8 +164,8 @@ test "allocate_linear_scan 寄存器耗尽时重叠区间溢出" {
     LiveInterval::{ variable: { id: 1 }, start: 1, end: 3 },
   ]
   let alloc = allocate_linear_scan(intervals, 1)
-  inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
-  inspect(alloc.get({ id: 1 }).unwrap(), content="Spill(0)")
+  @debug.debug_inspect(alloc.get({ id: 0 }).unwrap(), content="Reg(0)")
+  @debug.debug_inspect(alloc.get({ id: 1 }).unwrap(), content="Spill(0)")
 }
 
 // ---------------------------------------------------------------------------

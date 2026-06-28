@@ -31,7 +31,7 @@ fn p29_termination(rng : @infra_pbt.Rng) -> Bool {
     return false
   }
   // 空闲：再 step 无进展。
-  !(sys.step())
+  !sys.step()
 }
 
 ///|

@@ -91,7 +91,7 @@ test "prim agrees with kruskal on a dense graph" {
     let (_, _, w) = e
     acc + w
   })
-  assert_eq(prim_total, kruskal_total)
+  @test.assert_eq(prim_total, kruskal_total)
 }
 
 ///|

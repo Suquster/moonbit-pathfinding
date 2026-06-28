@@ -63,11 +63,11 @@ test "README · log 记录结构化字段与时间戳" {
     "ok": Value::VBool(true),
   })
   let events = captured_events()
-  assert_eq(events.length(), 1)
+  @test.assert_eq(events.length(), 1)
   let e = events[0]
   // 级别与时间戳（R7.1）：默认逻辑时钟自 0 起，首条事件时间戳为 1
   assert_true(e.level == Level::Info)
-  assert_eq(e.ts, 1L)
+  @test.assert_eq(e.ts, 1L)
   // 调用方的全部结构化字段被原样保留（R7.1）
   assert_true(e.fields.get("service") == Some(Value::VStr("api-gateway")))
   assert_true(e.fields.get("status") == Some(Value::VInt(200L)))
@@ -94,7 +94,7 @@ test "README · set_threshold 丢弃低于阈值的事件" {
   log(Level::Warn, { "m": Value::VStr("warn") }) // 保留
   log(Level::Error, { "m": Value::VStr("error") }) // 保留
   let events = captured_events()
-  assert_eq(events.length(), 2)
+  @test.assert_eq(events.length(), 2)
   assert_true(events[0].level == Level::Warn)
   assert_true(events[1].level == Level::Error)
 }
@@ -129,7 +129,7 @@ test "README · enter_span/exit_span 形成 span 树并记录时长" {
   assert_true(e.fields.get("trace") == Some(Value::VInt(trace.value)))
   // 退出后两个 span 均记录正向时长（end - start > 0，R7.5）
   let finished = finished_spans()
-  assert_eq(finished.length(), 2)
+  @test.assert_eq(finished.length(), 2)
   for i = 0; i < finished.length(); i = i + 1 {
     match span_duration(finished[i]) {
       Some(d) => assert_true(d > 0L)
@@ -165,7 +165,7 @@ test "README · format_json 与 parse_json_log 往返" {
   // 往返：解析结果与原事件逐字段等价
   match parse_json_log(json) {
     Some(parsed) => {
-      assert_eq(parsed.ts, 7L)
+      @test.assert_eq(parsed.ts, 7L)
       assert_true(parsed.level == Level::Warn)
       assert_true(
         parsed.fields.get("msg") == Some(Value::VStr("disk almost full")),
@@ -229,8 +229,8 @@ test "README · 多 formatter 与可插拔 sink" {
   let json_sink = Sink::new("json", Formatter::Json)
   let logfmt_sink = Sink::new("logfmt", Formatter::Logfmt)
   dispatch([json_sink, logfmt_sink], e)
-  assert_eq(json_sink.buffer.length(), 1)
-  assert_eq(logfmt_sink.buffer.length(), 1)
+  @test.assert_eq(json_sink.buffer.length(), 1)
+  @test.assert_eq(logfmt_sink.buffer.length(), 1)
 }
 ```
 
@@ -267,11 +267,11 @@ test "README · 确定性采样与限流" {
   // trace 内一致：同一 trace 多次判定恒定；边界 rate=0 全弃、rate=1 全采
   let trace : TraceId = { value: 12345L }
   let decision = sample_trace(0.5, trace, 42UL)
-  assert_eq(sample_trace(0.5, trace, 42UL), decision)
+  @test.assert_eq(sample_trace(0.5, trace, 42UL), decision)
   assert_false(sample_trace(0.0, trace, 42UL))
   assert_true(sample_trace(1.0, trace, 42UL))
   // 系统采样保留条数 = floor(rate*n)
-  assert_eq(retained_count(0.25, 1000), 250)
+  @test.assert_eq(retained_count(0.25, 1000), 250)
   // 限流：window=10 limit=2，同窗放行 2 条后丢弃，窗口到期重置
   let limiter = RateLimiter::new(10L, 2)
   assert_true(limiter.allow("k", 0L))
@@ -313,8 +313,8 @@ test "README · 过滤与路由" {
   let errors = Sink::new("errors", Formatter::Json, route=fn(e) {
     e.level.rank() >= Level::Error.rank()
   })
-  assert_eq(route([errors], Event::new(0L, Level::Error, {})).length(), 1)
-  assert_eq(route([errors], Event::new(0L, Level::Info, {})).length(), 0)
+  @test.assert_eq(route([errors], Event::new(0L, Level::Error, {})).length(), 1)
+  @test.assert_eq(route([errors], Event::new(0L, Level::Info, {})).length(), 0)
 }
 ```
 
@@ -340,7 +340,7 @@ test "README · OpenTelemetry span 语义" {
   assert_true(sd.kind == SpanKind::Server)
   assert_true(sd.status == SpanStatus::Ok)
   assert_true(sd.attributes.get("http.method") == Some(Value::VStr("GET")))
-  assert_eq(sd.events.length(), 1)
+  @test.assert_eq(sd.events.length(), 1)
 }
 ```
 
@@ -359,12 +359,12 @@ test "README · W3C traceparent 注入与提取" {
     span: Some({ value: 7L }),
   }
   let tp = inject_traceparent(ctx)
-  assert_eq(tp.length(), 55) // 2+1+32+1+16+1+2
+  @test.assert_eq(tp.length(), 55) // 2+1+32+1+16+1+2
   assert_true(tp.contains("0123456789abcdef")) // trace 低 64 位编码
   match extract_traceparent(tp) {
     Some(w) => {
       assert_true(w.is_sampled()) // flags 01 最低位为 1
-      assert_eq(w.to_trace_context().trace.value, ctx.trace.value) // 无损往返
+      @test.assert_eq(w.to_trace_context().trace.value, ctx.trace.value) // 无损往返
     }
     None => fail("合法 traceparent 应提取成功")
   }
@@ -391,7 +391,7 @@ test "README · 脱敏 / PII 过滤" {
   let policy = RedactionPolicy::by_names(["password", "card"])
   let red = redact(policy, e)
   // 键集合不变；敏感字段整体掩码；非敏感字段不变
-  assert_eq(red.fields.length(), e.fields.length())
+  @test.assert_eq(red.fields.length(), e.fields.length())
   assert_true(red.fields.get("password") == Some(redaction_mask))
   assert_true(red.fields.get("card") == Some(redaction_mask)) // 嵌套整体替换
   assert_true(red.fields.get("user") == Some(Value::VStr("alice")))
@@ -417,14 +417,14 @@ test "README · 指标派生" {
     Event::new(3L, Level::Info, { "msg": Value::VStr("no-lat") }), // 缺 lat → 跳过
   ]
   let counts = count_by_level(events)
-  assert_eq(level_count(counts, Level::Info), 2)
-  assert_eq(level_count(counts, Level::Error), 1)
+  @test.assert_eq(level_count(counts, Level::Info), 2)
+  @test.assert_eq(level_count(counts, Level::Error), 1)
   // 边界 [10,100] ⇒ 3 桶；缺字段事件不计入
   let h = histogram(events, "lat", [10.0, 100.0])
-  assert_eq(h.buckets.length(), 3)
-  assert_eq(h.buckets[0], 1) // 5 < 10
-  assert_eq(h.buckets[1], 1) // 15 ∈ [10,100)
-  assert_eq(h.buckets[2], 1) // 150 >= 100
+  @test.assert_eq(h.buckets.length(), 3)
+  @test.assert_eq(h.buckets[0], 1) // 5 < 10
+  @test.assert_eq(h.buckets[1], 1) // 15 ∈ [10,100)
+  @test.assert_eq(h.buckets[2], 1) // 150 >= 100
 }
 ```
 
@@ -441,12 +441,12 @@ test "README · 指标派生" {
 test "README · 端到端 demo 与跨进程传播" {
   let outcome = run_demo()
   // 嵌套 span（root + db）、3 条事件双格式输出
-  assert_eq(outcome.span_count, 2)
-  assert_eq(outcome.json_lines.length(), 3)
-  assert_eq(outcome.logfmt_lines.length(), 3)
+  @test.assert_eq(outcome.span_count, 2)
+  @test.assert_eq(outcome.json_lines.length(), 3)
+  @test.assert_eq(outcome.logfmt_lines.length(), 3)
   // 跨进程：下游提取 traceparent 后与父进程同 trace-id
   match run_downstream(outcome.traceparent) {
-    Some(tid) => assert_eq(tid.value, outcome.trace.value)
+    Some(tid) => @test.assert_eq(tid.value, outcome.trace.value)
     None => fail("下游应能从 traceparent 提取上下文")
   }
 }

@@ -64,7 +64,7 @@ test "README · 端到端 源码→lex→parse→check→eval" {
     Err(d) => fail("lex 失败：\{d.msg}")
   }
   // 5 个词法单元：1 + 2 * 3
-  assert_eq(tokens.length(), 5)
+  @test.assert_eq(tokens.length(), 5)
   // 2) 语法分析：词法单元 → AST；以 print_ast 渲染查看树形（乘除优先级更高）
   let ast = match parse(tokens) {
     Ok(a) => a
@@ -78,7 +78,7 @@ test "README · 端到端 源码→lex→parse→check→eval" {
   }
   // 4) 求值：TypedAst → Value
   match eval(typed) {
-    Value::IntV(n) => assert_eq(n, 7)
+    Value::IntV(n) => @test.assert_eq(n, 7)
   }
 }
 ```
@@ -114,11 +114,11 @@ test "README · let 绑定求值与遮蔽" {
   }
 
   // 基础绑定与变量查找：x 绑定为 2，x * x = 4
-  assert_eq(run("let x = 2 in x * x"), 4)
+  @test.assert_eq(run("let x = 2 in x * x"), 4)
   // 被绑定表达式可见外层作用域：y = x + 1 = 4，x * y = 12
-  assert_eq(run("let x = 3 in let y = x + 1 in x * y"), 12)
+  @test.assert_eq(run("let x = 3 in let y = x + 1 in x * y"), 12)
   // 内层 let 遮蔽外层同名绑定：内层 x = 10，x + 1 = 11
-  assert_eq(run("let x = 1 in let x = 10 in x + 1"), 11)
+  @test.assert_eq(run("let x = 1 in let x = 10 in x + 1"), 11)
 }
 ```
 
@@ -180,8 +180,8 @@ test "README · 词法/语法/类型错误的含位置诊断" {
     Ok(_) => fail("期望词法错误")
     Err(d) => {
       assert_true(d.kind == DiagKind::LexError)
-      assert_eq(d.line, 1)
-      assert_eq(d.col, 3)
+      @test.assert_eq(d.line, 1)
+      @test.assert_eq(d.col, 3)
     }
   }
 
@@ -257,7 +257,7 @@ test "README · MiniML lex_ml/parse_ml/print_expr 往返" {
     Ok(ts) => ts
     Err(d) => fail("lex_ml 失败：\{d.msg}")
   }
-  assert_eq(tokens.length(), 12)
+  @test.assert_eq(tokens.length(), 12)
   // 2) 语法分析：递归下降 + 优先级，得携带 span 的 Expr
   let e1 = match parse_ml(tokens) {
     Ok(e) => e
@@ -386,16 +386,22 @@ test "README · AST 优化 const_fold/dead_let_elim/optimize" {
   }
 
   // optimize 把 1 + 2 * 3 常量折叠为单一字面量 7
-  assert_eq(print_expr(erase_span(optimize(p("1 + 2 * 3")))), "7")
+  @test.assert_eq(print_expr(erase_span(optimize(p("1 + 2 * 3")))), "7")
   // const_fold 折叠常量比较 + 逻辑：(1 < 2) && (3 > 4) => false
-  assert_eq(
+  @test.assert_eq(
     print_expr(erase_span(const_fold(p("(1 < 2) && (3 > 4)")))),
     "false",
   )
   // dead_let_elim 移除未使用的 let：let x = 5 in 42 => 42
-  assert_eq(print_expr(erase_span(dead_let_elim(p("let x = 5 in 42")))), "42")
+  @test.assert_eq(
+    print_expr(erase_span(dead_let_elim(p("let x = 5 in 42")))),
+    "42",
+  )
   // optimize 组合：先消除死 let（x 未用）再常量折叠 => 7
-  assert_eq(print_expr(erase_span(optimize(p("let x = 5 in 1 + 2 * 3")))), "7")
+  @test.assert_eq(
+    print_expr(erase_span(optimize(p("let x = 5 in 1 + 2 * 3")))),
+    "7",
+  )
 }
 ```
 

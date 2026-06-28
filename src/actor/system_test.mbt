@@ -32,7 +32,7 @@ test "two-level supervision escalation restarts the mid supervisor (witness)" {
   sys.set_directive(leaf, Escalate)
   leaf.send(-1)
   sys.run_until_idle()
-  assert_eq(sys.restart_count(mid), 1)
+  @test.assert_eq(sys.restart_count(mid), 1)
   assert_true(sys.restart_count(leaf) >= 1)
   assert_true(sys.is_running(mid))
   assert_true(sys.is_running(leaf))
@@ -54,7 +54,7 @@ test "unbecome on initial behavior is a no-op in ActorSystem (witness)" {
   a.send(4)
   sys.run_until_idle()
   // 初始行为始终生效（unbecome 空操作），状态 = 3 + 4。
-  assert_eq(sys.state_of(a), Some(7))
+  @test.assert_eq(sys.state_of(a), Some(7))
   assert_true(sys.is_running(a))
 }
 
@@ -65,13 +65,13 @@ test "sending to a stopped actor drops the message (witness)" {
   let a = sys.spawn(0, Behavior::new(fn(_c, s, m) { Updated(s + m) }))
   a.send(10)
   sys.run_until_idle()
-  assert_eq(sys.state_of(a), Some(10))
+  @test.assert_eq(sys.state_of(a), Some(10))
   a.stop()
   sys.run_until_idle()
   // 已停止：后续 send 被丢弃（邮箱关闭）。
   a.send(99)
   sys.run_until_idle()
-  assert_eq(sys.state_of(a), Some(10))
+  @test.assert_eq(sys.state_of(a), Some(10))
   match sys.status_of(a) {
     Some(Stopped) => ()
     _ => fail("expected Stopped")

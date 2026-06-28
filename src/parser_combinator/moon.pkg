@@ -21,6 +21,7 @@ import {
   "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/release_meta",
   "Suquster/moonbit-pathfinding/src/infra_text",
+  "moonbitlang/core/test",
 }
 
 // 属性测试（task 5.3 / 5.4）复用共享 PBT 包 @infra_pbt 的 Gen / Rng /
@@ -28,6 +29,7 @@ import {
 // 运行时产物，符合 design.md「infra_pbt 为横切测试期共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"
 
 // 白盒属性测试（task 6.3 的 Property 6d：BoundedCache 容量上限不变量）需在
@@ -36,4 +38,5 @@ import {
 // （`for "wbtest"`）；同样不进入运行时产物。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "wbtest"

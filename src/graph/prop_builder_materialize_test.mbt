@@ -165,9 +165,9 @@ test "Feature: championship-v1-upgrade, Property 17: builder materialization int
   anchor.add_edge(0, 1, 9) |> ignore
   match anchor.build() {
     Ok(g) => {
-      assert_eq(g.edge_count(), 1)
+      @test.assert_eq(g.edge_count(), 1)
       let asucc = g.successors()
-      assert_eq(asucc(0), [(1, 9)])
+      @test.assert_eq(asucc(0), [(1, 9)])
     }
     Err(_) => assert_true(false) // 锚点：build 不应失败
   }

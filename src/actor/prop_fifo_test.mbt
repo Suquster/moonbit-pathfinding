@@ -114,7 +114,7 @@ fn prop_ff_serial_one_at_a_time(rng : @infra_pbt.Rng) -> Bool {
     }
     let did = sched.step()
     // 有待处理消息时，step 必然有进展（处理了一条）。
-    if !(did) {
+    if !did {
       return false
     }
     // 步后：恰处理一条 —— 待处理数减一。
@@ -128,7 +128,7 @@ fn prop_ff_serial_one_at_a_time(rng : @infra_pbt.Rng) -> Bool {
     }
     match sched.state_of(a) {
       Some(processed) =>
-        if !(ff_int_arrays_eq(processed, expected_prefix)) {
+        if !ff_int_arrays_eq(processed, expected_prefix) {
           return false
         }
       None => return false
@@ -163,8 +163,8 @@ test "single actor processes a delivered sequence in fifo order (witness)" {
     a.send(msgs[i])
   }
   sched.run_until_idle()
-  assert_eq(sched.state_of(a), Some([3, 1, 4, 1, 5, 9]))
-  assert_eq(sched.pending(a), 0)
+  @test.assert_eq(sched.state_of(a), Some([3, 1, 4, 1, 5, 9]))
+  @test.assert_eq(sched.pending(a), 0)
   assert_true(sched.is_running(a))
 }
 
@@ -180,16 +180,16 @@ test "single actor processes exactly one message per step (witness)" {
   a.send(7)
   a.send(8)
   a.send(9)
-  assert_eq(sched.pending(a), 3)
+  @test.assert_eq(sched.pending(a), 3)
   let _ = sched.step()
-  assert_eq(sched.state_of(a), Some([7]))
-  assert_eq(sched.pending(a), 2)
+  @test.assert_eq(sched.state_of(a), Some([7]))
+  @test.assert_eq(sched.pending(a), 2)
   let _ = sched.step()
-  assert_eq(sched.state_of(a), Some([7, 8]))
-  assert_eq(sched.pending(a), 1)
+  @test.assert_eq(sched.state_of(a), Some([7, 8]))
+  @test.assert_eq(sched.pending(a), 1)
   let _ = sched.step()
-  assert_eq(sched.state_of(a), Some([7, 8, 9]))
-  assert_eq(sched.pending(a), 0)
+  @test.assert_eq(sched.state_of(a), Some([7, 8, 9]))
+  @test.assert_eq(sched.pending(a), 0)
   // 已空闲：再 step 无进展。
   assert_false(sched.step())
 }

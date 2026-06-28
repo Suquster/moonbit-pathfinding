@@ -153,7 +153,7 @@ pub fn[N : Eq + Hash, W] GraphBuilder::build(
     let (u, v) = key
     let u_ok = self.declared.get(u) is Some(_)
     let v_ok = self.declared.get(v) is Some(_)
-    if !(u_ok) || !(v_ok) {
+    if !u_ok || !v_ok {
       dangling = dangling + 1
     }
   }

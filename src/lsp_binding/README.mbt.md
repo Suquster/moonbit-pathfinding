@@ -160,18 +160,21 @@ test "README · 头部帧编解码往返" {
   // 头部以 "Content-Length: " 起始，并以空行 \r\n\r\n 与正文分隔。
   assert_true(text.length() > 18)
   let header_prefix = from_bytes(slice_bytes(framed, 0, 16))
-  assert_eq(header_prefix, "Content-Length: ")
+  @test.assert_eq(header_prefix, "Content-Length: ")
 
   // 声明的字节数应等于裸 JSON 正文（encode_message）的字节数。
   let body = encode_message(msg)
   let expected_header = "Content-Length: " +
     body.length().to_string() +
     "\r\n\r\n"
-  assert_eq(framed.length(), to_bytes(expected_header).length() + body.length())
+  @test.assert_eq(
+    framed.length(),
+    to_bytes(expected_header).length() + body.length(),
+  )
 
   // 解码单帧应得到与原消息逐字段相等的结果。
   match decode_framed(framed) {
-    Ok(decoded) => assert_eq(decoded, msg)
+    Ok(decoded) => @test.assert_eq(decoded, msg)
     Err(e) => fail("解码应成功，却得到错误：" + e.message)
   }
 }
@@ -217,13 +220,13 @@ test "README · FrameReader 逐条切出连续多帧" {
     Ok(None) => fail("应切出第一条帧")
     Err(e) => fail("第一帧解码失败：" + e.message)
   }
-  assert_eq(got1, m1)
+  @test.assert_eq(got1, m1)
   let (got2, r3) = match r2.next() {
     Ok(Some(pair)) => pair
     Ok(None) => fail("应切出第二条帧")
     Err(e) => fail("第二帧解码失败：" + e.message)
   }
-  assert_eq(got2, m2)
+  @test.assert_eq(got2, m2)
 
   // 全部帧消费完毕，缓冲为空 → Ok(None)。
   match r3.next() {
@@ -247,26 +250,26 @@ test "README · 畸形帧返回 parse_error_code" {
   // 缺少 Content-Length 头部。
   let no_len = to_bytes("Content-Type: x\r\n\r\n{}")
   match decode_framed(no_len) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("缺 Content-Length 应失败")
   }
 
   // Content-Length 值非非负整数。
   let bad_len = to_bytes("Content-Length: abc\r\n\r\n{}")
   match decode_framed(bad_len) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("非法长度应失败")
   }
 
   // 头部声明 100 字节正文，但实际正文不足。
   let short = to_bytes("Content-Length: 100\r\n\r\n{}")
   match decode_framed(short) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("正文不足应失败")
   }
 
   // 错误码即标准值，进程未被终止（可继续后续处理）。
-  assert_eq(parse_error_code, -32700)
+  @test.assert_eq(parse_error_code, -32700)
 }
 ```
 
@@ -311,7 +314,7 @@ test "README · 批量解码分发编码（顺序保持/通知略去）" {
     Ok(rs) => rs
     Err(e) => fail("批量解码应成功：" + e.message)
   }
-  assert_eq(decoded.length(), 3)
+  @test.assert_eq(decoded.length(), 3)
   let msgs : Array[JsonRpcMessage] = []
   for r in decoded {
     match r {
@@ -322,21 +325,21 @@ test "README · 批量解码分发编码（顺序保持/通知略去）" {
 
   // 逐条分发：ping → pong 响应；unknown → method-not-found 响应；通知略去。
   let responses = dispatch_batch(msgs, router)
-  assert_eq(responses.length(), 2)
+  @test.assert_eq(responses.length(), 2)
   // 第一条响应对应 ping(1)。
   match responses[0] {
     Response(id~, result~, ..) => {
-      assert_eq(id, Id::IdNum(1))
-      assert_eq(result, Some(Json::JStr("pong")))
+      @test.assert_eq(id, Id::IdNum(1))
+      @test.assert_eq(result, Some(Json::JStr("pong")))
     }
     _ => fail("期望 ping 的响应")
   }
   // 第二条响应对应 unknown(2)，携带 method_not_found_code。
   match responses[1] {
     Response(id~, error~, ..) => {
-      assert_eq(id, Id::IdNum(2))
+      @test.assert_eq(id, Id::IdNum(2))
       match error {
-        Some(e) => assert_eq(e.code, method_not_found_code)
+        Some(e) => @test.assert_eq(e.code, method_not_found_code)
         None => fail("期望 error 对象")
       }
     }
@@ -345,8 +348,8 @@ test "README · 批量解码分发编码（顺序保持/通知略去）" {
 
   // 编码响应数组：顶层为 JSON 数组。
   let out = from_bytes(encode_batch(responses))
-  assert_eq(out.get_char(0), Some('['))
-  assert_eq(out.get_char(out.length() - 1), Some(']'))
+  @test.assert_eq(out.get_char(0), Some('['))
+  @test.assert_eq(out.get_char(out.length() - 1), Some(']'))
 }
 ```
 
@@ -371,15 +374,15 @@ test "README · 批量单元素失败被隔离" {
     Ok(rs) => rs
     Err(e) => fail("批量顶层应解码成功：" + e.message)
   }
-  assert_eq(decoded.length(), 2)
+  @test.assert_eq(decoded.length(), 2)
   // 第一个元素合法。
   match decoded[0] {
-    Ok(Request(method_name~, ..)) => assert_eq(method_name, "ping")
+    Ok(Request(method_name~, ..)) => @test.assert_eq(method_name, "ping")
     _ => fail("第一个元素应为合法请求")
   }
   // 第二个元素被隔离为 invalid_request_code 错误，未影响第一个。
   match decoded[1] {
-    Err(e) => assert_eq(e.code, invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, invalid_request_code)
     Ok(_) => fail("第二个元素应失败")
   }
 }
@@ -398,7 +401,7 @@ LSP 客户端经 `$/cancelRequest` 通知携带待取消请求 `id`。`cancel_id
 ///|
 test "README · 取消标记与取消响应" {
   // 取消码为新增公开常量，独立于五个标准错误码。
-  assert_eq(request_cancelled_code, -32800)
+  @test.assert_eq(request_cancelled_code, -32800)
 
   // $/cancelRequest 通知的 params：{"id": 2}。
   let params = Json::JObj([("id", Json::JNum("2"))])
@@ -406,20 +409,20 @@ test "README · 取消标记与取消响应" {
     Some(id) => id
     None => fail("应能取出待取消 id")
   }
-  assert_eq(target, Id::IdNum(2))
+  @test.assert_eq(target, Id::IdNum(2))
 
   // 在登记表中标记取消（纯函数式：返回新实例）。
   let reg = CancelRegistry::new().cancel(target)
   assert_true(reg.is_cancelled(Id::IdNum(2)))
   // 未被取消的 id 不受影响。
-  assert_true(!(reg.is_cancelled(Id::IdNum(3))))
+  assert_true(!reg.is_cancelled(Id::IdNum(3)))
 
   // 为被取消的请求合成取消错误响应：携带 request_cancelled_code 且 id 一致。
   match cancelled_response(target) {
     Response(id~, error~, ..) => {
-      assert_eq(id, Id::IdNum(2))
+      @test.assert_eq(id, Id::IdNum(2))
       match error {
-        Some(e) => assert_eq(e.code, request_cancelled_code)
+        Some(e) => @test.assert_eq(e.code, request_cancelled_code)
         None => fail("期望 error 对象")
       }
     }
@@ -459,15 +462,15 @@ test "README · id 关联校验" {
   )
 
   // id_of：请求/响应携带 id；通知无 id。
-  assert_eq(id_of(request), Some(Id::IdNum(7)))
-  assert_eq(id_of(response), Some(Id::IdNum(7)))
-  assert_eq(id_of(notification), None)
+  @test.assert_eq(id_of(request), Some(Id::IdNum(7)))
+  @test.assert_eq(id_of(response), Some(Id::IdNum(7)))
+  @test.assert_eq(id_of(notification), None)
 
   // correlate：id 相等才关联。
   assert_true(correlate(request, response))
-  assert_true(!(correlate(request, mismatch)))
+  assert_true(!correlate(request, mismatch))
   // 通知无 id，永不关联。
-  assert_true(!(correlate(request, notification)))
+  assert_true(!correlate(request, notification))
 }
 ```
 

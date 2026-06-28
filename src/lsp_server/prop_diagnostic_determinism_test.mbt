@@ -153,12 +153,12 @@ fn p10_diagnostics_deterministic(doc : TextDocument) -> Bool {
   let mut round = 0
   while round < 4 {
     let again = analyze(doc).diagnostics
-    if !(p10_diagnostics_equal(baseline, again)) {
+    if !p10_diagnostics_equal(baseline, again) {
       return false
     }
     // pull 入口同样走 analyze 投影，亦应与基线逐条相同。
     let pulled = pull_diagnostics(doc)
-    if !(p10_diagnostics_equal(baseline, pulled)) {
+    if !p10_diagnostics_equal(baseline, pulled) {
       return false
     }
     round = round + 1

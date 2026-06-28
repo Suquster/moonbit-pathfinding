@@ -13,7 +13,13 @@ pub enum SchemaError {
   ReservedConflict(message~ : String, which~ : String) // 号或名命中 reserved
   UnresolvedTypeRef(message~ : String, field~ : String, ref_~ : String)
   EnumFirstValueNonZero(enum_~ : String, first~ : Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// 公开错误类型的 `Show` 委托其 `Debug` 结构化表示（与历史 `derive` 输出一致）。
+pub impl Show for SchemaError with fn output(self, logger) {
+  logger.write_string(@debug.to_string(self))
+}
 
 ///|
 /// proto3 合法字段号下界（含）。
@@ -106,7 +112,7 @@ pub fn validate_schema(
     let seen : Map[Int, Bool] = {}
     // 常规字段（含 oneof 成员）。
     for f in m.fields {
-      if !(field_number_valid(f.number)) {
+      if !field_number_valid(f.number) {
         errors.push(
           FieldNumberOutOfRange(message=m.name, field=f.name, number=f.number),
         )
@@ -127,7 +133,7 @@ pub fn validate_schema(
       if hits_reserved_name(m, f.name) {
         errors.push(ReservedConflict(message=m.name, which="name " + f.name))
       }
-      if !(type_ref_resolves(schema, f.ptype)) {
+      if !type_ref_resolves(schema, f.ptype) {
         let ref_ = match f.ptype {
           PMessage(n) => n
           PEnum(n) => n
@@ -138,7 +144,7 @@ pub fn validate_schema(
     }
     // map 字段：字段号同样参与唯一性与范围校验，键/值类型引用须可解析。
     for mp in m.maps {
-      if !(field_number_valid(mp.number)) {
+      if !field_number_valid(mp.number) {
         errors.push(
           FieldNumberOutOfRange(message=m.name, field=mp.name, number=mp.number),
         )
@@ -156,7 +162,7 @@ pub fn validate_schema(
           ),
         )
       }
-      if !(type_ref_resolves(schema, mp.value)) {
+      if !type_ref_resolves(schema, mp.value) {
         let ref_ = match mp.value {
           PMessage(n) => n
           PEnum(n) => n

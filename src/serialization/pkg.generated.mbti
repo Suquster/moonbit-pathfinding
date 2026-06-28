@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/serialization"
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -93,7 +94,7 @@ pub fn zigzag_encode_64(Int64) -> UInt64
 pub struct AnyValue {
   type_url : String
   value : Bytes
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct ByteSink {
   buf : Array[Byte]
@@ -116,44 +117,45 @@ pub enum CodeNode {
   CBlock(header~ : String, body~ : Array[CodeNode], close~ : String)
   CSeq(Array[CodeNode])
   CIndent(CodeNode)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum DecodeError {
   UnexpectedEof(offset~ : Int)
   MalformedVarint(offset~ : Int)
   InvalidWireType(offset~ : Int, tag~ : UInt64)
   InvalidFieldNumber(offset~ : Int, number~ : Int)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn DecodeError::offset(Self) -> Int
+pub impl Show for DecodeError
 
 pub(all) struct EnumDef {
   name : String
   values : Array[(String, Int)]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct FieldDef {
   name : String
   number : Int
   ftype : FieldType
   repeated : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct FieldEntry {
   number : Int
   value : FieldValue
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn FieldEntry::new(Int, FieldValue) -> Self
 
 pub(all) enum FieldLabel {
   LSingular
   LRepeated(packed~ : Bool)
   LOneof(group~ : String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct FieldOption {
   name : String
   value : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum FieldType {
   TInt32
@@ -165,14 +167,14 @@ pub(all) enum FieldType {
   TBytes
   TMessage(String)
   TEnum(String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum FieldValue {
   VVarint(UInt64)
   VI64(UInt64)
   VI32(UInt)
   VBytes(Bytes)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn FieldValue::bytes(Bytes) -> Self
 pub fn FieldValue::i32(UInt) -> Self
 pub fn FieldValue::i64(UInt64) -> Self
@@ -182,39 +184,40 @@ pub fn FieldValue::wire_type(Self) -> WireType
 pub struct ImportDecl {
   path : String
   public : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct MapEntry {
   name : String
   number : Int
   key : ProtoType
   value : ProtoType
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Message {
   fields : Array[FieldEntry]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Message::empty() -> Self
 pub fn Message::from_fields(Array[FieldEntry]) -> Self
 
 pub(all) struct MessageDef {
   name : String
   fields : Array[FieldDef]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct OneofDef {
   name : String
   members : Array[Int]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ParseError {
   line : Int
   col : Int
   offset : Int
   message : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn ParseError::at(@parser_combinator.Pos, String) -> Self
 pub fn ParseError::new(Int, Int, Int, String) -> Self
+pub impl Show for ParseError
 
 pub(all) struct ProtoField {
   name : String
@@ -222,14 +225,14 @@ pub(all) struct ProtoField {
   ptype : ProtoType
   label : FieldLabel
   options : Array[FieldOption]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct ProtoFile {
   package_name : String
   imports : Array[ImportDecl]
   schema : ProtoSchema
   services : Array[ServiceDef]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ProtoMessage {
   name : String
@@ -240,12 +243,12 @@ pub(all) struct ProtoMessage {
   reserved_names : Array[String]
   nested_messages : Array[String]
   nested_enums : Array[String]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ProtoSchema {
   messages : Array[ProtoMessage]
   enums : Array[EnumDef]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn ProtoSchema::empty() -> Self
 pub fn ProtoSchema::enum_def(Self, String) -> EnumDef?
 pub fn ProtoSchema::message(Self, String) -> ProtoMessage?
@@ -269,12 +272,12 @@ pub(all) enum ProtoType {
   PBytes
   PMessage(String)
   PEnum(String)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct ReservedRange {
   lo : Int
   hi : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub struct RpcDef {
   name : String
@@ -282,12 +285,12 @@ pub struct RpcDef {
   output_type : String
   client_stream : Bool
   server_stream : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Schema {
   messages : Array[MessageDef]
   enums : Array[EnumDef]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn Schema::empty() -> Self
 
 pub enum SchemaError {
@@ -296,17 +299,18 @@ pub enum SchemaError {
   ReservedConflict(message~ : String, which~ : String)
   UnresolvedTypeRef(message~ : String, field~ : String, ref_~ : String)
   EnumFirstValueNonZero(enum_~ : String, first~ : Int)
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
+pub impl Show for SchemaError
 
 pub struct ServiceDef {
   name : String
   rpcs : Array[RpcDef]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TypedMessage {
   fields : Map[Int, TypedValue]
   unknown : Array[FieldEntry]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn TypedMessage::get(Self, Int) -> TypedValue?
 pub fn TypedMessage::get_or_default(Self, ProtoMessage, Int) -> TypedValue
 pub fn TypedMessage::new() -> Self
@@ -324,14 +328,14 @@ pub(all) enum TypedValue {
   TMsg(TypedMessage)
   TList(Array[TypedValue])
   TMap(Array[(TypedValue, TypedValue)])
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum WireType {
   Varint
   I64
   Len
   I32
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn WireType::code(Self) -> Int
 pub fn WireType::from_code(Int) -> Self?
 

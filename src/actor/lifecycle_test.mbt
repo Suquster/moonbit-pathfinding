@@ -8,9 +8,9 @@
 test "LifecycleHooks identity is the identity on state and no-op on side effects" {
   let hooks : LifecycleHooks[Int] = LifecycleHooks::identity()
   // pre_start 恒等。
-  assert_eq(start_state(42, hooks), 42)
+  @test.assert_eq(start_state(42, hooks), 42)
   // restart_state 以初始状态重置（恒等 post_restart）。
-  assert_eq(restart_state(42, hooks, 999, "boom"), 42)
+  @test.assert_eq(restart_state(42, hooks, 999, "boom"), 42)
   // post_stop / pre_restart 为空操作，不影响状态语义（此处仅确认可调用）。
   (hooks.post_stop)(42)
   (hooks.pre_restart)(42, "boom")
@@ -34,8 +34,8 @@ test "restart_state calls pre_restart then post_restart in order" {
   )
   let out = restart_state(7, hooks, 100, "err")
   // 以初始状态 7 重置。
-  assert_eq(out, 7)
-  assert_eq(log, ["pre_restart", "post_restart"])
+  @test.assert_eq(out, 7)
+  @test.assert_eq(log, ["pre_restart", "post_restart"])
 }
 
 ///|
@@ -45,8 +45,8 @@ test "TerminationReason derives Eq and Show" {
   let failed_x : TerminationReason = FailedWith("x")
   let failed_a : TerminationReason = FailedWith("a")
   let failed_b : TerminationReason = FailedWith("b")
-  assert_eq(normal, StoppedNormally)
-  assert_eq(failed_x, FailedWith("x"))
+  @test.assert_eq(normal, StoppedNormally)
+  @test.assert_eq(failed_x, FailedWith("x"))
   assert_true(failed_a != failed_b)
-  assert_eq("\{normal}", "StoppedNormally")
+  @test.assert_eq(@debug.to_string(normal), "StoppedNormally")
 }

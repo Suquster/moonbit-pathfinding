@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "Suquster/moonbit-pathfinding/benches/stress_bench"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn run_stress_suite(Int) -> StressReport
 
@@ -23,7 +27,7 @@ pub(all) enum StressAlgo {
   Bfs
   Dijkstra
   Astar
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn StressAlgo::name(Self) -> String
 
 pub(all) struct StressOutcome {

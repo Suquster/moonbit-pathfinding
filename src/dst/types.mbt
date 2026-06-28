@@ -25,7 +25,7 @@ pub(all) enum FaultKind {
   Crash
   Delay
   Drop
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 仿真任务（simulation task）—— 确定性调度的最小单元。
@@ -35,7 +35,7 @@ pub(all) enum FaultKind {
 pub(all) struct Task {
   id : Int
   name : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由标识与名称构造仿真任务。
@@ -56,7 +56,7 @@ pub(all) enum Event {
   Faulted(step~ : Int, task_id~ : Int, kind~ : FaultKind)
   /// 任务在第 `step` 步执行完成。
   Completed(step~ : Int, task_id~ : Int)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 故障策略（fault policy）—— 描述「在何处对何任务注入何种故障」。
@@ -68,7 +68,7 @@ pub(all) struct FaultPolicy {
   at_step : Int
   task_id : Int
   kind : FaultKind
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由注入点、目标任务与故障类型构造故障策略。
@@ -90,7 +90,7 @@ pub(all) struct Scenario {
   tasks : Array[Task]
   faults : Array[FaultPolicy]
   max_steps : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 由任务集、故障策略集与步数上限构造仿真场景。
@@ -113,7 +113,13 @@ pub fn Scenario::new(
 pub(all) enum SimStatus {
   Completed
   Failed(reason~ : String)
-} derive(Eq, Show)
+} derive(Eq, Debug)
+
+///|
+/// 公开状态类型的 `Show` 委托其 `Debug` 表示（与历史 `derive` 输出一致）。
+pub impl Show for SimStatus with fn output(self, logger) {
+  logger.write_string(@debug.to_string(self))
+}
 
 ///|
 /// 仿真结果（simulation result）—— 一次 `run` / `replay` 的完整产出。
@@ -128,7 +134,7 @@ pub(all) struct SimResult {
   seed : UInt64
   trace : Array[Event]
   status : SimStatus
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 仿真状态机（simulator）—— 承载随机源、待调度任务与已产生事件轨迹。

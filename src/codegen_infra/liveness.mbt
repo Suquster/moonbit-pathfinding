@@ -23,7 +23,7 @@
 pub(all) struct LivenessResult {
   live_in : Map[String, Array[Var]]
   live_out : Map[String, Array[Var]]
-} derive(Show)
+} derive(Debug)
 
 // ---------------------------------------------------------------------------
 // 变量名 ↔ Var.id 的确定性映射
@@ -51,7 +51,7 @@ fn instr_use_def(instr : String) -> (Array[String], String?) {
     let mut j = 2
     while j < toks.length() {
       let t = toks[j]
-      if is_var_token(t) && !(array_contains_str(uses, t)) {
+      if is_var_token(t) && !array_contains_str(uses, t) {
         uses.push(t)
       }
       j = j + 1
@@ -76,7 +76,7 @@ fn instr_use_def(instr : String) -> (Array[String], String?) {
     let mut j = 1
     while j < toks.length() {
       let t = toks[j]
-      if is_var_token(t) && !(array_contains_str(uses, t)) {
+      if is_var_token(t) && !array_contains_str(uses, t) {
         uses.push(t)
       }
       j = j + 1
@@ -105,14 +105,14 @@ fn collect_var_names(blocks : Array[BasicBlock]) -> Array[String] {
     for instr in b.instrs {
       let (uses, def) = instr_use_def(instr)
       for u in uses {
-        if !(seen.contains(u)) {
+        if !seen.contains(u) {
           seen[u] = true
           names.push(u)
         }
       }
       match def {
         Some(d) =>
-          if !(seen.contains(d)) {
+          if !seen.contains(d) {
             seen[d] = true
             names.push(d)
           }
@@ -181,7 +181,7 @@ fn block_use_def(
   for instr in block.instrs {
     let (uses, def) = instr_use_def(instr)
     for u in uses {
-      if !(defined.contains(u)) {
+      if !defined.contains(u) {
         match name2id.get(u) {
           Some(id) => use_set[id] = true
           None => ()
@@ -257,7 +257,7 @@ pub fn liveness_step(
     }
     for kv in out_set {
       let (id, _) = kv
-      if !(def_set.contains(id)) {
+      if !def_set.contains(id) {
         in_set[id] = true
       }
     }
@@ -275,7 +275,7 @@ fn int_set_equal(a : Map[Int, Bool], b : Map[Int, Bool]) -> Bool {
   }
   for kv in a {
     let (k, _) = kv
-    if !(b.contains(k)) {
+    if !b.contains(k) {
       return false
     }
   }
@@ -342,12 +342,12 @@ pub fn analyze_liveness(blocks : Array[BasicBlock]) -> LivenessResult {
       }
       for kv in out_set {
         let (id, _) = kv
-        if !(def_set.contains(id)) {
+        if !def_set.contains(id) {
           new_in[id] = true
         }
       }
       let old_in = cur_in.get(b.label).unwrap_or(Map([]))
-      if !(int_set_equal(old_in, new_in)) {
+      if !int_set_equal(old_in, new_in) {
         changed = true
         cur_in[b.label] = new_in
       }

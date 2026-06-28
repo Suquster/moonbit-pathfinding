@@ -68,7 +68,7 @@ pub fn gen_moonbit_full(schema : ProtoSchema) -> String {
       out.push_str(moonbit_full_type(mp.value))
       out.push_str(")]\n")
     }
-    out.push_str("} derive(Eq, Show)\n")
+    out.push_str("} derive(Eq, Debug)\n")
     // 配套编解码函数，委托共享类型化模型（R6.3）。
     out.push_str("\npub fn ")
     out.push_str(sname)

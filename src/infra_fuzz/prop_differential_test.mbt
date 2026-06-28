@@ -195,7 +195,7 @@ test "Feature: championship-v1-upgrade, Property 26: equivalence-class different
   // 印证报告机制不会对一致算法产生伪反例。
   let probe = p26_seeded_report(DijkstraVsBellmanFord, p26_base_seed, 256)
   assert_false(probe.found)
-  assert_eq(probe.report, "")
+  @test.assert_eq(probe.report, "")
   // 锚点 2：贪心收缩对一致图为不动点（无更小候选仍失败 → 收缩停在原图规模内）。
   let g_anchor : FuzzGraph = {
     n: 4,
@@ -203,12 +203,12 @@ test "Feature: championship-v1-upgrade, Property 26: equivalence-class different
   }
   let shrunk = p26_greedy_shrink(DijkstraVsBellmanFord, g_anchor)
   // 一致图无失败候选，收缩不前进，返回原图（逐元素相等）。
-  assert_eq(shrunk, g_anchor)
+  @test.assert_eq(shrunk, g_anchor)
   // 锚点 3：等价类生成器在给定种子下确定性产出（同种子两次逐元素相等）。
   let gen = p26_case_gen(BfsVsDijkstraUnit)
   let g1 = gen.generate(@infra_pbt.rng_new(0x1234_5678_9ABC_DEF0))
   let g2 = gen.generate(@infra_pbt.rng_new(0x1234_5678_9ABC_DEF0))
-  assert_eq(g1, g2)
+  @test.assert_eq(g1, g2)
   // 主属性：三个等价类各 ≥100 次随机实例下差分恒一致（R16.1–16.4 / R16.5）。
   assert_true(p26_run_class(BfsVsDijkstraUnit))
   assert_true(p26_run_class(DijkstraVsBellmanFord))

@@ -42,7 +42,7 @@
 //   * 无 magic number —— 占位字面量值以命名常量表达；
 //   * 无循环内字符串 `+` —— 手写 `Show` 经 `logger.write_string` 直写日志缓冲；
 //   * `Show` 一律手写（`derive(Eq)` + `pub impl Show ... with fn output`）以规避
-//     `derive(Show)` 弃用告警，与本仓 codegen_infra / build_tool / dst 方向一致；
+//     `derive(Debug)` 弃用告警，与本仓 codegen_infra / build_tool / dst 方向一致；
 //   * `pub(all)` 暴露构造子，便于宿主、属性测试（任务 10.3）直接构造与匹配。
 
 // ───────────────────────────── 命名常量 ─────────────────────────────
@@ -128,7 +128,7 @@ fn write_pattern(logger : &Logger, pat : Pattern) -> Unit {
 }
 
 ///|
-/// 以可读形式展示模式（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示模式（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for Pattern with fn output(self : Pattern, logger : &Logger) -> Unit {
   write_pattern(logger, self)
 }
@@ -208,7 +208,7 @@ fn write_tyx(logger : &Logger, ty : TyX) -> Unit {
 }
 
 ///|
-/// 以可读形式展示扩展类型（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示扩展类型（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for TyX with fn output(self : TyX, logger : &Logger) -> Unit {
   write_tyx(logger, self)
 }
@@ -273,7 +273,7 @@ fn write_valx(logger : &Logger, v : ValX) -> Unit {
 }
 
 ///|
-/// 以可读形式展示扩展值（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示扩展值（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for ValX with fn output(self : ValX, logger : &Logger) -> Unit {
   write_valx(logger, self)
 }
@@ -297,7 +297,7 @@ pub(all) struct TypeMismatch {
 } derive(Eq)
 
 ///|
-/// 以可读形式展示类型不匹配（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示类型不匹配（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for TypeMismatch with fn output(
   self : TypeMismatch,
   logger : &Logger,

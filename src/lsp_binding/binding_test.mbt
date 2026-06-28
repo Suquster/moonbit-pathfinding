@@ -30,9 +30,9 @@ test "decode valid request" {
   )
   match decode_message(bytes) {
     Ok(JsonRpcMessage::Request(id~, method_name~, params~)) => {
-      assert_eq(id, IdNum(1))
-      assert_eq(method_name, "initialize")
-      assert_eq(params, JObj([("k", JStr("v"))]))
+      @test.assert_eq(id, IdNum(1))
+      @test.assert_eq(method_name, "initialize")
+      @test.assert_eq(params, JObj([("k", JStr("v"))]))
     }
     Ok(_) => fail("expected a Request")
     Err(e) => fail("expected Ok, got error: " + e.message)
@@ -45,8 +45,8 @@ test "decode valid notification with array params" {
   let bytes = t2b("{\"jsonrpc\":\"2.0\",\"method\":\"note\",\"params\":[1,2]}")
   match decode_message(bytes) {
     Ok(JsonRpcMessage::Notification(method_name~, params~)) => {
-      assert_eq(method_name, "note")
-      assert_eq(params, JArr([JNum("1"), JNum("2")]))
+      @test.assert_eq(method_name, "note")
+      @test.assert_eq(params, JArr([JNum("1"), JNum("2")]))
     }
     _ => fail("expected a Notification")
   }
@@ -58,9 +58,9 @@ test "decode valid response with result" {
   let bytes = t2b("{\"jsonrpc\":\"2.0\",\"id\":\"abc\",\"result\":true}")
   match decode_message(bytes) {
     Ok(JsonRpcMessage::Response(id~, result~, error~)) => {
-      assert_eq(id, IdStr("abc"))
-      assert_eq(result, Some(JBool(true)))
-      assert_eq(error, None)
+      @test.assert_eq(id, IdStr("abc"))
+      @test.assert_eq(result, Some(JBool(true)))
+      @test.assert_eq(error, None)
     }
     _ => fail("expected a Response")
   }
@@ -77,7 +77,7 @@ test "encode/decode round-trip for request" {
     params=JObj([("line", JNum("3")), ("char", JNum("7"))]),
   )
   match decode_message(encode_message(msg)) {
-    Ok(decoded) => assert_eq(decoded, msg)
+    Ok(decoded) => @test.assert_eq(decoded, msg)
     Err(e) => fail("round-trip failed: " + e.message)
   }
 }
@@ -90,7 +90,7 @@ test "encode/decode round-trip for notification and response" {
     params=JStr("line1\nline2\t\"q\""),
   )
   match decode_message(encode_message(note)) {
-    Ok(d) => assert_eq(d, note)
+    Ok(d) => @test.assert_eq(d, note)
     Err(e) => fail("notification round-trip failed: " + e.message)
   }
   let resp = JsonRpcMessage::Response(
@@ -99,7 +99,7 @@ test "encode/decode round-trip for notification and response" {
     error=Some(RpcError::new(parse_error_code, "Parse error")),
   )
   match decode_message(encode_message(resp)) {
-    Ok(d) => assert_eq(d, resp)
+    Ok(d) => @test.assert_eq(d, resp)
     Err(e) => fail("response round-trip failed: " + e.message)
   }
 }
@@ -111,7 +111,7 @@ test "encode/decode round-trip for notification and response" {
 test "decode invalid json yields parse error" {
   let bytes = t2b("{ this is not json ")
   match decode_message(bytes) {
-    Err(e) => assert_eq(e.code, parse_error_code)
+    Err(e) => @test.assert_eq(e.code, parse_error_code)
     Ok(_) => fail("expected a parse error")
   }
 }
@@ -120,7 +120,7 @@ test "decode invalid json yields parse error" {
 /// 顶层非对象 → 非法请求（invalid_request_code）。
 test "decode non-object top-level yields invalid request" {
   match decode_message(t2b("42")) {
-    Err(e) => assert_eq(e.code, invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, invalid_request_code)
     Ok(_) => fail("expected an invalid request error")
   }
 }
@@ -130,7 +130,7 @@ test "decode non-object top-level yields invalid request" {
 test "decode missing jsonrpc field yields invalid request" {
   let bytes = t2b("{\"method\":\"x\",\"id\":1}")
   match decode_message(bytes) {
-    Err(e) => assert_eq(e.code, invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, invalid_request_code)
     Ok(_) => fail("expected an invalid request error")
   }
 }
@@ -142,7 +142,7 @@ test "decode response with both result and error yields invalid request" {
     "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":1,\"error\":{\"code\":-1,\"message\":\"m\"}}",
   )
   match decode_message(bytes) {
-    Err(e) => assert_eq(e.code, invalid_request_code)
+    Err(e) => @test.assert_eq(e.code, invalid_request_code)
     Ok(_) => fail("expected an invalid request error")
   }
 }
@@ -162,11 +162,15 @@ test "dispatch routes request to registered handler" {
       ),
     )
   })
-  let req = JsonRpcMessage::Request(id=IdNum(7), method_name="ping", params=JNull)
+  let req = JsonRpcMessage::Request(
+    id=IdNum(7),
+    method_name="ping",
+    params=JNull,
+  )
   match dispatch(req, router) {
     Some(JsonRpcMessage::Response(id~, result~, ..)) => {
-      assert_eq(id, IdNum(7))
-      assert_eq(result, Some(JStr("pong")))
+      @test.assert_eq(id, IdNum(7))
+      @test.assert_eq(result, Some(JStr("pong")))
     }
     _ => fail("expected a response from the handler")
   }
@@ -176,11 +180,15 @@ test "dispatch routes request to registered handler" {
 /// 请求方法未找到：合成规范的「方法未找到」错误响应。
 test "dispatch unknown method yields method-not-found error response" {
   let router = Router::new()
-  let req = JsonRpcMessage::Request(id=IdNum(1), method_name="unknown", params=JNull)
+  let req = JsonRpcMessage::Request(
+    id=IdNum(1),
+    method_name="unknown",
+    params=JNull,
+  )
   match dispatch(req, router) {
     Some(JsonRpcMessage::Response(error~, ..)) =>
       match error {
-        Some(e) => assert_eq(e.code, method_not_found_code)
+        Some(e) => @test.assert_eq(e.code, method_not_found_code)
         None => fail("expected an error object")
       }
     _ => fail("expected an error response")
@@ -192,7 +200,7 @@ test "dispatch unknown method yields method-not-found error response" {
 test "dispatch notification yields no response" {
   let router = Router::new()
   let note = JsonRpcMessage::Notification(method_name="didChange", params=JNull)
-  assert_eq(dispatch(note, router), None)
+  @test.assert_eq(dispatch(note, router), None)
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -211,11 +219,11 @@ test "dispatch notification yields no response" {
 ///|
 /// 回归：五个 JSON-RPC 2.0 标准错误码常量的精确整数值与 `0.1.0` 一致。
 test "regression: five error-code constants have exact 0.1.0 values" {
-  assert_eq(parse_error_code, -32700)
-  assert_eq(invalid_request_code, -32600)
-  assert_eq(method_not_found_code, -32601)
-  assert_eq(invalid_params_code, -32602)
-  assert_eq(internal_error_code, -32603)
+  @test.assert_eq(parse_error_code, -32700)
+  @test.assert_eq(invalid_request_code, -32600)
+  @test.assert_eq(method_not_found_code, -32601)
+  @test.assert_eq(invalid_params_code, -32602)
+  @test.assert_eq(internal_error_code, -32603)
 }
 
 ///|
@@ -242,21 +250,25 @@ test "regression: five error-code constants are pairwise distinct" {
 /// 回归：`RpcError::new` 产出 `{ code, message, data: None }` 的精确形态。
 test "regression: RpcError::new shape is unchanged" {
   let e = RpcError::new(invalid_params_code, "bad params")
-  assert_eq(e.code, invalid_params_code)
-  assert_eq(e.message, "bad params")
-  assert_eq(e.data, None)
+  @test.assert_eq(e.code, invalid_params_code)
+  @test.assert_eq(e.message, "bad params")
+  @test.assert_eq(e.data, None)
   // 整体结构相等见证（逐字段一致）。
-  assert_eq(e, { code: invalid_params_code, message: "bad params", data: None })
+  @test.assert_eq(e, {
+    code: invalid_params_code,
+    message: "bad params",
+    data: None,
+  })
 }
 
 ///|
 /// 回归：`RpcError::with_data` 在 `new` 的基础上仅填充 `data`，其余字段不变。
 test "regression: RpcError::with_data shape is unchanged" {
   let e = RpcError::with_data(internal_error_code, "boom", JArr([JNum("1")]))
-  assert_eq(e.code, internal_error_code)
-  assert_eq(e.message, "boom")
-  assert_eq(e.data, Some(JArr([JNum("1")])))
-  assert_eq(e, {
+  @test.assert_eq(e.code, internal_error_code)
+  @test.assert_eq(e.message, "boom")
+  @test.assert_eq(e.data, Some(JArr([JNum("1")])))
+  @test.assert_eq(e, {
     code: internal_error_code,
     message: "boom",
     data: Some(JArr([JNum("1")])),
@@ -274,7 +286,7 @@ test "regression: bare-JSON encode of request is byte-identical to 0.1.0" {
     params=JObj([("k", JStr("v"))]),
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"k\":\"v\"}}"
-  assert_eq(encode_message(req), t2b(expected))
+  @test.assert_eq(encode_message(req), t2b(expected))
 }
 
 ///|
@@ -285,7 +297,7 @@ test "regression: bare-JSON encode of notification is byte-identical to 0.1.0" {
     params=JArr([JNum("1"), JNum("2")]),
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"method\":\"note\",\"params\":[1,2]}"
-  assert_eq(encode_message(note), t2b(expected))
+  @test.assert_eq(encode_message(note), t2b(expected))
 }
 
 ///|
@@ -297,7 +309,7 @@ test "regression: bare-JSON encode of result response is byte-identical to 0.1.0
     error=None,
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"id\":\"abc\",\"result\":true}"
-  assert_eq(encode_message(resp), t2b(expected))
+  @test.assert_eq(encode_message(resp), t2b(expected))
 }
 
 ///|
@@ -309,7 +321,7 @@ test "regression: bare-JSON encode of error response is byte-identical to 0.1.0"
     error=Some(RpcError::new(parse_error_code, "Parse error")),
   )
   let expected = "{\"jsonrpc\":\"2.0\",\"id\":null,\"error\":{\"code\":-32700,\"message\":\"Parse error\"}}"
-  assert_eq(encode_message(resp), t2b(expected))
+  @test.assert_eq(encode_message(resp), t2b(expected))
 }
 
 // ─────────────── 裸 JSON 往返：全 Id 变体逐字段还原 ───────────────────
@@ -329,7 +341,7 @@ test "regression: bare-JSON decode/encode round-trip across all Id variants" {
   ]
   for m in msgs {
     match decode_message(encode_message(m)) {
-      Ok(d) => assert_eq(d, m)
+      Ok(d) => @test.assert_eq(d, m)
       Err(e) => fail("round-trip failed for a message: " + e.message)
     }
   }
@@ -350,8 +362,12 @@ test "regression: dispatch routes to registered handler with handler result" {
       ),
     )
   })
-  let req = JsonRpcMessage::Request(id=IdNum(99), method_name="ping", params=JNull)
-  assert_eq(
+  let req = JsonRpcMessage::Request(
+    id=IdNum(99),
+    method_name="ping",
+    params=JNull,
+  )
+  @test.assert_eq(
     dispatch(req, router),
     Some(
       JsonRpcMessage::Response(
@@ -373,7 +389,7 @@ test "regression: dispatch synthesizes method_not_found with matching id" {
     method_name="no/such",
     params=JNull,
   )
-  assert_eq(
+  @test.assert_eq(
     dispatch(req, router),
     Some(
       JsonRpcMessage::Response(
@@ -392,13 +408,13 @@ test "regression: dispatch synthesizes method_not_found with matching id" {
 test "regression: dispatch yields None for notification and response inputs" {
   let router = Router::new()
   let note = JsonRpcMessage::Notification(method_name="didChange", params=JNull)
-  assert_eq(dispatch(note, router), None)
+  @test.assert_eq(dispatch(note, router), None)
   let resp = JsonRpcMessage::Response(
     id=IdNum(1),
     result=Some(JNull),
     error=None,
   )
-  assert_eq(dispatch(resp, router), None)
+  @test.assert_eq(dispatch(resp, router), None)
 }
 
 // ─────────────── error_response：合成形态冻结 ───────────────────────
@@ -407,7 +423,7 @@ test "regression: dispatch yields None for notification and response inputs" {
 /// 回归：`error_response` 合成 `Response(id, result=None, error=Some(new(code,msg)))`。
 test "regression: error_response shape is unchanged" {
   let r = error_response(IdNum(5), invalid_request_code, "Invalid Request")
-  assert_eq(
+  @test.assert_eq(
     r,
     JsonRpcMessage::Response(
       id=IdNum(5),
@@ -422,5 +438,5 @@ test "regression: error_response shape is unchanged" {
 test "regression: error_response bare-JSON encoding is byte-identical to 0.1.0" {
   let r = error_response(IdNum(5), invalid_request_code, "Invalid Request")
   let expected = "{\"jsonrpc\":\"2.0\",\"id\":5,\"error\":{\"code\":-32600,\"message\":\"Invalid Request\"}}"
-  assert_eq(encode_message(r), t2b(expected))
+  @test.assert_eq(encode_message(r), t2b(expected))
 }

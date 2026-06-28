@@ -124,7 +124,7 @@ test "README · 非法表达式返回含位置的解析错误" {
   // 未闭合分组：在偏移 2（输入末尾，缺失 ')'）处报告 Unbalanced("(")
   match parse_regex("(a") {
     Err(Unbalanced(pos~, what~)) => {
-      assert_eq(what, "(")
+      @test.assert_eq(what, "(")
       inspect(pos, content="2")
     }
     _ => fail("expected Unbalanced error")
@@ -182,7 +182,7 @@ test "README · 捕获组：编号 / 命名 / 非捕获" {
       assert_true(caps.group(2) == Some({ start: 12, end: 15 }))
       assert_true(caps.name("tld") == caps.group(2))
       // 含第 0 组共 3 组（非捕获组未计入）
-      assert_eq(caps.group_count(), 3)
+      @test.assert_eq(caps.group_count(), 3)
     }
     None => fail("expected captures")
   }
@@ -293,23 +293,23 @@ test "README · 高层搜索：find_all / split / replace_all 引用捕获" {
     Err(_) => fail("compile , failed")
   }
   // find_all 不重叠枚举（"a,b,c" 有 2 个逗号）
-  assert_eq(comma.find_all("a,b,c").length(), 2)
+  @test.assert_eq(comma.find_all("a,b,c").length(), 2)
   // split 以匹配为分隔切分
   let parts = comma.split("a,b,c")
-  assert_eq(parts.length(), 3)
-  assert_eq(parts[1], "b")
+  @test.assert_eq(parts.length(), 3)
+  @test.assert_eq(parts[1], "b")
   // replace_all 引用编号组：交换 (a)(b)
   let pair = match Pattern::compile("(a)(b)") {
     Ok(v) => v
     Err(_) => fail("compile (a)(b) failed")
   }
-  assert_eq(pair.replace_all("abab", "$2$1"), "baba")
+  @test.assert_eq(pair.replace_all("abab", "$2$1"), "baba")
   // replace_all 引用命名组
   let named = match Pattern::compile("(?<x>a)(?<y>b)") {
     Ok(v) => v
     Err(_) => fail("compile named failed")
   }
-  assert_eq(named.replace_all("ab", "${y}${x}"), "ba")
+  @test.assert_eq(named.replace_all("ab", "${y}${x}"), "ba")
 }
 ```
 
@@ -336,7 +336,7 @@ test "README · 实战 demo：ISO 日期命名捕获与重排" {
     None => fail("expected captures for iso date")
   }
   // 命名引用重排为 day/month/year
-  assert_eq(
+  @test.assert_eq(
     p.replace_all("2026-06-12", "${day}/${month}/${year}"),
     "12/06/2026",
   )

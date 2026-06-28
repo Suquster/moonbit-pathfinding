@@ -10,14 +10,14 @@ test "watch registers and collect_terminations delivers once" {
   let watcher : ActorId = { value: 1 }
   let target : ActorId = { value: 2 }
   reg.watch(watcher, target, fn(id, _reason) { id.value * 100 })
-  assert_eq(reg.active_count(), 1)
+  @test.assert_eq(reg.active_count(), 1)
   let delivered = reg.collect_terminations(target, StoppedNormally)
-  assert_eq(delivered.length(), 1)
-  assert_eq(delivered[0].0, watcher)
-  assert_eq(delivered[0].1, 200)
+  @test.assert_eq(delivered.length(), 1)
+  @test.assert_eq(delivered[0].0, watcher)
+  @test.assert_eq(delivered[0].1, 200)
   // 收集后置非 active：再次收集不再投递（至多一条）。
-  assert_eq(reg.active_count(), 0)
-  assert_eq(reg.collect_terminations(target, StoppedNormally).length(), 0)
+  @test.assert_eq(reg.active_count(), 0)
+  @test.assert_eq(reg.collect_terminations(target, StoppedNormally).length(), 0)
 }
 
 ///|
@@ -28,7 +28,7 @@ test "watch is idempotent for the same watcher-target pair" {
   let target : ActorId = { value: 2 }
   reg.watch(watcher, target, fn(_id, _r) { 0 })
   reg.watch(watcher, target, fn(_id, _r) { 0 })
-  assert_eq(reg.active_count(), 1)
+  @test.assert_eq(reg.active_count(), 1)
 }
 
 ///|
@@ -39,6 +39,6 @@ test "unwatch cancels the watch" {
   let target : ActorId = { value: 2 }
   reg.watch(watcher, target, fn(_id, _r) { 9 })
   reg.unwatch(watcher, target)
-  assert_eq(reg.active_count(), 0)
-  assert_eq(reg.collect_terminations(target, FailedWith("x")).length(), 0)
+  @test.assert_eq(reg.active_count(), 0)
+  @test.assert_eq(reg.collect_terminations(target, FailedWith("x")).length(), 0)
 }

@@ -250,15 +250,15 @@ test "level threshold filtering drops below-threshold events (witness)" {
   log(Level::Debug, { "seq": VInt(4L) })
   let events = captured_events()
   // 仅保留 seq=1(Warn) 与 seq=3(Error)，且保持原序。
-  assert_eq(events.length(), 2)
+  @test.assert_eq(events.length(), 2)
   assert_true(events[0].level == Level::Warn)
   assert_true(events[1].level == Level::Error)
   match events[0].fields.get("seq") {
-    Some(VInt(v)) => assert_eq(v, 1L)
+    Some(VInt(v)) => @test.assert_eq(v, 1L)
     _ => fail("首个保留事件应带 seq=1")
   }
   match events[1].fields.get("seq") {
-    Some(VInt(v)) => assert_eq(v, 3L)
+    Some(VInt(v)) => @test.assert_eq(v, 3L)
     _ => fail("第二个保留事件应带 seq=3")
   }
 }
@@ -274,7 +274,7 @@ test "nested spans form a tree and annotate events (witness)" {
   let child = enter_span("child")
   // 子 span 父为根 span。
   match child.parent {
-    Some(pid) => assert_eq(pid.value, root.id.value)
+    Some(pid) => @test.assert_eq(pid.value, root.id.value)
     None => fail("子 span 应挂接根 span")
   }
   // 激活（最内层 child）span 内事件标注该 span 与 trace。
@@ -282,11 +282,11 @@ test "nested spans form a tree and annotate events (witness)" {
   let events = captured_events()
   let last = events[events.length() - 1]
   match last.fields.get("span") {
-    Some(VInt(v)) => assert_eq(v, child.id.value)
+    Some(VInt(v)) => @test.assert_eq(v, child.id.value)
     _ => fail("事件应标注当前 span")
   }
   match last.fields.get("trace") {
-    Some(VInt(v)) => assert_eq(v, trace.value)
+    Some(VInt(v)) => @test.assert_eq(v, trace.value)
     _ => fail("事件应标注当前 trace")
   }
   exit_span(child)

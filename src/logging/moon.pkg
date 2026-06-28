@@ -51,4 +51,13 @@ import {
   // 三后端逐位一致、可重放。该包为不依赖任何方向的横切叶子包，作为运行时
   // 依赖引入不破坏既有 API，且使新增属性测试与运行时共用同一确定性随机源。
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "test"
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

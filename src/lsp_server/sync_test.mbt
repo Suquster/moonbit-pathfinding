@@ -13,7 +13,7 @@
 // 断言策略：
 //   * `String` 派生 Show，结果文本直接用 `assert_eq`。
 //   * `@lsp_binding.RpcError` 派生 (Eq, Show)，错误码 `e.code` 为 Int，越界用
-//     `match ... { Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code) }`。
+//     `match ... { Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code) }`。
 //   * `VersionedDocument` 仅派生 Eq（无 Show），故对成功结果用 `match` 提取
 //     `uri`/`text`/`version` 字段（均为 String/Int，有 Show）后用 `assert_eq`。
 //
@@ -45,7 +45,7 @@ fn sync_change(sc : Int, ec : Int, text : String) -> ContentChange {
 test "apply_changes applies multiple contentChanges in order" {
   let changes = [sync_change(0, 0, "X"), sync_change(1, 2, "A")]
   match apply_changes("abc", changes, Utf16) {
-    Ok(result) => assert_eq(result, "XAbc")
+    Ok(result) => @test.assert_eq(result, "XAbc")
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
 }
@@ -58,7 +58,7 @@ test "apply_changes applies multiple contentChanges in order" {
 test "apply_changes order: each change builds on the previous result" {
   let changes = [sync_change(0, 1, "H"), sync_change(4, 5, "O")]
   match apply_changes("hello", changes, Utf16) {
-    Ok(result) => assert_eq(result, "HellO")
+    Ok(result) => @test.assert_eq(result, "HellO")
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
 }
@@ -70,7 +70,7 @@ test "apply_changes order: each change builds on the previous result" {
 test "apply_changes Full replacement replaces entire text" {
   let changes : Array[ContentChange] = [{ range: None, text: "brand new text" }]
   match apply_changes("old contents", changes, Utf16) {
-    Ok(result) => assert_eq(result, "brand new text")
+    Ok(result) => @test.assert_eq(result, "brand new text")
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
 }
@@ -90,9 +90,9 @@ test "VersionedDocument::apply updates version and text on success" {
   let changes : Array[ContentChange] = [{ range: None, text: "world" }]
   match doc.apply(changes, 2, Utf16) {
     Ok(updated) => {
-      assert_eq(updated.uri, "file:///a.conf")
-      assert_eq(updated.text, "world")
-      assert_eq(updated.version, 2)
+      @test.assert_eq(updated.uri, "file:///a.conf")
+      @test.assert_eq(updated.text, "world")
+      @test.assert_eq(updated.version, 2)
     }
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
@@ -109,8 +109,8 @@ test "VersionedDocument::apply updates version on incremental change" {
   }
   match doc.apply([sync_change(1, 2, "B")], 7, Utf16) {
     Ok(updated) => {
-      assert_eq(updated.text, "aBc")
-      assert_eq(updated.version, 7)
+      @test.assert_eq(updated.text, "aBc")
+      @test.assert_eq(updated.version, 7)
     }
     Err(e) => fail("expected Ok, got error: " + e.message)
   }
@@ -130,7 +130,7 @@ test "apply_changes out-of-bounds range yields invalid_params error" {
     text: "X",
   }
   match apply_changes("hello", [oob], Utf16) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
     Ok(_) => fail("expected an invalid_params error for out-of-bounds range")
   }
 }
@@ -139,7 +139,7 @@ test "apply_changes out-of-bounds range yields invalid_params error" {
 /// 列号越界（单行文本，character 越过行尾）：同样返回 `invalid_params_code`。
 test "apply_changes out-of-bounds character yields invalid_params error" {
   match apply_changes("hi", [sync_change(0, 99, "X")], Utf16) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
     Ok(_) =>
       fail("expected an invalid_params error for out-of-bounds character")
   }
@@ -163,12 +163,12 @@ test "VersionedDocument::apply out-of-bounds leaves document unchanged" {
     text: "ZZ",
   }
   match doc.apply([oob], 6, Utf16) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
     Ok(_) => fail("expected an invalid_params error; document must not change")
   }
   // 原 doc 是不可变值，未被任何部分应用结果替换：文本与版本保持原值。
-  assert_eq(doc.text, "hello")
-  assert_eq(doc.version, 5)
+  @test.assert_eq(doc.text, "hello")
+  @test.assert_eq(doc.version, 5)
 }
 
 ///|
@@ -180,7 +180,7 @@ test "apply_changes returns Err without partial result when a later change is ou
     sync_change(0, 99, "X"), // 越界：列号越过行尾
   ]
   match apply_changes("hello", changes, Utf16) {
-    Err(e) => assert_eq(e.code, @lsp_binding.invalid_params_code)
+    Err(e) => @test.assert_eq(e.code, @lsp_binding.invalid_params_code)
     Ok(_) => fail("expected Err; no partial result should be returned")
   }
 }

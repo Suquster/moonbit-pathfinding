@@ -12,4 +12,9 @@ import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/logging" @log,
   "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

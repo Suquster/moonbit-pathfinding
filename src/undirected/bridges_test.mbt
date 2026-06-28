@@ -35,7 +35,7 @@ test "bridge in a barbell graph" {
   assert_true((u == 2 && v == 3) || (u == 3 && v == 2))
   let cuts = articulation_points(nodes, undirected_adj(edges))
   cuts.sort()
-  inspect(cuts, content="[2, 3]")
+  @debug.debug_inspect(cuts, content="[2, 3]")
 }
 
 ///|
@@ -56,7 +56,7 @@ test "every edge of a path is a bridge" {
   inspect(bridges(nodes, undirected_adj(edges)).length(), content="3")
   let cuts = articulation_points(nodes, undirected_adj(edges))
   cuts.sort()
-  inspect(cuts, content="[1, 2]")
+  @debug.debug_inspect(cuts, content="[1, 2]")
 }
 
 ///|
@@ -64,7 +64,7 @@ test "star graph center is the only articulation point" {
   let nodes = [0, 1, 2, 3, 4]
   let edges : Array[(Int, Int)] = [(0, 1), (0, 2), (0, 3), (0, 4)]
   let cuts = articulation_points(nodes, undirected_adj(edges))
-  inspect(cuts, content="[0]")
+  @debug.debug_inspect(cuts, content="[0]")
   inspect(bridges(nodes, undirected_adj(edges)).length(), content="4")
 }
 

@@ -57,7 +57,7 @@ test "find_all representative witnesses" {
   match Pattern::compile("a") {
     Ok(p) => {
       let ms = p.find_all("banana")
-      assert_eq(ms.length(), 3)
+      @test.assert_eq(ms.length(), 3)
       assert_true(ms[0] == { start: 1, end: 2 })
       assert_true(ms[1] == { start: 3, end: 4 })
       assert_true(ms[2] == { start: 5, end: 6 })

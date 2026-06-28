@@ -12,8 +12,8 @@ test "schedule with jobs<=0 keeps each layer as one batch" {
     Target::new("d"),
   ]
   let batches = schedule(BuildGraph::new(nodes, []), 0)
-  assert_eq(batches.length(), 1)
-  assert_eq(batches[0].length(), 4)
+  @test.assert_eq(batches.length(), 1)
+  @test.assert_eq(batches[0].length(), 4)
 }
 
 ///|
@@ -23,9 +23,9 @@ test "critical_path_length equals number of layers for a chain" {
   let b = Target::new("b")
   let c = Target::new("c")
   let g = BuildGraph::new([a, b, c], [(a, b), (b, c)])
-  assert_eq(critical_path_length(g), 3)
-  assert_eq(critical_path_length(g), schedule(g, 0).length())
-  assert_eq(min_layers(g), 3)
+  @test.assert_eq(critical_path_length(g), 3)
+  @test.assert_eq(critical_path_length(g), schedule(g, 0).length())
+  @test.assert_eq(min_layers(g), 3)
 }
 
 ///|
@@ -36,12 +36,12 @@ test "critical_path_length of a diamond is three" {
   let c = Target::new("c")
   let d = Target::new("d")
   let g = BuildGraph::new([a, b, c, d], [(a, b), (a, c), (b, d), (c, d)])
-  assert_eq(critical_path_length(g), 3)
-  assert_eq(critical_path_length(g), schedule(g, 0).length())
+  @test.assert_eq(critical_path_length(g), 3)
+  @test.assert_eq(critical_path_length(g), schedule(g, 0).length())
 }
 
 ///|
 /// 空图关键路径长度为 0（边界）。
 test "critical_path_length of an empty graph is zero" {
-  assert_eq(critical_path_length(BuildGraph::new([], [])), 0)
+  @test.assert_eq(critical_path_length(BuildGraph::new([], [])), 0)
 }

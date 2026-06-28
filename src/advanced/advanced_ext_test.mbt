@@ -406,10 +406,10 @@ test "Feature: championship-v1-upgrade, task 19.1: ch_preprocess_with_order anch
   let g = ch_preprocess_with_order(nodes, succ, [2, 9, 0])
   match ch_query(g, 0, 3) {
     Some((path, cost)) => {
-      assert_eq(cost, 6)
-      assert_eq(path[0], 0)
-      assert_eq(path[path.length() - 1], 3)
-      assert_eq(path.length(), 4)
+      @test.assert_eq(cost, 6)
+      @test.assert_eq(path[0], 0)
+      @test.assert_eq(path[path.length() - 1], 3)
+      @test.assert_eq(path.length(), 4)
     }
     None => assert_true(false)
   }
@@ -434,16 +434,16 @@ test "Feature: championship-v1-upgrade, task 19.1: alt_preprocess_with_landmarks
     let alt_r = alt_query(lm, 0, t, succ)
     let dj_r = @dir.dijkstra(0, succ, fn(x) { x == t })
     match (alt_r, dj_r) {
-      (Some((_, a)), Some((_, d))) => assert_eq(a, d)
+      (Some((_, a)), Some((_, d))) => @test.assert_eq(a, d)
       (None, None) => assert_true(true)
       _ => assert_true(false)
     }
   }
   // 空地标集：退化为 Dijkstra（最短 0->4 = 2+1+3+1 = 7）。
   let lm0 = alt_preprocess_with_landmarks(nodes, succ, [])
-  assert_eq(lm0.landmarks.length(), 0)
+  @test.assert_eq(lm0.landmarks.length(), 0)
   match alt_query(lm0, 0, 4, succ) {
-    Some((_, c)) => assert_eq(c, 7)
+    Some((_, c)) => @test.assert_eq(c, 7)
     None => assert_true(false)
   }
 }
@@ -457,7 +457,7 @@ test "Feature: championship-v1-upgrade, task 19.1: jps_batch anchor" {
   }
   let pairs = [((0, 0), (4, 4)), ((0, 0), (0, 4)), ((2, 2), (2, 2))]
   let batch = jps_batch(grid, pairs)
-  assert_eq(batch.length(), 3)
+  @test.assert_eq(batch.length(), 3)
   let mut i = 0
   while i < pairs.length() {
     let (s, g) = pairs[i]

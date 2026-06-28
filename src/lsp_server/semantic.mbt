@@ -26,10 +26,10 @@
 ///|
 /// 签名信息：单一展示标签 `label`（如 `key = value`）。
 ///
-/// 仅含 `String`，故可安全 `derive(Eq, Show)`。
+/// 仅含 `String`，故可安全 `derive(Eq, Debug)`。
 pub(all) struct SignatureInfo {
   label : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 在位置 `pos` 处给出签名帮助（Requirement 5.7）。

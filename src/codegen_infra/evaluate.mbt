@@ -27,7 +27,7 @@
 pub(all) struct EvalResult {
   values : Map[String, Int] // 版本化变量记号（如 `x#2`）→ 取值
   output : Array[Int] // `ret` 记号沿路径产出的可达输出序列
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ---------------------------------------------------------------------------
 // φ 落点重建（reconstruct φ placement）—— 供解释器 / 析构 / 数据流优化共享
@@ -82,7 +82,7 @@ fn split_versioned(tok : String) -> (String, Int)? {
 fn preds_in_order(blocks : Array[BasicBlock]) -> Map[String, Array[String]] {
   let preds : Map[String, Array[String]] = Map([])
   for b in blocks {
-    if !(preds.contains(b.label)) {
+    if !preds.contains(b.label) {
       preds[b.label] = []
     }
   }

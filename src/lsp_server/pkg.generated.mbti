@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/lsp_server"
 import {
   "Suquster/moonbit-pathfinding/src/lsp_binding",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -156,7 +157,7 @@ pub(all) struct InitializeParams {
 pub(all) struct InitializeParamsExt {
   capabilities : Array[String]
   position_encodings : Array[String]
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn InitializeParamsExt::empty() -> Self
 pub fn InitializeParamsExt::new(Array[String], Array[String]) -> Self
 
@@ -174,9 +175,9 @@ pub(all) enum LifecycleEvent {
   EvInitialized
   EvShutdown
   EvExit
-  EvRequest(method~ : String)
-  EvNotification(method~ : String)
-} derive(Eq, Show)
+  EvRequest(method_name~ : String)
+  EvNotification(method_name~ : String)
+} derive(Eq, @debug.Debug)
 
 pub(all) enum LifecycleState {
   Uninitialized
@@ -184,7 +185,8 @@ pub(all) enum LifecycleState {
   Initialized
   ShuttingDown
   Exited
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
+pub impl Show for LifecycleState
 
 pub(all) struct Location {
   uri : String
@@ -209,7 +211,7 @@ pub(all) enum PositionEncoding {
   Utf16
   Utf8
   Utf32
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Range {
   start : Position
@@ -220,8 +222,6 @@ pub(all) struct Reference {
   name : String
   range : Range
 } derive(Eq)
-
-type SemTok
 
 pub(all) struct ServerCapabilities {
   diagnostic_provider : Bool
@@ -244,7 +244,7 @@ pub(all) struct ServerCapabilitiesExt {
   semantic_tokens_provider : Bool
   folding_range_provider : Bool
   document_highlight_provider : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn ServerCapabilitiesExt::all() -> Self
 pub fn ServerCapabilitiesExt::default() -> Self
 pub fn ServerCapabilitiesExt::none() -> Self
@@ -252,17 +252,17 @@ pub fn ServerCapabilitiesExt::none() -> Self
 pub(all) struct SessionStep {
   label : String
   output : @lsp_binding.Json
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SignatureInfo {
   label : String
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct StepResult {
   state : LifecycleState
   reply : @lsp_binding.JsonRpcMessage?
   exit_code : Int?
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct Symbol {
   name : String
@@ -278,7 +278,7 @@ pub(all) struct TextDocument {
 pub(all) enum TextDocumentSyncKind {
   Full
   Incremental
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct TextEdit {
   range : Range

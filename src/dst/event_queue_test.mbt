@@ -24,9 +24,9 @@ test "pop_min returns events in total order" {
     let (et, eid, ek) = exp
     match cur.pop_min() {
       Some((qe, rest)) => {
-        assert_eq(qe.time, et)
-        assert_eq(qe.task_id, eid)
-        assert_eq(qe.order_key, ek)
+        @test.assert_eq(qe.time, et)
+        @test.assert_eq(qe.task_id, eid)
+        @test.assert_eq(qe.order_key, ek)
         cur = rest
       }
       None => fail("queue exhausted early")
@@ -50,5 +50,5 @@ test "push is immutable and size grows" {
   let q0 = EventQueue::new()
   let q1 = q0.push(mk_qe(1UL, 0, 0UL))
   assert_true(q0.is_empty())
-  assert_eq(q1.size(), 1)
+  @test.assert_eq(q1.size(), 1)
 }

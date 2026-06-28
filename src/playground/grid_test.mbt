@@ -8,14 +8,14 @@
 ///|
 test "Grid::new 构造合法网格并设置默认端点" {
   let grid = @playground.Grid::new(3, 4).unwrap()
-  assert_eq(grid.rows, 3)
-  assert_eq(grid.cols, 4)
-  assert_eq(grid.cell_count(), 12)
-  assert_eq(grid.start, 0)
-  assert_eq(grid.goal, 11)
+  @test.assert_eq(grid.rows, 3)
+  @test.assert_eq(grid.cols, 4)
+  @test.assert_eq(grid.cell_count(), 12)
+  @test.assert_eq(grid.start, 0)
+  @test.assert_eq(grid.goal, 11)
   // 初始无障碍。
   for b in grid.blocked {
-    assert_eq(b, false)
+    @test.assert_eq(b, false)
   }
 }
 
@@ -32,9 +32,9 @@ test "Grid::new 拒绝非正行列与不足 2 格的网格" {
 test "Grid::set_start 合法移动返回新网格且不改入参" {
   let grid = @playground.Grid::new(3, 3).unwrap()
   let moved = grid.set_start(4).unwrap()
-  assert_eq(moved.start, 4)
+  @test.assert_eq(moved.start, 4)
   // 入参保持不变（值语义）。
-  assert_eq(grid.start, 0)
+  @test.assert_eq(grid.start, 0)
 }
 
 ///|
@@ -50,15 +50,15 @@ test "Grid::set_start 拒绝越界/障碍/与终点重叠" {
   let rejected = withobs.set_start(4)
   assert_true(rejected is Err(_))
   // 被拒后入参不变。
-  assert_eq(withobs.start, 0)
+  @test.assert_eq(withobs.start, 0)
 }
 
 ///|
 test "Grid::set_goal 合法移动返回新网格且不改入参" {
   let grid = @playground.Grid::new(3, 3).unwrap()
   let moved = grid.set_goal(4).unwrap()
-  assert_eq(moved.goal, 4)
-  assert_eq(grid.goal, 8)
+  @test.assert_eq(moved.goal, 4)
+  @test.assert_eq(grid.goal, 8)
 }
 
 ///|
@@ -72,12 +72,12 @@ test "Grid::set_goal 拒绝与起点重叠" {
 test "Grid::toggle_obstacle 合法切换并可来回切换" {
   let grid = @playground.Grid::new(3, 3).unwrap()
   let on = grid.toggle_obstacle(4).unwrap()
-  assert_eq(on.blocked[4], true)
+  @test.assert_eq(on.blocked[4], true)
   // 入参未变。
-  assert_eq(grid.blocked[4], false)
+  @test.assert_eq(grid.blocked[4], false)
   // 再次切换还原。
   let off = on.toggle_obstacle(4).unwrap()
-  assert_eq(off.blocked[4], false)
+  @test.assert_eq(off.blocked[4], false)
 }
 
 ///|
@@ -89,7 +89,7 @@ test "Grid::toggle_obstacle 拒绝端点格与越界" {
   // 越界。
   assert_true(grid.toggle_obstacle(9) is Err(_))
   // 被拒后障碍布局不变。
-  assert_eq(grid.blocked[0], false)
+  @test.assert_eq(grid.blocked[0], false)
 }
 
 ///|
@@ -97,11 +97,11 @@ test "Grid::to_successors 产出 4-邻接均匀单位权且按升序" {
   let grid = @playground.Grid::new(3, 3).unwrap()
   let succ = grid.to_successors()
   // 中心格 4 的邻居：上1、左3、右5、下7（升序），权均为 1。
-  assert_eq(succ(4), [(1, 1), (3, 1), (5, 1), (7, 1)])
+  @test.assert_eq(succ(4), [(1, 1), (3, 1), (5, 1), (7, 1)])
   // 角落格 0：只有右1、下3。
-  assert_eq(succ(0), [(1, 1), (3, 1)])
+  @test.assert_eq(succ(0), [(1, 1), (3, 1)])
   // 越界节点产出空。
-  assert_eq(succ(9), [])
+  @test.assert_eq(succ(9), [])
 }
 
 ///|
@@ -111,18 +111,18 @@ test "Grid::to_successors 障碍单元格无出边且不作为邻居" {
   let g = grid.toggle_obstacle(1).unwrap()
   let succ = g.to_successors()
   // 障碍格自身无出边。
-  assert_eq(succ(1), [])
+  @test.assert_eq(succ(1), [])
   // 中心格 4 的邻居不再包含 1。
-  assert_eq(succ(4), [(3, 1), (5, 1), (7, 1)])
+  @test.assert_eq(succ(4), [(3, 1), (5, 1), (7, 1)])
 }
 
 ///|
 test "Grid::manhattan 计算曼哈顿距离" {
   let grid = @playground.Grid::new(3, 3).unwrap()
   let h = grid.manhattan(8) // goal 在 (2,2)
-  assert_eq(h(0), 4) // (0,0) -> (2,2) = 2+2
-  assert_eq(h(8), 0) // 自身
-  assert_eq(h(4), 2) // (1,1) -> (2,2) = 1+1
+  @test.assert_eq(h(0), 4) // (0,0) -> (2,2) = 2+2
+  @test.assert_eq(h(8), 0) // 自身
+  @test.assert_eq(h(4), 2) // (1,1) -> (2,2) = 1+1
 }
 
 ///|
@@ -136,12 +136,12 @@ test "Grid 编辑后接入 trace_search 可在网格上找到最短路" {
     grid.to_successors(),
     grid.manhattan(grid.goal),
   )
-  assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.reachable, true)
   let path = trace.final_path.unwrap()
   // 最短路径长度为 5 个节点（曼哈顿距离 4 + 起点）。
-  assert_eq(path.length(), 5)
-  assert_eq(path[0], 0)
-  assert_eq(path[path.length() - 1], 8)
+  @test.assert_eq(path.length(), 5)
+  @test.assert_eq(path[0], 0)
+  @test.assert_eq(path[path.length() - 1], 8)
 }
 
 ///|
@@ -156,6 +156,6 @@ test "Grid 障碍布局变化导致目标不可达" {
     g.to_successors(),
     g.manhattan(g.goal),
   )
-  assert_eq(trace.reachable, false)
-  assert_eq(trace.final_path, None)
+  @test.assert_eq(trace.reachable, false)
+  @test.assert_eq(trace.final_path, None)
 }

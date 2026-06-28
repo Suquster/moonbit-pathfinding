@@ -131,7 +131,7 @@ fn prop9_rename_completeness(doc : TextDocument, k : String) -> Bool {
     return false
   }
   // 断言 2：k 唯一定义时，原名 k 在重分析后不再出现。
-  if !(key_redefined(a, k)) {
+  if !key_redefined(a, k) {
     if count_name_occurrences(a2, k) != 0 {
       return false
     }

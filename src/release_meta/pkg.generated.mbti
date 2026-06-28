@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "Suquster/moonbit-pathfinding/src/release_meta"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn aggregate_release_ready(QualityGates) -> Bool
 
@@ -20,7 +24,7 @@ pub(all) struct DirectionRelease {
   version : String
   changelog_path : String
   release_ready : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 pub fn DirectionRelease::evaluate(String, String, String, QualityGates) -> Self
 pub fn DirectionRelease::new(String, String, String, Bool) -> Self
 
@@ -28,13 +32,13 @@ pub(all) struct QualityGates {
   tests_passing : Bool
   proofs_passing : Bool
   docs_passing : Bool
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SemVer {
   major : Int
   minor : Int
   patch : Int
-} derive(Eq, Show)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

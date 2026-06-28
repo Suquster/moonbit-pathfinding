@@ -23,7 +23,7 @@ pub fn interference_from_intervals(
   let nodes : Array[Var] = []
   let seen : Map[Int, Bool] = Map([])
   for iv in intervals {
-    if !(seen.contains(iv.variable.id)) {
+    if !seen.contains(iv.variable.id) {
       seen[iv.variable.id] = true
       nodes.push(iv.variable)
     }

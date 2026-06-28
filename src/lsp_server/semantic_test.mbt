@@ -23,7 +23,7 @@ test "signature_help on a definition yields 'name = value'" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "k = 1\n" }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 0 })
-  assert_eq(sig, Some({ label: "k = 1" }))
+  @test.assert_eq(sig, Some({ label: "k = 1" }))
 }
 
 ///|
@@ -33,7 +33,7 @@ test "signature_help off any symbol yields None" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "k = 1\n" }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 4 })
-  assert_eq(sig, None)
+  @test.assert_eq(sig, None)
 }
 
 ///|
@@ -46,7 +46,7 @@ test "signature_help on a reference to a defined key yields its definition" {
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 1, character: 5 })
-  assert_eq(sig, Some({ label: "k = 1" }))
+  @test.assert_eq(sig, Some({ label: "k = 1" }))
 }
 
 ///|
@@ -58,7 +58,7 @@ test "signature_help on a reference to an undefined key yields just the name" {
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let sig = signature_help(a, { line: 0, character: 5 })
-  assert_eq(sig, Some({ label: "x" }))
+  @test.assert_eq(sig, Some({ label: "x" }))
 }
 
 // ───────────────────────── semanticTokens（5.7） ──────────────────────
@@ -73,7 +73,7 @@ test "semantic_tokens encodes two symbol rows with delta line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\nb = 2\n" }
   let a = analyze(doc)
   let tokens = semantic_tokens(a)
-  assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0])
+  @test.assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0])
 }
 
 ///|
@@ -89,7 +89,7 @@ test "semantic_tokens encodes a reference token with type 1 and same-line delta"
   let doc : TextDocument = { uri: "file:///a.conf", text }
   let a = analyze(doc)
   let tokens = semantic_tokens(a)
-  assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 4, 4, 1, 0])
+  @test.assert_eq(tokens, [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 4, 4, 1, 0])
 }
 
 ///|
@@ -97,7 +97,7 @@ test "semantic_tokens encodes a reference token with type 1 and same-line delta"
 test "semantic_tokens on empty document yields empty array" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "" }
   let a = analyze(doc)
-  assert_eq(semantic_tokens(a), [])
+  @test.assert_eq(semantic_tokens(a), [])
 }
 
 // ───────────────────────── foldingRange（5.7） ────────────────────────
@@ -112,13 +112,13 @@ test "folding_ranges folds a block of contiguous content lines" {
     text: "a = 1\nb = 2\nc = 3\n",
   }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 1)
+  @test.assert_eq(ranges.length(), 1)
   // Range 无 Show：以 Int 字段逐项见证 [ (0,0), (2,5) )。
   let r = ranges[0]
-  assert_eq(r.start.line, 0)
-  assert_eq(r.start.character, 0)
-  assert_eq(r.end.line, 2)
-  assert_eq(r.end.character, 5)
+  @test.assert_eq(r.start.line, 0)
+  @test.assert_eq(r.start.character, 0)
+  @test.assert_eq(r.end.line, 2)
+  @test.assert_eq(r.end.character, 5)
 }
 
 ///|
@@ -126,7 +126,7 @@ test "folding_ranges folds a block of contiguous content lines" {
 test "folding_ranges yields nothing for a single content line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\n" }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 0)
+  @test.assert_eq(ranges.length(), 0)
 }
 
 ///|
@@ -135,5 +135,5 @@ test "folding_ranges yields nothing for a single content line" {
 test "folding_ranges does not fold blocks broken by a blank line" {
   let doc : TextDocument = { uri: "file:///a.conf", text: "a = 1\n\nb = 2\n" }
   let ranges = folding_ranges(doc)
-  assert_eq(ranges.length(), 0)
+  @test.assert_eq(ranges.length(), 0)
 }

@@ -189,7 +189,7 @@ test "capture correctness representative witnesses" {
           assert_true(c.group(0) == Some({ start: 0, end: 3 }))
           assert_true(c.group(1) == Some({ start: 0, end: 1 }))
           assert_true(c.group(2) == Some({ start: 2, end: 3 }))
-          assert_eq(c.group_count(), 3)
+          @test.assert_eq(c.group_count(), 3)
         }
         None => fail("expected match for (a)(?:b)(c)")
       }

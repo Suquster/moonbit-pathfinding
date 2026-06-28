@@ -16,4 +16,9 @@
 import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/regex_engine" @re,
+  "moonbitlang/core/test",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "wbtest"

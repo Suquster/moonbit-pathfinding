@@ -23,7 +23,7 @@
 pub(all) struct EnvFilter {
   directives : Map[String, Level]
   fallback : Level
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// EnvFilter 指令解析错误（携带定位信息，Requirement 4.4）。
@@ -32,7 +32,7 @@ pub(all) struct EnvFilter {
 pub(all) struct FilterError {
   pos : Int
   message : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 解析 EnvFilter 指令集合（Requirement 4.3 / 4.4）。

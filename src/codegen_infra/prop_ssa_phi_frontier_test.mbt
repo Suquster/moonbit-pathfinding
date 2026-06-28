@@ -30,7 +30,7 @@ test "Feature: codegen-infra, Property 9: phi placed only on dominance frontier"
           continue // 无法定位的死 φ：跳过
         }
         let idf = t_iterated_df(df, defb.get(def_var).unwrap_or([]))
-        if !(idf.contains(block)) {
+        if !idf.contains(block) {
           return false
         }
       }

@@ -29,7 +29,7 @@ pub(all) enum TypedValue {
   TMsg(TypedMessage) // 嵌套消息（递归）
   TList(Array[TypedValue]) // repeated（含 packed）
   TMap(Array[(TypedValue, TypedValue)]) // map<K, V>
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 类型化消息：命名字段取值（仅记录"已显式设置"项）+ 保留的未知字段。
@@ -39,7 +39,7 @@ pub(all) enum TypedValue {
 pub(all) struct TypedMessage {
   fields : Map[Int, TypedValue] // 字段号 → 取值
   unknown : Array[FieldEntry] // 未知字段（号/wire/原始取值）原样保留
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 构造空类型化消息。
@@ -118,7 +118,7 @@ fn typed_is_default(v : TypedValue) -> Bool {
   match v {
     TInt(n) => n == 0L
     TUInt(u) => u == 0UL
-    TBoolV(b) => !(b)
+    TBoolV(b) => !b
     TEnumV(e) => e == 0
     TFloatV(f) => f == (0.0 : Float)
     TDoubleV(d) => d == 0.0
@@ -211,7 +211,9 @@ fn bytes_to_string(b : Bytes) -> String {
       let b1 = b[i + 1].to_int()
       let b2 = b[i + 2].to_int()
       chars.push(
-        Int::unsafe_to_char(((b0 & 0x0F) << 12) | ((b1 & 0x3F) << 6) | (b2 & 0x3F)),
+        Int::unsafe_to_char(
+          ((b0 & 0x0F) << 12) | ((b1 & 0x3F) << 6) | (b2 & 0x3F),
+        ),
       )
       i = i + 3
     } else if (b0 & 0xF8) == 0xF0 && i + 3 < n {

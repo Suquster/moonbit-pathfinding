@@ -21,7 +21,7 @@ test "one_of picks one of the provided generators" {
 test "one_of with single generator is deterministic" {
   let g = one_of([gen_int_range(7, 7)])
   let rng = rng_new(1)
-  assert_eq(g.generate(rng), 7)
+  @test.assert_eq(g.generate(rng), 7)
 }
 
 ///|
@@ -32,7 +32,7 @@ test "frequency skips non-positive weights" {
   let mut i = 0
   while i < 20 {
     // 权重 0 的「1」分支永不命中，结果恒为「2」。
-    assert_eq(g.generate(rng), 2)
+    @test.assert_eq(g.generate(rng), 2)
     i += 1
   }
 }
@@ -74,7 +74,7 @@ test "sized is reproducible from seed" {
   let b = rng_new(777)
   let mut i = 0
   while i < 16 {
-    assert_eq(g.generate(a), g.generate(b))
+    @test.assert_eq(g.generate(a), g.generate(b))
     i += 1
   }
 }

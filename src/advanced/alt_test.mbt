@@ -41,7 +41,7 @@ test "alt_query source equals target returns zero cost" {
   let lm = alt_preprocess(nodes, fn(n) { adj[n] }, 1)
   match alt_query(lm, 0, 0, fn(n) { adj[n] }) {
     Some((path, cost)) => {
-      inspect(path, content="[0]")
+      @debug.debug_inspect(path, content="[0]")
       inspect(cost, content="0")
     }
     None => assert_true(false)

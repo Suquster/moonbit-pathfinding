@@ -219,7 +219,7 @@ fn p11_gen_expected(rng : @infra_pbt.Rng) -> (TextDocument, Analysis) {
     diagnostics.push(d)
   }
   for r in references {
-    if !(p11_contains(defined, r.name)) {
+    if !p11_contains(defined, r.name) {
       diagnostics.push({
         range: r.range,
         severity: Warning,

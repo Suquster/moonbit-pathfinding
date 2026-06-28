@@ -31,7 +31,7 @@ let nonzero_fallback : UInt64 = 0x9E3779B97F4A7C15
 pub struct Rng {
   seed : UInt64
   mut state : UInt64
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 以给定种子构造一个 `Rng`。

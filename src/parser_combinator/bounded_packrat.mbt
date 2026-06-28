@@ -220,11 +220,11 @@ test "run_packrat_bounded 结果与 run_packrat 一致" {
     let baseline = g.run_packrat_string(src)
     for cap in [0, 1, 4] {
       let bounded = g.run_packrat_bounded_string(src, cap~)
-      assert_eq(baseline.is_ok(), bounded.is_ok())
+      @test.assert_eq(baseline.is_ok(), bounded.is_ok())
       match (baseline.rest(), bounded.rest()) {
-        (Some(r1), Some(r2)) => assert_eq(r1.pos.offset, r2.pos.offset)
+        (Some(r1), Some(r2)) => @test.assert_eq(r1.pos.offset, r2.pos.offset)
         (None, None) => ()
-        _ => assert_eq(true, false)
+        _ => @test.assert_eq(true, false)
       }
     }
   }
@@ -237,11 +237,11 @@ test "BoundedCache LRU 淘汰与容量上限" {
   let mk = fn(n : Int) { OOk(n, Input::from_string("")) }
   cache.put(10, mk(1))
   cache.put(20, mk(2))
-  assert_eq(cache.len(), 2)
+  @test.assert_eq(cache.len(), 2)
   // 访问 10 使其成为最近使用，则下一次淘汰应移除 20（最久未使用）。
   let _ = cache.get(10)
   cache.put(30, mk(3))
-  assert_eq(cache.len(), 2)
+  @test.assert_eq(cache.len(), 2)
   assert_true(cache.contains(10))
   assert_true(cache.contains(30))
   assert_true(!cache.contains(20))
@@ -253,9 +253,9 @@ test "BoundedCache cap<=0 无缓存语义" {
   let cache : BoundedCache[Int] = BoundedCache::new(0)
   cache.put(1, OOk(1, Input::from_string("")))
   cache.put(2, OOk(2, Input::from_string("")))
-  assert_eq(cache.len(), 0)
+  @test.assert_eq(cache.len(), 0)
   assert_true(!cache.contains(1))
-  assert_eq(cache.get(1) is None, true)
+  @test.assert_eq(cache.get(1) is None, true)
 }
 
 ///|
@@ -269,7 +269,7 @@ test "BoundedCache 条目数始终不超过 cap" {
     assert_true(cache.len() <= cap)
     off = off + 1
   }
-  assert_eq(cache.len(), cap)
+  @test.assert_eq(cache.len(), cap)
 }
 
 ///|

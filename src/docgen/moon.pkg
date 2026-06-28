@@ -25,4 +25,5 @@ import {
 // 测试期共享约定」的定位。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
 } for "test"

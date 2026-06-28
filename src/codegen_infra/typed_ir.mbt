@@ -19,7 +19,7 @@
 //   * 无循环内字符串 `+` —— 手写 `Show` 经 `logger.write_string` 直写日志缓冲，
 //     不做 `out = out + ...` 累积拼接；
 //   * `Show` 一律手写（`derive(Eq)` + `pub impl Show ... with fn output`）以
-//     规避 `derive(Show)` 的弃用告警，与本仓 build_tool / regex 方向一致。
+//     规避 `derive(Debug)` 的弃用告警，与本仓 build_tool / regex 方向一致。
 
 // ───────────────────────────── 命名常量 ─────────────────────────────
 
@@ -73,7 +73,7 @@ fn write_operand(logger : &Logger, op : Operand) -> Unit {
 }
 
 ///|
-/// 以可读形式展示操作数（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示操作数（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for Operand with fn output(self : Operand, logger : &Logger) -> Unit {
   write_operand(logger, self)
 }
@@ -129,7 +129,7 @@ fn write_binop(
 }
 
 ///|
-/// 以可读形式展示类型化指令（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示类型化指令（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 ///
 /// 逐字段经 `logger.write_string` / `write_operand` 直写日志缓冲；数组字段
 /// （`Call.args` / `Phi.args`）以「首元素无前导分隔符」的方式按序写出，
@@ -265,7 +265,7 @@ pub(all) struct TypedBlock {
 } derive(Eq)
 
 ///|
-/// 以可读形式展示基本块（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示基本块（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for TypedBlock with fn output(self : TypedBlock, logger : &Logger) -> Unit {
   logger.write_string("TypedBlock(label=")
   logger.write_string(self.label)
@@ -299,7 +299,7 @@ pub(all) struct TypedFunction {
 } derive(Eq)
 
 ///|
-/// 以可读形式展示函数（手写 `Show`，规避 `derive(Show)` 弃用告警）。
+/// 以可读形式展示函数（手写 `Show`，规避 `derive(Debug)` 弃用告警）。
 pub impl Show for TypedFunction with fn output(
   self : TypedFunction,
   logger : &Logger,

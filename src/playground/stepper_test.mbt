@@ -27,13 +27,13 @@ test "trace_search BFS 在链图上找到最短路" {
     make_succ(adj),
     zero_h,
   )
-  assert_eq(trace.reachable, true)
-  assert_eq(trace.final_path, Some([0, 1, 2, 3]))
-  assert_eq(trace.algo, @playground.PlaygroundAlgo::BFS)
+  @test.assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.final_path, Some([0, 1, 2, 3]))
+  @test.assert_eq(trace.algo, @playground.PlaygroundAlgo::BFS)
   // 最后一帧必须终止。
   let last = trace.steps[trace.steps.length() - 1]
-  assert_eq(last.done, true)
-  assert_eq(last.found, true)
+  @test.assert_eq(last.done, true)
+  @test.assert_eq(last.found, true)
 }
 
 ///|
@@ -47,8 +47,8 @@ test "trace_search Dijkstra 选取更低权重路径" {
     make_succ(adj),
     zero_h,
   )
-  assert_eq(trace.reachable, true)
-  assert_eq(trace.final_path, Some([0, 2, 1]))
+  @test.assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.final_path, Some([0, 2, 1]))
 }
 
 ///|
@@ -63,8 +63,8 @@ test "trace_search A* 借助启发式仍返回最短路" {
     make_succ(adj),
     h,
   )
-  assert_eq(trace.reachable, true)
-  assert_eq(trace.final_path, Some([0, 1, 2, 3]))
+  @test.assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.final_path, Some([0, 1, 2, 3]))
 }
 
 ///|
@@ -77,11 +77,11 @@ test "trace_search DFS 返回一条合法路径" {
     make_succ(adj),
     zero_h,
   )
-  assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.reachable, true)
   // DFS 路径不保证最短，但首=起点、末=终点且每相邻对为边。
   let path = trace.final_path.unwrap()
-  assert_eq(path[0], 0)
-  assert_eq(path[path.length() - 1], 3)
+  @test.assert_eq(path[0], 0)
+  @test.assert_eq(path[path.length() - 1], 3)
 }
 
 ///|
@@ -95,10 +95,10 @@ test "trace_search JPS（贪心）在带启发式时找到合法路径" {
     make_succ(adj),
     h,
   )
-  assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.reachable, true)
   let path = trace.final_path.unwrap()
-  assert_eq(path[0], 0)
-  assert_eq(path[path.length() - 1], 3)
+  @test.assert_eq(path[0], 0)
+  @test.assert_eq(path[path.length() - 1], 3)
 }
 
 ///|
@@ -112,11 +112,11 @@ test "trace_search 目标不可达时 final_path 为 None 且末帧终止" {
     make_succ(adj),
     zero_h,
   )
-  assert_eq(trace.reachable, false)
-  assert_eq(trace.final_path, None)
+  @test.assert_eq(trace.reachable, false)
+  @test.assert_eq(trace.final_path, None)
   let last = trace.steps[trace.steps.length() - 1]
-  assert_eq(last.done, true)
-  assert_eq(last.found, false)
+  @test.assert_eq(last.done, true)
+  @test.assert_eq(last.found, false)
 }
 
 ///|
@@ -129,9 +129,9 @@ test "trace_search 起点即终点时返回单元素路径" {
     make_succ(adj),
     zero_h,
   )
-  assert_eq(trace.reachable, true)
-  assert_eq(trace.final_path, Some([0]))
-  assert_eq(trace.steps.length(), 1)
+  @test.assert_eq(trace.reachable, true)
+  @test.assert_eq(trace.final_path, Some([0]))
+  @test.assert_eq(trace.steps.length(), 1)
 }
 
 ///|
@@ -149,9 +149,9 @@ test "trace_search visited 集合沿帧序单调不减" {
   for i in 1..<steps.length() {
     let prev = steps[i - 1].visited
     let curr = steps[i].visited
-    assert_eq(curr.length() >= prev.length(), true)
+    @test.assert_eq(curr.length() >= prev.length(), true)
     for j in 0..<prev.length() {
-      assert_eq(curr[j], prev[j])
+      @test.assert_eq(curr[j], prev[j])
     }
   }
 }

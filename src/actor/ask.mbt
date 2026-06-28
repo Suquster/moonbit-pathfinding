@@ -15,7 +15,7 @@
 /// 关联 id（correlation id）—— 唯一标识一次 ask 交互（Requirement 4.2）。
 pub(all) struct CorrelationId {
   value : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// 一次 ask 的确定性结果（Requirement 4.3 / 4.4）。
@@ -25,7 +25,7 @@ pub(all) struct CorrelationId {
 pub(all) enum AskResult[R] {
   Replied(R)
   Timeout
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 // ───────────────────────────── ask 注册表 ────────────────────────────────
 
@@ -130,7 +130,7 @@ pub fn[S, M, R] ask(
     if broker.has_reply(id) {
       break
     }
-    if !(system.step()) {
+    if !system.step() {
       break
     }
     steps = steps + 1

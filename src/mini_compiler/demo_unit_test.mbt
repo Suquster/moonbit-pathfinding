@@ -36,7 +36,7 @@ test "demo: factorial end-to-end trace matches documented products" {
   // R9.3：两路对同一示例产出相等的 Val（解释 == VM）。
   assert_true(t.interp_result == t.vm_result)
   // R9.2：优化后形态与文档声明的源串形态精确相符（实跑校准）。
-  assert_eq(
+  @test.assert_eq(
     t.optimized_form,
     "(let rec fact = (fun n -> (if (n <= 1) then 1 else (n * (fact (n - 1))))) in (fact 5))",
   )
@@ -59,7 +59,7 @@ test "demo: fibonacci end-to-end trace matches documented products" {
   // R9.3：两路对同一示例产出相等的 Val（解释 == VM）。
   assert_true(t.interp_result == t.vm_result)
   // R9.2：优化后形态与文档声明的源串形态精确相符（实跑校准）。
-  assert_eq(
+  @test.assert_eq(
     t.optimized_form,
     "(let rec fib = (fun n -> (if (n <= 1) then n else ((fib (n - 1)) + (fib (n - 2))))) in (fib 10))",
   )

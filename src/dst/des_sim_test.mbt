@@ -13,9 +13,9 @@ test "run_des drives replication to a consistent completion" {
     Failed(reason~) => fail("expected Completed, got \{reason}")
   }
   // 所有副本日志收敛为领导者广播值。
-  assert_eq(node_log_from_finals(r.finals, 0), [100])
-  assert_eq(node_log_from_finals(r.finals, 1), [100])
-  assert_eq(node_log_from_finals(r.finals, 2), [100])
+  @test.assert_eq(node_log_from_finals(r.finals, 0), [100])
+  @test.assert_eq(node_log_from_finals(r.finals, 1), [100])
+  @test.assert_eq(node_log_from_finals(r.finals, 2), [100])
 }
 
 ///|
@@ -23,7 +23,7 @@ test "run_des drives replication to a consistent completion" {
 test "run_des terminates on empty and bounded scenarios" {
   let empty = DesScenario::new([], [], [], null_protocol(), 8)
   let r = run_des(1, empty)
-  assert_eq(r.trace.length(), 0)
+  @test.assert_eq(r.trace.length(), 0)
   match r.status {
     Completed => ()
     Failed(..) => fail("empty scenario should complete")
@@ -44,7 +44,10 @@ test "of_legacy schedule projection matches legacy run" {
       seed,
       DesScenario::of_legacy(scenario, protocol=null_protocol()),
     )
-    assert_eq(des_scheduled_ids(des.trace), legacy_scheduled_ids(leg.trace))
+    @test.assert_eq(
+      des_scheduled_ids(des.trace),
+      legacy_scheduled_ids(leg.trace),
+    )
   }
 }
 
@@ -60,8 +63,8 @@ test "replay_des reproduces status and trace" {
   )
   let r = run_des(3, sc)
   let rep = replay_des(r.seed, r.trace)
-  assert_eq(rep.status, r.status)
-  assert_eq(rep.trace, r.trace)
+  @test.assert_eq(rep.status, r.status)
+  @test.assert_eq(rep.trace, r.trace)
 }
 
 ///|

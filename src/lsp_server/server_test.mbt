@@ -432,7 +432,7 @@ test "regression: publish_diagnostics_notification encoding is byte-identical to
   let msg = publish_diagnostics_notification(doc.uri, diags)
   let expected =
     #|{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"uri":"file:///bad.conf","diagnostics":[{"range":{"start":{"line":0,"character":0},"end":{"line":0,"character":10}},"severity":1,"message":"缺少 '='：期望形如 key = value 的赋值"}]}}
-  assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
+  @test.assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
 }
 
 ///|
@@ -441,7 +441,7 @@ test "regression: publish_diagnostics_notification with empty diagnostics" {
   let msg = publish_diagnostics_notification("file:///x.conf", [])
   let expected =
     #|{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"uri":"file:///x.conf","diagnostics":[]}}
-  assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
+  @test.assert_eq(@lsp_binding.encode_message(msg), ec_str_to_bytes(expected))
 }
 
 ///|

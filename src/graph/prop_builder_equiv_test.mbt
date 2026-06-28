@@ -179,8 +179,8 @@ test "Feature: championship-v1-upgrade, Property 19: builder graph equals equiva
       let rb = @directed.dijkstra(0, succ_b, goal)
       match (ra, rb) {
         (Some((_, ca)), Some((_, cb))) => {
-          assert_eq(ca, 5) // 0->1->2 = 5，优于直达 0->2 = 10
-          assert_eq(cb, 5)
+          @test.assert_eq(ca, 5) // 0->1->2 = 5，优于直达 0->2 = 10
+          @test.assert_eq(cb, 5)
         }
         _ => assert_true(false) // 锚点：两者都应可达
       }

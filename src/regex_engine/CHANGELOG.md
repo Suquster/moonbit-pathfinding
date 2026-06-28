@@ -17,7 +17,20 @@
 
 ## [Unreleased]
 
+### Added
+- **字面量预过滤（literal prefilter，T2.1，对标 Rust `regex` / RE2）**：新增
+  `Prefilter` 枚举、`compute_prefilter`、`Prefilter::next_candidate`，以及
+  `Program::without_prefilter` / `Pattern::without_prefilter`（差分/基准用）。
+  `Program` 新增 `prefilter` 字段（由 `compile_program` 推导）。从 AST 提取
+  「匹配必经首字符集」的保守**超集**（忽略大小写时 case-fold），在 Pike VM
+  无在飞线程时快速跳过不可能起点。纯性能优化：差分属性测试（≥200 迭代）证明
+  开/关预过滤在 `exec`/`find`/`find_all`/`is_match` 逐字段相等；既有公开 API
+  签名与匹配语义完全不变（仅新增条目）。
+
 ### Performance
+- **稀疏命中长文本提速 ≈ 20×**（native `moon bench`：5.58 ms → 276.5 µs），
+  证据见 `benches/results/regex-prefilter-t2.1-native.md`；确定性 guard 证明
+  预过滤裁掉 >95% 的 Pike VM 播种位置。
 - `Pattern` 高层搜索 API（`find_all`/`find_iter`/`captures_all`/`replace`/
   `replace_all`/`replace_fn`/`split`/`split_n`/`find_at`）重构为复用**一次性**
   转换的字符数组：新增包内私有 `Program::exec_chars`（在预转换字符数组上执行

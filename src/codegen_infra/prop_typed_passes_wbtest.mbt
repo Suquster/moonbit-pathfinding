@@ -517,3 +517,89 @@ test "run_typed_pipeline_validated accepts legal and rejects malformed IR" {
     Ok(_) => assert_true(false)
   }
 }
+
+///|
+/// 回归：`TypedPass` 的 `Show` 实现逐变体渲染为 `TypedPass::<变体名>`。
+test "TypedPass Show renders every variant" {
+  assert_eq((ConstFold : TypedPass).to_string(), "TypedPass::ConstFold")
+  assert_eq(
+    (AlgebraicSimplify : TypedPass).to_string(),
+    "TypedPass::AlgebraicSimplify",
+  )
+  assert_eq(
+    (StrengthReduce : TypedPass).to_string(),
+    "TypedPass::StrengthReduce",
+  )
+  assert_eq((Dce : TypedPass).to_string(), "TypedPass::Dce")
+  assert_eq((Cse : TypedPass).to_string(), "TypedPass::Cse")
+}
+
+///|
+/// 回归：代数化简 `x * 1 → x`（右乘一）。
+test "algebraic_simplify_typed folds x*1 to x" {
+  let f = TypedFunction::{
+    entry: "b0",
+    blocks: [
+      TypedBlock::{
+        label: "b0",
+        instrs: [Mul(dst=2, lhs=Reg(1), rhs=Imm(1))],
+        terminator: Some(Ret(value=Some(Reg(2)))),
+      },
+    ],
+  }
+  let opt = algebraic_simplify_typed(f)
+  match opt.blocks[0].instrs[0] {
+    Add(dst~, lhs~, rhs~) =>
+      assert_true(dst == 2 && lhs == Reg(1) && rhs == Imm(0))
+    _ => assert_true(false)
+  }
+}
+
+///|
+/// 回归：对「无终结指令」的退化块，常量折叠与 DCE 均稳健保留 `terminator: None`，
+/// 且 DCE 对「无副作用且不定义寄存器」的非终结位置指令（如置于 `instrs` 的 `Br`）
+/// 一律保留。覆盖 `const_fold_typed` / `dce_typed` 的 `terminator: None` 分支
+/// 与 DCE `defined_reg() == None` 的保留分支。
+test "passes tolerate terminator-free degenerate blocks" {
+  let f = TypedFunction::{
+    entry: "b0",
+    blocks: [
+      TypedBlock::{
+        label: "b0",
+        instrs: [Add(dst=1, lhs=Imm(2), rhs=Imm(3)), Br(target="b0")],
+        terminator: None,
+      },
+    ],
+  }
+  let cf = const_fold_typed(f)
+  assert_true(cf.blocks[0].terminator is None)
+  let d = dce_typed(f)
+  assert_true(d.blocks[0].terminator is None)
+  // 置于 instrs 的 Br 无副作用且不定义寄存器，DCE 保留之。
+  assert_true(d.blocks[0].instrs.length() >= 1)
+  assert_true(d.blocks[0].instrs[d.blocks[0].instrs.length() - 1] is Br(..))
+}
+
+///|
+/// 回归：CSE 在含 `Mem` 操作数的算术上做值编号去重，且在「无终结指令」的退化块上
+/// 稳健保留 `terminator: None`。覆盖 `cse_operand_token` 的 `Mem` 分支与
+/// `cse_typed` 的 `terminator: None` 分支。
+test "cse_typed handles memory operands and terminator-free blocks" {
+  let f = TypedFunction::{
+    entry: "b0",
+    blocks: [
+      TypedBlock::{
+        label: "b0",
+        instrs: [
+          Add(dst=2, lhs=Mem(0), rhs=Imm(1)),
+          Add(dst=3, lhs=Mem(0), rhs=Imm(1)),
+        ],
+        terminator: None,
+      },
+    ],
+  }
+  let opt = cse_typed(f)
+  // 两条同表达式（含 Mem 操作数）应折叠为一条。
+  assert_true(opt.blocks[0].instrs.length() == 1)
+  assert_true(opt.blocks[0].terminator is None)
+}

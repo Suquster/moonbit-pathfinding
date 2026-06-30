@@ -207,17 +207,14 @@ fn otlp_key_values(
   num : Int,
   attrs : Map[String, Value],
 ) -> Array[@serialization.FieldEntry] {
-  let keys : Array[String] = []
-  for k, _ in attrs {
-    keys.push(k)
+  let entries : Array[(String, Value)] = []
+  for k, v in attrs {
+    entries.push((k, v))
   }
-  keys.sort()
+  entries.sort_by(fn(a, b) { a.0.compare(b.0) })
   let out : Array[@serialization.FieldEntry] = []
-  for k in keys {
-    match attrs.get(k) {
-      Some(v) => out.push(f_msg(num, otlp_key_value(k, v)))
-      None => ()
-    }
+  for e in entries {
+    out.push(f_msg(num, otlp_key_value(e.0, e.1)))
   }
   out
 }

@@ -371,3 +371,39 @@ test "T7.1: a concrete named span encodes the expected OTLP fields" {
   )
   assert_eq(otlp_t_as_varint(otlp_t_first(st, 3).unwrap()).unwrap(), 2) // Error
 }
+
+///|
+/// T7.1：非 ASCII 名称/属性按 **UTF-8** 编码（覆盖 2/3/4 字节码点分支）。
+/// 字符串 `"é中𝄞"` 含 U+00E9（2 字节 C3 A9）、U+4E2D（3 字节 E4 B8 AD）、
+/// U+1D11E（4 字节 F0 9D 84 9E），用手算的 UTF-8 字节作独立 oracle 校验
+/// span name（字段 5）与字符串属性值（AnyValue string_value，字段 1）。
+test "T7.1: OTLP export encodes non-ASCII text as UTF-8" {
+  let expect : Bytes = [
+    0xC3, 0xA9, // é  U+00E9
+     0xE4, 0xB8, 0xAD, // 中 U+4E2D
+     0xF0, 0x9D, 0x84, 0x9E, // 𝄞 U+1D11E
+  ]
+  let sd = SpanData::new(Span::{
+    id: SpanId::{ value: 7L },
+    parent: None,
+    start: 1L,
+    end: None,
+  })
+  sd.set_attribute("k", VStr("é中𝄞"))
+  let bytes = otlp_export_trace([
+    OtlpSpanInput::{
+      trace: TraceId::{ value: 9L },
+      name: "é中𝄞",
+      data: sd,
+    },
+  ])
+  let sp = otlp_t_extract_spans(bytes)[0]
+  // span name（字段 5）UTF-8 一致。
+  assert_true(otlp_t_as_bytes(otlp_t_first(sp, 5).unwrap()).unwrap() == expect)
+  // 字符串属性值：KeyValue(字段 9) -> value(字段 2) -> AnyValue.string_value(字段 1)。
+  let kv = otlp_t_decode(otlp_t_as_bytes(otlp_t_first(sp, 9).unwrap()).unwrap())
+  let any = otlp_t_decode(
+    otlp_t_as_bytes(otlp_t_first(kv, 2).unwrap()).unwrap(),
+  )
+  assert_true(otlp_t_as_bytes(otlp_t_first(any, 1).unwrap()).unwrap() == expect)
+}

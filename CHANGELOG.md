@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat(codegen_infra): 新增类型化 IR（`Operand`/`TypedInstr`/`TypedBlock`/
   `TypedFunction`，替代字符串化指令）、IR 验证器（SSA/类型/控制流）与解释器
   (代码生成类型化 IR / 验证器 / 解释器)
+- feat(codegen_infra): 类型化 IR 优化遍 + 可验证 pass 流水线（纲领方向三
+  T3.1/T3.2）——`const_fold_typed`/`algebraic_simplify_typed`/`strength_reduce_typed`/
+  `dce_typed`/`cse_typed` 五个纯函数优化遍，`TypedPass` 枚举 +
+  `run_typed_pipeline`/`run_typed_to_fixpoint`/`run_typed_pipeline_validated`
+  （每遍前后 `validate_ir` 断言良构、非法输入返回 `Err`）；各遍带「优化前后
+  可观察求值等价」PBT（≥100 迭代，以 `interp_ir` 为基准）
+  (codegen 类型化优化遍：常量折叠/代数化简/强度削减/DCE/CSE + 验证型流水线 + 等价 PBT)
 - feat(dst): 新增可执行任务体（`SimContext`/`ExecutableTask`/`run_executable`）与
   `eventually` 最终性断言，复用确定性 `World`/`NetworkSim`/`SimClock`
   (确定性仿真可执行任务 / eventually)

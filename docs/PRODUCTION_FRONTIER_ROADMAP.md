@@ -140,8 +140,10 @@ Click/Cooper（SCCP/GVN）。
 **KPI 目标**：每个优化 pass 带「优化前后求值等价」PBT；pass 流水线含前后 IR 验证器断言。
 
 **任务分解**：
-- [ ] **T3.1 Pass 流水线管理器 + IR 验证器**：可组合 pass pipeline，每 pass 前后断言 SSA 良构性。
-- [ ] **T3.2 优化 pass 扩充**：常量折叠、DCE、代数化简、强度削减、CSE，均带等价 PBT。
+- [x] **T3.1 Pass 流水线管理器 + IR 验证器**：可组合 pass pipeline，每 pass 前后断言 SSA 良构性。
+      → `run_typed_pipeline` / `run_typed_to_fixpoint` / `run_typed_pipeline_validated`（输入及每遍后 `validate_ir` 断言良构性，非法输入返回结构化 `Err`），见 `src/codegen_infra/typed_passes.mbt`。
+- [x] **T3.2 优化 pass 扩充**：常量折叠、DCE、代数化简、强度削减、CSE，均带等价 PBT。
+      → `const_fold_typed` / `algebraic_simplify_typed` / `strength_reduce_typed` / `dce_typed` / `cse_typed`（类型化 IR 上的纯函数遍）；各带「优化前后可观察求值等价」PBT（≥100 迭代，以 `interp_ir` 为基准），见 `src/codegen_infra/prop_typed_passes_wbtest.mbt`。
 - [ ] **T3.3 基于代价的指令选择**：BURS 动态规划带真实代价模型，输出最小代价覆盖 + 最优性测试。
 
 **依赖与风险**：无外部依赖；纯 IR 层，可三后端一致验证。
@@ -311,8 +313,8 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 九 Serialization | T9.2 unknown field | ⬜ 待办 | — |
 | 九 Serialization | T9.3 跨实现互通 | ⬜ 待办 | — |
 | 九 Serialization | T9.4 packed/map | ⬜ 待办 | — |
-| 三 Codegen | T3.1 pass 流水线+验证器 | ⬜ 待办 | — |
-| 三 Codegen | T3.2 优化 pass 扩充 | ⬜ 待办 | — |
+| 三 Codegen | T3.1 pass 流水线+验证器 | ✅ 完成 | `src/codegen_infra/typed_passes.mbt`（`run_typed_pipeline_validated` 每遍前后 `validate_ir`）；PBT 见 `prop_typed_passes_wbtest.mbt` |
+| 三 Codegen | T3.2 优化 pass 扩充 | ✅ 完成 | 5 遍 `*_typed`（const-fold/algebraic/strength/dce/cse）各带 ≥100 迭代等价 PBT；`src/codegen_infra/typed_passes.mbt` |
 | 三 Codegen | T3.3 代价指令选择 | ⬜ 待办 | — |
 | 一 Mini_Compiler | T1.1 真·wasm 产物 | ⬜ 待办 | — |
 | 一 Mini_Compiler | T1.2 真·JS 产物 | ⬜ 待办 | — |

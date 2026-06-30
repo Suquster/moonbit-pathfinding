@@ -7,6 +7,8 @@ import {
 }
 
 // Values
+pub fn algebraic_simplify_typed(TypedFunction) -> TypedFunction
+
 pub fn allocate_coloring(InterferenceGraph, Int) -> Map[Var, Location]
 
 pub fn allocate_coloring_briggs(InterferenceGraph, Int, cost? : SpillCost) -> Map[Var, Location]
@@ -16,6 +18,8 @@ pub fn allocate_linear_scan(Array[LiveInterval], Int) -> Map[Var, Location]
 pub fn allocation_has_spill(Map[Var, Location]) -> Bool
 
 pub fn analyze_liveness(Array[BasicBlock]) -> LivenessResult
+
+pub fn apply_typed_pass(TypedFunction, TypedPass) -> TypedFunction
 
 pub fn build_dom_tree(Array[BasicBlock], entry~ : String) -> DomTree
 
@@ -37,9 +41,15 @@ pub let codegen_infra_name : String
 
 pub let codegen_infra_version : String
 
+pub fn const_fold_typed(TypedFunction) -> TypedFunction
+
 pub fn copy_prop_strong(SsaProgram) -> SsaProgram
 
+pub fn cse_typed(TypedFunction) -> TypedFunction
+
 pub fn dce_strong(SsaProgram) -> SsaProgram
+
+pub fn dce_typed(TypedFunction) -> TypedFunction
 
 pub fn demo_ir() -> IrNode
 
@@ -77,6 +87,12 @@ pub fn run_pipeline(SsaProgram, Array[OptPass]) -> SsaProgram
 
 pub fn run_to_fixpoint(SsaProgram, Array[OptPass], max_iters? : Int) -> SsaProgram
 
+pub fn run_typed_pipeline(TypedFunction, Array[TypedPass]) -> TypedFunction
+
+pub fn run_typed_pipeline_validated(TypedFunction, Array[TypedPass]) -> Result[TypedFunction, Array[IrError]]
+
+pub fn run_typed_to_fixpoint(TypedFunction, Array[TypedPass], max_iters? : Int) -> TypedFunction
+
 pub fn sccp(SsaProgram) -> SsaProgram
 
 pub fn select(Array[IselRule], IrNode) -> Array[TargetInstr]
@@ -86,6 +102,8 @@ pub fn select_burs(Array[CostRule], IrNode) -> Array[TargetInstr]
 pub fn sequentialize_parallel_copy(Array[(Var, Var)]) -> Array[(Var, Var)]
 
 pub fn spill_cost(InterferenceGraph, Array[LiveInterval]) -> SpillCost
+
+pub fn strength_reduce_typed(TypedFunction) -> TypedFunction
 
 pub fn tiling_cost(Array[CostRule], IrNode) -> Int
 
@@ -259,6 +277,15 @@ pub(all) enum TypedInstr {
 pub fn TypedInstr::defined_reg(Self) -> Int?
 pub fn TypedInstr::is_terminator(Self) -> Bool
 pub impl Show for TypedInstr
+
+pub(all) enum TypedPass {
+  ConstFold
+  AlgebraicSimplify
+  StrengthReduce
+  Dce
+  Cse
+} derive(Eq)
+pub impl Show for TypedPass
 
 pub(all) struct Var {
   id : Int

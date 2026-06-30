@@ -68,6 +68,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   （每遍前后 `validate_ir` 断言良构、非法输入返回 `Err`）；各遍带「优化前后
   可观察求值等价」PBT（≥100 迭代，以 `interp_ir` 为基准）
   (codegen 类型化优化遍：常量折叠/代数化简/强度削减/DCE/CSE + 验证型流水线 + 等价 PBT)
+- feat(logging): 真·OTLP 导出器（纲领方向七 T7.1）——`otlp_export_trace` 按
+  OTLP（OpenTelemetry Protocol）protobuf 线缆格式把 span 序列化为可被真实
+  collector 接收的 `ExportTraceServiceRequest` 字节，**复用方向九 @serialization
+  的 protobuf wire 编码**（`Message`/`FieldEntry`/`FieldValue`/`encode`/
+  `double_to_bits`）；新增 `OtlpSpanInput`、`otlp_span`、`otlp_any_value`、
+  `otlp_key_value`，字段编号逐一对齐 OTel proto（common/trace/resource v1）；
+  属性按键名升序物化保证三后端字节确定；以真实 protobuf 解码器逐字段往返的
+  PBT（≥100 迭代）验证
+  (logging 真·OTLP 导出器：span→protobuf 线缆字节 + 真解码器往返 PBT)
 - feat(dst): 新增可执行任务体（`SimContext`/`ExecutableTask`/`run_executable`）与
   `eventually` 最终性断言，复用确定性 `World`/`NetworkSim`/`SimClock`
   (确定性仿真可执行任务 / eventually)

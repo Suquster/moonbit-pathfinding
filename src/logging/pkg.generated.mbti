@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/logging"
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/serialization",
   "moonbitlang/core/debug",
 }
 
@@ -57,6 +58,14 @@ pub let logging_name : String
 pub let logging_version : String
 
 pub fn mix(UInt64, UInt64) -> UInt64
+
+pub fn otlp_any_value(Value) -> @serialization.Message
+
+pub fn otlp_export_trace(Array[OtlpSpanInput], resource_attrs? : Map[String, Value], scope_name? : String, scope_version? : String) -> Bytes
+
+pub fn otlp_key_value(String, Value) -> @serialization.Message
+
+pub fn otlp_span(OtlpSpanInput) -> @serialization.Message
 
 pub fn parse_env_filter(String) -> Result[EnvFilter, FilterError]
 
@@ -144,6 +153,12 @@ pub fn Level::from_label(String) -> Self?
 pub fn Level::is_enabled(Self, Self) -> Bool
 pub fn Level::label(Self) -> String
 pub fn Level::rank(Self) -> Int
+
+pub(all) struct OtlpSpanInput {
+  trace : TraceId
+  name : String
+  data : SpanData
+}
 
 pub(all) struct RateLimiter {
   window : Int64

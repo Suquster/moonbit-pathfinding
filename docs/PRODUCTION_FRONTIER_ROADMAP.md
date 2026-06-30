@@ -237,8 +237,10 @@ OTLP（OpenTelemetry Protocol）、W3C Trace Context、OTel 语义约定。
 **KPI 目标**：产出可被真实 OTel collector 接收的 OTLP 字节；OTel 数据模型逐字段对齐。
 
 **任务分解**（**突破** spec「不做真实导出/不接 async」非目标）：
-- [ ] **T7.1 真·OTLP 导出器**：按 OTLP（protobuf/JSON）线缆格式序列化 span，
-      **复用方向九 protobuf 编码**，产出可被真实 collector 接收的字节。
+- [x] **T7.1 真·OTLP 导出器** ✅：按 OTLP（OpenTelemetry Protocol）protobuf 线缆
+      格式序列化 span，**复用方向九 @serialization protobuf 编码**，产出可被真实
+      collector 接收的 `ExportTraceServiceRequest` 字节；字段编号逐一对齐 OTel
+      proto（common/trace/resource v1）。见 `src/logging/otlp_export.mbt`。
 - [ ] **T7.2 OTel 语义逐字段对齐**：span 属性/事件/链接/状态/资源与 OTel 数据模型对齐。
 - [ ] **T7.3 采样器对标**：父级采样、比例采样、限流采样的确定性实现与分布 PBT。
 - [ ] **T7.4 高基数性能**：大量 span/属性下格式化对总长度线性的 guard。
@@ -329,7 +331,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 六 Build | T6.1 内容寻址缓存 | ⬜ 待办 | — |
 | 六 Build | T6.2 关键路径调度 | ⬜ 待办 | — |
 | 六 Build | T6.3 鲁棒性回归 | ⬜ 待办 | — |
-| 七 Logging | T7.1 真·OTLP 导出器 | ⬜ 待办 | — |
+| 七 Logging | T7.1 真·OTLP 导出器 | ✅ 完成 | `src/logging/otlp_export.mbt`（`otlp_export_trace`/`otlp_span`/`otlp_any_value`，复用 @serialization protobuf wire 编码）；真实 protobuf 解码器逐字段往返 PBT（≥100 迭代）见 `otlp_export_test.mbt` |
 | 七 Logging | T7.2 OTel 逐字段对齐 | ⬜ 待办 | — |
 | 七 Logging | T7.3 采样器对标 | ⬜ 待办 | — |
 | 七 Logging | T7.4 高基数性能 | ⬜ 待办 | — |
@@ -350,7 +352,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 1. **方向二 Regex T2.1 字面量预过滤** —— 最自包含、最易量化提速、零外部依赖。**（进行中）**
 2. **方向九 Serialization T9.1 conformance 语料** —— 互通正确性，且为方向七 OTLP 铺路。
 3. **方向三 Codegen T3.1/T3.2 pass 流水线 + 优化** —— 纯 IR 层、强可验证。
-4. **方向七 Logging T7.1 真·OTLP 导出器** —— 复用方向九 protobuf 能力。
+4. **方向七 Logging T7.1 真·OTLP 导出器** —— 复用方向九 protobuf 能力。**（已完成）**
 5. **方向一 Mini_Compiler T1.1/T1.2 真·wasm/js 产物** —— 突破玩具边界。
 6. **方向四/五/六/八 依次推进**，各自独立 PR。
 7. **方向十 Actor T10.1 真·异步** —— 先核实上游 `moonbitlang/async`，不可用则协作式逼近。

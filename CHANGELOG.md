@@ -73,6 +73,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - perf: 消除 serialization / build_tool / regex_engine / parser_combinator /
   logging 五个方向的 O(n²) 循环字符串拼接，统一改用 `infra_text.TextBuilder`，
   并以逐字符等价性测试锁定输出不变 (消除五方向 O(n²) 拼接，输出逐字符等价)
+- test(graph): add negative/edge-case regressions for `CsrGraph::from_osm_edge_list`
+  (non-numeric/empty node id, unparseable/negative weight, short data row, header
+  skip) and `GraphRepr::neighbors` defensive clipping (short adjacency-matrix row,
+  CSR `col_idx`/`weights` length mismatch) (图方向负例/边界回归：OSM 解析结构化错误
+  与适配器畸形输入裁剪)
 
 ## [0.0.3] - 2026-06-10
 

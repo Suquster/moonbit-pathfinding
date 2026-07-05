@@ -417,11 +417,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   vs 泛型版（benches/results/indexed-fast-path-native-2026-07-05.md）。
 - Rust 对比同机重跑 ✅：moon_side 接入 indexed 快路径 + 4 叉编码堆 +
   可复用 SearchCtx/BfsCtx（generation 戳懒失效）+ 打包边单数组扫描 +
-  小整数权（≤1024）自动 Dial 桶队列后，golden 逐元素一致 + 12/12 用例
-  （n {1000,10000} × deg {4,16} × 3 算法）签名一致，**每用例中位加速比
-  中位数 0.2498× → 2.15×**（BFS 2.3-2.9×、Dijkstra 2.0-2.6×、A*
-  1.19-1.43×，全部快于 Rust `pathfinding` 4.11.0；
-  benches/results/rust-comparison-indexed-20260705.md）。
+  小整数权（≤1024）自动 Dial 桶队列（Dijkstra）+ 桶式 Dial A*（一致
+  启发式，f 循环桶 + overflow 超窗重分发）后，golden 逐元素一致 +
+  12/12 用例（n {1000,10000} × deg {4,16} × 3 算法）签名一致，**每用例
+  中位加速比中位数 0.2498× → 2.45×**（BFS 2.3-3.0×、Dijkstra 2.0-2.6×、
+  A* 2.0-2.8×，全部快于 Rust `pathfinding` 4.11.0；
+  benches/results/rust-comparison-indexed-20260705.md、
+  latest-rust-comparison.md）。
 
 ### E1 · 核心数据结构库 — 对标 Rust `std::collections` / `im`
 

@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_timer"
+
+// Values
+
+// Errors
+
+// Types and methods
+type TimerEntry
+
+pub struct TimerWheel {
+  wheels : Array[Array[Array[Int]]]
+  entries : Array[TimerEntry]
+  mut current_tick : Int
+  mut active_count : Int
+}
+pub fn TimerWheel::advance(Self) -> Array[Int]
+pub fn TimerWheel::advance_by(Self, Int) -> Array[Int]
+pub fn TimerWheel::cancel(Self, Int) -> Bool
+pub fn TimerWheel::new() -> Self
+pub fn TimerWheel::now(Self) -> Int
+pub fn TimerWheel::pending(Self) -> Int
+pub fn TimerWheel::schedule(Self, Int) -> Int
+
+// Type aliases
+
+// Traits
+

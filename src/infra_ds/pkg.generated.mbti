@@ -23,6 +23,20 @@ pub fn[K, V] BTreeMap::to_array(Self[K, V]) -> Array[(K, V)]
 
 type Container
 
+type HNode[K, V]
+
+pub struct HamtMap[K, V] {
+  root : HNode[K, V]?
+  size : Int
+}
+pub fn[K : Eq + Hash, V] HamtMap::contains(Self[K, V], K) -> Bool
+pub fn[K : Eq + Hash, V] HamtMap::get(Self[K, V], K) -> V?
+pub fn[K : Eq + Hash, V] HamtMap::insert(Self[K, V], K, V) -> Self[K, V]
+pub fn[K, V] HamtMap::length(Self[K, V]) -> Int
+pub fn[K, V] HamtMap::new() -> Self[K, V]
+pub fn[K : Eq + Hash, V] HamtMap::remove(Self[K, V], K) -> Self[K, V]
+pub fn[K, V] HamtMap::to_array(Self[K, V]) -> Array[(K, V)]
+
 pub struct RoaringBitmap {
   chunk_keys : Array[Int]
   containers : Array[Container]

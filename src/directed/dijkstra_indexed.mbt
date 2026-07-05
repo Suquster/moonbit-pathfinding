@@ -141,6 +141,7 @@ pub struct SearchCtx {
   heap : EncodedHeap
   bkt : Array[Array[Int64]]
   ov : Array[Int64]
+  rheap : RadixHeap
 }
 
 ///|
@@ -155,6 +156,7 @@ pub fn SearchCtx::new(n : Int) -> SearchCtx {
     heap: EncodedHeap::new(16),
     bkt: [],
     ov: [],
+    rheap: RadixHeap::new(),
   }
 }
 
@@ -274,8 +276,8 @@ pub fn dijkstra_indexed_ctx(
   let dist = ctx.dist
   let parent = ctx.parent
   let stamp = ctx.stamp
-  let heap = ctx.heap
-  heap.len = 0
+  let heap = ctx.rheap
+  heap.reset(0L)
   let inf = 0x3FFF_FFFF_FFFFL
   dist[start] = 0L
   stamp[start] = gen
@@ -973,10 +975,10 @@ fn astar_biheap_ctx(
   let sb = ctx_b.stamp
   let cf = ctx_f.closed
   let cb = ctx_b.closed
-  let hf = ctx_f.heap
-  let hb = ctx_b.heap
-  hf.len = 0
-  hb.len = 0
+  let hf = ctx_f.rheap
+  let hb = ctx_b.rheap
+  hf.reset(0L)
+  hb.reset(0L)
   df[start] = 0L
   sf[start] = gf
   pf[start] = -1
@@ -988,8 +990,8 @@ fn astar_biheap_ctx(
   let mut mu = INF_DIST
   let mut meet = -1
   while hf.len > 0 && hb.len > 0 {
-    let ff = hf.data[0] >> NODE_BITS
-    let fb = hb.data[0] >> NODE_BITS
+    let ff = hf.peek() >> NODE_BITS
+    let fb = hb.peek() >> NODE_BITS
     // 两侧堆顶 f 均 ≥ μ 时后续弹出全被剪枝，直接终止。
     if meet >= 0 && ff >= mu && fb >= mu {
       break
@@ -1099,8 +1101,8 @@ pub fn astar_indexed_ctx(
   let parent = ctx.parent
   let stamp = ctx.stamp
   let closed = ctx.closed
-  let heap = ctx.heap
-  heap.len = 0
+  let heap = ctx.rheap
+  heap.reset(0L)
   let inf = 0x3FFF_FFFF_FFFFL
   dist[start] = 0L
   stamp[start] = gen

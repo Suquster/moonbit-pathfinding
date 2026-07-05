@@ -16,7 +16,7 @@
 /// 同形（line / col / offset），供失败诊断携带稳定定位信息：
 ///   * `line` —— 1 起始的行号；
 ///   * `col`  —— 1 起始的列号；
-///   * `offset` —— 0 起始的字符偏移（用于在 `Input` 中索引）。
+///   * `offset` —— 0 起始的 UTF-16 码元偏移（用于在 `Input` 中索引）。
 pub struct Pos {
   line : Int
   col : Int
@@ -38,58 +38,58 @@ pub fn Pos::start() -> Pos {
 ///|
 /// 解析输入（immutable parse input）。
 ///
-/// 持有一份不可变的字符序列与当前游标位置 `pos`。所有推进操作（`advance`）
-/// 都返回**新的** `Input`，绝不就地修改，从而天然支持任务 5.2 的回溯
-/// （backtracking）：分支失败时只需丢弃新 `Input`、退回旧 `Input` 即可。
+/// 零拷贝（zero-copy）：直接持有不可变源字符串 `source` 并以 UTF-16 码元
+/// 偏移定位游标，构造与推进均不复制、不物化字符数组。所有推进操作
+/// （`advance`）都返回**新的** `Input`，绝不就地修改，从而天然支持任务 5.2
+/// 的回溯（backtracking）：分支失败时只需丢弃新 `Input`、退回旧 `Input` 即可。
 ///
-/// `chars` 在各 `Input` 之间按引用共享（只读，永不修改），游标位置 `pos`
+/// `source` 在各 `Input` 之间按引用共享（只读，永不修改），游标位置 `pos`
 /// 才是区分不同解析进度的唯一状态。
 pub struct Input {
-  chars : Array[Char]
+  source : String
   pos : Pos
 }
 
 ///|
-/// 从字符串构造解析输入，游标置于起始位置。
+/// 从字符串构造解析输入，游标置于起始位置。零拷贝：仅持有源字符串引用，
+/// 不做任何字符物化（O(1)，与输入长度无关）。
 pub fn Input::from_string(source : String) -> Input {
-  { chars: source.iter().to_array(), pos: Pos::start() }
+  { source, pos: Pos::start() }
 }
 
 ///|
 /// 当前游标是否已抵达输入末尾（end-of-input）。
 pub fn Input::is_eof(self : Input) -> Bool {
-  self.pos.offset >= self.chars.length()
+  self.pos.offset >= self.source.length()
 }
 
 ///|
 /// 查看当前游标处的字符而不消费；抵达末尾时返回 `None`。
 pub fn Input::peek(self : Input) -> Char? {
-  if self.pos.offset < self.chars.length() {
-    Some(self.chars[self.pos.offset])
-  } else {
-    None
-  }
+  self.source.get_char(self.pos.offset)
 }
 
 ///|
 /// 返回游标前进一个字符后的新 `Input`（不修改自身）。
 ///
 /// 行列号随之更新：遇到换行 `'\n'` 则行号 +1、列号复位为 1；否则列号 +1。
+/// 偏移按该字符占用的 UTF-16 码元数推进（BMP 内 1、增补平面 2）。
 /// 已在末尾时原样返回（幂等地停在 EOF）。
 pub fn Input::advance(self : Input) -> Input {
   match self.peek() {
     None => self
     Some(c) => {
+      let width = if c.to_int() > 0xFFFF { 2 } else { 1 }
       let next_pos = if c == '\n' {
-        { line: self.pos.line + 1, col: 1, offset: self.pos.offset + 1 }
+        { line: self.pos.line + 1, col: 1, offset: self.pos.offset + width }
       } else {
         {
           line: self.pos.line,
           col: self.pos.col + 1,
-          offset: self.pos.offset + 1,
+          offset: self.pos.offset + width,
         }
       }
-      { chars: self.chars, pos: next_pos }
+      { source: self.source, pos: next_pos }
     }
   }
 }

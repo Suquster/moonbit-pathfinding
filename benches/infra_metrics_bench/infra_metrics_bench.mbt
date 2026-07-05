@@ -97,3 +97,93 @@ test "bench: hdr histogram streaming p999 vs naive sort quantile" (b : @bench.T)
     })
   }
 }
+
+///|
+test "bench: span tracer incremental agg vs naive event replay per query" (
+  b : @bench.T,
+) {
+  // 负载：n 个 start/end 事件（确定性随机嵌套 ≤12 层、6 个名字），
+  // 每 64 个事件查询一次全部名字的 (count,total,self) 聚合。
+  // tracer 侧结束点即时结算、查询 O(名字数)；朴素侧只存事件日志、
+  // 每次查询全量回放 O(已有事件数)。
+  for n in [8000, 32000, 128000] {
+    b.bench(name="span_tracer_incremental_\{n}", fn() {
+      let t = @mx.SpanTracer::new()
+      let mut acc = 0L
+      let mut s = 20260718UL
+      let mut now = 0L
+      let mut depth = 0
+      for i in 0..<n {
+        s = xorshift(s)
+        now = now + 1L + (s % 40UL).reinterpret_as_int64()
+        if depth == 0 || (depth < 12 && (s & 1UL) == 0UL) {
+          let _ = t.start("op\{(s % 6UL).to_int()}", now)
+          depth = depth + 1
+        } else {
+          let _ = t.end(now)
+          depth = depth - 1
+        }
+        if i % 64 == 63 {
+          for k in 0..<6 {
+            match t.stat("op\{k}") {
+              Some((c, tt, ss)) => acc = acc + c.to_int64() + tt + ss
+              None => ()
+            }
+          }
+        }
+      }
+      b.keep(acc)
+    })
+    b.bench(name="naive_replay_per_query_\{n}", fn() {
+      let events : Array[(Bool, Int, Int64)] = []
+      let mut acc = 0L
+      let mut s = 20260718UL
+      let mut now = 0L
+      let mut depth = 0
+      for i in 0..<n {
+        s = xorshift(s)
+        now = now + 1L + (s % 40UL).reinterpret_as_int64()
+        if depth == 0 || (depth < 12 && (s & 1UL) == 0UL) {
+          events.push((true, (s % 6UL).to_int(), now))
+          depth = depth + 1
+        } else {
+          events.push((false, 0, now))
+          depth = depth - 1
+        }
+        if i % 64 == 63 {
+          // 全量回放重建聚合。
+          let count : Array[Int64] = Array::make(6, 0L)
+          let total : Array[Int64] = Array::make(6, 0L)
+          let selfs : Array[Int64] = Array::make(6, 0L)
+          let stack_name : Array[Int] = []
+          let stack_start : Array[Int64] = []
+          let stack_child : Array[Int64] = []
+          for ev in events {
+            let (is_start, nm, ts) = ev
+            if is_start {
+              stack_name.push(nm)
+              stack_start.push(ts)
+              stack_child.push(0L)
+            } else if stack_name.length() > 0 {
+              let nm2 = stack_name.unsafe_pop()
+              let st = stack_start.unsafe_pop()
+              let child = stack_child.unsafe_pop()
+              let tt = ts - st
+              if stack_child.length() > 0 {
+                let k = stack_child.length() - 1
+                stack_child[k] = stack_child[k] + tt
+              }
+              count[nm2] = count[nm2] + 1L
+              total[nm2] = total[nm2] + tt
+              selfs[nm2] = selfs[nm2] + (tt - child)
+            }
+          }
+          for k in 0..<6 {
+            acc = acc + count[k] + total[k] + selfs[k]
+          }
+        }
+      }
+      b.keep(acc)
+    })
+  }
+}

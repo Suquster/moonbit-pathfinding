@@ -36,6 +36,30 @@ pub fn HdrHistogram::new(Int) -> Self
 pub fn HdrHistogram::record(Self, Int64) -> Unit
 pub fn HdrHistogram::value_at_percentile(Self, Double) -> Int64?
 
+type SpanAgg
+
+type SpanRec
+
+pub struct SpanTracer {
+  spans : Array[SpanRec]
+  stack : Array[Int]
+  roots : Array[Int]
+  agg : Map[String, SpanAgg]
+  mut finished : Int
+}
+pub fn SpanTracer::active_depth(Self) -> Int
+pub fn SpanTracer::children_of(Self, Int) -> Array[Int]
+pub fn SpanTracer::end(Self, Int64) -> Int
+pub fn SpanTracer::finished_count(Self) -> Int
+pub fn SpanTracer::new() -> Self
+pub fn SpanTracer::root_spans(Self) -> Array[Int]
+pub fn SpanTracer::span_name(Self, Int) -> String?
+pub fn SpanTracer::span_self(Self, Int) -> Int64?
+pub fn SpanTracer::span_total(Self, Int) -> Int64?
+pub fn SpanTracer::start(Self, String, Int64) -> Int
+pub fn SpanTracer::stat(Self, String) -> (Int, Int64, Int64)?
+pub fn SpanTracer::stat_names(Self) -> Array[String]
+
 // Type aliases
 
 // Traits

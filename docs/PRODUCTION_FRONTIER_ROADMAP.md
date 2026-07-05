@@ -464,8 +464,14 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 - 定精度直方图 ✅ 已落地：`src/infra_metrics/hdr_histogram.mbt`
   （Gene Tene HdrHistogram：指数段 + 2^p 线性子桶纯位运算索引，相对误差 ≤ 2^-p，
   固定内存），误差界证明式 PBT 60 迭代三后端全绿；n=32000 流式 p99.9 基准 217.8×。
-- metrics 后续批次：tracing span 树。
-- KPI：sketch 误差界有证明式测试（✅ 已达）；聚合吞吐数量级优于全量排序求分位（✅ 56.1×）。
+- tracing span 树 ✅ 已落地：`src/infra_metrics/span_tracer.mbt`
+  （对标 OpenTelemetry span 管线 + pprof 火焰聚合：活动栈隐式父子
+  O(1)/事件，结束点即时结算 total/self 并按名增量聚合，查询与 trace
+  规模无关；确定性时钟约定同 DST），与朴素事件回放差分 PBT 200 迭代 +
+  嵌套结算/多根/未结束定向三后端全绿；高频聚合查询基准 n=128000
+  **66.6×** vs 每查询全量回放
+  （benches/results/infra-metrics-span-tracer-e5-native-2026-07-05.md）。
+- KPI：sketch 误差界有证明式测试（✅ 已达）；聚合吞吐数量级优于全量排序求分位（✅ 56.1×）；span 树增量聚合数量级优于回放（✅ 66.6×）。
 
 #### E3 已落地批次
 

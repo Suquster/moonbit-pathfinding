@@ -94,6 +94,53 @@ test "bench: rope random edits vs naive string rebuild (doc=65536, edits=512)" (
 }
 
 ///|
+test "bench: rope line/col index vs naive full scan (doc=1M, 256 queries)" (
+  b : @bench.T,
+) {
+  // 百万码元、每 80 码元一个换行的文档。
+  let sb = StringBuilder::new()
+  for i in 0..<1_000_000 {
+    if i % 80 == 79 {
+      sb.write_char('\n')
+    } else {
+      sb.write_char((97 + i % 26).unsafe_to_char())
+    }
+  }
+  let doc = sb.to_string()
+  let r = @text.Rope::from_string(doc)
+  // 确定性查询偏移。
+  let offs : Array[Int] = []
+  let mut seed = 7UL
+  for _ in 0..<256 {
+    seed = xorshift(seed)
+    offs.push((seed % 1_000_000UL).to_int())
+  }
+  b.bench(name="rope_line_col_1m_x256", fn() {
+    let mut acc = 0
+    for off in offs {
+      let (line, col) = r.line_col_at(off)
+      acc = acc + line + col
+    }
+    b.keep(acc)
+  })
+  b.bench(name="naive_line_col_1m_x256", fn() {
+    let mut acc = 0
+    for off in offs {
+      let mut line = 0
+      let mut start = 0
+      for j in 0..<off {
+        if doc.at(j).to_int() == 10 {
+          line = line + 1
+          start = j + 1
+        }
+      }
+      acc = acc + line + (off - start)
+    }
+    b.keep(acc)
+  })
+}
+
+///|
 test "bench: myers diff vs O(NM) DP on similar text (n=4096, k=8 edits)" (
   b : @bench.T,
 ) {

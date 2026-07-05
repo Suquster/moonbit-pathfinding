@@ -29,6 +29,22 @@
 - 最小性由差分 PBT 锁定（120 迭代 `diff_edit_cost == lcs_dp_cost`）；
   round-trip（apply==b、source==a）200 迭代；编辑受限性质（k 次变异 ⇒ D ≤ 2k）60 迭代。
 
+## 批次 2 · 编辑器级索引（xi-editor metric 体系）
+
+- 每节点缓存 (UTF-16 码元数, UTF-8 字节数, 换行数)，孤立代理项按 WTF-8 计
+  3 字节；UTF-8↔UTF-16 偏移双向转换、行列定位、行首偏移均
+  O(log n + 叶内扫描)。
+
+| 负载 | Rope 索引 | 朴素全扫描 | 倍率 |
+|---|---|---|---|
+| line_col_at（doc=1M 码元，256 查询） | 142.39 µs ± 10.13 µs | 81.20 ms ± 6.03 ms | **570×** |
+
+- 度量维护后 rope 编辑基准为 1.62 ms（vs 朴素 44.08 ms，**27.2×**）——
+  维持数量级优势的同时换来 O(log n) 全套编辑器索引。
+- 差分 PBT：随机编辑后 utf16_to_utf8/utf8_to_utf16 round-trip、line_col_at、
+  offset_of_line、utf8_len 与朴素全扫描逐点一致 200 迭代
+  （负载含换行/2B/3B/4B 代理对字符）；1B/2B/3B/4B/换行定向锁定。
+
 ## 验证
 
 - 三后端（native / wasm-gc / js）2097 测试全绿、`moon check` 0 告警。

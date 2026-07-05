@@ -353,8 +353,122 @@ pub fn astar_indexed(
 }
 
 ///|
+/// 桶式 A*（小整数边权 + 一致启发式专用）：f = g + h 落 Dial 循环桶，
+/// 一致性保证弹出 f 单调不减；f 增量超窗（> max_weight，一般有向图
+/// 下 h 落差可致）的条目进 overflow，窗口推进整圈时再重分发——正确性
+/// 不依赖增量上界。无堆无比较。
+fn astar_dial_ctx(
+  g : WeightedCsr,
+  ctx : SearchCtx,
+  start : Int,
+  target : Int,
+  h : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  ctx.gen = ctx.gen + 1
+  let gen = ctx.gen
+  let dist = ctx.dist
+  let parent = ctx.parent
+  let stamp = ctx.stamp
+  let closed = ctx.closed
+  let m = g.max_weight + 1
+  let m64 = m.to_int64()
+  let buckets : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
+  let overflow : Array[Int64] = []
+  dist[start] = 0L
+  stamp[start] = gen
+  parent[start] = -1
+  let f0 = h(start).to_int64()
+  let mut d = f0 // 当前扫描的 f 值
+  let mut window_end = f0 + m64 // 桶窗口 [d, window_end)
+  buckets[(f0 % m64).to_int()].push((f0 << NODE_BITS) | start.to_int64())
+  let mut pending = 1
+  while pending > 0 {
+    if d >= window_end {
+      // 窗口推进整圈：把 overflow 中落入新窗口的条目重分发。
+      // 若剩余条目全在 overflow 且都超窗，直接把窗口跳到最小 f，
+      // 避免逐 d 空扫。
+      if overflow.length() == pending && overflow.length() > 0 {
+        let mut fmin = overflow[0] >> NODE_BITS
+        for w in 1..<overflow.length() {
+          let f = overflow[w] >> NODE_BITS
+          if f < fmin {
+            fmin = f
+          }
+        }
+        if fmin > d {
+          d = fmin
+        }
+      }
+      window_end = d + m64
+      let mut w = 0
+      while w < overflow.length() {
+        let enc = overflow[w]
+        if enc >> NODE_BITS < window_end {
+          buckets[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+          let last = overflow.length() - 1
+          overflow[w] = overflow[last]
+          overflow.pop() |> ignore
+        } else {
+          w = w + 1
+        }
+      }
+    }
+    let b = buckets[(d % m64).to_int()]
+    let mut bi = 0
+    while bi < b.length() {
+      let enc = b[bi]
+      bi = bi + 1
+      pending = pending - 1
+      let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+      if closed[u] == gen {
+        continue
+      }
+      closed[u] = gen
+      let du = dist[u]
+      if u == target {
+        let path = [u]
+        let mut node = u
+        while node != start {
+          node = parent[node]
+          path.push(node)
+        }
+        path.rev_in_place()
+        return Some((path, du.to_int()))
+      }
+      let stop = g.offsets[u + 1]
+      for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+        let pe = g.packed[ei]
+        let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+        let nd = du + (pe >> NODE_BITS)
+        let dv = if stamp[v] == gen { dist[v] } else { INF_DIST }
+        if nd < dv {
+          dist[v] = nd
+          stamp[v] = gen
+          parent[v] = u
+          let nf = nd + h(v).to_int64()
+          let nenc = (nf << NODE_BITS) | v.to_int64()
+          if nf < window_end {
+            buckets[(nf % m64).to_int()].push(nenc)
+          } else {
+            overflow.push(nenc)
+          }
+          pending = pending + 1
+        }
+      }
+    }
+    b.clear()
+    d = d + 1L
+  }
+  None
+}
+
+///|
+const INF_DIST : Int64 = 0x3FFF_FFFF_FFFFL
+
+///|
 /// 复用上下文的 A*（要求 `h` 一致/单调，consistent；批量查询时免
 /// 每次 O(n) 数组初始化，弹出时用 closed 戳代替 h(u) 重算）。
+/// 小整数边权（≤ 1024）自动切换桶式 Dial 变体。
 /// 上下文容量必须 ≥ 图节点数。
 pub fn astar_indexed_ctx(
   g : WeightedCsr,
@@ -366,6 +480,9 @@ pub fn astar_indexed_ctx(
   let n = g.node_count()
   if start < 0 || start >= n || target < 0 || target >= n {
     return None
+  }
+  if g.max_weight <= DIAL_MAX_W && g.max_weight > 0 {
+    return astar_dial_ctx(g, ctx, start, target, h)
   }
   ctx.gen = ctx.gen + 1
   let gen = ctx.gen

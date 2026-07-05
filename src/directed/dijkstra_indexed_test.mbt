@@ -210,3 +210,55 @@ test "dijkstra_indexed_ctx Dial vs heap paths agree on large weights (60 iterati
     }
   }
 }
+
+///|
+test "astar_indexed_ctx bucket path with perfect (consistent) heuristic PBT (80 iterations)" {
+  // 完美启发式 h(v) = dist(v, t)（一致），走桶式 Dial A* 路径；
+  // 与无 ctx 堆版 astar_indexed 差分。
+  let rng = @infra_pbt.rng_new(0xBEEF_A5UL)
+  for _iter in 0..<80 {
+    let n = 2 + rng.next_below(40)
+    let edges : Array[(Int, Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v, 1 + rng.next_below(50)))
+    }
+    let g = @directed.WeightedCsr::from_edges(n, edges)
+    let t = rng.next_below(n)
+    // 反图上从 t 跑 Dijkstra 得每点到 t 的真实距离（完美一致启发式）。
+    let redges : Array[(Int, Int, Int)] = []
+    for e in edges {
+      let (u, v, w) = e
+      redges.push((v, u, w))
+    }
+    let rg = @directed.WeightedCsr::from_edges(n, redges)
+    let hdist : Array[Int] = Array::make(n, 0)
+    for v in 0..<n {
+      match @directed.dijkstra_indexed(rg, t, v) {
+        Some((_, c)) => hdist[v] = c
+        // 不可达节点只可能连向不可达节点（否则它就可达），
+        // 大常数在这类节点间仍满足一致性 h(u) ≤ w + h(v)。
+        None => hdist[v] = 1000000
+      }
+    }
+    let ctx = @directed.SearchCtx::new(n)
+    for _q in 0..<6 {
+      let s = rng.next_below(n)
+      let a = @directed.astar_indexed_ctx(g, ctx, s, t, fn(v) { hdist[v] })
+      let b = @directed.astar_indexed(g, s, t, fn(v) { hdist[v] })
+      match (a, b) {
+        (Some((pa, ca)), Some((_, cb))) => {
+          assert_eq(ca, cb)
+          assert_eq(pa[0], s)
+          assert_eq(pa[pa.length() - 1], t)
+        }
+        (None, None) => ()
+        _ => abort("bucket/heap astar reachability mismatch")
+      }
+    }
+  }
+}

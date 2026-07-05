@@ -66,3 +66,38 @@ test "bfs_indexed differential PBT vs generic Map-based (150 iterations)" {
     }
   }
 }
+
+///|
+test "bfs_indexed_ctx differential PBT vs bfs_indexed (120 iterations, ctx reused)" {
+  let rng = @infra_pbt.rng_new(0xC7_B0F5UL)
+  for _iter in 0..<120 {
+    let n = 2 + rng.next_below(50)
+    let edges : Array[(Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v))
+    }
+    let g = @unweighted.CsrGraph::from_edges(n, edges)
+    let ctx = @unweighted.BfsCtx::new(n)
+    // 同一 ctx 连续复用多条查询：generation 戳必须彻底隔离前后查询状态。
+    for _q in 0..<10 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @unweighted.bfs_indexed_ctx(g, ctx, s, t)
+      let b = @unweighted.bfs_indexed(g, s, t)
+      match (a, b) {
+        (Some(pa), Some(pb)) => {
+          assert_eq(pa.length(), pb.length())
+          assert_eq(pa[0], s)
+          assert_eq(pa[pa.length() - 1], t)
+        }
+        (None, None) => ()
+        _ => abort("ctx/plain reachability mismatch")
+      }
+    }
+  }
+}

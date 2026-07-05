@@ -80,10 +80,11 @@ fn bfs_signatures(
   g : @unweighted.CsrGraph,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
+  let ctx = @unweighted.BfsCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @unweighted.bfs_indexed(g, s, t)
+    let res = @unweighted.bfs_indexed_ctx(g, ctx, s, t)
     match res {
       Some(path) => out.push(path.length() - 1)
       None => out.push(-1)
@@ -98,10 +99,11 @@ fn dijkstra_signatures(
   g : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
+  let ctx = @directed.SearchCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.dijkstra_indexed(g, s, t)
+    let res = @directed.dijkstra_indexed_ctx(g, ctx, s, t)
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)
@@ -117,10 +119,11 @@ fn astar_signatures(
   g : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
+  let ctx = @directed.SearchCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.astar_indexed(g, s, t, fn(_node) { 0 })
+    let res = @directed.astar_indexed_ctx(g, ctx, s, t, fn(_node) { 0 })
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)

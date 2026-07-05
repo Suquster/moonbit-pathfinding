@@ -10,6 +10,8 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(N, (N) -> Array[(N, W)],
 
 pub fn astar_indexed(WeightedCsr, Int, Int, (Int) -> Int) -> (Array[Int], Int)?
 
+pub fn astar_indexed_ctx(WeightedCsr, SearchCtx, Int, Int, (Int) -> Int) -> (Array[Int], Int)?
+
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(Array[N], Array[(N, N, W)], N) -> Result[Map[N, W], @core.PathError]
 
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_paths(Array[N], Array[(N, N, W)], N) -> Result[ShortestPathTree[N, W], @core.PathError]
@@ -29,6 +31,8 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra_all(N, (N) -> Array[(N, W)]) -> ShortestPathTree[N, W]
 
 pub fn dijkstra_indexed(WeightedCsr, Int, Int) -> (Array[Int], Int)?
+
+pub fn dijkstra_indexed_ctx(WeightedCsr, SearchCtx, Int, Int) -> (Array[Int], Int)?
 
 pub fn[N : Eq + Hash] dinic(Array[N], Map[(N, N), Int], N, N) -> Int
 
@@ -70,6 +74,17 @@ pub struct Condensation[N] {
   dag_edges : Array[(Int, Int)]
 }
 
+type EncodedHeap
+
+pub struct SearchCtx {
+  dist : Array[Int64]
+  parent : Array[Int]
+  stamp : Array[Int]
+  mut gen : Int
+  heap : EncodedHeap
+}
+pub fn SearchCtx::new(Int) -> Self
+
 pub struct ShortestPathTree[N, W] {
   source : N
   dist : Map[N, W]
@@ -82,6 +97,8 @@ pub struct WeightedCsr {
   offsets : Array[Int]
   targets : Array[Int]
   weights : Array[Int]
+  packed : Array[Int64]
+  max_weight : Int
 }
 pub fn WeightedCsr::from_edges(Int, Array[(Int, Int, Int)]) -> Self
 pub fn WeightedCsr::node_count(Self) -> Int

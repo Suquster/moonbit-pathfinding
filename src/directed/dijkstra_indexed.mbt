@@ -13,6 +13,10 @@ pub struct WeightedCsr {
   offsets : Array[Int]
   targets : Array[Int]
   weights : Array[Int]
+  /// 打包边：(weight << 21) | target——边扫描单数组顺序读，减半访存。
+  packed : Array[Int64]
+  /// 最大边权（用于 Dial 桶队列适用性判断）。
+  max_weight : Int
 }
 
 ///|
@@ -36,13 +40,19 @@ pub fn WeightedCsr::from_edges(
   }
   let targets = Array::make(edges.length(), 0)
   let weights = Array::make(edges.length(), 0)
+  let packed = Array::make(edges.length(), 0L)
+  let mut max_weight = 0
   for e in edges {
     let (u, v, w) = e
     targets[cursor[u]] = v
     weights[cursor[u]] = w
+    packed[cursor[u]] = (w.to_int64() << NODE_BITS) | v.to_int64()
     cursor[u] = cursor[u] + 1
+    if w > max_weight {
+      max_weight = w
+    }
   }
-  { offsets, targets, weights }
+  { offsets, targets, weights, packed, max_weight }
 }
 
 ///|
@@ -55,7 +65,7 @@ pub fn WeightedCsr::node_count(self : WeightedCsr) -> Int {
 /// 编码堆：Int64 键 = (优先级 << 21) | node（node < 2^21）。
 /// 4 叉堆（更浅、缓存更友好）、单数组、无装箱、siftup/siftdown 手写、
 /// 上滤/下滤用「持洞」写法（每层一次赋值，避免三步交换）。
-priv struct EncodedHeap {
+struct EncodedHeap {
   data : Array[Int64]
   mut len : Int
 }
@@ -120,6 +130,163 @@ fn EncodedHeap::pop(self : EncodedHeap) -> Int64 {
 const NODE_BITS : Int = 21
 
 ///|
+/// 可复用搜索上下文：dist/parent/代戳数组只分配一次，跨查询用
+/// generation 戳懒失效（免去每查询 O(n) 清零——批量查询的主开销之一）。
+pub struct SearchCtx {
+  dist : Array[Int64]
+  parent : Array[Int]
+  stamp : Array[Int]
+  mut gen : Int
+  heap : EncodedHeap
+}
+
+///|
+/// 为节点数 n 的图创建可复用上下文。
+pub fn SearchCtx::new(n : Int) -> SearchCtx {
+  {
+    dist: Array::make(n, 0L),
+    parent: Array::make(n, -1),
+    stamp: Array::make(n, 0),
+    gen: 0,
+    heap: EncodedHeap::new(16),
+  }
+}
+
+///|
+/// Dial 桶队列适用上限：最大边权 ≤ 此值时 `dijkstra_indexed_ctx`
+/// 自动切换 Dial（Dial 1969，O(E + D) D=最远结算距离）。
+const DIAL_MAX_W : Int = 1024
+
+///|
+/// Dial 桶队列 Dijkstra（小整数边权专用）：C+1 个循环桶按 tentative
+/// 距离取模散列，逐距离推进；无堆、无比较，O(E + D)。语义与
+/// `dijkstra_indexed` 一致，由差分 PBT 守卫。
+fn dial_indexed_ctx(
+  g : WeightedCsr,
+  ctx : SearchCtx,
+  start : Int,
+  target : Int,
+) -> (Array[Int], Int)? {
+  ctx.gen = ctx.gen + 1
+  let gen = ctx.gen
+  let dist = ctx.dist
+  let parent = ctx.parent
+  let stamp = ctx.stamp
+  let m = g.max_weight + 1
+  let buckets : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
+  dist[start] = 0L
+  stamp[start] = gen
+  parent[start] = -1
+  buckets[0].push(start)
+  let mut pending = 1
+  let mut d = 0L
+  let inf = 0x3FFF_FFFF_FFFFL
+  while pending > 0 {
+    let b = buckets[(d % m.to_int64()).to_int()]
+    // 用下标推进：零权边可能在处理中向当前桶追加。
+    let mut bi = 0
+    while bi < b.length() {
+      let u = b[bi]
+      bi = bi + 1
+      pending = pending - 1
+      if dist[u] != d {
+        continue // 陈旧条目（已被更小 tentative 距离取代）
+      }
+      if u == target {
+        let path = [u]
+        let mut node = u
+        while node != start {
+          node = parent[node]
+          path.push(node)
+        }
+        path.rev_in_place()
+        return Some((path, d.to_int()))
+      }
+      let stop = g.offsets[u + 1]
+      for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+        let pe = g.packed[ei]
+        let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+        let nd = d + (pe >> NODE_BITS)
+        let dv = if stamp[v] == gen { dist[v] } else { inf }
+        if nd < dv {
+          dist[v] = nd
+          stamp[v] = gen
+          parent[v] = u
+          buckets[(nd % m.to_int64()).to_int()].push(v)
+          pending = pending + 1
+        }
+      }
+    }
+    b.clear()
+    d = d + 1L
+  }
+  None
+}
+
+///|
+/// 复用上下文的 Dijkstra（语义与 `dijkstra_indexed` 一致；批量查询时
+/// 免每次 O(n) 数组初始化）。小整数边权（≤ 1024）自动切换 Dial 桶
+/// 队列，否则走 4 叉编码堆。上下文的容量必须 ≥ 图节点数。
+pub fn dijkstra_indexed_ctx(
+  g : WeightedCsr,
+  ctx : SearchCtx,
+  start : Int,
+  target : Int,
+) -> (Array[Int], Int)? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  if g.max_weight <= DIAL_MAX_W && g.max_weight > 0 {
+    return dial_indexed_ctx(g, ctx, start, target)
+  }
+  ctx.gen = ctx.gen + 1
+  let gen = ctx.gen
+  let dist = ctx.dist
+  let parent = ctx.parent
+  let stamp = ctx.stamp
+  let heap = ctx.heap
+  heap.len = 0
+  let inf = 0x3FFF_FFFF_FFFFL
+  dist[start] = 0L
+  stamp[start] = gen
+  parent[start] = -1
+  heap.push(start.to_int64())
+  while heap.len > 0 {
+    let enc = heap.pop()
+    let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+    let du = dist[u]
+    if enc >> NODE_BITS > du {
+      continue
+    }
+    if u == target {
+      let path = [u]
+      let mut node = u
+      while node != start {
+        node = parent[node]
+        path.push(node)
+      }
+      path.rev_in_place()
+      return Some((path, du.to_int()))
+    }
+    let stop = g.offsets[u + 1]
+    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+      let pe = g.packed[ei]
+      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+      let nd = du + (pe >> NODE_BITS)
+      let dv = if stamp[v] == gen { dist[v] } else { inf }
+      if nd < dv {
+        dist[v] = nd
+        stamp[v] = gen
+        parent[v] = u
+        heap.push((nd << NODE_BITS) | v.to_int64())
+      }
+    }
+  }
+  None
+}
+
+///|
 /// 稠密整数节点 Dijkstra：`start` 到 `target` 的最小代价路径。
 /// 扁平 dist/parent 数组 + 编码二叉堆（懒删除），无哈希无装箱。
 /// 要求：节点数 < 2^21、边权非负、总代价 < 2^42。
@@ -158,8 +325,9 @@ pub fn dijkstra_indexed(
     }
     let stop = g.offsets[u + 1]
     for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
-      let v = g.targets[ei]
-      let nd = du + g.weights[ei].to_int64()
+      let pe = g.packed[ei]
+      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+      let nd = du + (pe >> NODE_BITS)
       if nd < dist[v] {
         dist[v] = nd
         parent[v] = u
@@ -180,6 +348,68 @@ pub fn astar_indexed(
   h : (Int) -> Int,
 ) -> (Array[Int], Int)? {
   astar_indexed_h(g, start, target, h)
+}
+
+///|
+/// 复用上下文的 A*（语义与 `astar_indexed` 一致；批量查询时免每次
+/// O(n) 数组初始化）。上下文的容量必须 ≥ 图节点数。
+pub fn astar_indexed_ctx(
+  g : WeightedCsr,
+  ctx : SearchCtx,
+  start : Int,
+  target : Int,
+  h : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  ctx.gen = ctx.gen + 1
+  let gen = ctx.gen
+  let dist = ctx.dist
+  let parent = ctx.parent
+  let stamp = ctx.stamp
+  let heap = ctx.heap
+  heap.len = 0
+  let inf = 0x3FFF_FFFF_FFFFL
+  dist[start] = 0L
+  stamp[start] = gen
+  parent[start] = -1
+  heap.push((h(start).to_int64() << NODE_BITS) | start.to_int64())
+  while heap.len > 0 {
+    let enc = heap.pop()
+    let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+    let f = enc >> NODE_BITS
+    let du = dist[u]
+    // 陈旧条目：f = g + h(u)，若对应的 g 超过当前 dist 则跳过。
+    if f - h(u).to_int64() > du {
+      continue
+    }
+    if u == target {
+      let path = [u]
+      let mut node = u
+      while node != start {
+        node = parent[node]
+        path.push(node)
+      }
+      path.rev_in_place()
+      return Some((path, du.to_int()))
+    }
+    let stop = g.offsets[u + 1]
+    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+      let pe = g.packed[ei]
+      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+      let nd = du + (pe >> NODE_BITS)
+      let dv = if stamp[v] == gen { dist[v] } else { inf }
+      if nd < dv {
+        dist[v] = nd
+        stamp[v] = gen
+        parent[v] = u
+        heap.push(((nd + h(v).to_int64()) << NODE_BITS) | v.to_int64())
+      }
+    }
+  }
+  None
 }
 
 ///|
@@ -220,8 +450,9 @@ fn astar_indexed_h(
     }
     let stop = g.offsets[u + 1]
     for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
-      let v = g.targets[ei]
-      let nd = du + g.weights[ei].to_int64()
+      let pe = g.packed[ei]
+      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+      let nd = du + (pe >> NODE_BITS)
       if nd < dist[v] {
         dist[v] = nd
         parent[v] = u

@@ -45,6 +45,81 @@ pub fn CsrGraph::node_count(self : CsrGraph) -> Int {
 }
 
 ///|
+/// 可复用 BFS 上下文：parent/代戳/队列数组只分配一次，跨查询用
+/// generation 戳懒失效（免去每查询 O(n) 初始化——批量查询的主开销之一）。
+pub struct BfsCtx {
+  parent : Array[Int]
+  stamp : Array[Int]
+  queue : Array[Int]
+  mut gen : Int
+}
+
+///|
+/// 为节点数 n 的图创建可复用 BFS 上下文。
+pub fn BfsCtx::new(n : Int) -> BfsCtx {
+  {
+    parent: Array::make(n, -2),
+    stamp: Array::make(n, 0),
+    queue: Array::make(n, 0),
+    gen: 0,
+  }
+}
+
+///|
+/// 复用上下文的 BFS（语义与 `bfs_indexed` 一致；批量查询时免每次
+/// O(n) 数组初始化）。上下文容量必须 ≥ 图节点数。
+pub fn bfs_indexed_ctx(
+  g : CsrGraph,
+  ctx : BfsCtx,
+  start : Int,
+  target : Int,
+) -> Array[Int]? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  if start == target {
+    return Some([start])
+  }
+  ctx.gen = ctx.gen + 1
+  let gen = ctx.gen
+  let parent = ctx.parent
+  let stamp = ctx.stamp
+  let queue = ctx.queue
+  parent[start] = -1
+  stamp[start] = gen
+  queue[0] = start
+  let mut head = 0
+  let mut tail = 1
+  while head < tail {
+    let cur = queue[head]
+    head = head + 1
+    let stop = g.offsets[cur + 1]
+    for ei = g.offsets[cur]; ei < stop; ei = ei + 1 {
+      let next = g.targets[ei]
+      if stamp[next] == gen {
+        continue
+      }
+      stamp[next] = gen
+      parent[next] = cur
+      if next == target {
+        let path = [next]
+        let mut node = next
+        while parent[node] >= 0 {
+          node = parent[node]
+          path.push(node)
+        }
+        path.rev_in_place()
+        return Some(path)
+      }
+      queue[tail] = next
+      tail = tail + 1
+    }
+  }
+  None
+}
+
+///|
 /// 稠密整数节点 BFS：起点 `start` 到 `target` 的最短（边数）路径。
 /// 状态全部为扁平数组（visited 位、parent 指针、环形队列），无哈希。
 /// 返回 `Some(path)`（含两端）或 `None`。O(V + E)。

@@ -1,8 +1,8 @@
 // real_corpus_bench.mbt —— 优化流水线在「真实程序语料」上的削减率证据（T3 生产级补强）。
 //
-// 与 opt_reduction_bench.mbt 的合成程序族互补：本语料是 10 个**手写真实
+// 与 opt_reduction_bench.mbt 的合成程序族互补：本语料是 11 个**手写真实
 // 内核**（多项式求值、二维数组寻址、双线性插值、2×2 行列式、点积、校验和
-// 展开、定点缩放、clamp、绝对差、一范数），按「朴素前端直译」风格书写——
+// 展开、定点缩放、clamp、绝对差、分支选择缩放、一范数），按「朴素前端直译」风格书写——
 // 冗余全部来自真实翻译形态（重复的地址运算/幂次/权重子式、宏展开常量链、
 // 直译临时量复制链、分支菱形），**无人工注入**。
 //
@@ -43,7 +43,7 @@ fn straight(
 }
 
 ///|
-/// 真实程序语料（10 内核，朴素前端直译风格）。
+/// 真实程序语料（11 内核，朴素前端直译风格）。
 fn real_corpus() -> Array[RealKernel] {
   let ks : Array[RealKernel] = []
   // 1) horner3：naive 直译 a*x^3 + b*x^2 + c*x + d —— 幂次重复计算（GVN）。
@@ -165,7 +165,38 @@ fn real_corpus() -> Array[RealKernel] {
     env: Map([("v", 42), ("cl", 0)]),
     paths: [["entry", "low", "join"], ["entry", "high", "join"]],
   })
-  // 10) norm1_4：四元素一范数直译（重复地址步长常量 + 复制链）。
+  // 10) branch_blend：两臂各自直译同一组插值权重子式（互不支配的跨臂
+  //     冗余，PRE 式上提至公共支配块后合并——典型「分支内重复展开」形态）。
+  ks.push({
+    name: "branch_blend_diamond",
+    blocks: [
+      {
+        label: "entry",
+        instrs: ["one = 1", "it = one - t", "cbr p up down"],
+        succs: ["up", "down"],
+      },
+      {
+        label: "up",
+        instrs: [
+          "p00 = it * it", "p01 = it * t", "p11 = t * t", "sa = p00 + p01", "ra = sa + p11",
+          "r = ra * 3", "br join",
+        ],
+        succs: ["join"],
+      },
+      {
+        label: "down",
+        instrs: [
+          "q00 = it * it", "q01 = it * t", "q11 = t * t", "sb = q00 + q01", "rb = sb + q11",
+          "r = rb * 5", "br join",
+        ],
+        succs: ["join"],
+      },
+      { label: "join", instrs: ["out = r + 0", "ret out"], succs: [] },
+    ],
+    env: Map([("t", 2), ("p", 1)]),
+    paths: [["entry", "up", "join"], ["entry", "down", "join"]],
+  })
+  // 11) norm1_4：四元素一范数直译（重复地址步长常量 + 复制链）。
   ks.push(
     straight(
       "norm1_4_naive",

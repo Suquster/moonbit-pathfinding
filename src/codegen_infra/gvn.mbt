@@ -141,6 +141,37 @@ fn def_value_number(
 }
 
 ///|
+/// 最近公共支配者（nearest common dominator）：沿 idom 父链求 `a`、`b`
+/// 的公共祖先中最深者。两块均可达时必存在（至少为入口）。
+fn dom_ncd(dom : DomTree, a : String, b : String) -> String {
+  let anc : Map[String, Bool] = Map([])
+  let mut x = a
+  let limit = dom.reachable.length() + 1
+  let mut steps = 0
+  while steps <= limit {
+    anc[x] = true
+    match dom.idom.get(x) {
+      Some(p) => x = p
+      None => break
+    }
+    steps = steps + 1
+  }
+  let mut y = b
+  steps = 0
+  while steps <= limit {
+    if anc.contains(y) {
+      return y
+    }
+    match dom.idom.get(y) {
+      Some(p) => y = p
+      None => return y
+    }
+    steps = steps + 1
+  }
+  dom.root
+}
+
+///|
 /// 沿冗余映射追溯到代表记号（消解链，bounded）。
 fn resolve_rep(tok : String, redundant : Map[String, String]) -> String {
   let mut cur = tok
@@ -199,6 +230,9 @@ pub fn gvn(p : SsaProgram) -> SsaProgram {
   let vn_of : Map[String, String] = Map([])
   let representative : Map[String, String] = Map([])
   let redundant : Map[String, String] = Map([])
+  // 上提计划：代表定义记号 → 目标块标签（变换阶段从原块移除、
+  // 插入目标块终结指令前；按支配树前序规划，依赖先于使用入列）。
+  let hoist_to : Map[String, String] = Map([])
   for lbl in dom.reachable {
     // φ 目标：唯一值编号（不参与表达式合并）。
     match sites_by_block.get(lbl) {
@@ -217,10 +251,38 @@ pub fn gvn(p : SsaProgram) -> SsaProgram {
             let d = toks[0]
             let key = def_value_number(toks, vn_of, defset)
             match representative.get(key) {
-              Some(r) =>
-                if dom.dominates(block_of.get(r).unwrap_or(""), lbl) {
+              Some(r) => {
+                let rb = block_of.get(r).unwrap_or("")
+                if dom.dominates(rb, lbl) {
                   redundant[d] = r
+                } else if toks.length() == 5 &&
+                  (toks[3] == "+" || toks[3] == "-" || toks[3] == "*") {
+                  // PRE 式代码上提（code hoisting）：同一值编号在互不支配的
+                  // 两块各算一次（典型菱形双臂冗余）时，若两操作数在最近
+                  // 公共支配者处均可用（字面量/外部输入/定义块支配之），
+                  // 将代表定义上提至该块终结指令前，另一臂改写为引用。
+                  // 纯整数 + - * 无副作用无陷阱，推测执行语义安全。
+                  let tgt = dom_ncd(dom, rb, lbl)
+                  let mut ok = true
+                  for j in [2, 4] {
+                    let t = toks[j]
+                    if parse_int(t) is Some(_) {
+                      continue
+                    }
+                    if defset.contains(t) {
+                      if !dom.dominates(block_of.get(t).unwrap_or(""), tgt) {
+                        ok = false
+                        break
+                      }
+                    }
+                  }
+                  if ok {
+                    hoist_to[r] = tgt
+                    block_of[r] = tgt
+                    redundant[d] = r
+                  }
                 }
+              }
               None => representative[key] = d
             }
             vn_of[d] = key
@@ -229,7 +291,26 @@ pub fn gvn(p : SsaProgram) -> SsaProgram {
       None => ()
     }
   }
-  // ---- 变换：删除冗余定义、使用替换为代表 ----
+  // ---- 变换：删除冗余定义、使用替换为代表、落实上提计划 ----
+  // 按规划顺序收集各目标块待插入的上提指令（使用已重写为代表）。
+  let hoist_instrs : Map[String, Array[String]] = Map([])
+  for b in p.blocks {
+    for instr in b.instrs {
+      let toks = tokenize(instr)
+      if toks.length() >= 2 && toks[1] == "=" && hoist_to.contains(toks[0]) {
+        let out : Array[String] = [toks[0], "="]
+        let mut j = 2
+        while j < toks.length() {
+          out.push(gvn_rewrite_use(toks[j], redundant))
+          j = j + 1
+        }
+        let tgt = hoist_to.get(toks[0]).unwrap_or(b.label)
+        let lst = hoist_instrs.get(tgt).unwrap_or([])
+        lst.push(join_tokens(out))
+        hoist_instrs[tgt] = lst
+      }
+    }
+  }
   let new_blocks : Array[BasicBlock] = []
   for b in p.blocks {
     let new_instrs : Array[String] = []
@@ -239,6 +320,9 @@ pub fn gvn(p : SsaProgram) -> SsaProgram {
         let d = toks[0]
         if redundant.contains(d) {
           continue // 删除冗余计算
+        }
+        if hoist_to.contains(d) {
+          continue // 已上提至支配块，原址删除
         }
         let out : Array[String] = [toks[0], "="]
         let mut j = 2
@@ -254,6 +338,20 @@ pub fn gvn(p : SsaProgram) -> SsaProgram {
         }
         new_instrs.push(join_tokens(out))
       }
+    }
+    // 落实上提：插入到终结指令（br/cbr/ret）之前；无终结指令则追加。
+    match hoist_instrs.get(b.label) {
+      Some(hs) => {
+        let mut ins_at = new_instrs.length()
+        if ins_at > 0 && is_terminator(new_instrs[ins_at - 1]) {
+          ins_at = ins_at - 1
+        }
+        for h in hs {
+          new_instrs.insert(ins_at, h)
+          ins_at = ins_at + 1
+        }
+      }
+      None => ()
     }
     new_blocks.push({ label: b.label, instrs: new_instrs, succs: b.succs })
   }

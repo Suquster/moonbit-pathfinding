@@ -256,8 +256,14 @@ OTLP（OpenTelemetry Protocol）、W3C Trace Context、OTel 语义约定。
       **复用方向九 protobuf 编码**；导出字节经官方 opentelemetry-proto 解码逐字段
       相等，可直接 POST 到真实 collector `/v1/traces`
       （证据 docs/verification/otlp-export-t7.md）。
-- [ ] **T7.2 OTel 语义逐字段对齐**：span 属性/事件/链接/状态/资源与 OTel 数据模型对齐。
-- [ ] **T7.3 采样器对标**：父级采样、比例采样、限流采样的确定性实现与分布 PBT。
+- [x] **T7.2 OTel 语义逐字段对齐**：span 属性/事件/**链接（`SpanData::add_link`，OTLP
+      `Span.links` 字段 13）**/状态（含 `status.message`）/资源（service.name）与 OTel
+      数据模型对齐，导出字节经官方 opentelemetry-proto 解码逐字段相等
+      （docs/verification/otlp-export-t7.md）。
+- [x] **T7.3 采样器对标**：`samplers.mbt` 对标 OTel SDK 四种内置采样器
+      （AlwaysOn/AlwaysOff/TraceIdRatioBased/ParentBased），确定性纯函数 +
+      分布 PBT（10k trace 命中率与 rate 偏差 <2%）+ 保留集单调性；限流采样已有
+      `RateLimiter`（sampling.mbt）。
 - [ ] **T7.4 高基数性能**：大量 span/属性下格式化对总长度线性的 guard。
 
 **依赖与风险**：OTLP 导出依赖方向九 protobuf 能力（先做 T9 再做 T7.1 更顺）。
@@ -347,8 +353,8 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 六 Build | T6.2 关键路径调度 | ⬜ 待办 | — |
 | 六 Build | T6.3 鲁棒性回归 | ⬜ 待办 | — |
 | 七 Logging | T7.1 真·OTLP 导出器 | ✅ 完成 | 官方 opentelemetry-proto 解码逐字段相等，黄金字节+PBT 锁定（docs/verification/otlp-export-t7.md） |
-| 七 Logging | T7.2 OTel 逐字段对齐 | ⬜ 待办 | — |
-| 七 Logging | T7.3 采样器对标 | ⬜ 待办 | — |
+| 七 Logging | T7.2 OTel 逐字段对齐 | ✅ 完成 | links/status.message 官方解码逐字段相等（docs/verification/otlp-export-t7.md） |
+| 七 Logging | T7.3 采样器对标 | ✅ 完成 | 四采样器 + 分布/单调 PBT（src/logging/samplers_test.mbt） |
 | 七 Logging | T7.4 高基数性能 | ⬜ 待办 | — |
 | 八 DST | T8.1 DPOR 完备性 | ⬜ 待办 | — |
 | 八 DST | T8.2 故障注入丰富化 | ⬜ 待办 | — |

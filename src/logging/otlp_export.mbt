@@ -85,7 +85,14 @@ pub fn otlp_trace_proto() -> String {
     #|  fixed64 end_time_unix_nano = 8;
     #|  repeated KeyValue attributes = 9;
     #|  repeated SpanEvent events = 11;
+    #|  repeated SpanLink links = 13;
     #|  SpanStatus status = 15;
+    #|}
+    #|
+    #|message SpanLink {
+    #|  bytes trace_id = 1;
+    #|  bytes span_id = 2;
+    #|  repeated KeyValue attributes = 4;
     #|}
     #|
     #|message SpanEvent {
@@ -248,15 +255,27 @@ pub fn otlp_span_message(
     }
     m = m.set(11, TList(evs))
   }
-  m.set(
-    15,
-    TMsg(
-      @serialization.TypedMessage::new().set(
-        3,
-        TInt(otlp_status_code(sd.status).to_int64()),
-      ),
-    ),
+  if sd.links.length() > 0 {
+    let links : Array[@serialization.TypedValue] = []
+    for lk in sd.links {
+      let mut lm = @serialization.TypedMessage::new()
+        .set(1, TBytesV(otlp_id16(lk.trace.value)))
+        .set(2, TBytesV(otlp_id8(lk.span.value)))
+      if lk.attributes.length() > 0 {
+        lm = lm.set(4, otlp_key_values(lk.attributes))
+      }
+      links.push(TMsg(lm))
+    }
+    m = m.set(13, TList(links))
+  }
+  let mut status = @serialization.TypedMessage::new().set(
+    3,
+    TInt(otlp_status_code(sd.status).to_int64()),
   )
+  if sd.status_message != "" {
+    status = status.set(2, TStringV(sd.status_message))
+  }
+  m.set(15, TMsg(status))
 }
 
 ///|

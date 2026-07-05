@@ -64,6 +64,7 @@ pub impl Show for RTy with fn output(self : RTy, logger : &Logger) -> Unit {
 }
 
 ///|
+/// Row 的可读打印（调试/快照用）。
 pub impl Show for Row with fn output(self : Row, logger : &Logger) -> Unit {
   match self {
     REmpty => logger.write_string("REmpty")
@@ -133,6 +134,7 @@ pub(all) struct RFresh {
 }
 
 ///|
+/// 从给定起点创建行变量新鲜名生成器。
 pub fn RFresh::new(start : Int) -> RFresh {
   { next: start }
 }

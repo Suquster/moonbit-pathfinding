@@ -10,6 +10,19 @@ import {
 // Errors
 
 // Types and methods
+pub struct Arena[T] {
+  slots : Array[T]
+  mut live : Int
+}
+pub fn[T] Arena::alloc(Self[T], T) -> Int
+pub fn[T] Arena::capacity(Self[T]) -> Int
+pub fn[T] Arena::get(Self[T], Int) -> T?
+pub fn[T] Arena::iter(Self[T]) -> Array[(Int, T)]
+pub fn[T] Arena::len(Self[T]) -> Int
+pub fn[T] Arena::new() -> Self[T]
+pub fn[T] Arena::reset(Self[T]) -> Unit
+pub fn[T] Arena::set(Self[T], Int, T) -> Bool
+
 pub struct Slab[T] {
   slots : Array[Slot[T]]
   mut free_head : Int

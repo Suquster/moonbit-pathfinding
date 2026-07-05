@@ -482,7 +482,14 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   churn 容量有界守卫三后端全绿；高占用 churn 基准 n=128000 **37.0×**
   vs 线性扫描槽池、3.1× vs Map 句柄
   （benches/results/infra-alloc-slab-e3-native-2026-07-05.md）。
-- 后续批次：arena（批量释放型）系统化并接入运行时热路径。
+- bump/region arena ✅ 已落地：`src/infra_alloc/arena.mbt`
+  （对标 typed-arena / bumpalo：bump 分配 + 稠密下标句柄 + reset O(1)
+  批量释放保留容量），与朴素参照差分 PBT 200 迭代 + 200 代稳态零增长
+  结构性守卫（capacity 恒定、句柄稠密确定）三后端全绿；每帧临时树吞吐
+  1.9×（GC bump 分配本身快，核心价值为零稳态分配 + SoA 稠密索引；
+  benches/results/infra-alloc-arena-e3-native-2026-07-05.md）。
+- KPI：high-churn 稳态零增长分配 + O(1)/操作（✅ slab churn 守卫 +
+  arena 200 代守卫已达）；吞吐数量级 vs 朴素（✅ slab 37.0×）。
 
 ### E6 · 文本基础设施 — 对标 xi-editor rope / VS Code piece-table（衔接方向五）
 

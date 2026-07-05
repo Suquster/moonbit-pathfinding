@@ -136,6 +136,7 @@ pub struct SearchCtx {
   dist : Array[Int64]
   parent : Array[Int]
   stamp : Array[Int]
+  closed : Array[Int]
   mut gen : Int
   heap : EncodedHeap
 }
@@ -147,6 +148,7 @@ pub fn SearchCtx::new(n : Int) -> SearchCtx {
     dist: Array::make(n, 0L),
     parent: Array::make(n, -1),
     stamp: Array::make(n, 0),
+    closed: Array::make(n, 0),
     gen: 0,
     heap: EncodedHeap::new(16),
   }
@@ -351,8 +353,9 @@ pub fn astar_indexed(
 }
 
 ///|
-/// 复用上下文的 A*（语义与 `astar_indexed` 一致；批量查询时免每次
-/// O(n) 数组初始化）。上下文的容量必须 ≥ 图节点数。
+/// 复用上下文的 A*（要求 `h` 一致/单调，consistent；批量查询时免
+/// 每次 O(n) 数组初始化，弹出时用 closed 戳代替 h(u) 重算）。
+/// 上下文容量必须 ≥ 图节点数。
 pub fn astar_indexed_ctx(
   g : WeightedCsr,
   ctx : SearchCtx,
@@ -369,6 +372,7 @@ pub fn astar_indexed_ctx(
   let dist = ctx.dist
   let parent = ctx.parent
   let stamp = ctx.stamp
+  let closed = ctx.closed
   let heap = ctx.heap
   heap.len = 0
   let inf = 0x3FFF_FFFF_FFFFL
@@ -379,12 +383,13 @@ pub fn astar_indexed_ctx(
   while heap.len > 0 {
     let enc = heap.pop()
     let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
-    let f = enc >> NODE_BITS
     let du = dist[u]
-    // 陈旧条目：f = g + h(u)，若对应的 g 超过当前 dist 则跳过。
-    if f - h(u).to_int64() > du {
+    // 一致启发式下首次弹出即最优：closed 戳直接跳过陈旧条目，
+    // 免每弹出一次 h(u) 重算。
+    if closed[u] == gen {
       continue
     }
+    closed[u] = gen
     if u == target {
       let path = [u]
       let mut node = u

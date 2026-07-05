@@ -111,6 +111,8 @@ pub struct BoundedCache[T] {
   cap : Int
   entries : Map[Int, Outcome[T]]
   order : Array[Int]
+  pos_of : Map[Int, Int]
+  mut head : Int
 }
 pub fn[T] BoundedCache::capacity(Self[T]) -> Int
 pub fn[T] BoundedCache::contains(Self[T], Int) -> Bool

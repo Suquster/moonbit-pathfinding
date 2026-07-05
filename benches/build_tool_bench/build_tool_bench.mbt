@@ -245,3 +245,54 @@ test "bench: minimal_rebuild_set on a large grid" (b : @bench.T) {
     b.keep(@bt.minimal_rebuild_set(g, src))
   })
 }
+
+// ---------------------------------------------------------------------------
+// T6.2 关键路径优先调度：makespan 对比与调度耗时
+// ---------------------------------------------------------------------------
+
+///|
+/// 「长链 + 独立扇出」混合图：`chain_len` 节点长链 + `extra` 个独立目标——
+/// FIFO 分层切块会把宽首层的槽位浪费在独立目标上，CP 优先则让链持续推进。
+fn chain_plus_fanout(chain_len : Int, extra : Int) -> @bt.BuildGraph {
+  let nodes : Array[@bt.Target] = []
+  for i in 0..<chain_len {
+    nodes.push(@bt.Target::new("c" + i.to_string()))
+  }
+  let edges : Array[(@bt.Target, @bt.Target)] = []
+  for i in 0..<(chain_len - 1) {
+    edges.push((nodes[i], nodes[i + 1]))
+  }
+  for i in 0..<extra {
+    nodes.push(@bt.Target::new("x" + i.to_string()))
+  }
+  @bt.BuildGraph::new(nodes, edges)
+}
+
+///|
+/// 守护（T6.2）：受限并行度下 CP 优先调度的 makespan（批次数）严格小于
+/// FIFO 分层切块调度，且不小于关键路径下界。
+test "guard: critical-path schedule shortens makespan vs FIFO" {
+  let g = chain_plus_fanout(64, 64)
+  let cp = @bt.schedule_critical_path(g, 2)
+  let fifo = @bt.schedule(g, 2)
+  // CP 优先：每波 1 链 + 1 独立目标 → 64 波（= 关键路径下界）。
+  assert_eq(cp.length(), 64)
+  assert_true(fifo.length() > cp.length())
+  assert_true(cp.length() >= @bt.critical_path_length(g))
+}
+
+///|
+/// 调度耗时：800 节点分层网格 + 链扇出混合图上的 CP 优先调度。
+test "bench: schedule_critical_path workloads" (b : @bench.T) {
+  let grid = layered_grid(40, 20)
+  b.bench(name="bt_cp_schedule_800_j8", fn() {
+    b.keep(@bt.schedule_critical_path(grid, 8))
+  })
+  let mix = chain_plus_fanout(256, 256)
+  b.bench(name="bt_cp_schedule_mix_512_j2", fn() {
+    b.keep(@bt.schedule_critical_path(mix, 2))
+  })
+  b.bench(name="bt_fifo_schedule_mix_512_j2", fn() {
+    b.keep(@bt.schedule(mix, 2))
+  })
+}

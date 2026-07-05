@@ -44,6 +44,8 @@ pub fn min_layers(BuildGraph) -> Int
 
 pub fn minimal_rebuild_set(BuildGraph, Array[Target]) -> Array[Target]
 
+pub fn missing_inputs(Array[Action], Array[String]) -> Array[(String, String)]
+
 pub fn needs_rebuild_by_key(ActionCache, String, Array[String], String) -> Bool
 
 pub fn parse_rules(String) -> Result[BuildGraph, ParseError]
@@ -70,9 +72,15 @@ pub fn run_actions(ParallelSchedule, &Executor, BuildLog) -> BuildLog
 
 pub fn schedule(BuildGraph, Int) -> Array[Array[Target]]
 
+pub fn schedule_critical_path(BuildGraph, Int) -> Array[Array[Target]]
+
 pub fn serialize_cache(BuildCache) -> String
 
 pub fn topo_order(BuildGraph) -> Result[Array[Target], Cycle]
+
+pub fn validate_build(Array[Action], Array[(String, String)], Array[String]) -> Result[Unit, String]
+
+pub fn write_conflicts(Array[Action], Array[(String, String)]) -> Array[(String, String, String)]
 
 // Errors
 

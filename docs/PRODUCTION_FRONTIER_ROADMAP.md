@@ -232,9 +232,9 @@ LSP 3.17 规范、JSON-RPC 2.0 规范。
 **KPI 目标**：内容寻址缓存命中即跳过，证明最小重建集正确；关键路径调度缩短总时长。
 
 **任务分解**：
-- [ ] **T6.1 内容寻址缓存**：以输入指纹做内容寻址，命中即跳过，证明最小重建集正确。
-- [ ] **T6.2 关键路径调度**：波次内按关键路径长度排序缩短总时长，benchmark 证明。
-- [ ] **T6.3 鲁棒性回归**：循环依赖、缺失输入、并发竞争的检测与确定性报错。
+- [x] **T6.1 内容寻址缓存** ✅：`Action::fingerprint`（cache_key 单射编码）+ `BuildLog::is_up_to_date` 命中即跳过；最小重建集正确性由 rebuild-minimality/sufficiency/noop 三属性锁定（prop_rebuild_*.mbt）。
+- [x] **T6.2 关键路径调度** ✅：`schedule_critical_path`（remaining rank 降序堆优先列表调度）；链+扇出混合图 makespan 达关键路径下界，guard+PBT 锁定（benches/results/build-cp-schedule-t62-native-2026-07-05.md）。
+- [x] **T6.3 鲁棒性回归** ✅：`validate_build` 三类前置校验——detect_cycle（既有）+ missing_inputs + write_conflicts（传递闭包序判定），确定性排序报错（robustness.mbt，确定性 PBT 100 迭代）。
 
 **依赖与风险**：无外部依赖。
 
@@ -357,9 +357,9 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 五 LSP | T5.1 增量同步性能 | ✅ 完成 | RopeDocument（join-based 平衡 rope）单点编辑 O(log N)，16384 行 228×（benches/results/lsp-rope-t51-native-2026-07-05.md），等价性 PBT 三编码锁定 |
 | 五 LSP | T5.2 协议完整性 | ✅ 完成 | 既有批处理/取消/成帧 PBT + 新增 $/progress 三态编解码、ProgressTracker 生命周期校验、LSP 保留区 5 错误码（progress.mbt，成帧往返 PBT 100 迭代） |
 | 五 LSP | T5.3 能力语义 | ✅ 完成 | definition/completion/hover/diagnostics 与 analyze 互印五性质 PBT（prop_capability_semantics_test.mbt，100 迭代） |
-| 六 Build | T6.1 内容寻址缓存 | ⬜ 待办 | — |
-| 六 Build | T6.2 关键路径调度 | ⬜ 待办 | — |
-| 六 Build | T6.3 鲁棒性回归 | ⬜ 待办 | — |
+| 六 Build | T6.1 内容寻址缓存 | ✅ 完成 | Action 指纹内容寻址 + BuildLog 命中即跳过；最小重建集三属性（minimality/sufficiency/noop）PBT 锁定 |
+| 六 Build | T6.2 关键路径调度 | ✅ 完成 | schedule_critical_path 堆优先列表调度，混合图 makespan 达关键路径下界；顺带 topo_order 邻接表化 72.2→2.28 ms（31.7×）（benches/results/build-cp-schedule-t62-native-2026-07-05.md） |
+| 六 Build | T6.3 鲁棒性回归 | ✅ 完成 | validate_build：环/缺失输入/并发写竞争三类确定性报错（robustness.mbt，PBT 100 迭代） |
 | 七 Logging | T7.1 真·OTLP 导出器 | ✅ 完成 | 官方 opentelemetry-proto 解码逐字段相等，黄金字节+PBT 锁定（docs/verification/otlp-export-t7.md） |
 | 七 Logging | T7.2 OTel 逐字段对齐 | ✅ 完成 | links/status.message 官方解码逐字段相等（docs/verification/otlp-export-t7.md） |
 | 七 Logging | T7.3 采样器对标 | ✅ 完成 | 四采样器 + 分布/单调 PBT（src/logging/samplers_test.mbt） |

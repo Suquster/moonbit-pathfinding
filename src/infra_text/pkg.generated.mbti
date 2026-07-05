@@ -1,11 +1,47 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "Suquster/moonbit-pathfinding/src/infra_text"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
+pub fn diff_apply(Array[DiffOp]) -> String
+
+pub fn diff_edit_cost(Array[DiffOp]) -> Int
+
+pub fn diff_source(Array[DiffOp]) -> String
+
+pub fn lcs_dp_cost(String, String) -> Int
+
+pub fn myers_diff(String, String) -> Array[DiffOp]
 
 // Errors
 
 // Types and methods
+pub(all) enum DiffOp {
+  Equal(String)
+  Delete(String)
+  Insert(String)
+} derive(Eq, @debug.Debug)
+
+pub struct Rope {
+  mut root : RopeNode
+}
+pub fn Rope::charcode_at(Self, Int) -> Int?
+pub fn Rope::delete(Self, Int, Int) -> Unit
+pub fn Rope::depth(Self) -> Int
+pub fn Rope::from_string(String) -> Self
+pub fn Rope::insert(Self, Int, String) -> Unit
+pub fn Rope::is_leaf_balanced(Self) -> Bool
+pub fn Rope::leaf_count(Self) -> Int
+pub fn Rope::len(Self) -> Int
+pub fn Rope::new() -> Self
+pub fn Rope::slice(Self, Int, Int) -> String
+pub fn Rope::to_string(Self) -> String
+
+type RopeNode
+
 pub struct TextBuilder {
   chunks : Array[String]
   char_buf : Array[Char]

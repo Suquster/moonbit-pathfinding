@@ -91,8 +91,9 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
   - Acceptance: docs audit is a hard gate, and prove evidence is documented with its Why3/toolchain blocker and upgrade path.
   - Evidence: `.github/workflows/ci.yml` now runs `scripts/audit_doc.ps1` as a hard gate after `moon doc`; the release-branch proof job runs `scripts/proof_evidence.ps1`, records runtime predicate evidence, and preserves the Why3 environment blocker instead of pretending static proof succeeded.
   - Verification: local acceptance runs include `moon doc` plus `scripts/audit_doc.ps1`; the latest release/proof artifacts document the remaining environment-gated proof boundary.
-- [ ] Add regression tests for negative and edge cases across algorithms.
+- [x] Add regression tests for negative and edge cases across algorithms.
   - Acceptance: unreachable, invalid graph, zero-node, single-node, duplicate-edge, negative-weight, and disconnected cases are covered where relevant.
+  - Evidence: `src/undirected/edge_cases_test.mbt` (Kruskal/Prim/CC/bridges/Hopcroft-Karp/Kuhn-Munkres: empty, single-node, duplicate parallel edges, disconnected forest, non-square matrix), `src/unweighted/edge_cases_test.mbt` (BFS tree: unreachable None, duplicate successors), `src/directed/edge_cases_more_test.mbt` (Yen InvalidK/unreachable, topo empty/single/self-loop cycle, Edmonds-Karp disconnected & source==sink), on top of existing `src/directed/edge_cases_test.mbt` and `src/advanced/edge_cases_test.mbt` (negative-cycle, unknown-node, JPS blocked/forced cases).
 - [x] Establish benchmark smoke artifacts.
   - Acceptance: reproducible benchmark JSON or Markdown results with machine, target, input size, and comparison baseline.
   - Evidence: `scripts/benchmark_smoke.ps1`, `benches/results/README.md`, `benches/results/latest-smoke.{json,md}`, and timestamped `benches/results/smoke-wasm-gc-20260531-174841.json`.

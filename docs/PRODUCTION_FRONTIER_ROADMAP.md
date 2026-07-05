@@ -325,7 +325,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 - [ ] 每个生产化 PR 必过 §0.3 统一验证协议（0 告警 + 三后端全绿 + .mbti 只增 + PBT ≥100）。
 - [ ] 性能类任务落 `benches/results/` 工件并接回归 guard。
 - [ ] 每方向 1 份 paper-to-code 追溯文档（§C5）。
-- [ ] 负例/边界回归测试随每方向补齐（对应 backlog P0：unreachable/零节点/单节点/重边/负权/不连通）。
+- [x] 负例/边界回归测试随每方向补齐（对应 backlog P0：unreachable/零节点/单节点/重边/负权/不连通）——见 CHAMPIONSHIP_BACKLOG.md 该项证据（undirected/unweighted/directed 三包 edge_cases 测试）。
 - [ ] 双语 README（中/英）在状态、范围、命令上保持一致（对应 backlog P1）。
 
 ---

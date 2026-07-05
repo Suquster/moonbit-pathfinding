@@ -1,0 +1,12 @@
+// Package: benches/parser_packrat_bench
+//
+// T4.3 复杂度趋势基准：构造回溯密集（backtracking-heavy）的歧义括号文法，
+// 朴素模式呈指数级重解析、packrat 记忆化呈线性——以确定性求值计数 guard
+// 锁定复杂度趋势，并以 native `moon bench` 固化计时工件。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench benches/parser_packrat_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
+}

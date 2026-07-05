@@ -707,6 +707,10 @@ fn fold_identity(lhs : String, op : String, rhs : String) -> String? {
     if r == Some(0) {
       return Some(lhs)
     }
+    // 同一 SSA 版本自减恒为 0（记号全等才安全）。
+    if lhs == rhs && parse_int(lhs) is None {
+      return Some("0")
+    }
   } else if op == "*" {
     if r == Some(1) {
       return Some(lhs)

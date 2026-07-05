@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_metrics"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct DDSketch {
+  alpha : Double
+  gamma : Double
+  ln_gamma : Double
+  keys : Array[Int]
+  counts : Array[Int]
+  mut zero_count : Int
+  mut total : Int
+}
+pub fn DDSketch::add(Self, Double) -> Unit
+pub fn DDSketch::count(Self) -> Int
+pub fn DDSketch::error_bound(Self) -> Double
+pub fn DDSketch::merge_with(Self, Self) -> Unit
+pub fn DDSketch::new(Double) -> Self
+pub fn DDSketch::quantile(Self, Double) -> Double?
+
+// Type aliases
+
+// Traits
+

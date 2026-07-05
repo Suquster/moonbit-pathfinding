@@ -30,6 +30,8 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra_all(N, (N) -> Array[(N, W)]) -> ShortestPathTree[N, W]
 
+pub fn dijkstra_bidirectional_ctx(WeightedCsr, WeightedCsr, SearchCtx, SearchCtx, Int, Int) -> (Array[Int], Int)?
+
 pub fn dijkstra_indexed(WeightedCsr, Int, Int) -> (Array[Int], Int)?
 
 pub fn dijkstra_indexed_ctx(WeightedCsr, SearchCtx, Int, Int) -> (Array[Int], Int)?

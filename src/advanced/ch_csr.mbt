@@ -438,6 +438,10 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
     )
     order.push(p, v)
   }
+  // 脏标记：仅当直接邻域自上次估值后发生过收缩（邻接结构变动）才重估；
+  // 未脏节点直接接受，免除一次完整收缩模拟。估值本为排序启发式，
+  // 任何收缩顺序都保持正确性（witness/捷径不变式与顺序无关）。
+  let dirty : Array[Bool] = Array::make(n, false)
   let mut next_rank = 0
   while !order.is_empty() {
     let (prio, v) = order.pop().unwrap()
@@ -445,13 +449,16 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
       continue
     }
     // 惰性重估：邻域收缩可能已抬高估值；若劣于当前堆顶候选则回堆重排。
-    let fresh = ch_csr_priority(
-      n, v, fwd, bwd, contracted, deleted_neighbours, shortcuts, wdist, wstamp, wepoch_box,
-      wpq,
-    )
-    if fresh > prio && !order.is_empty() {
-      order.push(fresh, v)
-      continue
+    if dirty[v] {
+      let fresh = ch_csr_priority(
+        n, v, fwd, bwd, contracted, deleted_neighbours, shortcuts, wdist, wstamp, wepoch_box,
+        wpq,
+      )
+      dirty[v] = false
+      if fresh > prio && !order.is_empty() {
+        order.push(fresh, v)
+        continue
+      }
     }
     rank[v] = next_rank
     next_rank = next_rank + 1
@@ -459,15 +466,17 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
       n, v, fwd, bwd, contracted, shortcuts, wdist, wstamp, wepoch_box, wpq, false,
     )
     contracted[v] = true
-    // deleted-neighbours 项：通知未收缩邻居其邻域塌缩了一格。
+    // deleted-neighbours 项：通知未收缩邻居其邻域塌缩了一格，并置脏。
     for x in fwd.nbr[v] {
       if !contracted[x] {
         deleted_neighbours[x] = deleted_neighbours[x] + 1
+        dirty[x] = true
       }
     }
     for x in bwd.nbr[v] {
       if !contracted[x] {
         deleted_neighbours[x] = deleted_neighbours[x] + 1
+        dirty[x] = true
       }
     }
   }

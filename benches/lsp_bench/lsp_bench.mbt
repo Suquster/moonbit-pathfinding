@@ -160,6 +160,29 @@ fn make_sync_workload(
   (text, changes, @server.Utf16)
 }
 
+///|
+/// 工作负载 (6)（T5.1）：rope vs 参照实现的长文档单点编辑——文档为 N 行
+/// `k{i} = 0000`，对其中 16 个均匀分布的行各做一次等长替换（逐条应用）。
+/// 参照实现每条 O(N)，rope 每条 O(log N + L)——规模递增下两者趋势分化。
+fn make_rope_edit_workload(n : Int) -> (String, Array[@server.ContentChange]) {
+  let nl = "\n"
+  let sb = StringBuilder::new()
+  for i in 0..<n {
+    if i > 0 {
+      sb.write_string(nl)
+    }
+    sb.write_string("k\{i} = 0000")
+  }
+  let changes : Array[@server.ContentChange] = []
+  for j in 0..<16 {
+    let line = j * (n / 16)
+    let prefix = "k\{line} = "
+    let col = char_count(prefix)
+    changes.push({ range: Some(make_range(line, col, col + 4)), text: "9999" })
+  }
+  (sb.to_string(), changes)
+}
+
 // ───────────────────────────── 基准块注册 ─────────────────────────────
 
 ///|
@@ -224,6 +247,35 @@ fn bench_references_rename(b : @bench.T, sizes : Array[Int]) -> Unit {
 }
 
 ///|
+/// 工作负载 (6)（T5.1）：长文档 16 次单点编辑——rope 对比 O(N) 参照实现。
+fn bench_rope_vs_reference(b : @bench.T, sizes : Array[Int]) -> Unit {
+  for n in sizes {
+    let (text, changes) = make_rope_edit_workload(n)
+    b.bench(name="sync_string_\{n}", fn() {
+      let mut cur = text
+      for ch in changes {
+        match @server.apply_changes(cur, [ch], @server.Utf16) {
+          Ok(next) => cur = next
+          Err(_) => ()
+        }
+      }
+      b.keep(cur)
+    })
+    let doc = @server.RopeDocument::from_string(text)
+    b.bench(name="sync_rope_\{n}", fn() {
+      let mut cur = doc
+      for ch in changes {
+        match cur.apply_change(ch, @server.Utf16) {
+          Ok(next) => cur = next
+          Err(_) => ()
+        }
+      }
+      b.keep(cur.length())
+    })
+  }
+}
+
+///|
 /// Native benchmark：五类 LSP_Suite 工作负载在递增输入规模上的计时（R7.x）。
 /// 基准块名称编码「工作负载 + 规模」，供脚本解析与基线中位数比较。
 test "bench: lsp_suite workloads over increasing sizes" (b : @bench.T) {
@@ -236,6 +288,7 @@ test "bench: lsp_suite workloads over increasing sizes" (b : @bench.T) {
   bench_analyze(b, doc_sizes)
   bench_apply_changes(b, doc_sizes)
   bench_references_rename(b, doc_sizes)
+  bench_rope_vs_reference(b, [1024, 4096, 16384])
 }
 
 // ───────────────────────────── Smoke 守护 ─────────────────────────────
@@ -326,4 +379,25 @@ test "smoke: references/rename workload covers all occurrences" {
   let (uri, edits) = edit.changes[0]
   assert_true(uri == "file:///bench.dsl")
   assert_true(edits.length() == 9)
+}
+
+///|
+/// Smoke 守护：工作负载 (6) rope 与参照实现结果逐字符一致（T5.1 等价性）。
+test "smoke: rope edit workload matches reference implementation" {
+  let (text, changes) = make_rope_edit_workload(64)
+  let mut s = text
+  for ch in changes {
+    match @server.apply_changes(s, [ch], @server.Utf16) {
+      Ok(next) => s = next
+      Err(_) => assert_true(false)
+    }
+  }
+  let mut d = @server.RopeDocument::from_string(text)
+  for ch in changes {
+    match d.apply_change(ch, @server.Utf16) {
+      Ok(next) => d = next
+      Err(_) => assert_true(false)
+    }
+  }
+  assert_true(d.to_string() == s)
 }

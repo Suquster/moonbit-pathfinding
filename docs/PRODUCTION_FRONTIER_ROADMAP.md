@@ -216,8 +216,8 @@ LSP 3.17 规范、JSON-RPC 2.0 规范。
 
 **任务分解**：
 - [x] **T5.1 增量同步性能**：以 rope / piece-table 把长文档单次增量变更从次平方级降到对数级。
-- [ ] **T5.2 协议完整性**：批处理、取消（`$/cancelRequest`）、进度、标准错误码全覆盖 + 成帧往返 PBT。
-- [ ] **T5.3 能力语义**：定义跳转/补全/诊断的真实语义实现与一致性测试。
+- [x] **T5.2 协议完整性**：批处理、取消（`$/cancelRequest`）、进度、标准错误码全覆盖 + 成帧往返 PBT。
+- [x] **T5.3 能力语义**：定义跳转/补全/诊断的真实语义实现与一致性测试。
 
 **依赖与风险**：无外部依赖；真实编辑器联调作可选证据。
 
@@ -355,8 +355,8 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 四 Parser | T4.2 错误消息质量 | ✅ 完成 | 最远失败合并（error_model.mbt）+ megaparsec 同构 render_error（源码行摘录/caret/unexpected/expecting，error_report_test.mbt 5 项锁定） |
 | 四 Parser | T4.3 性能基准 | ✅ 完成 | packrat/朴素对照基准 + BoundedCache O(1) LRU（benches/results/latest-parser-combinator.md） |
 | 五 LSP | T5.1 增量同步性能 | ✅ 完成 | RopeDocument（join-based 平衡 rope）单点编辑 O(log N)，16384 行 228×（benches/results/lsp-rope-t51-native-2026-07-05.md），等价性 PBT 三编码锁定 |
-| 五 LSP | T5.2 协议完整性 | ⬜ 待办 | — |
-| 五 LSP | T5.3 能力语义 | ⬜ 待办 | — |
+| 五 LSP | T5.2 协议完整性 | ✅ 完成 | 既有批处理/取消/成帧 PBT + 新增 $/progress 三态编解码、ProgressTracker 生命周期校验、LSP 保留区 5 错误码（progress.mbt，成帧往返 PBT 100 迭代） |
+| 五 LSP | T5.3 能力语义 | ✅ 完成 | definition/completion/hover/diagnostics 与 analyze 互印五性质 PBT（prop_capability_semantics_test.mbt，100 迭代） |
 | 六 Build | T6.1 内容寻址缓存 | ⬜ 待办 | — |
 | 六 Build | T6.2 关键路径调度 | ⬜ 待办 | — |
 | 六 Build | T6.3 鲁棒性回归 | ⬜ 待办 | — |

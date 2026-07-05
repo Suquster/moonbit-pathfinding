@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "playground"
+
+// Values
+pub fn solve_astar(Int, Int, Array[Bool], Int, Int) -> (Array[Int], Int)
+
+pub fn solve_bfs(Int, Int, Array[Bool], Int, Int) -> Array[Int]
+
+pub fn solve_dijkstra(Int, Int, Array[Bool], Int, Int) -> (Array[Int], Int)
+
+pub fn solve_jps(Int, Int, Array[Bool], Int, Int) -> (Array[Int], Int)
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

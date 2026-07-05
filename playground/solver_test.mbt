@@ -78,7 +78,10 @@ test "playground bridge: unreachable goal sentinels" {
   let w = 3
   let h = 3
   let blocked : Array[Bool] = Array::make(w * h, false)
-  // Wall off the goal corner.
+  // Wall off the goal corner, including the diagonal so the goal is
+  // unreachable under both 4-neighbour (BFS/Dijkstra/A*) and
+  // 8-neighbour (JPS) movement.
+  blocked[4] = true // (1,1)
   blocked[5] = true // (1,2)
   blocked[7] = true // (2,1)
   let start = 0

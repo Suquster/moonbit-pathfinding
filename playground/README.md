@@ -8,7 +8,7 @@
 
 ## 一句话总览
 
-打开 `index.html`,就能在浏览器里画一张迷宫,选 **BFS / DFS / Dijkstra / A\* / JPS** 五种算法之一,
+打开 `web/index.html`,就能在浏览器里画一张迷宫,选 **BFS / DFS / Dijkstra / A\* / JPS** 五种算法之一,
 实时看着 frontier 像火苗一样从起点蔓延到终点。
 
 ```
@@ -22,41 +22,33 @@
 
 | 模式 | 用途 | 加载文件 | 加载策略 |
 |------|------|---------|---------|
-| **wasm-gc**(主路径) | 评测最佳性能、≤100KB | `dist/solver.wasm` | 优先加载;失败回退 |
-| **JS bundle**(回退) | 兼容老浏览器 / 离线 | `dist/solver.js` | wasm 加载失败时启用 |
+| **wasm-gc**(主路径) | 评测最佳性能、≤100KB | `playground.wasm` (同目录) | 优先加载;失败回退 |
+| **JS glue**(回退) | 兼容老浏览器 / 离线 | `playground.js` (同目录,可选) | wasm 加载失败时启用 |
 | **pure JS**(应急) | CDN/离线/网络限制 | `app.js` 内置实现 | 双后端都失败时启用 |
 
 三重回退保证 **任何环境都能演示**(对应 R12.5 现场备份)。
 
 ## 本地运行
 
-最简单 — 不需要任何构建:
-
 ```bash
-# 双击打开 index.html 即可,或:
+# 在仓库根目录构建 pg_* 导出层 (src/playground 包):
+moon build --target wasm-gc --release
+cp _build/wasm-gc/release/build/src/playground/playground.wasm playground/web/
+
+# 启动静态服务器:
 python -m http.server 8080
-# 浏览器访问 http://localhost:8080/playground/
+# 浏览器访问 http://localhost:8080/playground/web/
 ```
 
-## 重新生成 WASM / JS 产物
-
-```bash
-# 在仓库根目录执行
-moon build --target wasm-gc -p playground
-# 产物在 _build/wasm-gc/release/build/playground/playground.wasm
-# 复制到 playground/dist/solver.wasm 即可(部署脚本见 scripts/build_playground.ps1)
-
-moon build --target js -p playground
-# 同理,产物 → playground/dist/solver.js
-```
+没有 `.wasm` 产物时也能运行 — `app.js` 自动回退到内置纯 JS 实现。
 
 ## 部署到 GitHub Pages
 
 `.github/workflows/pages.yml`(参见 tasks.md 38.5)自动:
 
-1. 触发: `push` 到 `main` 且 `playground/` 有变更
-2. 构建: `moon build --target wasm-gc -p playground` + 拷贝产物
-3. 部署: 推送到 `gh-pages` 分支根目录
+1. 触发: `push` 到 `main`(亦支持手动 workflow_dispatch)
+2. 构建: 仓库根目录 `moon build --target wasm-gc --release` + 体积门禁 + 组装 `playground/web` 与 `playground.wasm`
+3. 部署: actions/deploy-pages 发布
 4. 域名: <https://Suquster.github.io/moonbit-pathfinding/>
 
 ## 答辩演示脚本(7 min 视频 · 第 4 段 · 90 秒)
@@ -76,16 +68,20 @@ moon build --target js -p playground
 ```
 playground/
 ├── README.md             # 本文档
+├── moon.mod.json         # 独立 module(path 依赖父仓库,保证 bridge 可独立构建/测试)
 ├── moon.pkg              # MoonBit package(依赖 src/unweighted, src/directed, src/advanced)
-├── solver.mbt            # MoonBit 端 wrapper (导出给 JS/WASM 调用)
+├── solver.mbt            # MoonBit 端 wrapper(与算法库逐字节对账的 bridge)
 ├── solver_test.mbt       # 自检测试(算法在 playground bridge 下结果一致)
-├── index.html            # 主页面
-├── app.js                # 前端逻辑 + Canvas 渲染 + pure JS 算法回退
-├── style.css             # 暗色科技风样式
-└── dist/                 # CI 产物(.gitignored,本地构建后填充)
-    ├── solver.wasm
-    └── solver.js
+└── web/
+    ├── index.html        # 主页面
+    ├── app.js            # 前端逻辑 + Canvas 渲染 + pure JS 算法回退
+    ├── style.css         # 暗色科技风样式
+    └── playground.wasm   # 构建产物(.gitignored,来自 src/playground 导出层)
 ```
+
+浏览器实际消费的 pg_* 整型句柄 ABI 由根 module 的 `src/playground` 包提供
+(`exports.mbt` + wasm-gc link exports)；本目录的 `solver.mbt` 是算法库的
+另一层独立对账 bridge,两层都受 `moon test` 门禁。
 
 ## 与算法库的双向对账
 

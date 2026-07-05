@@ -1,5 +1,10 @@
 {
   "name": "playground",
   "version": "0.1.0",
-  "description": "WASM Playground for moonbit-pathfinding — interactive grid pathfinding visualization. Built with `moon build --target wasm-gc`."
+  "description": "WASM Playground for moonbit-pathfinding — interactive grid pathfinding visualization. Built with `moon build --target wasm-gc`.",
+  "deps": {
+    "Suquster/moonbit-pathfinding": {
+      "path": ".."
+    }
+  }
 }

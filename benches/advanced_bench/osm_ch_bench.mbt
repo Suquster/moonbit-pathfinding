@@ -11,15 +11,18 @@ let osm_bench_queries : Int = 48
 
 ///|
 /// 解析嵌入负载为 CSR（`src,dst,分米` 分号分隔；跨块字符串无缝拼接）。
-fn build_osm_csr() -> @graph.CsrGraph[Double] {
-  let n = osm_xiamen_node_count
-  let srcs : Array[Int] = Array::make(osm_xiamen_edge_count, 0)
-  let dsts : Array[Int] = Array::make(osm_xiamen_edge_count, 0)
-  let ws : Array[Double] = Array::make(osm_xiamen_edge_count, 0.0)
+fn build_osm_csr_from(
+  n : Int,
+  edge_count : Int,
+  payload : Array[String],
+) -> @graph.CsrGraph[Double] {
+  let srcs : Array[Int] = Array::make(edge_count, 0)
+  let dsts : Array[Int] = Array::make(edge_count, 0)
+  let ws : Array[Double] = Array::make(edge_count, 0.0)
   let mut ei = 0
   let mut field = 0 // 0=src 1=dst 2=weight
   let mut acc = 0
-  for chunk in osm_xiamen_payload {
+  for chunk in payload {
     for ch in chunk {
       let c = ch.to_int()
       if c == ','.to_int() {
@@ -66,13 +69,21 @@ fn build_osm_csr() -> @graph.CsrGraph[Double] {
 }
 
 ///|
+fn build_osm_csr() -> @graph.CsrGraph[Double] {
+  build_osm_csr_from(
+    osm_xiamen_node_count, osm_xiamen_edge_count, osm_xiamen_payload,
+  )
+}
+
+///|
 /// 真实路网 CH vs Dijkstra 采集主体：返回（Markdown 证据, 中位加速比）。
-fn run_osm_ch_benchmark(
+fn run_osm_ch_benchmark_on(
+  dataset : String,
+  g : @graph.CsrGraph[Double],
   qcount : Int,
   warmup : Int,
   samples : Int,
 ) -> (String, Double) {
-  let g = build_osm_csr()
   let n = g.n
   let qrng = Lcg::new(query_seed_int)
   let queries : Array[(Int, Int)] = []
@@ -122,10 +133,10 @@ fn run_osm_ch_benchmark(
   let qd = qcount.to_double()
   let tb = @infra_text.TextBuilder::new()
   tb.push_str(
-    "# CH(CSR) vs Dijkstra — 真实 OSM 路网基准（厦门驾车网，R21.1）\n\n",
+    "# CH(CSR) vs Dijkstra — 真实 OSM 路网基准（\{dataset}，R21.1）\n\n",
   )
   tb.push_str(
-    "- 数据集: OpenStreetMap 厦门驾车路网（osmnx 提取，权重=道路米长）\n",
+    "- 数据集: OpenStreetMap \{dataset}（osmnx 提取，权重=道路米长）\n",
   )
   tb.push_str("- 节点数: \{n}; 有向边数: \{g.col_idx.length()}\n")
   tb.push_str("- 查询对: \{qcount}; 预热: \{warmup}; 采样: \{samples}\n")
@@ -147,14 +158,28 @@ fn run_osm_ch_benchmark(
 
 ///|
 test "bench: collect real OSM road-network CH artifacts" (b : @bench.T) {
-  let (evidence_md, speedup) = run_osm_ch_benchmark(
-    osm_bench_queries, csr_bench_warmup, csr_bench_samples,
+  let (xm_md, xm_speedup) = run_osm_ch_benchmark_on(
+    "厦门驾车网",
+    build_osm_csr(),
+    osm_bench_queries,
+    csr_bench_warmup,
+    csr_bench_samples,
+  )
+  let (bj_md, bj_speedup) = run_osm_ch_benchmark_on(
+    "北京驾车网",
+    build_osm_csr_from(
+      osm_beijing_node_count, osm_beijing_edge_count, osm_beijing_payload,
+    ),
+    osm_bench_queries,
+    csr_bench_warmup,
+    csr_bench_samples,
   )
   println("===OSM_CH_EVIDENCE_BEGIN===")
-  println(evidence_md)
+  println(xm_md)
+  println(bj_md)
   println("===OSM_CH_EVIDENCE_END===")
   b.bench(name="osm_ch_artifacts_emitted", fn() {
-    b.keep(evidence_md.length() + speedup.to_int())
+    b.keep(xm_md.length() + bj_md.length() + (xm_speedup + bj_speedup).to_int())
   })
 }
 

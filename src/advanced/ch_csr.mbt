@@ -36,6 +36,12 @@
 let ch_csr_witness_settle_limit : Int = 320
 
 ///|
+/// 估值模拟（simulate_only）的 witness 结算上限：节点排序只需近似
+/// edge difference，用更紧的预算换取预处理整体提速（真实收缩仍用全额
+/// 上限，正确性不受影响，仅影响排序启发式的估值精度）。
+let ch_csr_sim_settle_limit : Int = 64
+
+///|
 /// 表示「无穷远」的哨兵距离（工作区数组的未触达语义由世代戳承担，本值
 /// 仅用于比较初值）。
 let ch_csr_inf : Double = @core.Weight::infinity()
@@ -212,9 +218,14 @@ fn ch_csr_contract(
   wdist : Array[Double],
   wstamp : Array[Int],
   wepoch_box : Array[Int],
-  pq : @core.PQueue[Int, Double],
+  pq : ChHeap,
   simulate_only : Bool,
 ) -> Int {
+  let settle_limit = if simulate_only {
+    ch_csr_sim_settle_limit
+  } else {
+    ch_csr_witness_settle_limit
+  }
   let mut added = 0
   for in_e in bwd[v] {
     let (u, w_uv) = in_e
@@ -242,15 +253,14 @@ fn ch_csr_contract(
     // 然后逐 x 读取工作区距离判定旁路是否存在。
     wepoch_box[0] = wepoch_box[0] + 1
     let we = wepoch_box[0]
-    while !pq.is_empty() {
-      let _ = pq.pop()
-    }
+    pq.clear()
     wdist[u] = 0.0
     wstamp[u] = we
     pq.push(0.0, u)
     let mut settled = 0
-    while !pq.is_empty() && settled < ch_csr_witness_settle_limit {
-      let (d, y) = pq.pop().unwrap()
+    while settled < settle_limit && pq.pop() {
+      let d = pq.top_key
+      let y = pq.top_val
       if wstamp[y] == we && d > wdist[y] {
         continue
       }
@@ -310,7 +320,7 @@ fn ch_csr_priority(
   wdist : Array[Double],
   wstamp : Array[Int],
   wepoch_box : Array[Int],
-  pq : @core.PQueue[Int, Double],
+  pq : ChHeap,
 ) -> Int {
   let sims = ch_csr_contract(
     n, v, fwd, bwd, contracted, shortcuts, wdist, wstamp, wepoch_box, pq, true,
@@ -365,7 +375,7 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let wdist : Array[Double] = Array::make(n, ch_csr_inf)
   let wstamp : Array[Int] = Array::make(n, 0)
   let wepoch_box : Array[Int] = [0]
-  let wpq : @core.PQueue[Int, Double] = @core.PQueue::new()
+  let wpq : ChHeap = ChHeap::new()
   // 初始估值堆。
   let order : @core.PQueue[Int, Int] = @core.PQueue::new()
   for v in 0..<n {
@@ -406,6 +416,32 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
       if !contracted[e.0] {
         deleted_neighbours[e.0] = deleted_neighbours[e.0] + 1
       }
+    }
+  }
+  // 平行边去重：残差边表可能积累同一 (u, v) 的多条平行边（原始边 +
+  // 多轮捷径）；查询只会走最小权那条，逐节点保留最小权即可，显著
+  // 收紧最终 CSR 规模、降低查询扫描量。
+  let dedup_stamp : Array[Int] = Array::make(n, -1)
+  let dedup_pos : Array[Int] = Array::make(n, 0)
+  for u in 0..<n {
+    let lst = fwd[u]
+    let mut keep = 0
+    for k in 0..<lst.length() {
+      let (v, w) = lst[k]
+      if dedup_stamp[v] == u {
+        let j = dedup_pos[v]
+        if w < lst[j].1 {
+          lst[j] = (v, w)
+        }
+      } else {
+        dedup_stamp[v] = u
+        dedup_pos[v] = keep
+        lst[keep] = (v, w)
+        keep = keep + 1
+      }
+    }
+    while lst.length() > keep {
+      ignore(lst.pop())
     }
   }
   // 终局残差边按 rank 分拣为向上（正向查询用）/向下（反向查询用，按低端

@@ -424,8 +424,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 ### E2 · 序列化深化 — 对标 protobuf / flatbuffers（衔接方向九）
 
-- 二进制编解码（varint/zigzag/定长）、零拷贝解析（惰性字段视图）、模式演化兼容测试。
-- KPI：round-trip 逐字节一致；编解码吞吐相对朴素字符串序列化数量级提升。
+- varint/zigzag/定长编解码 ✅ 已落地：`src/infra_codec/codec.mbt`
+  （protobuf wire format 同构子集：LEB128 varint、zigzag sint64、小端 fixed32/64、
+  length-prefixed bytes/string，畸形输入一律 None 不 panic），边界值定向 +
+  round-trip PBT 200 迭代（逐值一致 + 流精确耗尽）三后端全绿；吞吐 2.1×、
+  传输体积 2.24×/内存 4.47× 压缩（benches/results/infra-codec-varint-e2-native-2026-07-05.md）。
+- 后续批次：零拷贝解析（惰性字段视图）、模式演化兼容测试。
+- KPI：round-trip 逐字节一致（✅ 已达）；吞吐 + 体积双维度优于朴素字符串序列化（✅ 已达）。
 
 ### E3 · 内存/分配基础设施 — 对标 arena / object-pool 模式
 

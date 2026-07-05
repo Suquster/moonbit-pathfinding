@@ -102,6 +102,7 @@ pub fn[S, M] ActorSystem::new() -> Self[S, M]
 pub fn[S, M] ActorSystem::pending(Self[S, M], ActorRef[M]) -> Int
 pub fn[S, M] ActorSystem::restart_count(Self[S, M], ActorRef[M]) -> Int
 pub fn[S, M] ActorSystem::run_until_idle(Self[S, M]) -> Unit
+pub fn[S, M] ActorSystem::run_until_idle_throughput(Self[S, M]) -> Unit
 pub fn[S, M] ActorSystem::set_directive(Self[S, M], ActorRef[M], Directive) -> Unit
 pub fn[S, M] ActorSystem::spawn(Self[S, M], S, Behavior[S, M], hooks? : LifecycleHooks[S], supervisor? : ActorRef[M], directive? : Directive, bounded? : (Int, BackpressurePolicy)) -> ActorRef[M]
 pub fn[S, M] ActorSystem::state_of(Self[S, M], ActorRef[M]) -> S?
@@ -186,6 +187,7 @@ pub fn[S] LifecycleHooks::new((S) -> S, (S) -> Unit, (S, String) -> Unit, (S) ->
 pub(all) struct Mailbox[M] {
   mut items : Array[M]
   mut closed : Bool
+  mut head : Int
 }
 pub fn[M] Mailbox::close(Self[M]) -> Unit
 pub fn[M] Mailbox::dequeue(Self[M]) -> M?

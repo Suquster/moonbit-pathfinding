@@ -3,6 +3,7 @@ package "Suquster/moonbit-pathfinding/src/advanced"
 
 import {
   "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/graph",
 }
 
 // Values
@@ -13,6 +14,12 @@ pub fn[N : Eq + Hash, W : @core.Weight + Compare] alt_preprocess_with_landmarks(
 pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query(Landmark[N, W], N, N, (N) -> Array[(N, W)]) -> (Array[N], W)?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare + Eq] alt_query_batch(Landmark[N, W], Array[(N, N)], (N) -> Array[(N, W)]) -> Array[(Array[N], W)?]
+
+pub fn ch_csr_preprocess(@graph.CsrGraph[Double]) -> ChCsr
+
+pub fn ch_csr_query(ChCsr, Int, Int) -> (Array[Int], Double)?
+
+pub fn ch_csr_query_cost(ChCsr, Int, Int) -> Double?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] ch_preprocess(Array[N], (N) -> Array[(N, W)]) -> CHGraph[N, W]
 
@@ -36,6 +43,33 @@ pub struct CHGraph[N, W] {
   dn_adj : Map[N, Array[(N, W)]]
   shortcut : Map[(N, N), N]
 }
+
+pub struct ChCsr {
+  n : Int
+  rank : Array[Int]
+  up_row : Array[Int]
+  up_col : Array[Int]
+  up_w : Array[Double]
+  dn_row : Array[Int]
+  dn_col : Array[Int]
+  dn_w : Array[Double]
+  shortcuts : Map[Int64, Array[ChCsrShortcut]]
+  dist_f : Array[Double]
+  dist_b : Array[Double]
+  par_f : Array[Int]
+  par_b : Array[Int]
+  pw_f : Array[Double]
+  pw_b : Array[Double]
+  stamp_f : Array[Int]
+  stamp_b : Array[Int]
+  pq_f : ChHeap
+  pq_b : ChHeap
+  mut epoch : Int
+}
+
+type ChCsrShortcut
+
+type ChHeap
 
 pub struct JPSGrid {
   width : Int

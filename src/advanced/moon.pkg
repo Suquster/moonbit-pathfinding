@@ -10,6 +10,7 @@
 // The `@core` import is used for `Weight`/`PQueue` facilities.
 import {
   "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/graph",
 }
 
 // Blackbox tests compare CH/ALT against baseline Dijkstra, and the

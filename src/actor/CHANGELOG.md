@@ -17,6 +17,14 @@
 
 ## [Unreleased]
 
+### Added
+- 高吞吐批量调度驱动 `ActorSystem::run_until_idle_throughput`
+  （throughput.mbt，旁路新增、既有 `step` / `run_until_idle` 冻结）：
+  轮转批量策略把每消息 O(A) 的就绪扫描摊还为 O(A×轮数+消息数)，
+  10k actor × 10 msgs 负载实测 ≈9.58M msgs/sec（逐步驱动 ≈12.4k，≈772×）；
+  保持串行处理 / per-actor FIFO / 恰好一次 / 监督重启 / 停止结算语义，
+  终态与逐步驱动差分一致（throughput_test.mbt）。
+
 ## [0.2.0] - 2026-06-12
 
 旗舰深化版（breadth + depth 深化）：在冻结骨架首版对外契约的前提下，以旁路平行

@@ -10,6 +10,10 @@ import {
 }
 
 // Values
+pub fn apply_row(RSubst, Row) -> Row
+
+pub fn apply_rty(RSubst, RTy) -> RTy
+
 pub fn apply_scheme(Subst, Scheme) -> Scheme
 
 pub fn apply_subst(Subst, Ty) -> Ty
@@ -17,6 +21,8 @@ pub fn apply_subst(Subst, Ty) -> Ty
 pub fn beta_reduce(Expr) -> Expr
 
 pub fn check(Ast) -> Result[TypedAst, Diagnostic]
+
+pub fn check_exhaustive(Array[Pattern], TyX) -> Pattern?
 
 pub fn check_x(ExprX) -> Result[TyX, TypeMismatch]
 
@@ -78,6 +84,10 @@ pub fn ml_env_empty() -> Env
 
 pub fn ml_env_extend(Env, String, Val) -> Env
 
+pub fn normalize_row(RSubst, Row) -> Row
+
+pub fn normalize_rty(RSubst, RTy) -> RTy
+
 pub fn occurs(Int, Ty) -> Bool
 
 pub fn of_minilet(Ast) -> Expr
@@ -94,9 +104,13 @@ pub fn print_ast(Ast) -> String
 
 pub fn print_expr(Expr) -> String
 
+pub fn redundant_arms(Array[Pattern], TyX) -> Array[Int]
+
 pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
+
+pub fn render_diagnostic(String, Diagnostic) -> String
 
 pub fn run_compiled(String, optimize? : Bool) -> PipelineResult
 
@@ -123,6 +137,8 @@ pub fn ty_shape(Ty) -> String
 pub fn type_of(TExpr) -> Ty
 
 pub fn unify(Ty, Ty) -> Result[Subst, Diagnostic]
+
+pub fn unify_rty(RSubst, RFresh, RTy, RTy) -> Result[Unit, String]
 
 // Errors
 
@@ -263,6 +279,33 @@ pub(all) enum PipelineResult {
   Produced(Val)
   Failed(Diagnostic)
 } derive(Eq)
+
+pub(all) struct RFresh {
+  mut next : Int
+}
+pub fn RFresh::new(Int) -> Self
+
+pub(all) struct RSubst {
+  tys : Map[Int, RTy]
+  rows : Map[Int, Row]
+}
+pub fn RSubst::empty() -> Self
+
+pub(all) enum RTy {
+  RInt
+  RBool
+  RFun(RTy, RTy)
+  RVar(Int)
+  RRecord(Row)
+} derive(Eq)
+pub impl Show for RTy
+
+pub(all) enum Row {
+  REmpty
+  RowVar(Int)
+  RExtend(String, RTy, Row)
+} derive(Eq)
+pub impl Show for Row
 
 pub enum SVal {
   SInt(Int)

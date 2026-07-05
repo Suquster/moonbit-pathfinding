@@ -110,9 +110,59 @@ struct ChHeap {
 
 ///|
 /// 预处理残差邻接：逐节点「邻居/权重」平行数组，消除元组装箱。
+///
+/// `alen[u]` 为活跃前缀长度：`[0, alen[u])` 内目标均未收缩（witness /
+/// 估值只扫描该前缀）；邻居收缩时其边被交换到 `[alen[u], len)` 归档区
+/// （终局 CSR 分拣仍扫全表，层级边零丢失）。收缩后期活跃邻域坐塌，
+/// 扫描量随之收紧，根除「已收缩条目永久占据扫描」的线性退化。
 priv struct ChAdj {
   nbr : Array[Array[Int]]
   wt : Array[Array[Double]]
+  alen : Array[Int]
+}
+
+///|
+/// 把 `v` 的全部活跃条目交换到 `x` 邻接表的归档区（不删除边，仅收紧
+/// 活跃前缀）。同一目标可能有平行边，逐个交换直至前缀内无 `v`。
+fn ChAdj::archive_target(self : ChAdj, x : Int, v : Int) -> Unit {
+  let ln = self.nbr[x]
+  let lw = self.wt[x]
+  let mut i = 0
+  while i < self.alen[x] {
+    if ln[i] == v {
+      let last = self.alen[x] - 1
+      let tn = ln[i]
+      let tw = lw[i]
+      ln[i] = ln[last]
+      lw[i] = lw[last]
+      ln[last] = tn
+      lw[last] = tw
+      self.alen[x] = last
+    } else {
+      i = i + 1
+    }
+  }
+}
+
+///|
+/// 向 `u` 的邻接表活跃区插入新边 `(v, w)`：追加到表尾后与归档区首个
+/// 条目交换，保持「活跃前缀 + 归档后缀」分区不变量。
+fn ChAdj::push_active(self : ChAdj, u : Int, v : Int, w : Double) -> Unit {
+  let ln = self.nbr[u]
+  let lw = self.wt[u]
+  ln.push(v)
+  lw.push(w)
+  let last = ln.length() - 1
+  let a = self.alen[u]
+  if a != last {
+    let tn = ln[last]
+    let tw = lw[last]
+    ln[last] = ln[a]
+    lw[last] = lw[a]
+    ln[a] = tn
+    lw[a] = tw
+  }
+  self.alen[u] = a + 1
 }
 
 ///|
@@ -238,7 +288,9 @@ fn ch_csr_contract(
   let v_in_w = bwd.wt[v]
   let v_out_n = fwd.nbr[v]
   let v_out_w = fwd.wt[v]
-  for ii in 0..<v_in_n.length() {
+  let v_in_len = bwd.alen[v]
+  let v_out_len = fwd.alen[v]
+  for ii in 0..<v_in_len {
     let u = v_in_n[ii]
     let w_uv = v_in_w[ii]
     if u == v || contracted[u] {
@@ -247,7 +299,7 @@ fn ch_csr_contract(
     // 该 u 经由 v 可达的最大代价，作为 witness 搜索的统一上界。
     let mut bound = 0.0
     let mut has_target = false
-    for oi in 0..<v_out_n.length() {
+    for oi in 0..<v_out_len {
       let x = v_out_n[oi]
       if x == v || x == u || contracted[x] {
         continue
@@ -279,7 +331,7 @@ fn ch_csr_contract(
       settled = settled + 1
       let y_n = fwd.nbr[y]
       let y_w = fwd.wt[y]
-      for k in 0..<y_n.length() {
+      for k in 0..<fwd.alen[y] {
         let z = y_n[k]
         if z == v || contracted[z] {
           continue
@@ -295,7 +347,7 @@ fn ch_csr_contract(
         }
       }
     }
-    for oi in 0..<v_out_n.length() {
+    for oi in 0..<v_out_len {
       let x = v_out_n[oi]
       if x == v || x == u || contracted[x] {
         continue
@@ -314,7 +366,7 @@ fn ch_csr_contract(
         let fu_n = fwd.nbr[u]
         let fu_w = fwd.wt[u]
         let mut replaced = false
-        for k in 0..<fu_n.length() {
+        for k in 0..<fwd.alen[u] {
           if fu_n[k] == x && via < fu_w[k] {
             fu_w[k] = via
             replaced = true
@@ -322,13 +374,12 @@ fn ch_csr_contract(
           }
         }
         if !replaced {
-          fu_n.push(x)
-          fu_w.push(via)
+          fwd.push_active(u, x, via)
         }
         let bx_n = bwd.nbr[x]
         let bx_w = bwd.wt[x]
         let mut replaced_b = false
-        for k in 0..<bx_n.length() {
+        for k in 0..<bwd.alen[x] {
           if bx_n[k] == u && via < bx_w[k] {
             bx_w[k] = via
             replaced_b = true
@@ -336,8 +387,7 @@ fn ch_csr_contract(
           }
         }
         if !replaced_b {
-          bx_n.push(u)
-          bx_w.push(via)
+          bwd.push_active(x, u, via)
         }
         let key = ch_csr_key(n, u, x)
         let lst = shortcuts.get(key).unwrap_or([])
@@ -371,12 +421,14 @@ fn ch_csr_priority(
     n, v, fwd, bwd, contracted, shortcuts, wdist, wstamp, wepoch_box, pq, true,
   )
   let mut deg = 0
-  for x in fwd.nbr[v] {
+  for k in 0..<fwd.alen[v] {
+    let x = fwd.nbr[v][k]
     if !contracted[x] && x != v {
       deg = deg + 1
     }
   }
-  for x in bwd.nbr[v] {
+  for k in 0..<bwd.alen[v] {
+    let x = bwd.nbr[v][k]
     if !contracted[x] && x != v {
       deg = deg + 1
     }
@@ -404,10 +456,12 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let fwd : ChAdj = {
     nbr: Array::makei(n, fn(_) { [] }),
     wt: Array::makei(n, fn(_) { [] }),
+    alen: Array::make(n, 0),
   }
   let bwd : ChAdj = {
     nbr: Array::makei(n, fn(_) { [] }),
     wt: Array::makei(n, fn(_) { [] }),
+    alen: Array::make(n, 0),
   }
   for u in 0..<n {
     let lo = g.row_ptr[u]
@@ -420,6 +474,10 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
       bwd.nbr[v].push(u)
       bwd.wt[v].push(w)
     }
+  }
+  for u in 0..<n {
+    fwd.alen[u] = fwd.nbr[u].length()
+    bwd.alen[u] = bwd.nbr[u].length()
   }
   let contracted : Array[Bool] = Array::make(n, false)
   let deleted_neighbours : Array[Int] = Array::make(n, 0)
@@ -467,17 +525,23 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
       n, v, fwd, bwd, contracted, shortcuts, wdist, wstamp, wepoch_box, wpq, false,
     )
     contracted[v] = true
-    // deleted-neighbours 项：通知未收缩邻居其邻域塌缩了一格，并置脏。
-    for x in fwd.nbr[v] {
+    // deleted-neighbours 项：通知未收缩邻居其邻域塌缩了一格、置脏，
+    // 并把指向 v 的边交换到归档区（活跃邻域物理收紧，witness /
+    // 估值扫描量不再被已收缩条目拖累）。
+    for k in 0..<fwd.alen[v] {
+      let x = fwd.nbr[v][k]
       if !contracted[x] {
         deleted_neighbours[x] = deleted_neighbours[x] + 1
         dirty[x] = true
+        bwd.archive_target(x, v)
       }
     }
-    for x in bwd.nbr[v] {
+    for k in 0..<bwd.alen[v] {
+      let x = bwd.nbr[v][k]
       if !contracted[x] {
         deleted_neighbours[x] = deleted_neighbours[x] + 1
         dirty[x] = true
+        fwd.archive_target(x, v)
       }
     }
   }

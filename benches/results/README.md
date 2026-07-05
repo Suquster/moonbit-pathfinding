@@ -7,9 +7,9 @@ This directory stores reproducible benchmark evidence for
 
 | direction | artifact | headline |
 | --- | --- | --- |
-| CH · 真实 OSM 路网 | `osm-real-networks-ch-native-2026-07-05.md` | 北京 108~115×、厦门 45.7×（≥100× PASS，48 组代价逐位一致） |
-| CH · 250k 合成路网 | `ch-csr-large-scale-native-2026-07-05.md` | 中位加速 166.4×（排序权重 2·ED-deg+2·DN） |
-| Codegen · 真实语料 | `codegen-real-corpus-native-2026-07-05.md` | 10 内核削减 40.2%（117→70），全路径语义对拍一致 |
+| CH · 真实 OSM 路网 | `osm-real-networks-ch-native-2026-07-05.md` | 北京 104×、厦门 45×（≥100× PASS，48 组代价逐位一致）；预处理 9.4s→6.6s（活跃前缀分区） |
+| CH · 250k 合成路网 | `ch-csr-large-scale-native-2026-07-05.md` | 中位加速 160.8×；预处理 28s→20s（排序权重 2·ED-deg+2·DN + 活跃前缀分区） |
+| Codegen · 真实语料 | `codegen-real-corpus-native-2026-07-05.md` | 11 内核削减 39.4%（137→83，含 PRE 菱形上提），全路径语义对拍一致 |
 | Codegen · 合成程序族 | `codegen-opt-reduction-2026-07-05.md` | 削减 86.8%，双路径语义对拍一致 |
 | Actor · 10k 吞吐 | `actor-ten-k-throughput-2026-07-05.md` | 11.35M msgs/sec（100k 消息，恰好一次处理守卫） |
 | Actor · 监督风暴 | `actor-supervision-storm-native-2026-07-05.md` | 685k events/sec，17087 次重启全部恢复 Running |

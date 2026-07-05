@@ -15,20 +15,20 @@
 //                      「输入未变 → 零重建」的增量空操作。
 
 ///|
-/// 由构建图的依赖边推导某目标的后继（out-neighbors）。
+/// 预建整图邻接表（source → 后继列表），一次 O(V+E)。
 ///
 /// 依赖边 `(u, v)` 表示「`u` 必须在 `v` 之前」，因此 `u` 的后继包含 `v`。
-/// 该函数把 `BuildGraph` 适配为 `@directed` 算法所需的 `(N) -> Array[N]`
-/// successors 形式。骨架阶段采用直接线性扫描，规模优化留待后续迭代。
-fn successors_in(g : BuildGraph, node : Target) -> Array[Target] {
-  let out : Array[Target] = []
+/// 把 `BuildGraph` 适配为 `@directed` 算法所需的 `(N) -> Array[N]` successors
+/// 形式时按表查询，消除「每节点全扫边集」的 O(V·E) 热路径。
+fn adjacency_of(g : BuildGraph) -> Map[Target, Array[Target]] {
+  let adj : Map[Target, Array[Target]] = Map([])
   for edge in g.edges {
     let (u, v) = edge
-    if u == node {
-      out.push(v)
-    }
+    let lst = adj.get(u).unwrap_or([])
+    lst.push(v)
+    adj[u] = lst
   }
-  out
+  adj
 }
 
 // ───────────────────────── 规则解析（graph 子模块） ─────────────────────────
@@ -321,7 +321,10 @@ pub fn schedule(g : BuildGraph, jobs : Int) -> Array[Array[Target]] {
 /// 为 1 的分量再检查自环边 `(u, u)`（目标依赖自身）。该实现支撑 Requirement
 /// 6.2「报告构成环的节点序列并拒绝执行构建」。
 pub fn detect_cycle(g : BuildGraph) -> Array[Target]? {
-  let sccs = @directed.tarjan_scc(g.nodes, fn(node) { successors_in(g, node) })
+  let adj = adjacency_of(g)
+  let sccs = @directed.tarjan_scc(g.nodes, fn(node) {
+    adj.get(node).unwrap_or([])
+  })
   // 多节点强连通分量即为依赖环。
   for scc in sccs {
     if scc.length() > 1 {
@@ -342,12 +345,13 @@ pub fn detect_cycle(g : BuildGraph) -> Array[Target]? {
 /// 计算构建图的拓扑序；存在依赖环时返回 `Cycle`（含具体环节点序列）。
 ///
 /// 直接复用既有图资产 `@directed.topological_sort`（Kahn 算法，O(V+E)）：
-/// 依赖边 `(u, v)` 经 `successors_in` 适配为后继函数，拓扑序保证每个目标排在
+/// 依赖边 `(u, v)` 经预建邻接表（`adjacency_of`，O(V+E)）适配为后继函数，拓扑序保证每个目标排在
 /// 其全部依赖之后。当 `@directed` 报告存在环时，进一步复用 `detect_cycle`
 /// （基于 `tarjan_scc`）给出构成环的目标序列，承载 Requirement 6.3。
 pub fn topo_order(g : BuildGraph) -> Result[Array[Target], Cycle] {
+  let adj = adjacency_of(g)
   match
-    @directed.topological_sort(g.nodes, fn(node) { successors_in(g, node) }) {
+    @directed.topological_sort(g.nodes, fn(node) { adj.get(node).unwrap_or([]) }) {
     Ok(order) => Ok(order)
     Err(_) =>
       match detect_cycle(g) {

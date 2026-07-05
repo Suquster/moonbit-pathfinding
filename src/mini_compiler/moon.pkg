@@ -54,6 +54,7 @@
 import {
   "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/infra_text",
   "moonbitlang/core/list",
   "moonbitlang/core/immut/sorted_map",
   "moonbitlang/core/immut/sorted_set",

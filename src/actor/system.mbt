@@ -28,6 +28,7 @@ pub(all) struct SupervisedCell[S, M] {
   mut started : Bool // pre_start 是否已调用（R3.1 / 3.7）
   restart_times : Array[Int] // 逻辑时钟上的重启时刻（强度窗口，R2.5~2.7；窗口外旧时刻会被修剪）
   mut restart_total : Int // 累计重启次数（观测用，不随窗口修剪变化）
+  ctx_cache : ActorContext[S, M] // 常驻处理上下文（每消息复用，免逐消息分配）
 }
 
 // ───────────────────────────── 旗舰系统结构 ──────────────────────────────
@@ -159,6 +160,7 @@ pub fn[S, M] ActorSystem::spawn(
     started: false,
     restart_times: [],
     restart_total: 0,
+    ctx_cache: ActorContext::new(id),
   })
   match supervisor {
     Some(sup) => {
@@ -572,7 +574,9 @@ fn[S, M] ActorSystem::process_one(
   match self.cell_dequeue(cell) {
     None => return
     Some(msg) => {
-      let ctx = ActorContext::new(cell.id)
+      // 复用单元常驻上下文（效果列表清空后重用），消除逐消息分配。
+      let ctx = cell.ctx_cache
+      ctx.effects.clear()
       let top = match behavior_stack_top(cell.behaviors) {
         Some(b) => b
         None => return

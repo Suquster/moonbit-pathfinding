@@ -276,6 +276,7 @@ pub(all) struct SupervisedCell[S, M] {
   mut started : Bool
   restart_times : Array[Int]
   mut restart_total : Int
+  ctx_cache : ActorContext[S, M]
 }
 
 pub(all) enum SupervisionStrategy {

@@ -1,0 +1,11 @@
+// Package: benches/infra_ds_bench
+//
+// E1 数据结构基准：BTreeMap（CLRS t=8）vs 朴素参照（线性扫描映射 / 每次
+// 排序数组范围查询），验证插入/查找/范围扫描的数量级优势。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench benches/infra_ds_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_ds" @ds,
+}

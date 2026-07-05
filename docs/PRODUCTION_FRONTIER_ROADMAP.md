@@ -264,7 +264,9 @@ OTLP（OpenTelemetry Protocol）、W3C Trace Context、OTel 语义约定。
       （AlwaysOn/AlwaysOff/TraceIdRatioBased/ParentBased），确定性纯函数 +
       分布 PBT（10k trace 命中率与 rate 偏差 <2%）+ 保留集单调性；限流采样已有
       `RateLimiter`（sampling.mbt）。
-- [ ] **T7.4 高基数性能**：大量 span/属性下格式化对总长度线性的 guard。
+- [x] **T7.4 高基数性能**：`prop_high_cardinality_test.mbt` 对 format_json /
+      format_logfmt / OTLP 导出在倍增 n 序列上断言边际字节成本恒定（仿射、
+      容差 ≤1 字节/项），杜绝二次膨胀；10k 字段高基数事件无损往返冒烟。
 
 **依赖与风险**：OTLP 导出依赖方向九 protobuf 能力（先做 T9 再做 T7.1 更顺）。
 
@@ -355,7 +357,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 七 Logging | T7.1 真·OTLP 导出器 | ✅ 完成 | 官方 opentelemetry-proto 解码逐字段相等，黄金字节+PBT 锁定（docs/verification/otlp-export-t7.md） |
 | 七 Logging | T7.2 OTel 逐字段对齐 | ✅ 完成 | links/status.message 官方解码逐字段相等（docs/verification/otlp-export-t7.md） |
 | 七 Logging | T7.3 采样器对标 | ✅ 完成 | 四采样器 + 分布/单调 PBT（src/logging/samplers_test.mbt） |
-| 七 Logging | T7.4 高基数性能 | ⬜ 待办 | — |
+| 七 Logging | T7.4 高基数性能 | ✅ 完成 | 仿射边际成本 guard + 10k 往返（src/logging/prop_high_cardinality_test.mbt） |
 | 八 DST | T8.1 DPOR 完备性 | ⬜ 待办 | — |
 | 八 DST | T8.2 故障注入丰富化 | ⬜ 待办 | — |
 | 八 DST | T8.3 线性一致性检查器 | ⬜ 待办 | — |

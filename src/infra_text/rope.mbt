@@ -16,8 +16,15 @@
 // 索引单位：UTF-16 码元（与 MoonBit `String::length`/`at` 一致，亦与
 // lsp_server 位置编码模型的 UTF-16 缺省对齐）。
 //
-// 对外 API：new / from_string / len / is_leaf_balanced（诊断）/ depth（诊断）/
-// charcode_at / slice / insert / delete / to_string / leaf_count（诊断）。
+// 编辑器级索引（批次 2，对标 xi-editor rope 的 metric 体系）：每个节点
+// 缓存 (UTF-16 码元数, UTF-8 字节数, 换行数)，支持 O(log n + 叶内扫描) 的
+// UTF-8↔UTF-16 偏移双向转换与行列定位（LSP PositionEncoding 全套所需）。
+// 孤立代理项按 WTF-8 语义计 3 字节（Simonsen. *The WTF-8 encoding.*）。
+//
+// 对外 API：new / from_string / len / utf8_len / line_count /
+// charcode_at / slice / insert / delete / to_string /
+// utf16_to_utf8 / utf8_to_utf16 / line_col_at / offset_of_line /
+// is_leaf_balanced（诊断）/ depth（诊断）/ leaf_count（诊断）。
 
 ///|
 /// 叶子长度上界：更长的插入文本会被切成多个叶子。
@@ -32,11 +39,19 @@ const ROPE_JOIN_MAX : Int = 256
 const ROPE_DEPTH_SLACK : Int = 4
 
 ///|
+/// 子树度量：UTF-16 码元数 / UTF-8 字节数（WTF-8 语义）/ 换行（'\n'）数。
+priv struct Meta {
+  u16 : Int
+  u8 : Int
+  nl : Int
+}
+
+///|
 enum RopeNode {
-  /// 不可变文本片段。
-  Leaf(String)
-  /// Concat(left, right, total_len, depth)。
-  Concat(RopeNode, RopeNode, Int, Int)
+  /// 不可变文本片段 + 度量。
+  Leaf(String, Meta)
+  /// Concat(left, right, meta, depth)。
+  Concat(RopeNode, RopeNode, Meta, Int)
 }
 
 ///|
@@ -46,25 +61,76 @@ pub struct Rope {
 }
 
 ///|
-fn RopeNode::len(self : RopeNode) -> Int {
+fn RopeNode::meta(self : RopeNode) -> Meta {
   match self {
-    Leaf(s) => s.length()
-    Concat(_, _, n, _) => n
+    Leaf(_, m) => m
+    Concat(_, _, m, _) => m
   }
+}
+
+///|
+fn RopeNode::len(self : RopeNode) -> Int {
+  self.meta().u16
 }
 
 ///|
 fn RopeNode::depth(self : RopeNode) -> Int {
   match self {
-    Leaf(_) => 0
+    Leaf(_, _) => 0
     Concat(_, _, _, d) => d
   }
 }
 
 ///|
+/// 计算字符串度量：UTF-8 字节按 WTF-8 语义（配对代理项 4 字节/对，
+/// 孤立代理项 3 字节）。O(|s|)。
+fn measure(s : String) -> Meta {
+  let n = s.length()
+  let mut u8 = 0
+  let mut nl = 0
+  let mut i = 0
+  while i < n {
+    let c = s.at(i).to_int()
+    if c < 0x80 {
+      if c == 10 {
+        nl = nl + 1
+      }
+      u8 = u8 + 1
+      i = i + 1
+    } else if c < 0x800 {
+      u8 = u8 + 2
+      i = i + 1
+    } else if c >= 0xD800 && c < 0xDC00 && i + 1 < n {
+      let d = s.at(i + 1).to_int()
+      if d >= 0xDC00 && d < 0xE000 {
+        u8 = u8 + 4
+        i = i + 2
+      } else {
+        u8 = u8 + 3
+        i = i + 1
+      }
+    } else {
+      u8 = u8 + 3
+      i = i + 1
+    }
+  }
+  { u16: n, u8, nl }
+}
+
+///|
+fn Meta::add(self : Meta, other : Meta) -> Meta {
+  { u16: self.u16 + other.u16, u8: self.u8 + other.u8, nl: self.nl + other.nl }
+}
+
+///|
+fn mk_leaf(s : String) -> RopeNode {
+  Leaf(s, measure(s))
+}
+
+///|
 /// 空 rope。
 pub fn Rope::new() -> Rope {
-  { root: Leaf("") }
+  { root: mk_leaf("") }
 }
 
 ///|
@@ -80,6 +146,18 @@ pub fn Rope::len(self : Rope) -> Int {
 }
 
 ///|
+/// 文本 UTF-8 字节总数（WTF-8 语义）。O(1)。
+pub fn Rope::utf8_len(self : Rope) -> Int {
+  self.root.meta().u8
+}
+
+///|
+/// 行数（换行数 + 1）。O(1)。
+pub fn Rope::line_count(self : Rope) -> Int {
+  self.root.meta().nl + 1
+}
+
+///|
 /// 诊断：当前树深。
 pub fn Rope::depth(self : Rope) -> Int {
   self.root.depth()
@@ -90,7 +168,7 @@ pub fn Rope::depth(self : Rope) -> Int {
 pub fn Rope::leaf_count(self : Rope) -> Int {
   fn go(n : RopeNode) -> Int {
     match n {
-      Leaf(_) => 1
+      Leaf(_, _) => 1
       Concat(l, r, _, _) => go(l) + go(r)
     }
   }
@@ -100,16 +178,24 @@ pub fn Rope::leaf_count(self : Rope) -> Int {
 
 ///|
 /// 将字符串切成 ≤ ROPE_LEAF_MAX 的叶子序列（空串产生单个空叶）。
+/// 叶界避开代理对中缝，保证叶内度量与全文 WTF-8 语义一致。
 fn chunk_leaves(s : String) -> Array[RopeNode] {
   let n = s.length()
   if n == 0 {
-    return [Leaf("")]
+    return [mk_leaf("")]
   }
   let out : Array[RopeNode] = []
   let mut i = 0
   while i < n {
-    let j = if i + ROPE_LEAF_MAX < n { i + ROPE_LEAF_MAX } else { n }
-    out.push(Leaf(s[i:j].to_owned()))
+    let mut j = if i + ROPE_LEAF_MAX < n { i + ROPE_LEAF_MAX } else { n }
+    // 避免把代理对切成两半。
+    if j < n {
+      let c = s.at(j - 1).to_int()
+      if c >= 0xD800 && c < 0xDC00 {
+        j = j - 1
+      }
+    }
+    out.push(mk_leaf(s[i:j].to_owned()))
     i = j
   }
   out
@@ -119,7 +205,7 @@ fn chunk_leaves(s : String) -> Array[RopeNode] {
 /// 由叶子序列构建完全平衡树（自底向上两两配对）。
 fn build_balanced(leaves : Array[RopeNode]) -> RopeNode {
   if leaves.length() == 0 {
-    return Leaf("")
+    return mk_leaf("")
   }
   let mut layer = leaves
   while layer.length() > 1 {
@@ -138,10 +224,10 @@ fn build_balanced(leaves : Array[RopeNode]) -> RopeNode {
 }
 
 ///|
-/// 构造 Concat 节点（缓存长度与深度）。
+/// 构造 Concat 节点（缓存度量与深度）。
 fn mk_concat(l : RopeNode, r : RopeNode) -> RopeNode {
   let d = if l.depth() > r.depth() { l.depth() } else { r.depth() }
-  Concat(l, r, l.len() + r.len(), d + 1)
+  Concat(l, r, l.meta().add(r.meta()), d + 1)
 }
 
 ///|
@@ -167,27 +253,27 @@ fn concat_nodes(a : RopeNode, b : RopeNode) -> RopeNode {
   }
   // 相邻小叶合并，抑制碎片化。
   let joined = match (a, b) {
-    (Leaf(x), Leaf(y)) =>
+    (Leaf(x, _), Leaf(y, _)) =>
       if x.length() + y.length() <= ROPE_JOIN_MAX {
-        Leaf(x + y)
+        mk_leaf(x + y)
       } else {
         mk_concat(a, b)
       }
-    (Concat(al, ar, _, _), Leaf(y)) =>
+    (Concat(al, ar, _, _), Leaf(y, _)) =>
       match ar {
-        Leaf(x) =>
+        Leaf(x, _) =>
           if x.length() + y.length() <= ROPE_JOIN_MAX {
-            mk_concat(al, Leaf(x + y))
+            mk_concat(al, mk_leaf(x + y))
           } else {
             mk_concat(a, b)
           }
         _ => mk_concat(a, b)
       }
-    (Leaf(x), Concat(bl, br, _, _)) =>
+    (Leaf(x, _), Concat(bl, br, _, _)) =>
       match bl {
-        Leaf(y) =>
+        Leaf(y, _) =>
           if x.length() + y.length() <= ROPE_JOIN_MAX {
-            mk_concat(Leaf(x + y), br)
+            mk_concat(mk_leaf(x + y), br)
           } else {
             mk_concat(a, b)
           }
@@ -209,7 +295,7 @@ fn rebuild(node : RopeNode) -> RopeNode {
   let leaves : Array[RopeNode] = []
   fn collect(n : RopeNode) -> Unit {
     match n {
-      Leaf(s) => if s.length() > 0 { leaves.push(Leaf(s)) }
+      Leaf(s, _) => if s.length() > 0 { leaves.push(n) }
       Concat(l, r, _, _) => {
         collect(l)
         collect(r)
@@ -235,13 +321,13 @@ pub fn Rope::is_leaf_balanced(self : Rope) -> Bool {
 /// 在位置 i 处切分为 (前缀, 后缀)。要求 0 ≤ i ≤ len。
 fn split_at(node : RopeNode, i : Int) -> (RopeNode, RopeNode) {
   match node {
-    Leaf(s) =>
+    Leaf(s, _) =>
       if i <= 0 {
-        (Leaf(""), node)
+        (mk_leaf(""), node)
       } else if i >= s.length() {
-        (node, Leaf(""))
+        (node, mk_leaf(""))
       } else {
-        (Leaf(s[:i].to_owned()), Leaf(s[i:].to_owned()))
+        (mk_leaf(s[:i].to_owned()), mk_leaf(s[i:].to_owned()))
       }
     Concat(l, r, _, _) => {
       let ll = l.len()
@@ -268,7 +354,7 @@ pub fn Rope::charcode_at(self : Rope, pos : Int) -> Int? {
   let mut i = pos
   while true {
     match node {
-      Leaf(s) => return Some(s.at(i).to_int())
+      Leaf(s, _) => return Some(s.at(i).to_int())
       Concat(l, r, _, _) => {
         let ll = l.len()
         if i < ll {
@@ -325,7 +411,7 @@ pub fn Rope::slice(self : Rope, lo : Int, hi : Int) -> String {
       return
     }
     match node {
-      Leaf(str) => sb.write_stringview(str[s:e])
+      Leaf(str, _) => sb.write_stringview(str[s:e])
       Concat(l, r, _, _) => {
         let ll = l.len()
         if e <= ll {
@@ -350,7 +436,7 @@ pub fn Rope::to_string(self : Rope) -> String {
   let sb = StringBuilder::new()
   fn go(node : RopeNode) -> Unit {
     match node {
-      Leaf(s) => sb.write_string(s)
+      Leaf(s, _) => sb.write_string(s)
       Concat(l, r, _, _) => {
         go(l)
         go(r)
@@ -360,4 +446,197 @@ pub fn Rope::to_string(self : Rope) -> String {
 
   go(self.root)
   sb.to_string()
+}
+
+///|
+/// 叶内前缀 [0, upto16) 的 UTF-8 字节数（WTF-8 语义）。
+fn prefix_u8(s : String, upto16 : Int) -> Int {
+  let mut u8 = 0
+  let mut i = 0
+  while i < upto16 {
+    let c = s.at(i).to_int()
+    if c < 0x80 {
+      u8 = u8 + 1
+      i = i + 1
+    } else if c < 0x800 {
+      u8 = u8 + 2
+      i = i + 1
+    } else if c >= 0xD800 && c < 0xDC00 && i + 1 < upto16 {
+      let d = s.at(i + 1).to_int()
+      if d >= 0xDC00 && d < 0xE000 {
+        u8 = u8 + 4
+        i = i + 2
+      } else {
+        u8 = u8 + 3
+        i = i + 1
+      }
+    } else {
+      u8 = u8 + 3
+      i = i + 1
+    }
+  }
+  u8
+}
+
+///|
+/// UTF-16 码元偏移 → UTF-8 字节偏移（偏移夹取到 [0, len]；偏移应落在
+/// 字符边界，落入代理对中缝时按孤立代理项 WTF-8 计）。O(log n + 叶内扫描)。
+pub fn Rope::utf16_to_utf8(self : Rope, off : Int) -> Int {
+  let n = self.root.len()
+  let mut i = if off < 0 { 0 } else if off > n { n } else { off }
+  let mut acc = 0
+  let mut node = self.root
+  while true {
+    match node {
+      Leaf(s, _) => return acc + prefix_u8(s, i)
+      Concat(l, r, _, _) => {
+        let lm = l.meta()
+        if i <= lm.u16 {
+          node = l
+        } else {
+          acc = acc + lm.u8
+          i = i - lm.u16
+          node = r
+        }
+      }
+    }
+  }
+  acc
+}
+
+///|
+/// UTF-8 字节偏移 → UTF-16 码元偏移（偏移夹取到 [0, utf8_len]；落在
+/// 字符中间时向下取整到字符起点）。O(log n + 叶内扫描)。
+pub fn Rope::utf8_to_utf16(self : Rope, off : Int) -> Int {
+  let total = self.root.meta().u8
+  let mut i = if off < 0 { 0 } else if off > total { total } else { off }
+  let mut acc = 0
+  let mut node = self.root
+  while true {
+    match node {
+      Leaf(s, _) => {
+        // 叶内扫描：累计字节直到覆盖 i。
+        let n16 = s.length()
+        let mut u8 = 0
+        let mut j = 0
+        while j < n16 {
+          let c = s.at(j).to_int()
+          let (step8, step16) = if c < 0x80 {
+            (1, 1)
+          } else if c < 0x800 {
+            (2, 1)
+          } else if c >= 0xD800 && c < 0xDC00 && j + 1 < n16 {
+            let d = s.at(j + 1).to_int()
+            if d >= 0xDC00 && d < 0xE000 {
+              (4, 2)
+            } else {
+              (3, 1)
+            }
+          } else {
+            (3, 1)
+          }
+          if u8 + step8 > i {
+            break
+          }
+          u8 = u8 + step8
+          j = j + step16
+        }
+        return acc + j
+      }
+      Concat(l, r, _, _) => {
+        let lm = l.meta()
+        if i <= lm.u8 {
+          node = l
+        } else {
+          acc = acc + lm.u16
+          i = i - lm.u8
+          node = r
+        }
+      }
+    }
+  }
+  acc
+}
+
+///|
+/// 第 line 行（0 基）行首的 UTF-16 偏移；line 夹取到 [0, line_count-1]。
+/// O(log n + 叶内扫描)。
+pub fn Rope::offset_of_line(self : Rope, line : Int) -> Int {
+  let total_nl = self.root.meta().nl
+  let mut k = if line < 0 {
+    0
+  } else if line > total_nl {
+    total_nl
+  } else {
+    line
+  }
+  if k == 0 {
+    return 0
+  }
+  // 目标：第 k 个 '\n' 之后的位置。
+  let mut acc = 0
+  let mut node = self.root
+  while true {
+    match node {
+      Leaf(s, _) => {
+        let n = s.length()
+        let mut seen = 0
+        for j in 0..<n {
+          if s.at(j).to_int() == 10 {
+            seen = seen + 1
+            if seen == k {
+              return acc + j + 1
+            }
+          }
+        }
+        return acc + n
+      }
+      Concat(l, r, _, _) => {
+        let lm = l.meta()
+        if k <= lm.nl {
+          node = l
+        } else {
+          acc = acc + lm.u16
+          k = k - lm.nl
+          node = r
+        }
+      }
+    }
+  }
+  acc
+}
+
+///|
+/// UTF-16 偏移 → (行, 列)（均 0 基，列为行内 UTF-16 码元数；偏移夹取）。
+/// O(log n + 叶内扫描)。
+pub fn Rope::line_col_at(self : Rope, off : Int) -> (Int, Int) {
+  let n = self.root.len()
+  let p = if off < 0 { 0 } else if off > n { n } else { off }
+  // 行号 = [0, p) 内换行数。
+  let mut i = p
+  let mut line = 0
+  let mut node = self.root
+  while true {
+    match node {
+      Leaf(s, _) => {
+        for j in 0..<i {
+          if s.at(j).to_int() == 10 {
+            line = line + 1
+          }
+        }
+        break
+      }
+      Concat(l, r, _, _) => {
+        let lm = l.meta()
+        if i <= lm.u16 {
+          node = l
+        } else {
+          line = line + lm.nl
+          i = i - lm.u16
+          node = r
+        }
+      }
+    }
+  }
+  (line, p - self.offset_of_line(line))
 }

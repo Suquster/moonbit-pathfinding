@@ -36,9 +36,15 @@ pub fn Rope::insert(Self, Int, String) -> Unit
 pub fn Rope::is_leaf_balanced(Self) -> Bool
 pub fn Rope::leaf_count(Self) -> Int
 pub fn Rope::len(Self) -> Int
+pub fn Rope::line_col_at(Self, Int) -> (Int, Int)
+pub fn Rope::line_count(Self) -> Int
 pub fn Rope::new() -> Self
+pub fn Rope::offset_of_line(Self, Int) -> Int
 pub fn Rope::slice(Self, Int, Int) -> String
 pub fn Rope::to_string(Self) -> String
+pub fn Rope::utf16_to_utf8(Self, Int) -> Int
+pub fn Rope::utf8_len(Self) -> Int
+pub fn Rope::utf8_to_utf16(Self, Int) -> Int
 
 type RopeNode
 

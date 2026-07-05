@@ -103,8 +103,9 @@ Aho-Corasick（多模匹配）、Teddy（SIMD 字面量匹配）。
       状态缓存上限 512）/ Pike VM 间编译期择优，对调用方透明；决策经 `Pattern.engine` 字段可观测，
       `without_auto_engine` 供差分对照。*证据*：`prop_engine_select_test.mbt`（决策见证 +
       差分 PBT ≥200 迭代 + 代表性见证，与强制 Pike VM 逐位相等）。
-- [ ] **T2.4 对抗性鲁棒性回归**：病态正则（`(a*)*`、深嵌套、巨型字符类、灾难性回溯诱饵）
-      的线程步数线性 guard，证明无指数爆炸。
+- [x] **T2.4 对抗性鲁棒性回归** ✅：`prop_adversarial_test.mbt` 对 7 个经典 ReDoS 形态
+      （`(a*)*b`、`(a+)+b`、`(a|a)*b`、深嵌套、量词展开、巨型字符类）断言硬上界
+      `steps ≤ ninst×(n+1)`，并以倍增输入验证步数增速线性 + 语义健全性，证明无指数爆炸。
 
 **依赖与风险**：无外部依赖；SIMD（Teddy）在 MoonBit 三后端上以标量等价实现（语义对标、性能尽力）。
 
@@ -317,7 +318,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 二 Regex | T2.1 字面量预过滤 | ✅ 完成 | bench 20.2×；`benches/results/regex-prefilter-t2.1-native.md` |
 | 二 Regex | T2.2 必经串 + AC 多模 | ✅ 完成 | `aho_corasick.mbt`；`prop_ac_prefilter_test.mbt` 差分 PBT |
 | 二 Regex | T2.3 引擎自动选择 | ✅ 完成 | `engine_select.mbt`；`prop_engine_select_test.mbt` 差分 PBT |
-| 二 Regex | T2.4 对抗性鲁棒回归 | ⬜ 待办 | — |
+| 二 Regex | T2.4 对抗性鲁棒回归 | ✅ 完成 | `prop_adversarial_test.mbt` 硬上界 guard |
 | 九 Serialization | T9.1 conformance 语料 | ✅ 完成 | `conformance/` 黄金语料；`conformance_test.mbt` |
 | 九 Serialization | T9.2 unknown field | ✅ 完成 | `unknown_reencode_test.mbt` 逐字节保真 |
 | 九 Serialization | T9.3 跨实现互通 | ✅ 完成 | protobuf 6.33.6 黄金向量逐字节一致 |

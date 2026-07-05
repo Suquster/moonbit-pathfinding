@@ -195,6 +195,43 @@ test "bench: hamt vs cow-array persistent insert (n=2000/8000)" (b : @bench.T) {
 }
 
 ///|
+test "bench: skiplist vs linear map (insert+get, n=2000/8000/32000)" (
+  b : @bench.T,
+) {
+  for n in [2000, 8000, 32000] {
+    let keys = make_keys(n, n * 2, 20260708UL)
+    b.bench(name="skiplist_insert_get_\{n}", fn() {
+      let s : @ds.SkipList[Int, Int] = @ds.SkipList::new()
+      for k in keys {
+        let _ = s.insert(k, k)
+      }
+      let mut acc = 0
+      for k in keys {
+        match s.get(k) {
+          Some(v) => acc = acc + v
+          None => ()
+        }
+      }
+      b.keep(acc)
+    })
+    b.bench(name="linear_insert_get_sl_\{n}", fn() {
+      let entries : Array[(Int, Int)] = []
+      for k in keys {
+        linear_insert(entries, k, k)
+      }
+      let mut acc = 0
+      for k in keys {
+        match linear_get(entries, k) {
+          Some(v) => acc = acc + v
+          None => ()
+        }
+      }
+      b.keep(acc)
+    })
+  }
+}
+
+///|
 test "bench: btree range vs full filter (n=8000, 1000 queries)" (b : @bench.T) {
   let n = 8000
   let keys = make_keys(n, n * 2, 20260705UL)

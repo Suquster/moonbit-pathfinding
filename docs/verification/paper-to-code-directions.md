@@ -82,3 +82,12 @@
 | Erlang/OTP 监督树：OneForOne/OneForAll/RestForOne + 重启强度窗口（O(窗口) 修剪） | `src/actor/supervision*.mbt` | 确定性测试 + 风暴基准 685k events/sec、17087 次重启全恢复 |
 | 有界邮箱 + 丢弃/阻塞背压策略 | `src/actor/bounded_mailbox.mbt` | 容量 PBT（P25） |
 | ask 超时/乱序响应/关联 id 完整性 | `src/actor/ask.mbt` | PBT P11 + e2e |
+
+## E1 · Infra_DS（核心数据结构库）
+
+| 论文/规范构造 | 代码位置 | 验证测试 |
+|---|---|---|
+| CLRS §18 B-tree（t=8 单趟下降，预分裂/借位/合并） | `src/infra_ds/btree.mbt` | `btree_test.mbt` 差分 PBT 200 迭代；基准 insert+get 30.2×、range 29.2× |
+| Chambi et al. 2016 Roaring（高 16 位分桶 + array/bitmap 两态容器） | `src/infra_ds/roaring.mbt` | `roaring_test.mbt` 差分 PBT 200/100 迭代；稠密并 103× |
+| Bagwell 2001 HAMT（32 叉分片 bitmap+紧凑数组，路径复制结构共享） | `src/infra_ds/hamt.mbt` | `hamt_test.mbt` 差分 PBT 200 迭代；持久化插入 47× |
+| Pugh 1990 SkipList（p=1/2 几何晋升，种子化确定性层高） | `src/infra_ds/skiplist.mbt` | `skiplist_test.mbt` 差分 PBT 200 迭代 + 同种子确定性；insert+get 15.1× |

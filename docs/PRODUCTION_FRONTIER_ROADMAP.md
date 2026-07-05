@@ -215,7 +215,7 @@ LSP 3.17 规范、JSON-RPC 2.0 规范。
 **KPI 目标**：长文档增量编辑达对数级更新；协议消息（批处理/取消/进度/错误码）全覆盖 + 成帧往返 PBT。
 
 **任务分解**：
-- [ ] **T5.1 增量同步性能**：以 rope / piece-table 把长文档单次增量变更从次平方级降到对数级。
+- [x] **T5.1 增量同步性能**：以 rope / piece-table 把长文档单次增量变更从次平方级降到对数级。
 - [ ] **T5.2 协议完整性**：批处理、取消（`$/cancelRequest`）、进度、标准错误码全覆盖 + 成帧往返 PBT。
 - [ ] **T5.3 能力语义**：定义跳转/补全/诊断的真实语义实现与一致性测试。
 
@@ -354,7 +354,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 四 Parser | T4.1 零拷贝输入 | ✅ 完成 | Input 改 String+码元偏移零物化，json 基准 +17.5%~24.8%（benches/results/parser-zero-copy-t41-native-2026-07-05.md） |
 | 四 Parser | T4.2 错误消息质量 | ✅ 完成 | 最远失败合并（error_model.mbt）+ megaparsec 同构 render_error（源码行摘录/caret/unexpected/expecting，error_report_test.mbt 5 项锁定） |
 | 四 Parser | T4.3 性能基准 | ✅ 完成 | packrat/朴素对照基准 + BoundedCache O(1) LRU（benches/results/latest-parser-combinator.md） |
-| 五 LSP | T5.1 增量同步性能 | ⬜ 待办 | — |
+| 五 LSP | T5.1 增量同步性能 | ✅ 完成 | RopeDocument（join-based 平衡 rope）单点编辑 O(log N)，16384 行 228×（benches/results/lsp-rope-t51-native-2026-07-05.md），等价性 PBT 三编码锁定 |
 | 五 LSP | T5.2 协议完整性 | ⬜ 待办 | — |
 | 五 LSP | T5.3 能力语义 | ⬜ 待办 | — |
 | 六 Build | T6.1 内容寻址缓存 | ⬜ 待办 | — |

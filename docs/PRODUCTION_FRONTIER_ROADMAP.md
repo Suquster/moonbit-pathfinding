@@ -423,8 +423,9 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   Dial A***（小整数边权自动切换，无堆无比较）+ **Dial 桶数组并入
   SearchCtx 跨查询复用** + **弹出免重算本侧 h**后，golden 逐
   元素一致 + 12/12 用例（n {1000,10000} × deg {4,16} × 3 算法）签名
-  一致，**每用例中位加速比中位数 0.2498× → 30.9×**（BFS 22-71×、
-  Dijkstra 9.6-42×、A* 7.5-31×，全部快于 Rust `pathfinding` 4.11.0；
+  一致，**每用例中位加速比中位数 0.2498× → 31.7×**（BFS 22-76×、
+  Dijkstra 9.9-45×、A* 8.1-32×；Dial 桶下标增量循环维护免取模除法
+  + 双向 A* 首次会合前跳过 h_other 闭包调用，全部快于 Rust `pathfinding` 4.11.0；
   benches/results/rust-comparison-indexed-20260705.md、
   latest-rust-comparison.md）。
 

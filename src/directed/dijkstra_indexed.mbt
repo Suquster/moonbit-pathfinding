@@ -200,9 +200,10 @@ fn dial_indexed_ctx(
   buckets[0].push(start.to_int64())
   let mut pending = 1
   let mut d = 0L
+  let mut cur = 0 // d 对应的桶下标（增量维护，免逐次取模除法）
   let inf = 0x3FFF_FFFF_FFFFL
   while pending > 0 {
-    let b = buckets[(d % m.to_int64()).to_int()]
+    let b = buckets[cur]
     // 用下标推进：零权边可能在处理中向当前桶追加。
     let mut bi = 0
     while bi < b.length() {
@@ -232,13 +233,21 @@ fn dial_indexed_ctx(
           dist[v] = nd
           stamp[v] = gen
           parent[v] = u
-          buckets[(nd % m.to_int64()).to_int()].push(v.to_int64())
+          let mut slot = cur + (nd - d).to_int()
+          if slot >= m {
+            slot = slot - m
+          }
+          buckets[slot].push(v.to_int64())
           pending = pending + 1
         }
       }
     }
     b.clear()
     d = d + 1L
+    cur = cur + 1
+    if cur == m {
+      cur = 0
+    }
   }
   None
 }
@@ -397,8 +406,9 @@ fn astar_dial_ctx(
   parent[start] = -1
   let f0 = h(start).to_int64()
   let mut d = f0 // 当前扫描的 f 值
+  let mut cur = (f0 % m64).to_int() // d 对应的桶下标（增量维护，免逐次取模除法）
   let mut window_end = f0 + m64 // 桶窗口 [d, window_end)
-  buckets[(f0 % m64).to_int()].push((f0 << NODE_BITS) | start.to_int64())
+  buckets[cur].push((f0 << NODE_BITS) | start.to_int64())
   let mut pending = 1
   while pending > 0 {
     if d >= window_end {
@@ -417,12 +427,17 @@ fn astar_dial_ctx(
           d = fmin
         }
       }
+      cur = (d % m64).to_int()
       window_end = d + m64
       let mut w = 0
       while w < overflow.length() {
         let enc = overflow[w]
         if enc >> NODE_BITS < window_end {
-          buckets[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+          let mut slot = cur + ((enc >> NODE_BITS) - d).to_int()
+          if slot >= m {
+            slot = slot - m
+          }
+          buckets[slot].push(enc)
           let last = overflow.length() - 1
           overflow[w] = overflow[last]
           overflow.pop() |> ignore
@@ -431,7 +446,7 @@ fn astar_dial_ctx(
         }
       }
     }
-    let b = buckets[(d % m64).to_int()]
+    let b = buckets[cur]
     let mut bi = 0
     while bi < b.length() {
       let enc = b[bi]
@@ -466,7 +481,11 @@ fn astar_dial_ctx(
           let nf = nd + h(v).to_int64()
           let nenc = (nf << NODE_BITS) | v.to_int64()
           if nf < window_end {
-            buckets[(nf % m64).to_int()].push(nenc)
+            let mut slot = cur + (nf - d).to_int()
+            if slot >= m {
+              slot = slot - m
+            }
+            buckets[slot].push(nenc)
           } else {
             overflow.push(nenc)
           }
@@ -476,6 +495,10 @@ fn astar_dial_ctx(
     }
     b.clear()
     d = d + 1L
+    cur = cur + 1
+    if cur == m {
+      cur = 0
+    }
   }
   None
 }
@@ -533,6 +556,8 @@ pub fn dijkstra_bidirectional_ctx(
   let mut pend_b = 1
   let mut d_f = 0L
   let mut d_b = 0L
+  let mut cur_f = 0 // d_f 对应的桶下标（增量维护，免逐次取模除法）
+  let mut cur_b = 0
   let mut mu = INF_DIST
   let mut meet = -1
   while pend_f > 0 && pend_b > 0 {
@@ -541,7 +566,7 @@ pub fn dijkstra_bidirectional_ctx(
     }
     if d_f <= d_b {
       // 正向推进一个距离值。
-      let b = bf[(d_f % m64).to_int()]
+      let b = bf[cur_f]
       let mut bi = 0
       while bi < b.length() {
         let u = b[bi].to_int()
@@ -560,7 +585,11 @@ pub fn dijkstra_bidirectional_ctx(
             df[v] = nd
             sf[v] = gf
             pf[v] = u
-            bf[(nd % m64).to_int()].push(v.to_int64())
+            let mut slot = cur_f + (nd - d_f).to_int()
+            if slot >= m {
+              slot = slot - m
+            }
+            bf[slot].push(v.to_int64())
             pend_f = pend_f + 1
             if sb[v] == gb && nd + db[v] < mu {
               mu = nd + db[v]
@@ -571,9 +600,13 @@ pub fn dijkstra_bidirectional_ctx(
       }
       b.clear()
       d_f = d_f + 1L
+      cur_f = cur_f + 1
+      if cur_f == m {
+        cur_f = 0
+      }
     } else {
       // 反向推进一个距离值（rg 出边 = g 入边）。
-      let b = bb[(d_b % m64).to_int()]
+      let b = bb[cur_b]
       let mut bi = 0
       while bi < b.length() {
         let u = b[bi].to_int()
@@ -592,7 +625,11 @@ pub fn dijkstra_bidirectional_ctx(
             db[v] = nd
             sb[v] = gb
             pb[v] = u
-            bb[(nd % m64).to_int()].push(v.to_int64())
+            let mut slot = cur_b + (nd - d_b).to_int()
+            if slot >= m {
+              slot = slot - m
+            }
+            bb[slot].push(v.to_int64())
             pend_b = pend_b + 1
             if sf[v] == gf && nd + df[v] < mu {
               mu = nd + df[v]
@@ -603,6 +640,10 @@ pub fn dijkstra_bidirectional_ctx(
       }
       b.clear()
       d_b = d_b + 1L
+      cur_b = cur_b + 1
+      if cur_b == m {
+        cur_b = 0
+      }
     }
   }
   if meet < 0 {
@@ -667,10 +708,12 @@ fn astar_bidial_ctx(
   let f0b = h_b(target).to_int64()
   let mut d_f = f0f
   let mut d_b = f0b
+  let mut cur_f = (f0f % m64).to_int() // d_f 对应的桶下标（增量维护，免逐次取模除法）
+  let mut cur_b = (f0b % m64).to_int()
   let mut wend_f = f0f + m64
   let mut wend_b = f0b + m64
-  bkf[(f0f % m64).to_int()].push((f0f << NODE_BITS) | start.to_int64())
-  bkb[(f0b % m64).to_int()].push((f0b << NODE_BITS) | target.to_int64())
+  bkf[cur_f].push((f0f << NODE_BITS) | start.to_int64())
+  bkb[cur_b].push((f0b << NODE_BITS) | target.to_int64())
   let mut pend_f = 1
   let mut pend_b = 1
   let mut mu = INF_DIST
@@ -694,12 +737,17 @@ fn astar_bidial_ctx(
             d_f = fmin
           }
         }
+        cur_f = (d_f % m64).to_int()
         wend_f = d_f + m64
         let mut w = 0
         while w < ovf.length() {
           let enc = ovf[w]
           if enc >> NODE_BITS < wend_f {
-            bkf[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+            let mut slot = cur_f + ((enc >> NODE_BITS) - d_f).to_int()
+            if slot >= m {
+              slot = slot - m
+            }
+            bkf[slot].push(enc)
             let last = ovf.length() - 1
             ovf[w] = ovf[last]
             ovf.pop() |> ignore
@@ -708,7 +756,7 @@ fn astar_bidial_ctx(
           }
         }
       }
-      let b = bkf[(d_f % m64).to_int()]
+      let b = bkf[cur_f]
       let mut bi = 0
       while bi < b.length() {
         let enc = b[bi]
@@ -721,7 +769,8 @@ fn astar_bidial_ctx(
         cf[u] = gf
         let du = df[u]
         // 首次弹出时 enc 的 f = du + h_f(u)（同一节点最小 f 先出），免重算 h。
-        if enc >> NODE_BITS >= mu || du + d_b - h_b(u).to_int64() >= mu {
+        if meet >= 0 &&
+          (enc >> NODE_BITS >= mu || du + d_b - h_b(u).to_int64() >= mu) {
           continue
         }
         let stop = g.offsets[u + 1]
@@ -737,7 +786,11 @@ fn astar_bidial_ctx(
             let nf = nd + h_f(v).to_int64()
             let nenc = (nf << NODE_BITS) | v.to_int64()
             if nf < wend_f {
-              bkf[(nf % m64).to_int()].push(nenc)
+              let mut slot = cur_f + (nf - d_f).to_int()
+              if slot >= m {
+                slot = slot - m
+              }
+              bkf[slot].push(nenc)
             } else {
               ovf.push(nenc)
             }
@@ -751,6 +804,10 @@ fn astar_bidial_ctx(
       }
       b.clear()
       d_f = d_f + 1L
+      cur_f = cur_f + 1
+      if cur_f == m {
+        cur_f = 0
+      }
     } else {
       // 反向推进一个 f 值（rg 出边 = g 入边）。
       if d_b >= wend_b {
@@ -766,12 +823,17 @@ fn astar_bidial_ctx(
             d_b = fmin
           }
         }
+        cur_b = (d_b % m64).to_int()
         wend_b = d_b + m64
         let mut w = 0
         while w < ovb.length() {
           let enc = ovb[w]
           if enc >> NODE_BITS < wend_b {
-            bkb[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+            let mut slot = cur_b + ((enc >> NODE_BITS) - d_b).to_int()
+            if slot >= m {
+              slot = slot - m
+            }
+            bkb[slot].push(enc)
             let last = ovb.length() - 1
             ovb[w] = ovb[last]
             ovb.pop() |> ignore
@@ -780,7 +842,7 @@ fn astar_bidial_ctx(
           }
         }
       }
-      let b = bkb[(d_b % m64).to_int()]
+      let b = bkb[cur_b]
       let mut bi = 0
       while bi < b.length() {
         let enc = b[bi]
@@ -792,7 +854,8 @@ fn astar_bidial_ctx(
         }
         cb[u] = gb
         let du = db[u]
-        if enc >> NODE_BITS >= mu || du + d_f - h_f(u).to_int64() >= mu {
+        if meet >= 0 &&
+          (enc >> NODE_BITS >= mu || du + d_f - h_f(u).to_int64() >= mu) {
           continue
         }
         let stop = rg.offsets[u + 1]
@@ -808,7 +871,11 @@ fn astar_bidial_ctx(
             let nf = nd + h_b(v).to_int64()
             let nenc = (nf << NODE_BITS) | v.to_int64()
             if nf < wend_b {
-              bkb[(nf % m64).to_int()].push(nenc)
+              let mut slot = cur_b + (nf - d_b).to_int()
+              if slot >= m {
+                slot = slot - m
+              }
+              bkb[slot].push(nenc)
             } else {
               ovb.push(nenc)
             }
@@ -822,6 +889,10 @@ fn astar_bidial_ctx(
       }
       b.clear()
       d_b = d_b + 1L
+      cur_b = cur_b + 1
+      if cur_b == m {
+        cur_b = 0
+      }
     }
   }
   if meet < 0 {
@@ -913,7 +984,8 @@ pub fn astar_bidirectional_ctx(
       let du = df[u]
       // NBA* 剪枝：该节点不可能位于比 μ 更短的 s-t 路径上。
       // 首次弹出时 enc 的 f = du + h_f(u)，免重算本侧 h。
-      if enc >> NODE_BITS >= mu || du + fb - h_b(u).to_int64() >= mu {
+      if meet >= 0 &&
+        (enc >> NODE_BITS >= mu || du + fb - h_b(u).to_int64() >= mu) {
         continue
       }
       let stop = g.offsets[u + 1]
@@ -941,7 +1013,8 @@ pub fn astar_bidirectional_ctx(
       }
       cb[u] = gb
       let du = db[u]
-      if enc >> NODE_BITS >= mu || du + ff - h_f(u).to_int64() >= mu {
+      if meet >= 0 &&
+        (enc >> NODE_BITS >= mu || du + ff - h_f(u).to_int64() >= mu) {
         continue
       }
       let stop = rg.offsets[u + 1]

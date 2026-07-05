@@ -154,6 +154,47 @@ fn dedup_sorted(a : Array[Int]) -> Array[Int] {
 }
 
 ///|
+/// 朴素不可变映射：copy-on-write 数组，每次 put 复制整表（对标 HAMT 的
+/// 持久化语义——两者都保留旧版本）。
+fn cow_put(m : Array[(Int, Int)], k : Int, v : Int) -> Array[(Int, Int)] {
+  let out : Array[(Int, Int)] = []
+  let mut replaced = false
+  for e in m {
+    if e.0 == k {
+      out.push((k, v))
+      replaced = true
+    } else {
+      out.push(e)
+    }
+  }
+  if !replaced {
+    out.push((k, v))
+  }
+  out
+}
+
+///|
+test "bench: hamt vs cow-array persistent insert (n=2000/8000)" (b : @bench.T) {
+  for n in [2000, 8000] {
+    let keys = make_keys(n, n * 2, 20260707UL)
+    b.bench(name="hamt_persistent_insert_\{n}", fn() {
+      let mut m : @ds.HamtMap[Int, Int] = @ds.HamtMap::new()
+      for k in keys {
+        m = m.insert(k, k)
+      }
+      b.keep(m.length())
+    })
+    b.bench(name="cow_array_persistent_insert_\{n}", fn() {
+      let mut m : Array[(Int, Int)] = []
+      for k in keys {
+        m = cow_put(m, k, k)
+      }
+      b.keep(m.length())
+    })
+  }
+}
+
+///|
 test "bench: btree range vs full filter (n=8000, 1000 queries)" (b : @bench.T) {
   let n = 8000
   let keys = make_keys(n, n * 2, 20260705UL)

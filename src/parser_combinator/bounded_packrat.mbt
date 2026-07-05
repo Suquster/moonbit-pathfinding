@@ -66,7 +66,7 @@ pub fn[T] BoundedCache::new(cap : Int) -> BoundedCache[T] {
 ///|
 /// 当前缓存的条目数（恒 <= max(cap, 0)，对应 AC5）。
 pub fn[T] BoundedCache::len(self : BoundedCache[T]) -> Int {
-  self.entries.size()
+  self.entries.length()
 }
 
 ///|
@@ -113,7 +113,7 @@ pub fn[T] BoundedCache::put(
     self.bp_mark_recent(off)
     return
   }
-  if self.entries.size() >= self.cap {
+  if self.entries.length() >= self.cap {
     self.bp_evict_lru()
   }
   self.entries.set(off, outcome)

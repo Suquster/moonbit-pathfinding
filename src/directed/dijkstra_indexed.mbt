@@ -606,6 +606,141 @@ pub fn dijkstra_bidirectional_ctx(
 }
 
 ///|
+/// 双向 A*（NBA* 剪枝式，Pijls & Post 2009）：正向用 `h_f`（到 target
+/// 的一致下界）、反向沿 `rg` 用 `h_b`（到 start 的一致下界）各跑一支
+/// A*，每轮扩展堆顶 f 较小的一侧；松弛时维护会合上界 μ；弹出节点满足
+/// `f(u) ≥ μ` 或 `g(u) + F_other − h_other(u) ≥ μ` 即剪枝。两堆有一侧
+/// 排空即终止（剪枝式终止，正确性不依赖势函数变换）。h 全零时退化为
+/// 双向 Dijkstra 的搜索空间。语义与 `astar_indexed` 一致（代价最优；
+/// 路径可能不同但逐边合法），差分 PBT 守卫。
+pub fn astar_bidirectional_ctx(
+  g : WeightedCsr,
+  rg : WeightedCsr,
+  ctx_f : SearchCtx,
+  ctx_b : SearchCtx,
+  start : Int,
+  target : Int,
+  h_f : (Int) -> Int,
+  h_b : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  if start == target {
+    return Some(([start], 0))
+  }
+  ctx_f.gen = ctx_f.gen + 1
+  ctx_b.gen = ctx_b.gen + 1
+  let gf = ctx_f.gen
+  let gb = ctx_b.gen
+  let df = ctx_f.dist
+  let db = ctx_b.dist
+  let pf = ctx_f.parent
+  let pb = ctx_b.parent
+  let sf = ctx_f.stamp
+  let sb = ctx_b.stamp
+  let cf = ctx_f.closed
+  let cb = ctx_b.closed
+  let hf = ctx_f.heap
+  let hb = ctx_b.heap
+  hf.len = 0
+  hb.len = 0
+  df[start] = 0L
+  sf[start] = gf
+  pf[start] = -1
+  hf.push((h_f(start).to_int64() << NODE_BITS) | start.to_int64())
+  db[target] = 0L
+  sb[target] = gb
+  pb[target] = -1
+  hb.push((h_b(target).to_int64() << NODE_BITS) | target.to_int64())
+  let mut mu = INF_DIST
+  let mut meet = -1
+  while hf.len > 0 && hb.len > 0 {
+    let ff = hf.data[0] >> NODE_BITS
+    let fb = hb.data[0] >> NODE_BITS
+    // 两侧堆顶 f 均 ≥ μ 时后续弹出全被剪枝，直接终止。
+    if meet >= 0 && ff >= mu && fb >= mu {
+      break
+    }
+    if ff <= fb {
+      let enc = hf.pop()
+      let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+      if cf[u] == gf {
+        continue
+      }
+      cf[u] = gf
+      let du = df[u]
+      // NBA* 剪枝：该节点不可能位于比 μ 更短的 s-t 路径上。
+      if du + h_f(u).to_int64() >= mu || du + fb - h_b(u).to_int64() >= mu {
+        continue
+      }
+      let stop = g.offsets[u + 1]
+      for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+        let pe = g.packed[ei]
+        let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+        let nd = du + (pe >> NODE_BITS)
+        let dv = if sf[v] == gf { df[v] } else { INF_DIST }
+        if nd < dv {
+          df[v] = nd
+          sf[v] = gf
+          pf[v] = u
+          hf.push(((nd + h_f(v).to_int64()) << NODE_BITS) | v.to_int64())
+          if sb[v] == gb && nd + db[v] < mu {
+            mu = nd + db[v]
+            meet = v
+          }
+        }
+      }
+    } else {
+      let enc = hb.pop()
+      let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+      if cb[u] == gb {
+        continue
+      }
+      cb[u] = gb
+      let du = db[u]
+      if du + h_b(u).to_int64() >= mu || du + ff - h_f(u).to_int64() >= mu {
+        continue
+      }
+      let stop = rg.offsets[u + 1]
+      for ei = rg.offsets[u]; ei < stop; ei = ei + 1 {
+        let pe = rg.packed[ei]
+        let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+        let nd = du + (pe >> NODE_BITS)
+        let dv = if sb[v] == gb { db[v] } else { INF_DIST }
+        if nd < dv {
+          db[v] = nd
+          sb[v] = gb
+          pb[v] = u
+          hb.push(((nd + h_b(v).to_int64()) << NODE_BITS) | v.to_int64())
+          if sf[v] == gf && nd + df[v] < mu {
+            mu = nd + df[v]
+            meet = v
+          }
+        }
+      }
+    }
+  }
+  if meet < 0 {
+    return None
+  }
+  let path = [meet]
+  let mut node = meet
+  while pf[node] >= 0 {
+    node = pf[node]
+    path.push(node)
+  }
+  path.rev_in_place()
+  node = meet
+  while pb[node] >= 0 {
+    node = pb[node]
+    path.push(node)
+  }
+  Some((path, mu.to_int()))
+}
+
+///|
 /// 复用上下文的 A*（要求 `h` 一致/单调，consistent；批量查询时免
 /// 每次 O(n) 数组初始化，弹出时用 closed 戳代替 h(u) 重算）。
 /// 小整数边权（≤ 1024）自动切换桶式 Dial 变体。

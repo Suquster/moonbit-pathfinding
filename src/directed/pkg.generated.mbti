@@ -8,6 +8,8 @@ import {
 // Values
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
 
+pub fn astar_bidirectional_ctx(WeightedCsr, WeightedCsr, SearchCtx, SearchCtx, Int, Int, (Int) -> Int, (Int) -> Int) -> (Array[Int], Int)?
+
 pub fn astar_indexed(WeightedCsr, Int, Int, (Int) -> Int) -> (Array[Int], Int)?
 
 pub fn astar_indexed_ctx(WeightedCsr, SearchCtx, Int, Int, (Int) -> Int) -> (Array[Int], Int)?

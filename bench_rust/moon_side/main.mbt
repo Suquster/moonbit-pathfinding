@@ -142,13 +142,24 @@ fn dijkstra_signatures(
 /// 可采纳（admissible），等价一致代价搜索，与 Rust 侧完全一致。
 fn astar_signatures(
   g : @directed.WeightedCsr,
+  rg : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
-  let ctx = @directed.SearchCtx::new(g.node_count())
+  let ctx_f = @directed.SearchCtx::new(g.node_count())
+  let ctx_b = @directed.SearchCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.astar_indexed_ctx(g, ctx, s, t, fn(_node) { 0 })
+    let res = @directed.astar_bidirectional_ctx(
+      g,
+      rg,
+      ctx_f,
+      ctx_b,
+      s,
+      t,
+      fn(_node) { 0 },
+      fn(_node) { 0 },
+    )
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)
@@ -424,7 +435,7 @@ fn run_bench(map : Map[String, String]) -> Unit {
       let algos : Array[(String, () -> Array[Int])] = [
         ("BFS", fn() { bfs_signatures(uadj, uradj, queries) }),
         ("Dijkstra", fn() { dijkstra_signatures(wadj, wradj, queries) }),
-        ("A*", fn() { astar_signatures(wadj, queries) }),
+        ("A*", fn() { astar_signatures(wadj, wradj, queries) }),
       ]
       for entry in algos {
         let (algo, work) = entry

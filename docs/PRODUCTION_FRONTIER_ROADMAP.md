@@ -464,9 +464,20 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 ### E6 · 文本基础设施 — 对标 xi-editor rope / VS Code piece-table（衔接方向五）
 
-- rope / piece-table 编辑器内核、增量 diff（Myers/直方图）、UTF-8/16 索引双向转换
-  （LSP 已有雏形，拔高到编辑器级）。
-- KPI：百万字符文档随机编辑摊销 O(log n)；与朴素字符串重建差分逐位一致。
+- rope 编辑器内核 ✅ 已落地：`src/infra_text/rope.mbt`
+  （Boehm/Atkinson/Plass 1995，Leaf/Concat 二叉树 split/concat 编辑，
+  深度超界全量重建 + 相邻小叶合并；UTF-16 码元索引与 LSP 位置编码对齐），
+  与朴素字符串整篇重建差分 PBT 200 迭代三后端全绿；百万码元文档 512 次随机
+  编辑平衡不变量锁定；65536×512 编辑基准 **34.4×**
+  （benches/results/infra-text-rope-myers-e6-native-2026-07-05.md）。
+- Myers 增量 diff ✅ 已落地：`src/infra_text/myers_diff.mbt`
+  （Myers 1986 §4a 贪心正向 O((N+M)·D) + V 快照回溯最短编辑脚本），
+  round-trip PBT 200 迭代 + 与 O(N·M) DP 最小性差分 120 迭代 +
+  编辑受限性质（k 变异 ⇒ D ≤ 2k）60 迭代三后端全绿；相似文本 n=4096
+  基准 **204.7×** vs 全量 DP（同上工件）。
+- 后续批次：piece-table 变体、UTF-8/16 索引双向转换拔高到编辑器级。
+- KPI：百万字符文档随机编辑摊销 O(log n)（✅ 平衡不变量 + 34.4× 已达）；
+  与朴素字符串重建差分逐位一致（✅ 已达）。
 
 ### 攻坚排序建议（性价比）
 

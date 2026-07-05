@@ -1,0 +1,11 @@
+// Package: benches/infra_text_bench
+//
+// E6 文本基础设施基准：Rope 随机编辑 vs 朴素字符串整篇重建、
+// Myers diff vs O(N·M) 全量 DP，验证数量级优势。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench benches/infra_text_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_text" @text,
+}

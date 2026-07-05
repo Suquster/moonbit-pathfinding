@@ -37,12 +37,15 @@ pub(all) struct ActorId {
 pub(all) struct Mailbox[M] {
   mut items : Array[M]
   mut closed : Bool
+  /// 队首游标：`items[head..]` 为待处理消息。出队 O(1) 推进游标，
+  /// 已消费前缀过半时一次性压缩，避免数组头删 O(n) 的平方级退化。
+  mut head : Int
 }
 
 ///|
 /// 创建一个空邮箱（未关闭）。
 pub fn[M] Mailbox::new() -> Mailbox[M] {
-  { items: [], closed: false }
+  { items: [], closed: false, head: 0 }
 }
 
 ///|
@@ -56,33 +59,49 @@ pub fn[M] Mailbox::enqueue(self : Mailbox[M], msg : M) -> Unit {
 ///
 /// 该原语供任务 16.2 的串行消息循环消费消息时复用。
 pub fn[M] Mailbox::dequeue(self : Mailbox[M]) -> M? {
-  if self.items.is_empty() {
-    None
-  } else {
-    Some(self.items.remove(0))
+  if self.head >= self.items.length() {
+    return None
   }
+  let msg = self.items[self.head]
+  self.head = self.head + 1
+  let n = self.items.length()
+  if self.head == n {
+    self.items.clear()
+    self.head = 0
+  } else if self.head >= 64 && self.head * 2 >= n {
+    // 压缩：把存活区间前移到数组头部，释放已消费空间。
+    let live = n - self.head
+    for i in 0..<live {
+      self.items[i] = self.items[self.head + i]
+    }
+    while self.items.length() > live {
+      ignore(self.items.pop())
+    }
+    self.head = 0
+  }
+  Some(msg)
 }
 
 ///|
 /// 查看邮箱队首消息但不取出；邮箱为空时返回 None。
 pub fn[M] Mailbox::peek(self : Mailbox[M]) -> M? {
-  if self.items.is_empty() {
+  if self.head >= self.items.length() {
     None
   } else {
-    Some(self.items[0])
+    Some(self.items[self.head])
   }
 }
 
 ///|
 /// 邮箱是否为空（Requirement 10.5「空邮箱挂起」的判定原语）。
 pub fn[M] Mailbox::is_empty(self : Mailbox[M]) -> Bool {
-  self.items.is_empty()
+  self.head >= self.items.length()
 }
 
 ///|
 /// 邮箱当前排队的消息条数。
 pub fn[M] Mailbox::length(self : Mailbox[M]) -> Int {
-  self.items.length()
+  self.items.length() - self.head
 }
 
 ///|

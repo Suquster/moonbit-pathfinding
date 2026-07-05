@@ -187,6 +187,7 @@ pub fn[S] LifecycleHooks::new((S) -> S, (S) -> Unit, (S, String) -> Unit, (S) ->
 pub(all) struct Mailbox[M] {
   mut items : Array[M]
   mut closed : Bool
+  mut head : Int
 }
 pub fn[M] Mailbox::close(Self[M]) -> Unit
 pub fn[M] Mailbox::dequeue(Self[M]) -> M?

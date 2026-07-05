@@ -28,14 +28,16 @@ pub(all) enum Step[T] {
 }
 
 ///|
-/// 内部辅助：由字符数组构造一个起始游标位置的 `Input`（不经字符串中转）。
+/// 内部辅助：由字符数组构造一个起始游标位置的 `Input`。
+///
+/// 物化为不可变 `String` 快照，隔离后续对 source.chunks 的追加（避免共享
+/// 可变缓冲污染已建 Input）；快照建成后各 `Input` 间零拷贝共享。
 fn pc_input_of_chars(chars : Array[Char]) -> Input {
-  // 复制一份以隔离后续对 source.chunks 的追加（避免共享可变缓冲污染已建 Input）。
-  let snapshot : Array[Char] = []
+  let sb = StringBuilder::new()
   for c in chars {
-    snapshot.push(c)
+    sb.write_char(c)
   }
-  { chars: snapshot, pos: Pos::start() }
+  Input::from_string(sb.to_string())
 }
 
 ///|
@@ -46,7 +48,7 @@ fn[T] pc_stream_eval(g : Grammar[T], src : StreamSource) -> Step[T] {
   match res {
     Ok(_, _) => Step::Done(res)
     Fail(pos, ..) => {
-      let avail = src.chunks.length()
+      let avail = input.source.length()
       if src.closed {
         // 已结束且不满足 → 语法失败（R10.4）。
         Step::Done(res)

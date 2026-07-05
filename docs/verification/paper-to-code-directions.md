@@ -97,3 +97,4 @@
 | 论文/规范构造 | 代码位置 | 验证测试 |
 |---|---|---|
 | Varghese & Lauck 1987 层级定时器轮（5 级×64 槽 + 回绕 cascade，摊销 O(1)） | `src/infra_timer/timer_wheel.mbt` | `timer_wheel_test.mbt` 与朴素 O(n) 扫描差分 PBT 200 迭代（逐 tick 到期集合一致）；基准 n=16000 281× |
+| Chase & Lev 2005 工作窃取双端队列（环形缓冲 owner-LIFO/thief-FIFO 摊销 O(1)）+ 确定性轮转调度器 | `src/infra_timer/work_stealing.mbt` | `work_stealing_test.mbt` 无丢失无重复 + 同输入 trace 逐位一致 PBT 120 迭代；混合负载基准 15.1× |

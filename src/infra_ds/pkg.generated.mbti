@@ -1,0 +1,27 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_ds"
+
+// Values
+
+// Errors
+
+// Types and methods
+type BNode[K, V]
+
+pub struct BTreeMap[K, V] {
+  mut root : BNode[K, V]
+  mut count : Int
+}
+pub fn[K : Compare, V] BTreeMap::contains(Self[K, V], K) -> Bool
+pub fn[K : Compare, V] BTreeMap::get(Self[K, V], K) -> V?
+pub fn[K : Compare, V] BTreeMap::insert(Self[K, V], K, V) -> V?
+pub fn[K, V] BTreeMap::new() -> Self[K, V]
+pub fn[K : Compare, V] BTreeMap::range(Self[K, V], K, K) -> Array[(K, V)]
+pub fn[K : Compare, V] BTreeMap::remove(Self[K, V], K) -> V?
+pub fn[K, V] BTreeMap::size(Self[K, V]) -> Int
+pub fn[K, V] BTreeMap::to_array(Self[K, V]) -> Array[(K, V)]
+
+// Type aliases
+
+// Traits
+

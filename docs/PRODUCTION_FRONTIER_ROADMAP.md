@@ -462,6 +462,17 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 - metrics 后续批次：tracing span 树。
 - KPI：sketch 误差界有证明式测试（✅ 已达）；聚合吞吐数量级优于全量排序求分位（✅ 56.1×）。
 
+#### E3 已落地批次
+
+- Slab 分配器 + 分代句柄 ✅ 已落地：`src/infra_alloc/slab.mbt`
+  （对标 Rust slab / slotmap crate：连续槽位 + 侵入式 free-list，
+  alloc/free/get 均 O(1)；32 位代数句柄常数代价 use-after-free 检测），
+  与朴素参照差分 PBT 200 迭代 + 分代失效/双重释放/clear 定向 + 稳态
+  churn 容量有界守卫三后端全绿；高占用 churn 基准 n=128000 **37.0×**
+  vs 线性扫描槽池、3.1× vs Map 句柄
+  （benches/results/infra-alloc-slab-e3-native-2026-07-05.md）。
+- 后续批次：arena（批量释放型）系统化并接入运行时热路径。
+
 ### E6 · 文本基础设施 — 对标 xi-editor rope / VS Code piece-table（衔接方向五）
 
 - rope 编辑器内核 ✅ 已落地：`src/infra_text/rope.mbt`

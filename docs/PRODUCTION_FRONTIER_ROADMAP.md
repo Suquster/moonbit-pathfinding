@@ -309,8 +309,11 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 若上游 async 可用则接真异步运行时（对外契约不变）。
 
 **任务分解**（**突破** spec「不接真并发/async」非目标）：
-- [ ] **T10.1 真·异步运行时**：若 `moonbitlang/async` 可登记进 `moon.mod.json`，
-      把同步调度替换为真实异步消息循环（对外 spawn/send/stop 契约不变）；否则实现协作式调度逼近。
+- [x] **T10.1 真·异步运行时（核实收口）** ✅：已实测 `moon add moonbitlang/async@0.20.1` 可登记，
+      但该库**仅支持 native/LLVM 后端（Linux/macOS）**、且官方标注 experimental/API 不稳定——
+      与本仓「三后端（native/wasm-gc/js）全绿」硬门禁冲突，故**维持协作式确定性调度**
+      （确定性正是 DST/PBT 证据链的前提）；升级路径：待上游支持 wasm-gc/js 或 API 稳定后，
+      以 native-only 条件编译层接入、对外 spawn/send/stop 契约不变。
 - [x] **T10.2 监督树语义** ✅：OneForOne/OneForAll/RestForOne + 强度窗口（O(窗口) 修剪），风暴基准 685k events/sec、17087 次重启全恢复。
 - [x] **T10.3 背压与邮箱策略** ✅：有界邮箱 + 丢弃/阻塞策略（bounded_mailbox.mbt，容量 PBT P25）。
 - [x] **T10.4 ask 超时/关联完整性** ✅：超时/乱序响应/关联 id 完整性（ask.mbt，PBT P11 及 e2e）。
@@ -324,7 +327,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 - [ ] 每个生产化 PR 必过 §0.3 统一验证协议（0 告警 + 三后端全绿 + .mbti 只增 + PBT ≥100）。
 - [ ] 性能类任务落 `benches/results/` 工件并接回归 guard。
-- [ ] 每方向 1 份 paper-to-code 追溯文档（§C5）。
+- [x] 每方向 1 份 paper-to-code 追溯文档（§C5）——docs/verification/paper-to-code-directions.md（十方向汇总，逐条论文→代码→测试）+ paper-to-code-advanced.md（CH/JPS/ALT）。
 - [x] 负例/边界回归测试随每方向补齐（对应 backlog P0：unreachable/零节点/单节点/重边/负权/不连通）——见 CHAMPIONSHIP_BACKLOG.md 该项证据（undirected/unweighted/directed 三包 edge_cases 测试）。
 - [x] 双语 README（中/英）在状态、范围、命令上保持一致（对应 backlog P1）——中文算法目录补齐至 30+3 与英文版对齐。
 
@@ -367,12 +370,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 八 DST | T8.1 DPOR 完备性 | ✅ 完成 | 顺序敏感竞态差分（src/dst/prop_dpor_diff_ext_test.mbt） |
 | 八 DST | T8.2 故障注入丰富化 | ✅ 完成 | DiskFault 丢写 + shrink（src/dst/prop_disk_fault_test.mbt） |
 | 八 DST | T8.3 线性一致性检查器 | ✅ 完成 | H&W/Knossos 语料 + 差分 PBT（src/dst/prop_lin_corpus_test.mbt） |
-| 十 Actor | T10.1 真·异步运行时 | ⬜ 待办（依赖上游） | — |
+| 十 Actor | T10.1 真·异步运行时 | ✅ 核实收口 | moonbitlang/async@0.20.1 可登记但仅 native（与三后端门禁冲突）且 experimental——维持协作式确定性调度，升级路径已文档化 |
 | 十 Actor | T10.2 监督树语义 | ✅ 完成 | OneForOne/OneForAll/RestForOne+强度窗口（O(窗口) 修剪）；风暴基准 685k events/sec、17087 次重启全恢复（benches/results/actor-supervision-storm-native-2026-07-05.md） |
 | 十 Actor | T10.3 背压/邮箱策略 | ✅ 完成 | 有界邮箱 DropNew/DropOldest/Fail + 出队摊销 O(1)（benches/results/actor-bounded-mailbox-scaling-native-2026-07-05.md）；10k 吞吐 11.35M msgs/sec |
 | 十 Actor | T10.4 ask 完整性 | ✅ 完成 | `ask.mbt` AskBroker 相关 ID+超时；e2e + 匹配/超时 PBT（prop_p12/p13） |
-| 横切 | 负例/边界回归 | ⬜ 待办 | — |
-| 横切 | 双语文档一致性 | ⬜ 待办 | — |
+| 横切 | 负例/边界回归 | ✅ 完成 | undirected/unweighted/directed 三包 edge_cases 测试（unreachable/零节点/单节点/重边/负权/不连通） |
+| 横切 | 双语文档一致性 | ✅ 完成 | 中文 README 算法目录补齐至 30+3 与英文版对齐 |
+| 横切 | paper-to-code 追溯 | ✅ 完成 | docs/verification/paper-to-code-directions.md（十方向）+ paper-to-code-advanced.md（CH/JPS/ALT） |
 
 ---
 

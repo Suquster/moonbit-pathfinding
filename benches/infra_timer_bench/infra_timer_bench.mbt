@@ -60,3 +60,62 @@ test "bench: timer wheel vs naive scan (n=1000/4000/16000)" (b : @bench.T) {
     })
   }
 }
+
+///|
+test "bench: work deque vs naive array queue (mixed push/pop/steal)" (
+  b : @bench.T,
+) {
+  for n in [4000, 16000, 64000] {
+    b.bench(name="work_deque_mixed_\{n}", fn() {
+      let d : @tw.WorkDeque[Int] = @tw.WorkDeque::new()
+      let mut acc = 0
+      let mut s = 20260710UL
+      for i in 0..<n {
+        d.push(i)
+        s = xorshift(s)
+        // 1/2 概率 owner pop，1/4 概率 thief steal。
+        if (s & 1UL) == 0UL {
+          match d.pop() {
+            Some(v) => acc = acc + v
+            None => ()
+          }
+        } else if (s & 2UL) == 0UL {
+          match d.steal() {
+            Some(v) => acc = acc + v
+            None => ()
+          }
+        }
+      }
+      while d.size() > 0 {
+        match d.steal() {
+          Some(v) => acc = acc + v
+          None => ()
+        }
+      }
+      b.keep(acc)
+    })
+    b.bench(name="naive_array_queue_\{n}", fn() {
+      let q : Array[Int] = []
+      let mut acc = 0
+      let mut s = 20260710UL
+      for i in 0..<n {
+        q.push(i)
+        s = xorshift(s)
+        if (s & 1UL) == 0UL {
+          match q.pop() {
+            Some(v) => acc = acc + v
+            None => ()
+          }
+        } else if (s & 2UL) == 0UL {
+          if q.length() > 0 {
+            acc = acc + q.remove(0) // 头部出队 O(n) 移位
+          }
+        }
+      }
+      while q.length() > 0 {
+        acc = acc + q.remove(0)
+      }
+      b.keep(acc)
+    })
+  }
+}

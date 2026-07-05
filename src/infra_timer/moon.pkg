@@ -1,0 +1,12 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_timer
+//
+// 层级定时器轮（E4，对标 Linux kernel timer wheel / Netty HashedWheelTimer /
+// Kafka Purgatory）。Varghese & Lauck 1987 "Hashed and Hierarchical Timing
+// Wheels"：多级轮 + cascade 降级，schedule/cancel/expire 摊销 O(1)（对比朴素
+// 每 tick O(n) 扫描）。单线程确定性建模，advance 明确返回到期 id 序列。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

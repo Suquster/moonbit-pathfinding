@@ -1,0 +1,11 @@
+// Package: benches/infra_timer_bench
+//
+// E4 定时器轮基准：层级 timer wheel（摊销 O(1)）vs 朴素每 tick O(n) 扫描，
+// n 个随机延迟定时器全程推进到全部触发。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_timer_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_timer" @tw,
+}

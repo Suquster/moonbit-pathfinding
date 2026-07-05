@@ -20,6 +20,8 @@ pub enum Prefilter {
   PfNone
   /// 匹配必以该字符集合中某字符开头（真实首字符的超集，已按 case-fold 归一）。
   PfFirstSet(CharSet)
+  /// 匹配必以自动机中某个必经字面量前缀开头（T2.2，Aho-Corasick 多模扫描）。
+  PfLiterals(AcAutomaton)
 } derive(Eq)
 
 ///|
@@ -82,6 +84,91 @@ fn ast_first_set(ast : Ast) -> (Bool, CharSet) {
 }
 
 ///|
+/// 提取子表达式的【必经字面量前缀】并追加到 `acc`（T2.2）。
+///
+/// 返回值表示该节点是否【完整且定长字面】：若真，则节点的每次匹配都恰好是
+/// 刚追加的字符序列，`Concat` 可继续向后累计下一节点的前缀（保持连续性）；
+/// 若假，已追加的字符仍是必经前缀，但其后内容长度不定，累计必须终止。
+///
+/// 健全性（超集不变量的字符串版）：追加到 `acc` 的每个字符都是任意匹配
+/// 中【必然连续出现于匹配起点处】的字符，因此扫描不到该前缀的位置绝不
+/// 可能是匹配起点。
+fn literal_prefix_acc(ast : Ast, acc : Array[Char]) -> Bool {
+  match ast {
+    Empty => true
+    Lit(c) => {
+      acc.push(c)
+      true
+    }
+    Group(body~, ..) => literal_prefix_acc(body, acc)
+    Concat(xs) => {
+      for x in xs {
+        if !literal_prefix_acc(x, acc) {
+          return false
+        }
+      }
+      true
+    }
+    // 零宽断言不消费字符：前缀连续性不受影响，继续向后累计。
+    Assert(_) => true
+    Repeat(node~, min~, max~, ..) => {
+      if min >= 1 {
+        // 第一次重复必取：其前缀紧接 `acc` 之后，仍是必经前缀。
+        let sub : Array[Char] = []
+        let complete = literal_prefix_acc(node, sub)
+        if complete && max == Some(min) {
+          // 定量重复完整字面（如 `a{3}`）：展开 min 份，保持可继续。
+          for _ in 0..<min {
+            for ch in sub {
+              acc.push(ch)
+            }
+          }
+          return true
+        }
+        for ch in sub {
+          acc.push(ch)
+        }
+      }
+      // 后续重复次数不定（或 min==0 可空）=> 连续性中断。
+      false
+    }
+    // 选择 / 字符集 / 环视：无单一必经字面，累计终止。
+    Alt(_) | Set(_) | Look(..) => false
+  }
+}
+
+///|
+/// 提取【必经字面量前缀集】（T2.2）：任何匹配必以返回集合中某个字符串
+/// 开头。顶层选择逐分支提取（每支非空才成立）；单分支要求前缀长度 ≥ 2
+/// （单字符前缀由更廉价的首字符集预过滤覆盖）。不适用时返回 `None`。
+fn required_literal_patterns(ast : Ast) -> Array[Array[Char]]? {
+  match ast {
+    Alt(branches) => {
+      let pats : Array[Array[Char]] = []
+      for b in branches {
+        let acc : Array[Char] = []
+        let _ = literal_prefix_acc(b, acc)
+        if acc.length() == 0 {
+          return None
+        }
+        pats.push(acc)
+      }
+      Some(pats)
+    }
+    Group(body~, ..) => required_literal_patterns(body)
+    _ => {
+      let acc : Array[Char] = []
+      let _ = literal_prefix_acc(ast, acc)
+      if acc.length() >= 2 {
+        Some([acc])
+      } else {
+        None
+      }
+    }
+  }
+}
+
+///|
 /// 从 AST 与编译标志推导预过滤策略（在 `compile_program` 中调用一次）。
 ///
 /// 关键：当正则可空（nullable）时退化为 `PfNone`；启用忽略大小写时对首字符集
@@ -91,6 +178,15 @@ pub fn compute_prefilter(ast : Ast, flags : Flags) -> Prefilter {
   let (nullable, set) = ast_first_set(ast)
   if nullable {
     return PfNone
+  }
+  // T2.2：必经字面量前缀集可用时优先 Aho-Corasick 多模扫描（比首字符集
+  // 更精确，候选起点更稀疏）。忽略大小写时字面字符需逐位 fold，保守起见
+  // 退回首字符集路径（其 case_fold 已被属性测试守护）。
+  if !flags.ignore_case {
+    match required_literal_patterns(ast) {
+      Some(pats) => return PfLiterals(AcAutomaton::build(pats))
+      None => ()
+    }
   }
   let folded = if flags.ignore_case { set.case_fold() } else { set }
   // 非可空但首字符集为空 => 该正则不可能匹配任何输入；保守返回 PfNone，
@@ -121,5 +217,6 @@ pub fn Prefilter::next_candidate(
       }
       p
     }
+    PfLiterals(ac) => ac.next_candidate(chars, n, pos)
   }
 }

@@ -11,11 +11,13 @@
 ///|
 /// 编译后的模式句柄。
 ///
-///   * `prog` —— Pike VM 程序；
-///   * `kind` —— 匹配策略。
+///   * `prog`   —— Pike VM 程序；
+///   * `kind`   —— 匹配策略；
+///   * `engine` —— 编译期引擎决策（T2.3，见 `engine_select.mbt`）。
 pub struct Pattern {
   prog : Program
   kind : MatchKind
+  engine : EngineChoice
 }
 
 ///|
@@ -28,7 +30,10 @@ pub fn Pattern::compile(
 ) -> Result[Pattern, ParseError] {
   match parse_pattern(pattern, flags~) {
     Err(e) => Err(e)
-    Ok(ast) => Ok({ prog: compile_program(ast, flags~), kind })
+    Ok(ast) => {
+      let prog = compile_program(ast, flags~)
+      Ok({ prog, kind, engine: select_engine(prog, kind) })
+    }
   }
 }
 
@@ -40,9 +45,54 @@ pub fn Pattern::without_prefilter(self : Pattern) -> Pattern {
 }
 
 ///|
+/// 返回强制 Pike VM 全功能路径的等价模式（T2.3）：匹配语义不变，仅禁用
+/// 引擎自动选择。供差分测试证明路由不改变任何搜索结果。
+pub fn Pattern::without_auto_engine(self : Pattern) -> Pattern {
+  { ..self, engine: EngPikeVm }
+}
+
+///|
+/// 在字符数组上自 `from` 起搜索首个匹配区间（引擎路由入口，包内私有）。
+/// 三条路径语义等价（`engine_select.mbt` 的选择器保证适用性，差分属性
+/// 测试守护一致性）。
+fn Pattern::search_chars(
+  self : Pattern,
+  chars : Array[Char],
+  n : Int,
+  from : Int,
+) -> Match? {
+  match self.engine {
+    EngLiteralScan =>
+      match program_literal(self.prog) {
+        Some(lit) =>
+          literal_find_from(lit, AcAutomaton::build([lit]), chars, n, from)
+        // 防御性回退：选择器保证不会到达。
+        None => self.search_pikevm(chars, n, from)
+      }
+    EngLazyDfa => PvLazyDfa::new(self.prog).find_from(chars, n, from)
+    EngPikeVm => self.search_pikevm(chars, n, from)
+  }
+}
+
+///|
+/// Pike VM 路径的区间搜索（包内私有）。
+fn Pattern::search_pikevm(
+  self : Pattern,
+  chars : Array[Char],
+  n : Int,
+  from : Int,
+) -> Match? {
+  match self.prog.exec_chars(chars, n, from, self.kind) {
+    Some(caps) => caps.group(0)
+    None => None
+  }
+}
+
+///|
 /// 是否存在匹配。
 pub fn Pattern::is_match(self : Pattern, input : String) -> Bool {
-  match self.prog.exec(input, kind=self.kind) {
+  let chars = input.iter().to_array()
+  match self.search_chars(chars, chars.length(), 0) {
     Some(_) => true
     None => false
   }
@@ -51,10 +101,8 @@ pub fn Pattern::is_match(self : Pattern, input : String) -> Bool {
 ///|
 /// 首个匹配的整体区间。
 pub fn Pattern::find(self : Pattern, input : String) -> Match? {
-  match self.prog.exec(input, kind=self.kind) {
-    Some(caps) => caps.group(0)
-    None => None
-  }
+  let chars = input.iter().to_array()
+  self.search_chars(chars, chars.length(), 0)
 }
 
 ///|
@@ -80,18 +128,23 @@ fn Pattern::find_all_on(
   n : Int,
 ) -> Array[Match] {
   let out : Array[Match] = []
+  // 惰性 DFA 路径：整次枚举共享同一个状态缓存（跨起点摊还确定化成本）。
+  let lazy_dfa : PvLazyDfa? = match self.engine {
+    EngLazyDfa => Some(PvLazyDfa::new(self.prog))
+    _ => None
+  }
   let mut pos = 0
   while pos <= n {
-    match self.prog.exec_chars(chars, n, pos, self.kind) {
+    let m = match lazy_dfa {
+      Some(dfa) => dfa.find_from(chars, n, pos)
+      None => self.search_chars(chars, n, pos)
+    }
+    match m {
       None => break
-      Some(caps) =>
-        match caps.group(0) {
-          None => break
-          Some(m) => {
-            out.push(m)
-            pos = if m.end > m.start { m.end } else { m.end + 1 }
-          }
-        }
+      Some(m) => {
+        out.push(m)
+        pos = if m.end > m.start { m.end } else { m.end + 1 }
+      }
     }
   }
   out

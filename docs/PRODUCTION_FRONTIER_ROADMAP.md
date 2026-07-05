@@ -94,10 +94,15 @@ Aho-Corasick（多模匹配）、Teddy（SIMD 字面量匹配）。
       *证据*：差分 PBT `prop_prefilter_test.mbt`（≥200 迭代，逐字段相等）；native bench
       稀疏长文本 **5.58 ms → 276.5 µs（≈20.2×）**，见 `benches/results/regex-prefilter-t2.1-native.md`；
       确定性 guard 证明预过滤裁掉 >95% 播种位置。三后端 1925 测试全绿、0 告警、.mbti 只增。
-- [ ] **T2.2 必经字面量串 + Aho-Corasick 多模扫描**：对 `Concat`/`Alt` 提取公共必经子串，
-      多字面量用 Aho-Corasick 自动机一次扫描。
-- [ ] **T2.3 引擎自动选择**：按模式特征（捕获/定长/字符集规模/字面量可得性）在
-      Pike VM / 惰性 DFA / 预过滤路径间自动择优，对调用方透明，附选择决策的可观测日志。
+- [x] **T2.2 必经字面量串 + Aho-Corasick 多模扫描** ✅：`aho_corasick.mbt` 实现 trie+失配链
+      自动机；`prefilter.mbt` 对 `Concat`/`Alt` 提取必经字面量前缀集，多模一次扫描（`PfLiterals`）。
+      *证据*：`prop_ac_prefilter_test.mbt`（AC 本体与朴素多模扫描逐位对拍、编译策略见证、
+      差分 PBT ≥200 迭代 + 12 代表性见证）；三后端 1937 测试全绿、0 告警、.mbti 只增。
+- [x] **T2.3 引擎自动选择** ✅：`engine_select.mbt` 按模式特征（纯字面量/捕获组/零宽断言/
+      匹配策略）在字面量直扫（`EngLiteralScan`，AC 单模）/ 容量受限惰性 DFA（`EngLazyDfa`，
+      状态缓存上限 512）/ Pike VM 间编译期择优，对调用方透明；决策经 `Pattern.engine` 字段可观测，
+      `without_auto_engine` 供差分对照。*证据*：`prop_engine_select_test.mbt`（决策见证 +
+      差分 PBT ≥200 迭代 + 代表性见证，与强制 Pike VM 逐位相等）。
 - [ ] **T2.4 对抗性鲁棒性回归**：病态正则（`(a*)*`、深嵌套、巨型字符类、灾难性回溯诱饵）
       的线程步数线性 guard，证明无指数爆炸。
 
@@ -117,12 +122,18 @@ Protocol Buffers Encoding 官方规范、protobuf conformance test suite。
 unknown field 往返保真 100%。
 
 **任务分解**：
-- [ ] **T9.1 protobuf conformance 黄金语料**：固化覆盖各 wire 分支的对齐测试向量
-      （varint 边界 0/1/最大值、负数 zigzag、`fixed32/64`、嵌套消息、packed repeated、unknown），
-      黄金文件回归校验编解码逐字节正确。*验收*：≥90% wire 分支覆盖、三后端逐字节一致。
-- [ ] **T9.2 unknown field 保留**：解码保留未知字段并在再编码原样回写（跨版本互通关键）。
-- [ ] **T9.3 跨实现互通验证**：以真实 protobuf 工具产出的字节做离线固化黄金输入，证明互通。
-- [ ] **T9.4 packed repeated + map 字段**：proto3 packed 编码与 map 语法糖的编解码。
+- [x] **T9.1 protobuf conformance 黄金语料** ✅：`conformance/`（gen_corpus.py 离线用
+      protobuf 6.33.6 生成 corpus.golden）+ `conformance_test.mbt` 固化全 wire 分支黄金向量
+      （varint 边界/zigzag/fixed/嵌套/packed/map），编解码逐字节一致，三后端全绿。
+- [x] **T9.2 unknown field 保留** ✅：`typed.mbt` 解码保留未知字段（号/wire/原始取值）并在
+      再编码原样回写。*证据*：`prop_unknown_test.mbt`（PBT）+ `unknown_reencode_test.mbt`
+      （外来字节全 wire 类型 + 嵌套未知字段，解码-再编码**逐字节**保真）。
+- [x] **T9.3 跨实现互通验证** ✅：黄金向量由真实 Google protobuf 运行时离线产出并固化
+      （`conformance/gen_corpus.py` 可复现），`conformance_test.mbt` 证明本库独立实现与之
+      逐字节互通（编码产出一致、解码消费一致）。
+- [x] **T9.4 packed repeated + map 字段** ✅：proto3 packed 编解码（兼容非 packed wire
+      形态）与 map 语法糖完整支持。*证据*：`prop_packed_test.mbt`（packed/非 packed 等价 PBT）、
+      conformance 黄金向量含 packed 与 map 分支逐字节对齐。
 
 **依赖与风险**：黄金向量需离线生成后固化进仓库（不在 CI 联网）。
 
@@ -304,13 +315,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 方向 | 任务 | 状态 | 证据 |
 |------|------|------|------|
 | 二 Regex | T2.1 字面量预过滤 | ✅ 完成 | bench 20.2×；`benches/results/regex-prefilter-t2.1-native.md` |
-| 二 Regex | T2.2 必经串 + AC 多模 | ⬜ 待办 | — |
-| 二 Regex | T2.3 引擎自动选择 | ⬜ 待办 | — |
+| 二 Regex | T2.2 必经串 + AC 多模 | ✅ 完成 | `aho_corasick.mbt`；`prop_ac_prefilter_test.mbt` 差分 PBT |
+| 二 Regex | T2.3 引擎自动选择 | ✅ 完成 | `engine_select.mbt`；`prop_engine_select_test.mbt` 差分 PBT |
 | 二 Regex | T2.4 对抗性鲁棒回归 | ⬜ 待办 | — |
-| 九 Serialization | T9.1 conformance 语料 | ⬜ 待办 | — |
-| 九 Serialization | T9.2 unknown field | ⬜ 待办 | — |
-| 九 Serialization | T9.3 跨实现互通 | ⬜ 待办 | — |
-| 九 Serialization | T9.4 packed/map | ⬜ 待办 | — |
+| 九 Serialization | T9.1 conformance 语料 | ✅ 完成 | `conformance/` 黄金语料；`conformance_test.mbt` |
+| 九 Serialization | T9.2 unknown field | ✅ 完成 | `unknown_reencode_test.mbt` 逐字节保真 |
+| 九 Serialization | T9.3 跨实现互通 | ✅ 完成 | protobuf 6.33.6 黄金向量逐字节一致 |
+| 九 Serialization | T9.4 packed/map | ✅ 完成 | `prop_packed_test.mbt`；conformance packed/map 向量 |
 | 三 Codegen | T3.1 pass 流水线+验证器 | ⬜ 待办 | — |
 | 三 Codegen | T3.2 优化 pass 扩充 | ⬜ 待办 | — |
 | 三 Codegen | T3.3 代价指令选择 | ⬜ 待办 | — |

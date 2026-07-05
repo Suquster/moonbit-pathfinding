@@ -456,7 +456,10 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   （Masson et al. VLDB 2019 DDSketch，对数桶 + 几何中点代表值，相对误差 ≤ α 可证明界，
   O(1) 插入、可合并），误差界证明式 PBT 60+40 迭代三后端全绿；
   n=32000 流式 p99 基准 56.1×（benches/results/infra-metrics-ddsketch-e5-native-2026-07-05.md）。
-- metrics 后续批次：直方图（HdrHistogram 风格）、tracing span 树。
+- 定精度直方图 ✅ 已落地：`src/infra_metrics/hdr_histogram.mbt`
+  （Gene Tene HdrHistogram：指数段 + 2^p 线性子桶纯位运算索引，相对误差 ≤ 2^-p，
+  固定内存），误差界证明式 PBT 60 迭代三后端全绿；n=32000 流式 p99.9 基准 217.8×。
+- metrics 后续批次：tracing span 树。
 - KPI：sketch 误差界有证明式测试（✅ 已达）；聚合吞吐数量级优于全量排序求分位（✅ 56.1×）。
 
 ### E6 · 文本基础设施 — 对标 xi-editor rope / VS Code piece-table（衔接方向五）

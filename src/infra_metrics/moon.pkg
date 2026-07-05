@@ -1,0 +1,17 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_metrics
+//
+// 可观测性 metrics 聚合（E5，对标 Datadog DDSketch / HdrHistogram）。
+// Masson, Rim & Lee. *DDSketch: A Fast and Fully-Mergeable Quantile Sketch
+// with Relative-Error Guarantees.* VLDB 2019：对数桶分位数 sketch，
+// 任意分位查询相对误差 ≤ α（可证明界），插入 O(1)、可合并。
+//
+// 叶子基础设施包：生产代码仅依赖标准库 math（对数桶映射）；
+// PBT 仅测试期依赖 @infra_pbt。
+import {
+  "moonbitlang/core/math",
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

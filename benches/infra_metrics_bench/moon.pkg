@@ -1,0 +1,12 @@
+// Package: benches/infra_metrics_bench
+//
+// E5 metrics 基准：DDSketch 流式分位（O(1) 插入 + O(桶数) 查询）vs
+// 朴素全量保存 + 每次查询排序求分位（O(n log n)），流式 n 样本、
+// 每 500 个样本查一次 p99。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_metrics_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_metrics" @mx,
+}

@@ -344,16 +344,16 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 九 Serialization | T9.2 unknown field | ✅ 完成 | `unknown_reencode_test.mbt` 逐字节保真 |
 | 九 Serialization | T9.3 跨实现互通 | ✅ 完成 | protobuf 6.33.6 黄金向量逐字节一致 |
 | 九 Serialization | T9.4 packed/map | ✅ 完成 | `prop_packed_test.mbt`；conformance packed/map 向量 |
-| 三 Codegen | T3.1 pass 流水线+验证器 | ⬜ 待办 | — |
-| 三 Codegen | T3.2 优化 pass 扩充 | ⬜ 待办 | — |
-| 三 Codegen | T3.3 代价指令选择 | ⬜ 待办 | — |
+| 三 Codegen | T3.1 pass 流水线+验证器 | ✅ 完成 | `run_to_fixpoint`+`ir_validator.mbt`；合成程序族削减 86.8%（benches/results/codegen-opt-reduction-2026-07-05.md） |
+| 三 Codegen | T3.2 优化 pass 扩充 | ✅ 完成 | SCCP/GVN(含 PRE 上提)/CopyProp(含外部输入)/DCE/ConstFold；真实语料 11 内核 40.1%（benches/results/codegen-real-corpus-native-2026-07-05.md） |
+| 三 Codegen | T3.3 代价指令选择 | ✅ 完成 | `burs.mbt` BURS 代价最优 tiling + 最大吞噬对照基线 + PBT |
 | 一 Mini_Compiler | T1.1 真·wasm 产物 | ✅ 完成 | wat2wasm+V8 真实执行 22/22 与解释器逐字符一致（docs/verification/backend-products-t1.md） |
 | 一 Mini_Compiler | T1.2 真·JS 产物 | ✅ 完成 | node 直接执行 22/22 一致；附 INT_MIN/-1 陷阱修复（同上） |
 | 一 Mini_Compiler | T1.3 类型推断深化 | ⬜ 待办 | — |
 | 一 Mini_Compiler | T1.4 字节码优化+诊断 | ⬜ 待办 | — |
 | 四 Parser | T4.1 零拷贝输入 | ⬜ 待办 | — |
 | 四 Parser | T4.2 错误消息质量 | ⬜ 待办 | — |
-| 四 Parser | T4.3 性能基准 | ⬜ 待办 | — |
+| 四 Parser | T4.3 性能基准 | ✅ 完成 | packrat/朴素对照基准 + BoundedCache O(1) LRU（benches/results/latest-parser-combinator.md） |
 | 五 LSP | T5.1 增量同步性能 | ⬜ 待办 | — |
 | 五 LSP | T5.2 协议完整性 | ⬜ 待办 | — |
 | 五 LSP | T5.3 能力语义 | ⬜ 待办 | — |
@@ -368,9 +368,9 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 八 DST | T8.2 故障注入丰富化 | ✅ 完成 | DiskFault 丢写 + shrink（src/dst/prop_disk_fault_test.mbt） |
 | 八 DST | T8.3 线性一致性检查器 | ✅ 完成 | H&W/Knossos 语料 + 差分 PBT（src/dst/prop_lin_corpus_test.mbt） |
 | 十 Actor | T10.1 真·异步运行时 | ⬜ 待办（依赖上游） | — |
-| 十 Actor | T10.2 监督树语义 | ⬜ 待办 | — |
-| 十 Actor | T10.3 背压/邮箱策略 | ⬜ 待办 | — |
-| 十 Actor | T10.4 ask 完整性 | ⬜ 待办 | — |
+| 十 Actor | T10.2 监督树语义 | ✅ 完成 | OneForOne/OneForAll/RestForOne+强度窗口（O(窗口) 修剪）；风暴基准 685k events/sec、17087 次重启全恢复（benches/results/actor-supervision-storm-native-2026-07-05.md） |
+| 十 Actor | T10.3 背压/邮箱策略 | ✅ 完成 | 有界邮箱 DropNew/DropOldest/Fail + 出队摊销 O(1)（benches/results/actor-bounded-mailbox-scaling-native-2026-07-05.md）；10k 吞吐 11.35M msgs/sec |
+| 十 Actor | T10.4 ask 完整性 | ✅ 完成 | `ask.mbt` AskBroker 相关 ID+超时；e2e + 匹配/超时 PBT（prop_p12/p13） |
 | 横切 | 负例/边界回归 | ⬜ 待办 | — |
 | 横切 | 双语文档一致性 | ⬜ 待办 | — |
 

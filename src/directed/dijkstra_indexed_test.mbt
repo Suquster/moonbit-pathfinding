@@ -324,7 +324,7 @@ test "dijkstra_bidirectional_ctx differential PBT vs dijkstra_indexed (150 itera
 }
 
 ///|
-test "astar_bidirectional_ctx differential PBT vs astar_indexed (120 iterations, zero + perfect h)" {
+test "astar_bidirectional_ctx differential PBT vs astar_indexed (120 iterations, zero + perfect h, Dial + heap 权域)" {
   let rng = @infra_pbt.rng_new(0xB1A5UL)
   for _iter in 0..<120 {
     let n = 2 + rng.next_below(50)
@@ -335,7 +335,17 @@ test "astar_bidirectional_ctx differential PBT vs astar_indexed (120 iterations,
       if v == u {
         v = (u + 1) % n
       }
-      edges.push((u, v, 1 + rng.next_below(60)))
+      edges.push(
+        (
+          u,
+          v,
+          if _iter % 3 == 2 {
+            1 + rng.next_below(60) + 2000 // 大权：走 NBA* 编码堆分支
+          } else {
+            1 + rng.next_below(60) // 小权：走桶式 Dial 分支
+          },
+        ),
+      )
     }
     let g = @directed.WeightedCsr::from_edges(n, edges)
     let redges : Array[(Int, Int, Int)] = []

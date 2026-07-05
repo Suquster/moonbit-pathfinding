@@ -24,6 +24,8 @@ import {
   "Suquster/moonbit-pathfinding/src/advanced",
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/infra_bench",
+  "Suquster/moonbit-pathfinding/src/graph",
+  "Suquster/moonbit-pathfinding/src/core",
   "Suquster/moonbit-pathfinding/src/infra_text",
   "moonbitlang/core/debug",
   "moonbitlang/core/test",

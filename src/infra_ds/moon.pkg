@@ -1,0 +1,11 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_ds
+//
+// 核心数据结构库（E1，对标 Rust std::collections / im）。
+// 首批：B-tree 有序映射（CLRS 最小度数 t 预分裂/预合并单趟下降），
+// 后续批次：跳表、HAMT、roaring 位图。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

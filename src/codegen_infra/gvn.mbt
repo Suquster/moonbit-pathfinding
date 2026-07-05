@@ -125,12 +125,16 @@ fn def_value_number(
   if toks.length() == 3 {
     operand_vn(toks[2], vn_of, defset)
   } else if toks.length() == 5 {
-    "B|" +
-    toks[3] +
-    "|" +
-    operand_vn(toks[2], vn_of, defset) +
-    "|" +
-    operand_vn(toks[4], vn_of, defset)
+    let a = operand_vn(toks[2], vn_of, defset)
+    let b = operand_vn(toks[4], vn_of, defset)
+    // 交换律规范化：+ / * 的操作数按值编号字典序定序，
+    // 使 `a + b` 与 `b + a` 获同一值编号。
+    let (x, y) = if (toks[3] == "+" || toks[3] == "*") && b < a {
+      (b, a)
+    } else {
+      (a, b)
+    }
+    "B|" + toks[3] + "|" + x + "|" + y
   } else {
     "U|" + join_tokens(toks)
   }

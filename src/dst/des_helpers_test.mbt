@@ -164,7 +164,7 @@ fn faulted_events(trace : Array[SimEvent]) -> Array[SimEvent] {
 ///|
 /// 采样一个扩展故障类型（覆盖全部 NetFaultKind 变体，供故障 / 时序属性使用）。
 fn sample_netfault(rng : @infra_pbt.Rng, _n : Int) -> NetFaultKind {
-  match rng.next_below(7) {
+  match rng.next_below(8) {
     0 => NetFaultKind::Crash
     1 => NetFaultKind::Delay(by=rng.next_range(1, 3).to_uint64())
     2 => NetFaultKind::Drop
@@ -175,6 +175,7 @@ fn sample_netfault(rng : @infra_pbt.Rng, _n : Int) -> NetFaultKind {
       )
     4 => NetFaultKind::Reorder
     5 => NetFaultKind::Duplicate
-    _ => NetFaultKind::ClockSkew(offset=(rng.next_range(0, 6) - 3).to_int64())
+    6 => NetFaultKind::ClockSkew(offset=(rng.next_range(0, 6) - 3).to_int64())
+    _ => NetFaultKind::DiskFault(lose=rng.next_range(1, 2))
   }
 }

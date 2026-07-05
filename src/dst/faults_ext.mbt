@@ -22,7 +22,10 @@
 ///   * `Reorder`                     —— 消息重排：确定性改变受影响消息投递顺序；
 ///   * `Duplicate`                   —— 消息重复：受影响消息被投递两次；
 ///   * `ClockSkew(offset)`           —— 时钟偏移：对目标任务本地逻辑时钟施加偏移；
-///   * `Byzantine`                   —— 可选：任务向不同对端发送相互矛盾内容。
+///   * `Byzantine`                   —— 可选：任务向不同对端发送相互矛盾内容；
+///   * `DiskFault(lose)`             —— 磁盘故障：目标节点丢失复制日志末尾
+///                                      `lose` 条已持久条目（torn-write / 丢写建模，
+///                                      对标 TigerBeetle VOPR 存储故障注入）。
 pub(all) enum NetFaultKind {
   Crash
   Delay(by~ : LogicalTime)
@@ -32,6 +35,7 @@ pub(all) enum NetFaultKind {
   Duplicate
   ClockSkew(offset~ : Int64)
   Byzantine
+  DiskFault(lose~ : Int)
 } derive(Eq, Debug)
 
 ///|

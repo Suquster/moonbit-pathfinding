@@ -36,14 +36,18 @@ fi
 # Try osmnx-based extraction first (most accurate).
 if command -v python3 &>/dev/null && python3 -c "import osmnx" 2>/dev/null; then
   echo "[osm/download] Using osmnx to fetch Xiamen driving network..."
-  python3 - <<'PYEOF'
+  OSM_OUT="$OUTPUT" python3 - <<'PYEOF'
 import osmnx as ox
 import csv, os
 
 G = ox.graph_from_place("Xiamen, China", network_type="drive")
-G = ox.add_edge_lengths(G)
+# osmnx 1.x 提供顶层 add_edge_lengths；2.x 移至 ox.distance（且构图时已含 length）。
+if hasattr(ox, "add_edge_lengths"):
+    G = ox.add_edge_lengths(G)
+elif hasattr(ox.distance, "add_edge_lengths"):
+    G = ox.distance.add_edge_lengths(G)
 
-out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "xiamen.tsv")
+out_path = os.environ["OSM_OUT"]
 # Remap node IDs to contiguous 0..n-1
 nodes = list(G.nodes())
 node_map = {n: i for i, n in enumerate(nodes)}

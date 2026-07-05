@@ -98,6 +98,14 @@ fn run_osm_alt_benchmark_on(
     }
   }
   let sink : Array[Int] = [0]
+  let uni_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match @dir.dijkstra_indexed_ctx(g, cf, q.0, q.1) {
+        Some((_, c)) => sink[0] = sink[0] + c
+        None => ()
+      }
+    }
+  })
   let dij_samples = collect_samples(warmup, samples, fn() {
     for q in queries {
       match @dir.dijkstra_bidirectional_ctx(g, rg, cf, cb, q.0, q.1) {
@@ -126,6 +134,7 @@ fn run_osm_alt_benchmark_on(
     }
   })
   ignore(sink[0])
+  let uni_med = csr_bench_median(uni_samples)
   let dij_med = csr_bench_median(dij_samples)
   let alt_med = csr_bench_median(alt_samples)
   let speedup = if alt_med > 0.0 { dij_med / alt_med } else { 0.0 }
@@ -145,7 +154,10 @@ fn run_osm_alt_benchmark_on(
   tb.push_str(
     "- ALT 预处理耗时: \{pre_us / 1.0e3} ms（(2k+1) 次全量 Dijkstra）\n",
   )
-  tb.push_str("- 双向 Dijkstra 每查询中位耗时: \{dij_med / qd} µs\n")
+  tb.push_str("- 单向 Dijkstra 每查询中位耗时: \{uni_med / qd} µs\n")
+  tb.push_str(
+    "- 双向 Dijkstra 每查询中位耗时: \{dij_med / qd} µs（大权堆式双向，相对单向 \{uni_med / dij_med}×）\n",
+  )
   tb.push_str("- ALT 双向 A* 每查询中位耗时: \{alt_med / qd} µs\n")
   tb.push_str("- 中位加速比: \{speedup}x\n")
   if !parity_ok {

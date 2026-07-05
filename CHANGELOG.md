@@ -30,6 +30,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — Playground goes live（Playground 上线）
+
+- fix(playground): declare the parent library as a `path` dependency in
+  `playground/moon.mod.json` so the bridge module builds standalone; drop the
+  empty `playground/src` package (修复 playground 独立 module 的依赖解析，桥接层
+  可独立 `moon build`/`moon test`)
+- fix(playground): make the "unreachable goal" sentinel test wall off the
+  diagonal too, so the goal is unreachable under 8-neighbour JPS as well as
+  4-neighbour BFS/Dijkstra/A* (对角线一并封墙，使目标在 8 邻域 JPS 下同样不可达)
+- fix(ci): `pages.yml` now builds the `src/playground` pg_* export layer from
+  the repository root and assembles `playground.wasm` from
+  `_build/wasm-gc/release/build/src/playground/` (Pages 流水线改为根 module 构建
+  并组装正确的 pg_* 导出层产物)
+- docs(readme): Playground badge planned → live; rewrite the Playground section
+  in both languages with the live-demo URL and offline instructions
+  (README 徽章与 Playground 章节转为 live 状态，双语同步)
+
 ### Added — Production Hardening（生产级加固，仅新增 / 不破坏既有 API）
 
 > 本批次将 10 个基础设施方向包整体提升至「业界顶尖（旗舰）」生产级质量。

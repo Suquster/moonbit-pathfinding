@@ -13,6 +13,7 @@ pub struct ByteReader {
 pub fn ByteReader::new(Array[Int]) -> Self
 pub fn ByteReader::read_bytes(Self) -> Array[Int]?
 pub fn ByteReader::read_string(Self) -> String?
+pub fn ByteReader::read_string_payload(Self) -> String?
 pub fn ByteReader::read_u32(Self) -> UInt?
 pub fn ByteReader::read_u64(Self) -> UInt64?
 pub fn ByteReader::read_varint(Self) -> UInt64?
@@ -31,6 +32,33 @@ pub fn ByteWriter::write_u32(Self, UInt) -> Unit
 pub fn ByteWriter::write_u64(Self, UInt64) -> Unit
 pub fn ByteWriter::write_varint(Self, UInt64) -> Unit
 pub fn ByteWriter::write_zigzag(Self, Int64) -> Unit
+
+pub struct FieldWriter {
+  w : ByteWriter
+}
+pub fn FieldWriter::fixed32_field(Self, Int, UInt) -> Unit
+pub fn FieldWriter::fixed64_field(Self, Int, UInt64) -> Unit
+pub fn FieldWriter::message_field(Self, Int, Array[Int]) -> Unit
+pub fn FieldWriter::over(ByteWriter) -> Self
+pub fn FieldWriter::string_field(Self, Int, String) -> Unit
+pub fn FieldWriter::varint_field(Self, Int, UInt64) -> Unit
+pub fn FieldWriter::zigzag_field(Self, Int, Int64) -> Unit
+
+pub struct MsgView {
+  buf : Array[Int]
+  start : Int
+  end : Int
+}
+pub fn MsgView::bytes_field(Self, Int) -> Array[Int]?
+pub fn MsgView::field_count(Self) -> Int?
+pub fn MsgView::fixed32_field(Self, Int) -> UInt?
+pub fn MsgView::fixed64_field(Self, Int) -> UInt64?
+pub fn MsgView::has_field(Self, Int) -> Bool
+pub fn MsgView::message_field(Self, Int) -> Self?
+pub fn MsgView::over(Array[Int]) -> Self
+pub fn MsgView::string_field(Self, Int) -> String?
+pub fn MsgView::varint_field(Self, Int) -> UInt64?
+pub fn MsgView::zigzag_field(Self, Int) -> Int64?
 
 // Type aliases
 

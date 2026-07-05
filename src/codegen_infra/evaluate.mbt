@@ -100,8 +100,10 @@ fn preds_in_order(blocks : Array[BasicBlock]) -> Map[String, Array[String]] {
 /// 由 `SsaProgram` 重建 φ 落点信息。
 ///
 /// 重建规则（对 `build_ssa` 风格输出与本方向生成器均稳健）：
-///   1) 由块内定义 `name#ver = ...` 建立「版本号 → 变量名」映射；
-///   2) φ 的变量名取其首个实参版本号对应的变量名；
+///   1) 由块内全部带版本记号（定义与使用）建立「版本号 → 变量名」映射；
+///   2) φ 的变量名优先取其目标版本号的使用记号，退而取首个实参版本号
+///      对应的变量名（复制传播可能把实参改写为其它变量的版本，此时
+///      仅目标使用记号能给出正确变量名）；
 ///   3) φ 所在块取「前驱数 ≥ 2 且其指令中引用了 φ 目标记号 `name#dest`」的块。
 ///
 /// 目标记号未在任何块中被引用的「死 φ」无法定位其汇合块，此时跳过——其语义为
@@ -110,10 +112,9 @@ fn reconstruct_phi_sites(p : SsaProgram) -> Array[PhiSite] {
   let ver2name : Map[Int, String] = Map([])
   for b in p.blocks {
     for instr in b.instrs {
-      let toks = tokenize(instr)
-      if toks.length() >= 2 && toks[1] == "=" {
-        match split_versioned(toks[0]) {
-          Some((nm, v)) => ver2name[v] = nm
+      for t in tokenize(instr) {
+        match split_versioned(t) {
+          Some((nm, v)) => if !ver2name.contains(v) { ver2name[v] = nm }
           None => ()
         }
       }
@@ -129,14 +130,18 @@ fn reconstruct_phi_sites(p : SsaProgram) -> Array[PhiSite] {
     if args.length() == 0 {
       continue
     }
-    let name = match ver2name.get(args[0]) {
+    let dest = phi.dest.id
+    let name = match ver2name.get(dest) {
       Some(n) => n
-      None => ""
+      None =>
+        match ver2name.get(args[0]) {
+          Some(n) => n
+          None => ""
+        }
     }
     if name == "" {
       continue
     }
-    let dest = phi.dest.id
     let dest_tok = name + "#" + dest.to_string()
     let mut found = ""
     for b in p.blocks {

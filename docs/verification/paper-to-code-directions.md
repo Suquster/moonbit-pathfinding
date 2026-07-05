@@ -91,3 +91,9 @@
 | Chambi et al. 2016 Roaring（高 16 位分桶 + array/bitmap 两态容器） | `src/infra_ds/roaring.mbt` | `roaring_test.mbt` 差分 PBT 200/100 迭代；稠密并 103× |
 | Bagwell 2001 HAMT（32 叉分片 bitmap+紧凑数组，路径复制结构共享） | `src/infra_ds/hamt.mbt` | `hamt_test.mbt` 差分 PBT 200 迭代；持久化插入 47× |
 | Pugh 1990 SkipList（p=1/2 几何晋升，种子化确定性层高） | `src/infra_ds/skiplist.mbt` | `skiplist_test.mbt` 差分 PBT 200 迭代 + 同种子确定性；insert+get 15.1× |
+
+## E4 · Infra_Timer（并发调度基础设施）
+
+| 论文/规范构造 | 代码位置 | 验证测试 |
+|---|---|---|
+| Varghese & Lauck 1987 层级定时器轮（5 级×64 槽 + 回绕 cascade，摊销 O(1)） | `src/infra_timer/timer_wheel.mbt` | `timer_wheel_test.mbt` 与朴素 O(n) 扫描差分 PBT 200 迭代（逐 tick 到期集合一致）；基准 n=16000 281× |

@@ -4,6 +4,7 @@ package "Suquster/moonbit-pathfinding/src/logging"
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/release_meta",
+  "Suquster/moonbit-pathfinding/src/serialization",
   "moonbitlang/core/debug",
 }
 
@@ -57,6 +58,18 @@ pub let logging_name : String
 pub let logging_version : String
 
 pub fn mix(UInt64, UInt64) -> UInt64
+
+pub fn otlp_export_traces(String, TraceId, Array[(String, SpanData)]) -> Bytes
+
+pub fn otlp_export_traces_json(String, TraceId, Array[(String, SpanData)]) -> String
+
+pub fn otlp_schema() -> @serialization.ProtoSchema
+
+pub fn otlp_span_message(TraceId, String, SpanData) -> @serialization.TypedMessage
+
+pub fn otlp_trace_proto() -> String
+
+pub fn otlp_traces_data(String, TraceId, Array[(String, SpanData)]) -> @serialization.TypedMessage
 
 pub fn parse_env_filter(String) -> Result[EnvFilter, FilterError]
 

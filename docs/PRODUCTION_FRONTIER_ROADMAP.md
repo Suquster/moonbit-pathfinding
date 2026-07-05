@@ -251,8 +251,11 @@ OTLP（OpenTelemetry Protocol）、W3C Trace Context、OTel 语义约定。
 **KPI 目标**：产出可被真实 OTel collector 接收的 OTLP 字节；OTel 数据模型逐字段对齐。
 
 **任务分解**（**突破** spec「不做真实导出/不接 async」非目标）：
-- [ ] **T7.1 真·OTLP 导出器**：按 OTLP（protobuf/JSON）线缆格式序列化 span，
-      **复用方向九 protobuf 编码**，产出可被真实 collector 接收的字节。
+- [x] **T7.1 真·OTLP 导出器**：`otlp_export.mbt` 按 OTLP（protobuf + JSON）线缆格式序列化
+      span（`opentelemetry.proto.trace.v1.TracesData`，字段号逐一对齐官方 trace.proto），
+      **复用方向九 protobuf 编码**；导出字节经官方 opentelemetry-proto 解码逐字段
+      相等，可直接 POST 到真实 collector `/v1/traces`
+      （证据 docs/verification/otlp-export-t7.md）。
 - [ ] **T7.2 OTel 语义逐字段对齐**：span 属性/事件/链接/状态/资源与 OTel 数据模型对齐。
 - [ ] **T7.3 采样器对标**：父级采样、比例采样、限流采样的确定性实现与分布 PBT。
 - [ ] **T7.4 高基数性能**：大量 span/属性下格式化对总长度线性的 guard。
@@ -343,7 +346,7 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 六 Build | T6.1 内容寻址缓存 | ⬜ 待办 | — |
 | 六 Build | T6.2 关键路径调度 | ⬜ 待办 | — |
 | 六 Build | T6.3 鲁棒性回归 | ⬜ 待办 | — |
-| 七 Logging | T7.1 真·OTLP 导出器 | ⬜ 待办 | — |
+| 七 Logging | T7.1 真·OTLP 导出器 | ✅ 完成 | 官方 opentelemetry-proto 解码逐字段相等，黄金字节+PBT 锁定（docs/verification/otlp-export-t7.md） |
 | 七 Logging | T7.2 OTel 逐字段对齐 | ⬜ 待办 | — |
 | 七 Logging | T7.3 采样器对标 | ⬜ 待办 | — |
 | 七 Logging | T7.4 高基数性能 | ⬜ 待办 | — |

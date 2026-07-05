@@ -1,0 +1,11 @@
+// Package: benches/infra_codec_bench
+//
+// E2 编解码基准：varint/zigzag 二进制编解码 vs 朴素字符串序列化
+// （to_string + 分隔符拼接 + parse 解析回），n 个随机 Int64 round-trip。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_codec_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_codec" @codec,
+}

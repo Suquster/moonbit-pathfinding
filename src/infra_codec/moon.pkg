@@ -1,0 +1,14 @@
+// Package: Suquster/moonbit-pathfinding/src/infra_codec
+//
+// 二进制编解码基础设施（E2，对标 protobuf wire format）。
+// varint（LEB128 基数-128 变长整数）、zigzag（有符号→无符号折叠，
+// protobuf sint64 语义）、定长小端 u32/u64、length-prefixed bytes/string。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

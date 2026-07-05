@@ -56,3 +56,44 @@ test "bench: ddsketch streaming p99 vs naive sort quantile" (b : @bench.T) {
     })
   }
 }
+
+///|
+test "bench: hdr histogram streaming p999 vs naive sort quantile" (b : @bench.T) {
+  for n in [2000, 8000, 32000] {
+    b.bench(name="hdr_stream_p999_\{n}", fn() {
+      let h = @mx.HdrHistogram::new(7)
+      let mut acc = 0L
+      let mut s = 20260717UL
+      for i in 0..<n {
+        s = xorshift(s)
+        h.record((s % 1_000_000_000UL).reinterpret_as_int64())
+        if i % 500 == 499 {
+          match h.value_at_percentile(99.9) {
+            Some(v) => acc = acc + v
+            None => ()
+          }
+        }
+      }
+      b.keep(acc)
+    })
+    b.bench(name="naive_sort_p999_\{n}", fn() {
+      let data : Array[Int64] = []
+      let mut acc = 0L
+      let mut s = 20260717UL
+      for i in 0..<n {
+        s = xorshift(s)
+        data.push((s % 1_000_000_000UL).reinterpret_as_int64())
+        if i % 500 == 499 {
+          let copy = data.copy()
+          copy.sort()
+          let mut rank = (0.999 * copy.length().to_double() + 0.5).to_int()
+          if rank > copy.length() {
+            rank = copy.length()
+          }
+          acc = acc + copy[rank - 1]
+        }
+      }
+      b.keep(acc)
+    })
+  }
+}

@@ -22,6 +22,20 @@ pub fn DDSketch::merge_with(Self, Self) -> Unit
 pub fn DDSketch::new(Double) -> Self
 pub fn DDSketch::quantile(Self, Double) -> Double?
 
+pub struct HdrHistogram {
+  precision_bits : Int
+  sub_bucket_count : Int
+  counts : Array[Int]
+  mut total : Int
+  mut max_seen : Int64
+}
+pub fn HdrHistogram::count(Self) -> Int
+pub fn HdrHistogram::max_value(Self) -> Int64
+pub fn HdrHistogram::merge_with(Self, Self) -> Unit
+pub fn HdrHistogram::new(Int) -> Self
+pub fn HdrHistogram::record(Self, Int64) -> Unit
+pub fn HdrHistogram::value_at_percentile(Self, Double) -> Int64?
+
 // Type aliases
 
 // Traits

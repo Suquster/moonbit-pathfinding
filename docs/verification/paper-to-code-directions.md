@@ -100,3 +100,4 @@
 | Chase & Lev 2005 工作窃取双端队列（环形缓冲 owner-LIFO/thief-FIFO 摊销 O(1)）+ 确定性轮转调度器 | `src/infra_timer/work_stealing.mbt` | `work_stealing_test.mbt` 无丢失无重复 + 同输入 trace 逐位一致 PBT 120 迭代；混合负载基准 15.1× |
 | Masson et al. VLDB 2019 DDSketch（对数桶分位数 sketch，相对误差 ≤ α 可证明界，O(1) 插入可合并） | `src/infra_metrics/ddsketch.mbt` | `ddsketch_test.mbt` 误差界证明式 PBT 60 迭代（多分布多 α 对照精确分位）+ 合并误差界 40 迭代；流式 p99 基准 56.1× |
 | Protocol Buffers Encoding 规范（LEB128 varint / zigzag sint64 / 小端 fixed32-64 / length-prefixed LEN） | `src/infra_codec/codec.mbt` | `codec_test.mbt` 边界值定向 + 畸形输入安全 + round-trip PBT 200 迭代（逐值一致、流精确耗尽）；吞吐 2.1×、体积 2.24×/4.47× |
+| Gene Tene HdrHistogram（指数段 + 2^p 线性子桶纯位运算索引，相对误差 ≤ 2^-p，固定内存） | `src/infra_metrics/hdr_histogram.mbt` | `hdr_histogram_test.mbt` 误差界证明式 PBT 60 迭代（p∈{4,7,10} 多值域对照精确分位）；流式 p99.9 基准 217.8× |

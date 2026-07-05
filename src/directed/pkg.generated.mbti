@@ -90,6 +90,34 @@ pub struct Condensation[N] {
   dag_edges : Array[(Int, Int)]
 }
 
+pub struct ContractionHierarchy {
+  n : Int
+  rank : Array[Int]
+  fo : Array[Int]
+  ft : Array[Int]
+  fw : Array[Int64]
+  fm : Array[Int]
+  fh : Array[Int64]
+  bo : Array[Int]
+  bt : Array[Int]
+  bw : Array[Int64]
+  bm : Array[Int]
+  bh : Array[Int64]
+  df : Array[Int64]
+  db : Array[Int64]
+  sf : Array[Int]
+  sb : Array[Int]
+  pf : Array[Int]
+  pb : Array[Int]
+  pef : Array[Int]
+  peb : Array[Int]
+  mut gen : Int
+  hf : RadixHeap
+  hb : RadixHeap
+}
+pub fn ContractionHierarchy::build(WeightedCsr) -> Self
+pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
+
 type EncodedHeap
 
 type RadixHeap

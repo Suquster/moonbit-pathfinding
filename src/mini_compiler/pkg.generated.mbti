@@ -24,6 +24,10 @@ pub fn compile(TypedAst, Backend) -> Bytes
 
 pub fn compile_ml(TExpr) -> Bytecode
 
+pub fn compile_ml_to_js(String) -> Result[String, Diagnostic]
+
+pub fn compile_ml_to_wat(String) -> Result[(String, String), Diagnostic]
+
 pub fn compose(Subst, Subst) -> Subst
 
 pub fn const_fold(Expr) -> Expr
@@ -36,7 +40,13 @@ pub let demo_fib_src : String
 
 pub fn emit_js(TExpr) -> String
 
+pub fn emit_js_expr(TExpr) -> String
+
+pub fn emit_js_program(TExpr) -> String
+
 pub fn emit_wat(TExpr) -> String
+
+pub fn emit_wat_module(TExpr) -> String
 
 pub fn erase_span(Expr) -> Expr
 
@@ -53,6 +63,8 @@ pub fn generalize(TyEnv, Ty) -> Scheme
 pub fn infer(Expr) -> Result[(TExpr, Ty), Diagnostic]
 
 pub fn instantiate(Scheme, FreshGen) -> Ty
+
+pub fn js_show_val(Val) -> String
 
 pub fn lex(String) -> Result[Array[Token], Diagnostic]
 
@@ -105,6 +117,8 @@ pub fn subst_single(Int, Ty) -> Subst
 pub fn tco_opt(Bytecode) -> Bytecode
 
 pub fn try_run_demo(String) -> Result[DemoTrace, Diagnostic]
+
+pub fn ty_shape(Ty) -> String
 
 pub fn type_of(TExpr) -> Ty
 

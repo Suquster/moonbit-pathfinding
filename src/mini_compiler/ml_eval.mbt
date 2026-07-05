@@ -123,7 +123,16 @@ fn ml_apply_arith(op : BinOp, a : Int, b : Int) -> Int {
     Add => a + b
     Sub => a - b
     Mul => a * b
-    Div => if b == 0 { 0 } else { a / b }
+    Div =>
+      if b == 0 {
+        0
+      } else if b == -1 {
+        // INT_MIN / -1 在 32 位有符号除法下不可表示（硬件/运行时 trap）；
+        // 按环绕语义定义为 0 - a，保持求值为全函数且三后端/产物一致。
+        0 - a
+      } else {
+        a / b
+      }
   }
 }
 

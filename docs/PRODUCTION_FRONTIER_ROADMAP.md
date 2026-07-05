@@ -172,9 +172,13 @@ Damas-Milner（Algorithm W）、Hindley-Milner。
 端到端结果与树遍历解释器逐例一致。
 
 **任务分解**（**突破** spec「玩具/不生成原生产物」非目标）：
-- [ ] **T1.1 真·WebAssembly 产物**：把字节码 lower 到合法 wasm 模块（wat / `.wasm` 二进制），
-      可被 wasmtime/浏览器加载执行，结果与解释器一致。
-- [ ] **T1.2 真·JS 产物**：emit Node 可直接执行的 JS，端到端结果一致。
+- [x] **T1.1 真·WebAssembly 产物**：`wasm_backend.mbt` 把良类型 `TExpr` lower 到**合法完整
+      wat 模块**（lambda 提升 + funcref 表 `call_indirect`、线性内存堆环境链/闭包/元组、
+      `isrec` 递归自指），wat2wasm 汇编后由 Node V8 wasm 引擎真实执行，22 例语料与
+      解释器逐字符一致（证据 docs/verification/backend-products-t1.md）。
+- [x] **T1.2 真·JS 产物**：`js_backend.mbt` emit Node 可直接执行的 JS（32 位环绕
+      `|0`/`Math.imul`、除零=0），端到端 22/22 与解释器一致；并顺带修复解释器
+      `INT_MIN / -1` 陷阱 bug（三处统一环绕，回归锁定）。
 - [ ] **T1.3 类型推断深化**：let-多态泛化/实例化、代数数据类型穷尽性检查、行多态。
 - [ ] **T1.4 字节码优化 + 诊断**：常量传播/DCE/跳转线程化（等价 PBT）；类型错误带期望/实际/源位置/修复建议。
 
@@ -326,8 +330,8 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 三 Codegen | T3.1 pass 流水线+验证器 | ⬜ 待办 | — |
 | 三 Codegen | T3.2 优化 pass 扩充 | ⬜ 待办 | — |
 | 三 Codegen | T3.3 代价指令选择 | ⬜ 待办 | — |
-| 一 Mini_Compiler | T1.1 真·wasm 产物 | ⬜ 待办 | — |
-| 一 Mini_Compiler | T1.2 真·JS 产物 | ⬜ 待办 | — |
+| 一 Mini_Compiler | T1.1 真·wasm 产物 | ✅ 完成 | wat2wasm+V8 真实执行 22/22 与解释器逐字符一致（docs/verification/backend-products-t1.md） |
+| 一 Mini_Compiler | T1.2 真·JS 产物 | ✅ 完成 | node 直接执行 22/22 一致；附 INT_MIN/-1 陷阱修复（同上） |
 | 一 Mini_Compiler | T1.3 类型推断深化 | ⬜ 待办 | — |
 | 一 Mini_Compiler | T1.4 字节码优化+诊断 | ⬜ 待办 | — |
 | 四 Parser | T4.1 零拷贝输入 | ⬜ 待办 | — |

@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_codec"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct ByteReader {
+  buf : Array[Int]
+  mut pos : Int
+}
+pub fn ByteReader::new(Array[Int]) -> Self
+pub fn ByteReader::read_bytes(Self) -> Array[Int]?
+pub fn ByteReader::read_string(Self) -> String?
+pub fn ByteReader::read_u32(Self) -> UInt?
+pub fn ByteReader::read_u64(Self) -> UInt64?
+pub fn ByteReader::read_varint(Self) -> UInt64?
+pub fn ByteReader::read_zigzag(Self) -> Int64?
+pub fn ByteReader::remaining(Self) -> Int
+
+pub struct ByteWriter {
+  buf : Array[Int]
+}
+pub fn ByteWriter::length(Self) -> Int
+pub fn ByteWriter::new() -> Self
+pub fn ByteWriter::to_bytes(Self) -> Array[Int]
+pub fn ByteWriter::write_bytes(Self, Array[Int]) -> Unit
+pub fn ByteWriter::write_string(Self, String) -> Unit
+pub fn ByteWriter::write_u32(Self, UInt) -> Unit
+pub fn ByteWriter::write_u64(Self, UInt64) -> Unit
+pub fn ByteWriter::write_varint(Self, UInt64) -> Unit
+pub fn ByteWriter::write_zigzag(Self, Int64) -> Unit
+
+// Type aliases
+
+// Traits
+

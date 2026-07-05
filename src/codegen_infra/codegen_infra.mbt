@@ -785,8 +785,12 @@ fn pass_dead_code_elim(p : SsaProgram) -> SsaProgram {
 }
 
 ///|
-/// 复制传播：对复制指令 `lhs = rhs`（右值恰为单个带版本变量记号），把后续
-/// 对 `lhs` 版本的使用（含 φ 实参）替换为 `rhs` 版本，并删除该复制指令。
+/// 复制传播：对复制指令 `lhs = rhs`，把后续对 `lhs` 版本的使用（含 φ 实参）
+/// 替换为 `rhs`，并删除该复制指令。右值两种形态：
+///   * 带版本变量记号 —— 无条件传播；
+///   * 外部输入（无版本、非整数字面量）—— 外部输入不可变，传播同样
+///     安全；但 φ 实参只能持版本变量，若 `lhs` 仍被某 φ 实参引用则
+///     保留该复制定义（仅重写指令内使用）。
 fn pass_copy_prop(p : SsaProgram) -> SsaProgram {
   // 收集替换映射：destVer -> srcToken。
   let replace : Map[Int, String] = Map([])
@@ -796,8 +800,22 @@ fn pass_copy_prop(p : SsaProgram) -> SsaProgram {
       if toks.length() == 3 && toks[1] == "=" {
         match (version_id(toks[0]), version_id(toks[2])) {
           (Some(dst), Some(_)) => replace[dst] = toks[2]
+          (Some(dst), None) =>
+            if parse_int(toks[2]) is None {
+              replace[dst] = toks[2]
+            }
           _ => ()
         }
+      }
+    }
+  }
+  // φ 实参引用的版本集：外部输入复制若被 φ 引用，定义须保留。
+  let phi_used : Map[Int, Bool] = Map([])
+  for phi in p.phis {
+    for a in phi.args {
+      match replace.get(a.id) {
+        Some(tok) => if version_id(tok) is None { phi_used[a.id] = true }
+        None => ()
       }
     }
   }
@@ -810,9 +828,15 @@ fn pass_copy_prop(p : SsaProgram) -> SsaProgram {
       let is_copy = toks.length() == 3 &&
         toks[1] == "=" &&
         not_none(version_id(toks[0])) &&
-        not_none(version_id(toks[2]))
+        (not_none(version_id(toks[2])) || parse_int(toks[2]) is None)
       if is_copy {
-        continue
+        let keep = match version_id(toks[0]) {
+          Some(d) => phi_used.contains(d)
+          None => false
+        }
+        if !keep {
+          continue
+        }
       }
       let out : Array[String] = []
       let start = if toks.length() >= 2 && toks[1] == "=" {

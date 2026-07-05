@@ -12,9 +12,9 @@
 | abs_diff_diamond | 10 | 7 | 30% | true |
 | clamp_nested | 12 | 7 | 41.666666666666664% | true |
 | branch_blend_diamond | 20 | 13 | 35% | true |
-| norm1_4_naive | 15 | 8 | 46.666666666666664% | true |
+| norm1_4_naive | 15 | 7 | 53.333333333333336% | true |
 
-- 总指令数: before=137 after=83
-- 总削减率: 39.416058394160586%（门禁 ≥30%）
+- 总指令数: before=137 after=82
+- 总削减率: 40.14598540145985%（门禁 ≥30%）
 - 优化前后全路径语义对拍一致: true
 

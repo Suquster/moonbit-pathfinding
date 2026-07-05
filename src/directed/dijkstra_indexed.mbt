@@ -125,28 +125,6 @@ pub fn dijkstra_indexed(
   start : Int,
   target : Int,
 ) -> (Array[Int], Int)? {
-  dijkstra_indexed_h(g, start, target, None)
-}
-
-///|
-/// 稠密整数节点 A*：可采纳启发式 `h`（None 即零启发式 = Dijkstra）。
-/// f = g + h 入堆、g 存 dist；其余同 `dijkstra_indexed`。
-pub fn astar_indexed(
-  g : WeightedCsr,
-  start : Int,
-  target : Int,
-  h : (Int) -> Int,
-) -> (Array[Int], Int)? {
-  dijkstra_indexed_h(g, start, target, Some(h))
-}
-
-///|
-fn dijkstra_indexed_h(
-  g : WeightedCsr,
-  start : Int,
-  target : Int,
-  h : ((Int) -> Int)?,
-) -> (Array[Int], Int)? {
   let n = g.node_count()
   if start < 0 || start >= n || target < 0 || target >= n {
     return None
@@ -156,22 +134,12 @@ fn dijkstra_indexed_h(
   let parent = Array::make(n, -1)
   let heap = EncodedHeap::new(16)
   dist[start] = 0L
-  let h0 : Int64 = match h {
-    Some(hf) => hf(start).to_int64()
-    None => 0L
-  }
-  heap.push((h0 << NODE_BITS) | start.to_int64())
+  heap.push(start.to_int64())
   while heap.len > 0 {
     let enc = heap.pop()
     let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
-    let f = enc >> NODE_BITS
     let du = dist[u]
-    // 陈旧条目：f = du + h(u)，若 f 对应的 g 超过当前 dist 则跳过。
-    let hu : Int64 = match h {
-      Some(hf) => hf(u).to_int64()
-      None => 0L
-    }
-    if f - hu > du {
+    if enc >> NODE_BITS > du {
       continue
     }
     if u == target {
@@ -191,11 +159,69 @@ fn dijkstra_indexed_h(
       if nd < dist[v] {
         dist[v] = nd
         parent[v] = u
-        let fv : Int64 = match h {
-          Some(hf) => nd + hf(v).to_int64()
-          None => nd
-        }
-        heap.push((fv << NODE_BITS) | v.to_int64())
+        heap.push((nd << NODE_BITS) | v.to_int64())
+      }
+    }
+  }
+  None
+}
+
+///|
+/// 稠密整数节点 A*：可采纳启发式 `h`（None 即零启发式 = Dijkstra）。
+/// f = g + h 入堆、g 存 dist；其余同 `dijkstra_indexed`。
+pub fn astar_indexed(
+  g : WeightedCsr,
+  start : Int,
+  target : Int,
+  h : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  astar_indexed_h(g, start, target, h)
+}
+
+///|
+fn astar_indexed_h(
+  g : WeightedCsr,
+  start : Int,
+  target : Int,
+  h : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  let inf = 0x3FFF_FFFF_FFFFL
+  let dist : Array[Int64] = Array::make(n, inf)
+  let parent = Array::make(n, -1)
+  let heap = EncodedHeap::new(16)
+  dist[start] = 0L
+  heap.push((h(start).to_int64() << NODE_BITS) | start.to_int64())
+  while heap.len > 0 {
+    let enc = heap.pop()
+    let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+    let f = enc >> NODE_BITS
+    let du = dist[u]
+    // 陈旧条目：f = g + h(u)，若对应的 g 超过当前 dist 则跳过。
+    if f - h(u).to_int64() > du {
+      continue
+    }
+    if u == target {
+      let path = [u]
+      let mut node = u
+      while node != start {
+        node = parent[node]
+        path.push(node)
+      }
+      path.rev_in_place()
+      return Some((path, du.to_int()))
+    }
+    let stop = g.offsets[u + 1]
+    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+      let v = g.targets[ei]
+      let nd = du + g.weights[ei].to_int64()
+      if nd < dist[v] {
+        dist[v] = nd
+        parent[v] = u
+        heap.push(((nd + h(v).to_int64()) << NODE_BITS) | v.to_int64())
       }
     }
   }

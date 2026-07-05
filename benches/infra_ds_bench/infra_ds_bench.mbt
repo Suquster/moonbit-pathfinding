@@ -86,6 +86,74 @@ test "bench: btree vs linear map (insert+get, n=2000/8000/32000)" (b : @bench.T)
 }
 
 ///|
+/// 朴素有序数组集合并（双指针归并）。
+fn sorted_union(a : Array[Int], b : Array[Int]) -> Array[Int] {
+  let out : Array[Int] = []
+  let mut i = 0
+  let mut j = 0
+  while i < a.length() && j < b.length() {
+    if a[i] < b[j] {
+      out.push(a[i])
+      i = i + 1
+    } else if a[i] > b[j] {
+      out.push(b[j])
+      j = j + 1
+    } else {
+      out.push(a[i])
+      i = i + 1
+      j = j + 1
+    }
+  }
+  while i < a.length() {
+    out.push(a[i])
+    i = i + 1
+  }
+  while j < b.length() {
+    out.push(b[j])
+    j = j + 1
+  }
+  out
+}
+
+///|
+test "bench: roaring vs sorted-array set union (dense, n=50000)" (b : @bench.T) {
+  let n = 50000
+  let ka = make_keys(n, 65536, 1UL)
+  let kb = make_keys(n, 65536, 2UL)
+  // roaring 两位图。
+  let ra = @ds.RoaringBitmap::new()
+  let rb = @ds.RoaringBitmap::new()
+  for x in ka {
+    let _ = ra.add(x)
+  }
+  for x in kb {
+    let _ = rb.add(x)
+  }
+  // 朴素有序去重数组。
+  let sa = dedup_sorted(ka)
+  let sb = dedup_sorted(kb)
+  b.bench(name="roaring_union_dense", fn() {
+    b.keep(ra.union_with(rb).cardinality())
+  })
+  b.bench(name="sorted_array_union_dense", fn() {
+    b.keep(sorted_union(sa, sb).length())
+  })
+}
+
+///|
+fn dedup_sorted(a : Array[Int]) -> Array[Int] {
+  let c = a.copy()
+  c.sort()
+  let out : Array[Int] = []
+  for x in c {
+    if out.length() == 0 || out[out.length() - 1] != x {
+      out.push(x)
+    }
+  }
+  out
+}
+
+///|
 test "bench: btree range vs full filter (n=8000, 1000 queries)" (b : @bench.T) {
   let n = 8000
   let keys = make_keys(n, n * 2, 20260705UL)

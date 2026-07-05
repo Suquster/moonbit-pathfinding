@@ -407,7 +407,11 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   （CLRS §18 单趟下降，t=8 节点内二分；插入预分裂、删除预借位/合并），
   与朴素参照差分 PBT 200 迭代三后端全绿；基准 insert+get n=32000 30.2×、
   范围查询 29.2×（benches/results/infra-ds-btree-e1-native-2026-07-05.md）。
-- 跳表、持久化 HashMap（HAMT）、位图索引（roaring 式压缩）——后续批次。
+- 位图索引（roaring 式压缩）✅ 已落地：`src/infra_ds/roaring.mbt`
+  （Chambi et al. 2016，高 16 位分桶 + array/bitmap 两态自适应容器，字级位或/位与），
+  与布尔数组参照差分 PBT（成员 200 + 并交 100 迭代）三后端全绿；
+  稠密集合并 103×（同上工件）。
+- 跳表、持久化 HashMap（HAMT）——后续批次。
 - KPI：与朴素实现（排序数组 / 链式散列）比较，插入/查找/范围扫描达数量级级别优势；
   PBT ≥200 迭代与标准 Map/Set 差分逐位一致。
 

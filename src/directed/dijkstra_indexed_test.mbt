@@ -262,3 +262,63 @@ test "astar_indexed_ctx bucket path with perfect (consistent) heuristic PBT (80 
     }
   }
 }
+
+///|
+test "dijkstra_bidirectional_ctx differential PBT vs dijkstra_indexed (150 iterations)" {
+  let rng = @infra_pbt.rng_new(0xB1D1D1UL)
+  for _iter in 0..<150 {
+    let n = 2 + rng.next_below(50)
+    let edges : Array[(Int, Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v, 1 + rng.next_below(60)))
+    }
+    let g = @directed.WeightedCsr::from_edges(n, edges)
+    let redges : Array[(Int, Int, Int)] = []
+    for e in edges {
+      let (u, v, w) = e
+      redges.push((v, u, w))
+    }
+    let rg = @directed.WeightedCsr::from_edges(n, redges)
+    let cf = @directed.SearchCtx::new(n)
+    let cb = @directed.SearchCtx::new(n)
+    for _q in 0..<8 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @directed.dijkstra_bidirectional_ctx(g, rg, cf, cb, s, t)
+      let b = @directed.dijkstra_indexed(g, s, t)
+      match (a, b) {
+        (Some((pa, ca)), Some((_, cb2))) => {
+          assert_eq(ca, cb2)
+          assert_eq(pa[0], s)
+          assert_eq(pa[pa.length() - 1], t)
+          // 路径逐边合法 + 边权和等于代价。
+          let mut sum = 0
+          for i in 0..<(pa.length() - 1) {
+            let u = pa[i]
+            let v = pa[i + 1]
+            let mut wt = -1
+            let stop = g.offsets[u + 1]
+            for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+              if g.targets[ei] == v {
+                if wt < 0 || g.weights[ei] < wt {
+                  wt = g.weights[ei]
+                }
+              }
+            }
+            assert_true(wt >= 0)
+            sum = sum + wt
+          }
+          assert_eq(sum, ca)
+        }
+        (None, None) => ()
+        _ =>
+          abort("bidirectional/unidirectional dijkstra reachability mismatch")
+      }
+    }
+  }
+}

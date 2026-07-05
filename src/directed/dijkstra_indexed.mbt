@@ -466,6 +466,146 @@ fn astar_dial_ctx(
 const INF_DIST : Int64 = 0x3FFF_FFFF_FFFFL
 
 ///|
+/// 双向 Dial Dijkstra（小整数边权专用）：正向沿 `g`、反向沿 `rg`
+/// （g 的逆图）各自跑 Dial 桶扫描，每轮推进当前扫描距离较小的一侧；
+/// 松弛时用对侧 tentative 距离维护会合上界 μ，d_f + d_b > μ 时终止
+/// （meet-in-the-middle 经典判据）。语义与 `dijkstra_indexed` 一致
+/// （代价最优；路径可能不同但逐边合法），差分 PBT 守卫。
+pub fn dijkstra_bidirectional_ctx(
+  g : WeightedCsr,
+  rg : WeightedCsr,
+  ctx_f : SearchCtx,
+  ctx_b : SearchCtx,
+  start : Int,
+  target : Int,
+) -> (Array[Int], Int)? {
+  let n = g.node_count()
+  if start < 0 || start >= n || target < 0 || target >= n {
+    return None
+  }
+  if start == target {
+    return Some(([start], 0))
+  }
+  if g.max_weight > DIAL_MAX_W || g.max_weight <= 0 {
+    return dijkstra_indexed_ctx(g, ctx_f, start, target)
+  }
+  ctx_f.gen = ctx_f.gen + 1
+  ctx_b.gen = ctx_b.gen + 1
+  let gf = ctx_f.gen
+  let gb = ctx_b.gen
+  let df = ctx_f.dist
+  let db = ctx_b.dist
+  let pf = ctx_f.parent
+  let pb = ctx_b.parent
+  let sf = ctx_f.stamp
+  let sb = ctx_b.stamp
+  let m = g.max_weight + 1
+  let m64 = m.to_int64()
+  let bf : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
+  let bb : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
+  df[start] = 0L
+  sf[start] = gf
+  pf[start] = -1
+  bf[0].push(start)
+  db[target] = 0L
+  sb[target] = gb
+  pb[target] = -1
+  bb[0].push(target)
+  let mut pend_f = 1
+  let mut pend_b = 1
+  let mut d_f = 0L
+  let mut d_b = 0L
+  let mut mu = INF_DIST
+  let mut meet = -1
+  while pend_f > 0 && pend_b > 0 {
+    if d_f + d_b > mu {
+      break
+    }
+    if d_f <= d_b {
+      // 正向推进一个距离值。
+      let b = bf[(d_f % m64).to_int()]
+      let mut bi = 0
+      while bi < b.length() {
+        let u = b[bi]
+        bi = bi + 1
+        pend_f = pend_f - 1
+        if df[u] != d_f {
+          continue
+        }
+        let stop = g.offsets[u + 1]
+        for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+          let pe = g.packed[ei]
+          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+          let nd = d_f + (pe >> NODE_BITS)
+          let dv = if sf[v] == gf { df[v] } else { INF_DIST }
+          if nd < dv {
+            df[v] = nd
+            sf[v] = gf
+            pf[v] = u
+            bf[(nd % m64).to_int()].push(v)
+            pend_f = pend_f + 1
+            if sb[v] == gb && nd + db[v] < mu {
+              mu = nd + db[v]
+              meet = v
+            }
+          }
+        }
+      }
+      b.clear()
+      d_f = d_f + 1L
+    } else {
+      // 反向推进一个距离值（rg 出边 = g 入边）。
+      let b = bb[(d_b % m64).to_int()]
+      let mut bi = 0
+      while bi < b.length() {
+        let u = b[bi]
+        bi = bi + 1
+        pend_b = pend_b - 1
+        if db[u] != d_b {
+          continue
+        }
+        let stop = rg.offsets[u + 1]
+        for ei = rg.offsets[u]; ei < stop; ei = ei + 1 {
+          let pe = rg.packed[ei]
+          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+          let nd = d_b + (pe >> NODE_BITS)
+          let dv = if sb[v] == gb { db[v] } else { INF_DIST }
+          if nd < dv {
+            db[v] = nd
+            sb[v] = gb
+            pb[v] = u
+            bb[(nd % m64).to_int()].push(v)
+            pend_b = pend_b + 1
+            if sf[v] == gf && nd + df[v] < mu {
+              mu = nd + df[v]
+              meet = v
+            }
+          }
+        }
+      }
+      b.clear()
+      d_b = d_b + 1L
+    }
+  }
+  if meet < 0 {
+    return None
+  }
+  let path = [meet]
+  let mut node = meet
+  while pf[node] >= 0 {
+    node = pf[node]
+    path.push(node)
+  }
+  path.rev_in_place()
+  node = meet
+  while pb[node] >= 0 {
+    node = pb[node]
+    path.push(node)
+  }
+  Some((path, mu.to_int()))
+}
+
+///|
 /// 复用上下文的 A*（要求 `h` 一致/单调，consistent；批量查询时免
 /// 每次 O(n) 数组初始化，弹出时用 closed 戳代替 h(u) 重算）。
 /// 小整数边权（≤ 1024）自动切换桶式 Dial 变体。

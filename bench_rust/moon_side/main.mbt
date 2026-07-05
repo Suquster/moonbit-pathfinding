@@ -64,6 +64,17 @@ fn build_weighted_adjacency(w : Workload) -> @directed.WeightedCsr {
 }
 
 ///|
+/// 逆图加权 CSR（双向 Dijkstra 的反向前沿沿入边推进）。
+fn build_weighted_reverse_adjacency(w : Workload) -> @directed.WeightedCsr {
+  let redges : Array[(Int, Int, Int)] = []
+  for e in w.edges {
+    let (u, v, wt) = e
+    redges.push((v, u, wt))
+  }
+  @directed.WeightedCsr::from_edges(w.n, redges)
+}
+
+///|
 /// 由边集构建无权 CSR（indexed 快路径，供 BFS 复用，忽略权重）。
 fn build_unweighted_adjacency(w : Workload) -> @unweighted.CsrGraph {
   let pairs : Array[(Int, Int)] = []
@@ -109,13 +120,15 @@ fn bfs_signatures(
 /// Dijkstra 代价签名：可达取路径代价，不可达取 -1。
 fn dijkstra_signatures(
   g : @directed.WeightedCsr,
+  rg : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
-  let ctx = @directed.SearchCtx::new(g.node_count())
+  let ctx_f = @directed.SearchCtx::new(g.node_count())
+  let ctx_b = @directed.SearchCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.dijkstra_indexed_ctx(g, ctx, s, t)
+    let res = @directed.dijkstra_bidirectional_ctx(g, rg, ctx_f, ctx_b, s, t)
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)
@@ -403,13 +416,14 @@ fn run_bench(map : Map[String, String]) -> Unit {
       let edge_count = w.edges.length()
       let query_count = w.queries.length()
       let wadj = build_weighted_adjacency(w)
+      let wradj = build_weighted_reverse_adjacency(w)
       let uadj = build_unweighted_adjacency(w)
       let uradj = build_unweighted_reverse_adjacency(w)
       let queries = w.queries
       // 三种算法的「整批查询」工作闭包。
       let algos : Array[(String, () -> Array[Int])] = [
         ("BFS", fn() { bfs_signatures(uadj, uradj, queries) }),
-        ("Dijkstra", fn() { dijkstra_signatures(wadj, queries) }),
+        ("Dijkstra", fn() { dijkstra_signatures(wadj, wradj, queries) }),
         ("A*", fn() { astar_signatures(wadj, queries) }),
       ]
       for entry in algos {

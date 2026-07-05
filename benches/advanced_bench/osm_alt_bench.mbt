@@ -74,6 +74,9 @@ fn run_osm_alt_benchmark_on(
     ch_opt = Some(@dir.ContractionHierarchy::build(g))
   })
   let ch = ch_opt.unwrap()
+  let mut hl_opt : @dir.HubLabels? = None
+  let hl_pre_us = elapsed(fn() { hl_opt = Some(@dir.HubLabels::build(ch)) })
+  let hl = hl_opt.unwrap()
   let mut alt_opt : @dir.AltLandmarks? = None
   let pre_us = elapsed(fn() {
     alt_opt = Some(@dir.AltLandmarks::build(g, rg, k))
@@ -103,6 +106,11 @@ fn run_osm_alt_benchmark_on(
           parity_ok = false
         }
       (None, None, None) => ()
+      _ => parity_ok = false
+    }
+    match (a, hl.query(s, t)) {
+      (Some((_, x)), Some(d)) => if x.to_int64() != d { parity_ok = false }
+      (None, None) => ()
       _ => parity_ok = false
     }
   }
@@ -150,7 +158,18 @@ fn run_osm_alt_benchmark_on(
       }
     }
   })
+  let sink64 : Array[Int64] = [0L]
+  let hl_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match hl.query(q.0, q.1) {
+        Some(d) => sink64[0] = sink64[0] + d
+        None => ()
+      }
+    }
+  })
   ignore(sink[0])
+  ignore(sink64[0])
+  let hl_med = csr_bench_median(hl_samples)
   let ch_med = csr_bench_median(ch_samples)
   let uni_med = csr_bench_median(uni_samples)
   let dij_med = csr_bench_median(dij_samples)
@@ -180,6 +199,9 @@ fn run_osm_alt_benchmark_on(
   tb.push_str("- 中位加速比: \{speedup}x\n")
   tb.push_str(
     "- CH 预处理耗时: \{ch_pre_us / 1.0e3} ms; CH 每查询中位耗时: \{ch_med / qd} µs（相对双向 Dijkstra \{dij_med / ch_med}×、相对 ALT \{alt_med / ch_med}×）\n",
+  )
+  tb.push_str(
+    "- HL 预处理耗时: \{hl_pre_us / 1.0e3} ms; 平均标签长: \{hl.avg_label_size()}; HL 每查询中位耗时: \{hl_med / qd} µs（相对 CH \{ch_med / hl_med}×、相对双向 Dijkstra \{dij_med / hl_med}×）\n",
   )
   if !parity_ok {
     tb.push_str(

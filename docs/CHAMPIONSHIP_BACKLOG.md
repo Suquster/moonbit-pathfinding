@@ -121,8 +121,9 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
 
 - [ ] Deepen the advanced algorithm trio: CH, JPS, ALT.
   - Acceptance: each has implementation, tests, docs, and benchmark story; claims avoid "skeleton" ambiguity.
-- [ ] Add paper-to-code traceability.
+- [x] Add paper-to-code traceability.
   - Acceptance: each advanced algorithm doc links assumptions and departures from the source paper to code sections and tests.
+  - Evidence: `docs/verification/paper-to-code-advanced.md` — CH (Geisberger 2008) / JPS (Harabor & Grastien 2011) / ALT (Goldberg & Harrelson 2005), paper construct → code lines → tests, plus documented departures (witness budget, no stall-on-demand, uniform-cost JPS).
 - [ ] Prepare defense assets.
   - Acceptance: slides, script, Q&A, and offline demo all reflect the current repository instead of future plans.
 

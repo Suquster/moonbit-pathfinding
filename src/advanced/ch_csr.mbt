@@ -451,8 +451,8 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
     // 惰性重估：邻域收缩可能已抬高估值；若劣于当前堆顶候选则回堆重排。
     if dirty[v] {
       let fresh = ch_csr_priority(
-        n, v, fwd, bwd, contracted, deleted_neighbours, shortcuts, wdist, wstamp, wepoch_box,
-        wpq,
+        n, v, fwd, bwd, contracted, deleted_neighbours, shortcuts, wdist, wstamp,
+        wepoch_box, wpq,
       )
       dirty[v] = false
       if fresh > prio && !order.is_empty() {

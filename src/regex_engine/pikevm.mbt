@@ -243,7 +243,8 @@ fn Program::exec_chars(
     // 任何匹配中途的线程，故 `find`/`find_all`/`is_match` 结果与不过滤逐位相等。
     // 非可空正则若再无候选起点（np >= n），则不可能再有匹配，提前终止。
     match self.prefilter {
-      PfFirstSet(_) =>
+      PfNone => ()
+      PfFirstSet(_) | PfLiterals(_) =>
         if matched is None && clist.pcs.length() == 0 {
           let np = self.prefilter.next_candidate(chars, n, pos)
           if np >= n {
@@ -251,7 +252,6 @@ fn Program::exec_chars(
           }
           pos = np
         }
-      PfNone => ()
     }
     // 在每个位置追加最低优先级起点线程，实现单遍最左扫描；命中后停止播种。
     match matched {

@@ -65,6 +65,15 @@ pub fn unicode_category(Int) -> GeneralCategory
 // Errors
 
 // Types and methods
+pub struct AcAutomaton {
+  children : Array[Array[(Int, Int)]]
+  fail : Array[Int]
+  out : Array[Bool]
+  max_len : Int
+} derive(Eq)
+pub fn AcAutomaton::build(Array[Array[Char]]) -> Self
+pub fn AcAutomaton::next_candidate(Self, Array[Char], Int, Int) -> Int
+
 pub(all) enum AnchorKind {
   Start
   End
@@ -128,6 +137,12 @@ pub struct Dfa {
 }
 pub fn Dfa::find(Self, String) -> Match?
 pub fn Dfa::minimize(Self) -> Self
+
+pub enum EngineChoice {
+  EngLiteralScan
+  EngLazyDfa
+  EngPikeVm
+} derive(Eq)
 
 pub(all) struct Flags {
   ignore_case : Bool
@@ -217,6 +232,7 @@ pub fn ParseError::pos(Self) -> Int
 pub struct Pattern {
   prog : Program
   kind : MatchKind
+  engine : EngineChoice
 }
 pub fn Pattern::captures(Self, String) -> Captures?
 pub fn Pattern::captures_all(Self, String) -> Array[Captures]
@@ -231,11 +247,13 @@ pub fn Pattern::replace_all(Self, String, String) -> String
 pub fn Pattern::replace_fn(Self, String, (Match) -> String) -> String
 pub fn Pattern::split(Self, String) -> Array[String]
 pub fn Pattern::split_n(Self, String, Int) -> Array[String]
+pub fn Pattern::without_auto_engine(Self) -> Self
 pub fn Pattern::without_prefilter(Self) -> Self
 
 pub enum Prefilter {
   PfNone
   PfFirstSet(CharSet)
+  PfLiterals(AcAutomaton)
 } derive(Eq)
 pub fn Prefilter::next_candidate(Self, Array[Char], Int, Int) -> Int
 

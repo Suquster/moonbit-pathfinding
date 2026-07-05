@@ -447,8 +447,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 - 工作窃取双端队列 ✅ 已落地：`src/infra_timer/work_stealing.mbt`
   （Chase & Lev 2005 环形缓冲 owner-LIFO/thief-FIFO 摊销 O(1) + 确定性轮转调度器建模），
   无丢失无重复 + 同输入 trace 逐位一致 PBT 120 迭代三后端全绿；n=64000 混合负载 15.1×。
-- 优先级调度器——后续批次。
-- KPI：定时器插入/取消/触发摊销 O(1)（✅ 已达）；调度公平性与确定性 trace 重放 PBT 守卫。
+- O(1) 位图优先级就绪队列 ✅ 已落地：`src/infra_timer/priority_sched.mbt`
+  （对标 Linux O(1) 调度器：64 级优先级环形 FIFO + 64 位占用位图，
+  de Bruijn find-first-set 常数步选级，enqueue/pick_next 严格 O(1)），
+  与朴素参照差分 PBT 200 迭代 + 确定性 trace 重放 + 级内 FIFO/边界定向
+  三后端全绿；稳态 churn 基准 n=128000 **82.0×** vs 朴素线性扫描
+  （benches/results/infra-timer-priority-sched-e4-native-2026-07-05.md）。
+- KPI：定时器插入/取消/触发摊销 O(1)（✅ 已达）；调度公平性与确定性 trace 重放 PBT 守卫（✅ 已达）。
 
 ### E5 · 可观测性深化 — 对标 OpenTelemetry / HdrHistogram（衔接方向七）
 

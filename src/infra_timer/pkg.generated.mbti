@@ -2,10 +2,25 @@
 package "Suquster/moonbit-pathfinding/src/infra_timer"
 
 // Values
+pub const PRIO_LEVELS : Int = 64
 
 // Errors
 
 // Types and methods
+type PrioQueue[T]
+
+pub struct PrioritySched[T] {
+  queues : Array[PrioQueue[T]]
+  mut bitmap : UInt64
+  mut total : Int
+}
+pub fn[T] PrioritySched::enqueue(Self[T], Int, T) -> Unit
+pub fn[T] PrioritySched::is_empty(Self[T]) -> Bool
+pub fn[T] PrioritySched::len(Self[T]) -> Int
+pub fn[T] PrioritySched::new() -> Self[T]
+pub fn[T] PrioritySched::peek_priority(Self[T]) -> Int?
+pub fn[T] PrioritySched::pick_next(Self[T]) -> (Int, T)?
+
 type TimerEntry
 
 pub struct TimerWheel {

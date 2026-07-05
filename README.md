@@ -187,10 +187,11 @@ The current local guard passes with one environment warning: `moon publish
 
 ## Algorithm Catalog
 
-当前已落地 **30 种经典图/路径算法** 与 **3 种前沿算法**。
-CH 与 ALT 已有生产级稠密快路径变体（`src/directed/ch.mbt` /
-`src/directed/alt.mbt`）并附真实 OSM 路网基准证据（北京驾车网 CH
-相对双向 Dijkstra **46×**，见 `benches/results/ch-osm-20260705.md`）。
+当前已落地 **30 种经典图/路径算法** 与 **4 种前沿算法**。
+CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）
+并附真实 OSM 路网基准证据（北京驾车网：CH 相对双向 Dijkstra
+**46×**，HL 距离查询 **0.44 µs（14304×）**，见
+`benches/results/ch-osm-20260705.md`）。
 
 | # | Algorithm | Module | Status | Paper |
 |---|-----------|--------|--------|-------|
@@ -227,6 +228,7 @@ CH 与 ALT 已有生产级稠密快路径变体（`src/directed/ch.mbt` /
 | 31 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt` · 生产级 [`src/directed/ch.mbt`](./src/directed/ch.mbt) | ✅ OSM 实测 46× | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
 | 32 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
 | 33 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt` · 生产级 [`src/directed/alt.mbt`](./src/directed/alt.mbt) | ✅ OSM 实测 6.6× | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
+| 34 | 🔥 Hub Labeling (2-hop)       | [`src/directed/hub_labels.mbt`](./src/directed/hub_labels.mbt)               | ✅ OSM 实测 14304× | [Abraham, Delling, Goldberg & Werneck 2011](https://doi.org/10.1007/978-3-642-20662-7_20)                                    |
 
 > ✅ v0.0.1 = 源码 + 单元测试 + PBT 已合入主干
 > ✅ v0.0.2 = 新增算法（Prim / DAG-SP / 桥与割点 / 双向 Dijkstra），源码 + 单元测试已合入主干

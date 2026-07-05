@@ -94,6 +94,10 @@ fn TokenWriter::fault_kind(self : TokenWriter, k : NetFaultKind) -> Unit {
       self.i64(offset)
     }
     Byzantine => self.int(7)
+    DiskFault(lose~) => {
+      self.int(8)
+      self.int(lose)
+    }
   }
 }
 
@@ -381,6 +385,11 @@ fn TokenReader::fault_kind(self : TokenReader) -> NetFaultKind? {
         None => None
       }
     Some(7) => Some(NetFaultKind::Byzantine)
+    Some(8) =>
+      match self.int() {
+        Some(lose) => Some(NetFaultKind::DiskFault(lose~))
+        None => None
+      }
     _ => None
   }
 }

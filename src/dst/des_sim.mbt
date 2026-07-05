@@ -189,6 +189,19 @@ fn World::apply_fault(self : World, f : FaultPolicyEx) -> Unit {
         Some(n) => n.skew = offset
         None => ()
       }
+    // 磁盘故障：目标节点丢失复制日志末尾 lose 条已持久条目（丢写建模）。
+    DiskFault(lose~) =>
+      match self.find_node(f.task_id) {
+        Some(n) => {
+          let keep = n.app.log.length() - lose
+          let log : Array[Int] = []
+          for i in 0..<(if keep > 0 { keep } else { 0 }) {
+            log.push(n.app.log[i])
+          }
+          n.app = { log, kv: n.app.kv }
+        }
+        None => ()
+      }
   }
 }
 

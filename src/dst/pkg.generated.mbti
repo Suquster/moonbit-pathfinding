@@ -183,6 +183,7 @@ pub(all) enum NetFaultKind {
   Duplicate
   ClockSkew(offset~ : Int64)
   Byzantine
+  DiskFault(lose~ : Int)
 } derive(Eq, @debug.Debug)
 pub fn NetFaultKind::of_legacy(FaultKind) -> Self
 

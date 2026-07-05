@@ -35,15 +35,21 @@
 /// 以输入偏移（offset）为键、引擎内部结果 `Outcome[T]` 为值的 LRU 缓存，容量
 /// 上限为 `cap`：
 ///   * `entries` —— 偏移到结果的映射；
-///   * `order` —— 偏移的访问顺序列表，约定**队首（index 0）为最久未使用
-///     （least-recently-used）**、队尾为最近使用，与 `entries` 的键集合始终同步；
+///   * `order` —— 偏移的访问顺序队列（可含陈旧重复项，惰性清理），队首方向
+///     为最久未使用；条目是否有效由 `pos_of` 判定：偏移的**最新**出现位置
+///     才代表其真实 LRU 位置，旧位置在淘汰扫描时跳过；
+///   * `head` —— 队首游标（已消费前缀过半时一次性压缩，touch/淘汰均摊销 O(1)，
+///     取代原 `Array::remove` 的 O(n) 搜索+头删）；
 ///   * `cap` —— 容量上限。`cap <= 0` 视为「不缓存」（见 `put`）。
 ///
-/// 不变量：`order.length() == entries 的条目数`，且任意时刻 `<= max(cap, 0)`。
+/// 不变量：`entries` 条目数任意时刻 `<= max(cap, 0)`；`pos_of` 键集与 `entries`
+/// 键集一致。
 pub struct BoundedCache[T] {
   cap : Int
   entries : Map[Int, Outcome[T]]
   order : Array[Int]
+  pos_of : Map[Int, Int]
+  mut head : Int
 }
 
 ///|
@@ -54,13 +60,13 @@ pub struct BoundedCache[T] {
 pub fn[T] BoundedCache::new(cap : Int) -> BoundedCache[T] {
   let entries : Map[Int, Outcome[T]] = Map([])
   let order : Array[Int] = []
-  { cap, entries, order }
+  { cap, entries, order, pos_of: Map([]), head: 0 }
 }
 
 ///|
 /// 当前缓存的条目数（恒 <= max(cap, 0)，对应 AC5）。
 pub fn[T] BoundedCache::len(self : BoundedCache[T]) -> Int {
-  self.order.length()
+  self.entries.size()
 }
 
 ///|
@@ -81,7 +87,7 @@ pub fn[T] BoundedCache::contains(self : BoundedCache[T], off : Int) -> Bool {
 pub fn[T] BoundedCache::get(self : BoundedCache[T], off : Int) -> Outcome[T]? {
   match self.entries.get(off) {
     Some(o) => {
-      bp_touch(self.order, off)
+      self.bp_mark_recent(off)
       Some(o)
     }
     None => None
@@ -104,48 +110,54 @@ pub fn[T] BoundedCache::put(
   }
   if self.entries.contains(off) {
     self.entries.set(off, outcome)
-    bp_touch(self.order, off)
+    self.bp_mark_recent(off)
     return
   }
-  if self.order.length() >= self.cap {
+  if self.entries.size() >= self.cap {
     self.bp_evict_lru()
   }
   self.entries.set(off, outcome)
+  self.bp_mark_recent(off)
+}
+
+///|
+/// 内部辅助：把偏移 `off` 标记为「最近使用」——追加到队尾并记录其最新位置，
+/// 旧位置成为陈旧项由淘汰扫描惰性跳过（O(1)，取代原线性搜索+头删）。
+fn[T] BoundedCache::bp_mark_recent(self : BoundedCache[T], off : Int) -> Unit {
   self.order.push(off)
+  self.pos_of.set(off, self.order.length() - 1)
 }
 
 ///|
-/// 内部辅助：在访问顺序列表中查找偏移 `off` 的索引，未找到返回 `-1`。
-fn bp_index_of(order : Array[Int], off : Int) -> Int {
-  let mut idx = -1
-  let mut i = 0
-  while i < order.length() && idx < 0 {
-    if order[i] == off {
-      idx = i
-    }
-    i = i + 1
-  }
-  idx
-}
-
-///|
-/// 内部辅助：把偏移 `off` 标记为「最近使用」——从访问顺序列表中移除后追加到
-/// 队尾。若不存在则不做改动。
-fn bp_touch(order : Array[Int], off : Int) -> Unit {
-  let idx = bp_index_of(order, off)
-  if idx >= 0 {
-    let _ = order.remove(idx)
-    order.push(off)
-  }
-}
-
-///|
-/// 内部辅助：按 LRU 淘汰一个条目——移除访问顺序列表队首（最久未使用）对应的
-/// 偏移及其缓存值。空缓存时为安全空操作。
+/// 内部辅助：按 LRU 淘汰一个条目——从队首游标向后扫描，跳过陈旧项（偏移的
+/// 最新位置不在当前下标，或已不在缓存中），移除首个有效条目；已消费前缀
+/// 过半且 ≥65 时一次性压缩队列（摊销 O(1)）。空缓存时为安全空操作。
 fn[T] BoundedCache::bp_evict_lru(self : BoundedCache[T]) -> Unit {
-  if self.order.length() > 0 {
-    let victim = self.order.remove(0)
-    self.entries.remove(victim)
+  while self.head < self.order.length() {
+    let victim = self.order[self.head]
+    let live = self.pos_of.get(victim) == Some(self.head) &&
+      self.entries.contains(victim)
+    self.head = self.head + 1
+    if live {
+      self.entries.remove(victim)
+      self.pos_of.remove(victim)
+      break
+    }
+  }
+  if self.head >= 64 && self.head * 2 >= self.order.length() {
+    let n = self.order.length()
+    let live_n = n - self.head
+    for i in 0..<live_n {
+      let off = self.order[self.head + i]
+      self.order[i] = off
+      if self.pos_of.get(off) == Some(self.head + i) {
+        self.pos_of.set(off, i)
+      }
+    }
+    while self.order.length() > live_n {
+      ignore(self.order.pop())
+    }
+    self.head = 0
   }
 }
 

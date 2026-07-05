@@ -435,7 +435,10 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   畸形/截断一律 None），差分 PBT 200 迭代 + 全 wire type/嵌套/逐字节
   截断定向三后端全绿；稀疏访问（2/32 字段命中）基准 **163×** vs eager
   单趟全量解码（benches/results/infra-codec-lazy-view-e2-native-2026-07-05.md）。
-- 后续批次：模式演化兼容测试。
+- 模式演化兼容测试 ✅ 已落地：`src/infra_codec/schema_evolution_test.mbt`
+  （protobuf 前后兼容语义：旧读者跳过未知字段、新读者缺失字段 None、
+  字段重排等价 + 未知字段随机注入差分 PBT 200 迭代、嵌套消息独立演化、
+  int32→int64 varint 拓宽），三后端全绿。
 - KPI：round-trip 逐字节一致（✅ 已达）；吞吐 + 体积双维度优于朴素字符串序列化（✅ 已达）；稀疏访问数量级优于全量解码（✅ 163×）。
 
 ### E3 · 内存/分配基础设施 — 对标 arena / object-pool 模式

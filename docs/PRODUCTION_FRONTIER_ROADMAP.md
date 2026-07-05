@@ -435,8 +435,12 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 ### E4 · 并发调度深化 — 对标 Tokio / Erlang BEAM 调度器（衔接方向十）
 
-- 工作窃取双端队列（确定性单线程建模）、优先级调度器、层级定时器轮（timer wheel）。
-- KPI：定时器插入/取消/触发摊销 O(1)；调度公平性与确定性 trace 重放 PBT 守卫。
+- 层级定时器轮（timer wheel）✅ 已落地：`src/infra_timer/timer_wheel.mbt`
+  （Varghese & Lauck 1987，5 级×64 槽 + 回绕 cascade，schedule/cancel/expire 摊销 O(1)），
+  与朴素 O(n) 扫描差分 PBT 200 迭代（逐 tick 到期集合一致）三后端全绿；
+  n=16000 基准 281×（benches/results/infra-timer-wheel-e4-native-2026-07-05.md）。
+- 工作窃取双端队列（确定性单线程建模）、优先级调度器——后续批次。
+- KPI：定时器插入/取消/触发摊销 O(1)（✅ 已达）；调度公平性与确定性 trace 重放 PBT 守卫。
 
 ### E5 · 可观测性深化 — 对标 OpenTelemetry / HdrHistogram（衔接方向七）
 

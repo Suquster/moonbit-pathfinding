@@ -293,8 +293,33 @@ fn ch_csr_contract(
       }
       added = added + 1
       if !simulate_only {
-        fwd[u].push((x, via))
-        bwd[x].push((u, via))
+        // 平行边就地压缩：witness 已保证 via 严格优于既有 u->x 边
+        // （若存在），替换而非追加，保持残差邻接不膨胀（witness 扫描
+        // 量与后续估值成本随之收紧）。
+        let fu = fwd[u]
+        let mut replaced = false
+        for k in 0..<fu.length() {
+          if fu[k].0 == x && via < fu[k].1 {
+            fu[k] = (x, via)
+            replaced = true
+            break
+          }
+        }
+        if !replaced {
+          fu.push((x, via))
+        }
+        let bx = bwd[x]
+        let mut replaced_b = false
+        for k in 0..<bx.length() {
+          if bx[k].0 == u && via < bx[k].1 {
+            bx[k] = (u, via)
+            replaced_b = true
+            break
+          }
+        }
+        if !replaced_b {
+          bx.push((u, via))
+        }
         let key = ch_csr_key(n, u, x)
         let lst = shortcuts.get(key).unwrap_or([])
         lst.push({ middle: v, w_left: w_uv, w_right: w_vx })

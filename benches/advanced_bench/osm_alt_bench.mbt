@@ -69,6 +69,11 @@ fn run_osm_alt_benchmark_on(
   for _ in 0..<qcount {
     queries.push((qrng.next() % n, qrng.next() % n))
   }
+  let mut ch_opt : @dir.ContractionHierarchy? = None
+  let ch_pre_us = elapsed(fn() {
+    ch_opt = Some(@dir.ContractionHierarchy::build(g))
+  })
+  let ch = ch_opt.unwrap()
   let mut alt_opt : @dir.AltLandmarks? = None
   let pre_us = elapsed(fn() {
     alt_opt = Some(@dir.AltLandmarks::build(g, rg, k))
@@ -91,9 +96,13 @@ fn run_osm_alt_benchmark_on(
       alt.h_to_closure(t),
       alt.h_from_closure(s),
     )
-    match (a, b) {
-      (Some((_, x)), Some((_, y))) => if x != y { parity_ok = false }
-      (None, None) => ()
+    let c = ch.query(s, t)
+    match (a, b, c) {
+      (Some((_, x)), Some((_, y)), Some((_, z))) =>
+        if x != y || x != z {
+          parity_ok = false
+        }
+      (None, None, None) => ()
       _ => parity_ok = false
     }
   }
@@ -133,7 +142,16 @@ fn run_osm_alt_benchmark_on(
       }
     }
   })
+  let ch_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match ch.query(q.0, q.1) {
+        Some((_, c)) => sink[0] = sink[0] + c
+        None => ()
+      }
+    }
+  })
   ignore(sink[0])
+  let ch_med = csr_bench_median(ch_samples)
   let uni_med = csr_bench_median(uni_samples)
   let dij_med = csr_bench_median(dij_samples)
   let alt_med = csr_bench_median(alt_samples)
@@ -160,6 +178,9 @@ fn run_osm_alt_benchmark_on(
   )
   tb.push_str("- ALT 双向 A* 每查询中位耗时: \{alt_med / qd} µs\n")
   tb.push_str("- 中位加速比: \{speedup}x\n")
+  tb.push_str(
+    "- CH 预处理耗时: \{ch_pre_us / 1.0e3} ms; CH 每查询中位耗时: \{ch_med / qd} µs（相对双向 Dijkstra \{dij_med / ch_med}×、相对 ALT \{alt_med / ch_med}×）\n",
+  )
   if !parity_ok {
     tb.push_str(
       "\n**警告：代价对拍存在不一致，加速比无效。**\n",

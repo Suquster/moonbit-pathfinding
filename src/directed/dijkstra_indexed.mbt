@@ -720,7 +720,8 @@ fn astar_bidial_ctx(
         }
         cf[u] = gf
         let du = df[u]
-        if du + h_f(u).to_int64() >= mu || du + d_b - h_b(u).to_int64() >= mu {
+        // 首次弹出时 enc 的 f = du + h_f(u)（同一节点最小 f 先出），免重算 h。
+        if enc >> NODE_BITS >= mu || du + d_b - h_b(u).to_int64() >= mu {
           continue
         }
         let stop = g.offsets[u + 1]
@@ -791,7 +792,7 @@ fn astar_bidial_ctx(
         }
         cb[u] = gb
         let du = db[u]
-        if du + h_b(u).to_int64() >= mu || du + d_f - h_f(u).to_int64() >= mu {
+        if enc >> NODE_BITS >= mu || du + d_f - h_f(u).to_int64() >= mu {
           continue
         }
         let stop = rg.offsets[u + 1]
@@ -911,7 +912,8 @@ pub fn astar_bidirectional_ctx(
       cf[u] = gf
       let du = df[u]
       // NBA* 剪枝：该节点不可能位于比 μ 更短的 s-t 路径上。
-      if du + h_f(u).to_int64() >= mu || du + fb - h_b(u).to_int64() >= mu {
+      // 首次弹出时 enc 的 f = du + h_f(u)，免重算本侧 h。
+      if enc >> NODE_BITS >= mu || du + fb - h_b(u).to_int64() >= mu {
         continue
       }
       let stop = g.offsets[u + 1]
@@ -939,7 +941,7 @@ pub fn astar_bidirectional_ctx(
       }
       cb[u] = gb
       let du = db[u]
-      if du + h_b(u).to_int64() >= mu || du + ff - h_f(u).to_int64() >= mu {
+      if enc >> NODE_BITS >= mu || du + ff - h_f(u).to_int64() >= mu {
         continue
       }
       let stop = rg.offsets[u + 1]

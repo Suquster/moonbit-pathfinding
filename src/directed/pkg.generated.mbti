@@ -80,6 +80,7 @@ pub struct SearchCtx {
   dist : Array[Int64]
   parent : Array[Int]
   stamp : Array[Int]
+  closed : Array[Int]
   mut gen : Int
   heap : EncodedHeap
 }

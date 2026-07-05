@@ -50,6 +50,24 @@ pub fn RoaringBitmap::remove(Self, Int) -> Bool
 pub fn RoaringBitmap::to_array(Self) -> Array[Int]
 pub fn RoaringBitmap::union_with(Self, Self) -> Self
 
+pub struct SkipList[K, V] {
+  mut head : SkipNode[K, V]?
+  mut level : Int
+  mut count : Int
+  mut rng : UInt64
+}
+pub fn[K : Compare, V] SkipList::contains(Self[K, V], K) -> Bool
+pub fn[K : Compare, V] SkipList::get(Self[K, V], K) -> V?
+pub fn[K : Compare, V] SkipList::insert(Self[K, V], K, V) -> V?
+pub fn[K, V] SkipList::new() -> Self[K, V]
+pub fn[K : Compare, V] SkipList::range(Self[K, V], K, K) -> Array[(K, V)]
+pub fn[K : Compare, V] SkipList::remove(Self[K, V], K) -> V?
+pub fn[K, V] SkipList::size(Self[K, V]) -> Int
+pub fn[K, V] SkipList::to_array(Self[K, V]) -> Array[(K, V)]
+pub fn[K, V] SkipList::with_seed(UInt64) -> Self[K, V]
+
+type SkipNode[K, V]
+
 // Type aliases
 
 // Traits

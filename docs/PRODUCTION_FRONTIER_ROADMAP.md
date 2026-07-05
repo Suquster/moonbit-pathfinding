@@ -414,7 +414,11 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 - 持久化 HashMap（HAMT）✅ 已落地：`src/infra_ds/hamt.mbt`
   （Bagwell 2001，32 叉每 5 位分片 bitmap+紧凑子数组，insert/remove 路径复制结构共享），
   与朴素参照差分 PBT 200 迭代三后端全绿；持久化插入 n=8000 47×（同上工件）。
-- 跳表——后续批次。
+- 跳表 ✅ 已落地：`src/infra_ds/skiplist.mbt`
+  （Pugh 1990，多层有序链表 p=1/2 几何晋升；层高由自持 xorshift64 种子决定，
+  确定性可复现），与朴素参照差分 PBT 200 迭代三后端全绿；insert+get n=32000 15.1×（同上工件）。
+- **E1 首轮收官**：四种核心结构（BTreeMap / RoaringBitmap / HamtMap / SkipList）
+  均达数量级 baseline 优势、差分 PBT 三后端全绿、0 告警。
 - KPI：与朴素实现（排序数组 / 链式散列）比较，插入/查找/范围扫描达数量级级别优势；
   PBT ≥200 迭代与标准 Map/Set 差分逐位一致。
 

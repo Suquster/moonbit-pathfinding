@@ -1,0 +1,10 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_alloc
+//
+// 内存/分配基础设施（E3，对标 Rust slab / slotmap crate）。
+// 首批：Slab 分配器 + 分代句柄（O(1) alloc/free/get，churn 场景零增长分配）。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

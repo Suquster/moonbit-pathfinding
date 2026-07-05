@@ -1,0 +1,11 @@
+// Package: benches/infra_alloc_bench
+//
+// E3 分配基础设施基准：Slab（O(1) free-list 槽位复用）vs 朴素句柄管理
+// 参照（自增 id + Map 存储），验证高 churn 负载下的数量级优势。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench benches/infra_alloc_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_alloc" @alloc,
+}

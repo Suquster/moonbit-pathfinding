@@ -1,0 +1,41 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_alloc"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Slab[T] {
+  slots : Array[Slot[T]]
+  mut free_head : Int
+  mut live : Int
+}
+pub fn[T] Slab::alloc(Self[T], T) -> SlabKey
+pub fn[T] Slab::capacity(Self[T]) -> Int
+pub fn[T] Slab::clear(Self[T]) -> Unit
+pub fn[T] Slab::contains(Self[T], SlabKey) -> Bool
+pub fn[T] Slab::free(Self[T], SlabKey) -> T?
+pub fn[T] Slab::get(Self[T], SlabKey) -> T?
+pub fn[T] Slab::iter_live(Self[T]) -> Array[(SlabKey, T)]
+pub fn[T] Slab::len(Self[T]) -> Int
+pub fn[T] Slab::new() -> Self[T]
+pub fn[T] Slab::reserve(Self[T], Int) -> Unit
+pub fn[T] Slab::set(Self[T], SlabKey, T) -> Bool
+pub fn[T] Slab::with_capacity(Int) -> Self[T]
+
+pub struct SlabKey {
+  index : Int
+  generation : Int
+} derive(Eq, @debug.Debug)
+
+type Slot[T]
+
+// Type aliases
+
+// Traits
+

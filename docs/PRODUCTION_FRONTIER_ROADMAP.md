@@ -325,8 +325,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 ## 第 2 章 · 横切质量门禁（贯穿所有方向）
 
-- [ ] 每个生产化 PR 必过 §0.3 统一验证协议（0 告警 + 三后端全绿 + .mbti 只增 + PBT ≥100）。
-- [ ] 性能类任务落 `benches/results/` 工件并接回归 guard。
+- [x] 每个生产化 PR 必过 §0.3 统一验证协议（0 告警 + 三后端全绿 + .mbti 只增 + PBT ≥100）——
+  E0-E6 全部批次逐一执行（moon check 0 告警 + native/wasm-gc/js 2138 全绿 +
+  各批差分 PBT 100-200 迭代），持续生效的每 PR 门禁。
+- [x] 性能类任务落 `benches/results/` 工件并接回归 guard——E0-E6 每批均有
+  `benches/results/*-2026-07-05.md` 工件；回归 guard 由
+  `scripts/benchmark_guard.ps1` / `scripts/regression_guard.ps1`（acceptance.ps1
+  统一编排）承担，持续生效。
 - [x] 每方向 1 份 paper-to-code 追溯文档（§C5）——docs/verification/paper-to-code-directions.md（十方向汇总，逐条论文→代码→测试）+ paper-to-code-advanced.md（CH/JPS/ALT）。
 - [x] 负例/边界回归测试随每方向补齐（对应 backlog P0：unreachable/零节点/单节点/重边/负权/不连通）——见 CHAMPIONSHIP_BACKLOG.md 该项证据（undirected/unweighted/directed 三包 edge_cases 测试）。
 - [x] 双语 README（中/英）在状态、范围、命令上保持一致（对应 backlog P1）——中文算法目录补齐至 30+3 与英文版对齐。

@@ -144,6 +144,7 @@ pub struct BoundedMailbox[M] {
   capacity : Int
   policy : BackpressurePolicy
   items : Array[M]
+  mut head : Int
   mut enqueued : Int
   mut dropped : Int
   mut rejected : Int

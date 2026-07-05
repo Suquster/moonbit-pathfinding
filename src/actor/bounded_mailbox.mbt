@@ -37,6 +37,9 @@ pub struct BoundedMailbox[M] {
   capacity : Int
   policy : BackpressurePolicy
   items : Array[M]
+  /// 队首游标：`items[head..]` 为待处理消息。出队 O(1) 推进游标，
+  /// 已消费前缀过半时一次性压缩，避免数组头删 O(n) 的平方级退化。
+  mut head : Int
   mut enqueued : Int
   mut dropped : Int
   mut rejected : Int
@@ -49,7 +52,15 @@ pub fn[M] BoundedMailbox::new(
   policy : BackpressurePolicy,
 ) -> BoundedMailbox[M] {
   let cap = if capacity < 0 { 0 } else { capacity }
-  { capacity: cap, policy, items: [], enqueued: 0, dropped: 0, rejected: 0 }
+  {
+    capacity: cap,
+    policy,
+    items: [],
+    head: 0,
+    enqueued: 0,
+    dropped: 0,
+    rejected: 0,
+  }
 }
 
 ///|
@@ -61,7 +72,7 @@ pub fn[M] BoundedMailbox::offer(
   self : BoundedMailbox[M],
   msg : M,
 ) -> OfferResult {
-  if self.items.length() < self.capacity {
+  if self.length() < self.capacity {
     // 未满：FIFO 入队。
     self.items.push(msg)
     self.enqueued = self.enqueued + 1
@@ -80,8 +91,8 @@ pub fn[M] BoundedMailbox::offer(
         return Dropped
       }
       // 移除队首最旧，新消息入队尾；计一次丢弃（被挤出者）。
-      if self.items.length() > 0 {
-        let _ = self.items.remove(0)
+      if !self.is_empty() {
+        ignore(self.pop_head())
       }
       self.items.push(msg)
       self.dropped = self.dropped + 1
@@ -97,17 +108,40 @@ pub fn[M] BoundedMailbox::offer(
 ///|
 /// FIFO 出队一条消息；空队列返回 None。
 pub fn[M] BoundedMailbox::dequeue(self : BoundedMailbox[M]) -> M? {
-  if self.items.is_empty() {
+  if self.is_empty() {
     None
   } else {
-    Some(self.items.remove(0))
+    Some(self.pop_head())
   }
+}
+
+///|
+/// 取出队首并推进游标；已消费前缀过半时压缩存活区间（摊销 O(1)）。
+/// 调用前提：队列非空。
+fn[M] BoundedMailbox::pop_head(self : BoundedMailbox[M]) -> M {
+  let msg = self.items[self.head]
+  self.head = self.head + 1
+  let n = self.items.length()
+  if self.head == n {
+    self.items.clear()
+    self.head = 0
+  } else if self.head >= 64 && self.head * 2 >= n {
+    let live = n - self.head
+    for i in 0..<live {
+      self.items[i] = self.items[self.head + i]
+    }
+    while self.items.length() > live {
+      ignore(self.items.pop())
+    }
+    self.head = 0
+  }
+  msg
 }
 
 ///|
 /// 当前排队消息条数（恒 <= capacity，Requirement 9.7）。
 pub fn[M] BoundedMailbox::length(self : BoundedMailbox[M]) -> Int {
-  self.items.length()
+  self.items.length() - self.head
 }
 
 ///|
@@ -119,7 +153,7 @@ pub fn[M] BoundedMailbox::capacity(self : BoundedMailbox[M]) -> Int {
 ///|
 /// 队列是否为空。
 pub fn[M] BoundedMailbox::is_empty(self : BoundedMailbox[M]) -> Bool {
-  self.items.is_empty()
+  self.head >= self.items.length()
 }
 
 ///|

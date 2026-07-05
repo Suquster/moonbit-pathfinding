@@ -403,8 +403,11 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 
 ### E1 · 核心数据结构库 — 对标 Rust `std::collections` / `im`
 
-- B-tree（有序映射，缓存友好分裂/合并）、跳表、持久化 HashMap（HAMT）、位图索引
-  （roaring 式压缩）。
+- B-tree（有序映射，缓存友好分裂/合并）✅ 已落地：`src/infra_ds/btree.mbt`
+  （CLRS §18 单趟下降，t=8 节点内二分；插入预分裂、删除预借位/合并），
+  与朴素参照差分 PBT 200 迭代三后端全绿；基准 insert+get n=32000 30.2×、
+  范围查询 29.2×（benches/results/infra-ds-btree-e1-native-2026-07-05.md）。
+- 跳表、持久化 HashMap（HAMT）、位图索引（roaring 式压缩）——后续批次。
 - KPI：与朴素实现（排序数组 / 链式散列）比较，插入/查找/范围扫描达数量级级别优势；
   PBT ≥200 迭代与标准 Map/Set 差分逐位一致。
 

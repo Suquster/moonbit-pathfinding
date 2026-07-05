@@ -53,7 +53,8 @@ pub fn WeightedCsr::node_count(self : WeightedCsr) -> Int {
 
 ///|
 /// 编码堆：Int64 键 = (优先级 << 21) | node（node < 2^21）。
-/// 单数组、无装箱、siftup/siftdown 手写。
+/// 4 叉堆（更浅、缓存更友好）、单数组、无装箱、siftup/siftdown 手写、
+/// 上滤/下滤用「持洞」写法（每层一次赋值，避免三步交换）。
 priv struct EncodedHeap {
   data : Array[Int64]
   mut len : Int
@@ -68,21 +69,18 @@ fn EncodedHeap::new(cap : Int) -> EncodedHeap {
 fn EncodedHeap::push(self : EncodedHeap, key : Int64) -> Unit {
   if self.len == self.data.length() {
     self.data.push(key)
-  } else {
-    self.data[self.len] = key
   }
   let mut i = self.len
   self.len = self.len + 1
   while i > 0 {
-    let p = (i - 1) / 2
-    if self.data[p] <= self.data[i] {
+    let p = (i - 1) / 4
+    if self.data[p] <= key {
       break
     }
-    let t = self.data[p]
-    self.data[p] = self.data[i]
-    self.data[i] = t
+    self.data[i] = self.data[p]
     i = p
   }
+  self.data[i] = key
 }
 
 ///|
@@ -90,23 +88,29 @@ fn EncodedHeap::pop(self : EncodedHeap) -> Int64 {
   let top = self.data[0]
   self.len = self.len - 1
   if self.len > 0 {
-    self.data[0] = self.data[self.len]
+    let last = self.data[self.len]
     let mut i = 0
     while true {
-      let l = 2 * i + 1
-      if l >= self.len {
+      let base = 4 * i + 1
+      if base >= self.len {
         break
       }
-      let r = l + 1
-      let c = if r < self.len && self.data[r] < self.data[l] { r } else { l }
-      if self.data[i] <= self.data[c] {
+      let mut c = base
+      let mut ck = self.data[base]
+      let stop = if base + 4 < self.len { base + 4 } else { self.len }
+      for j = base + 1; j < stop; j = j + 1 {
+        if self.data[j] < ck {
+          c = j
+          ck = self.data[j]
+        }
+      }
+      if last <= ck {
         break
       }
-      let t = self.data[i]
-      self.data[i] = self.data[c]
-      self.data[c] = t
+      self.data[i] = ck
       i = c
     }
+    self.data[i] = last
   }
   top
 }

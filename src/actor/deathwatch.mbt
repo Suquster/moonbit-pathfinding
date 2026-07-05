@@ -24,12 +24,15 @@ pub(all) struct WatchEntry[M] {
 /// 监视注册表（watch registry）—— 以数组承载条目，遍历顺序确定。
 pub struct WatchRegistry[M] {
   entries : Array[WatchEntry[M]]
+  /// target.value → 条目下标列表（登记序）：终止收集与幂等检查只扫目标
+  /// 相关条目，避免逐次终止全表线性扫描。
+  by_target : Map[Int, Array[Int]]
 }
 
 ///|
 /// 创建一个空监视注册表。
 pub fn[M] WatchRegistry::new() -> WatchRegistry[M] {
-  { entries: [] }
+  { entries: [], by_target: Map([]) }
 }
 
 ///|
@@ -43,7 +46,9 @@ pub fn[M] WatchRegistry::watch(
   target : ActorId,
   on_terminated : (ActorId, TerminationReason) -> M,
 ) -> Unit {
-  for entry in self.entries {
+  let idxs = self.by_target.get(target.value).unwrap_or([])
+  for i in idxs {
+    let entry = self.entries[i]
     if entry.active && entry.watcher == watcher && entry.target == target {
       // 已存在 active 监视：刷新适配器，避免重复条目。
       entry.active = true
@@ -51,6 +56,8 @@ pub fn[M] WatchRegistry::watch(
     }
   }
   self.entries.push({ target, watcher, on_terminated, active: true })
+  idxs.push(self.entries.length() - 1)
+  self.by_target.set(target.value, idxs)
 }
 
 ///|
@@ -79,12 +86,17 @@ pub fn[M] WatchRegistry::collect_terminations(
   reason : TerminationReason,
 ) -> Array[(ActorId, M)] {
   let result : Array[(ActorId, M)] = []
-  for entry in self.entries {
-    if entry.active && entry.target == target {
-      let msg = (entry.on_terminated)(target, reason)
-      result.push((entry.watcher, msg))
-      entry.active = false
-    }
+  match self.by_target.get(target.value) {
+    Some(idxs) =>
+      for i in idxs {
+        let entry = self.entries[i]
+        if entry.active && entry.target == target {
+          let msg = (entry.on_terminated)(target, reason)
+          result.push((entry.watcher, msg))
+          entry.active = false
+        }
+      }
+    None => ()
   }
   result
 }

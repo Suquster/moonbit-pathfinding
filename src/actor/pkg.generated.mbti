@@ -314,6 +314,7 @@ pub(all) struct WatchEntry[M] {
 
 pub struct WatchRegistry[M] {
   entries : Array[WatchEntry[M]]
+  by_target : Map[Int, Array[Int]]
 }
 pub fn[M] WatchRegistry::active_count(Self[M]) -> Int
 pub fn[M] WatchRegistry::collect_terminations(Self[M], ActorId, TerminationReason) -> Array[(ActorId, M)]

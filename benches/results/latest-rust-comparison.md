@@ -1,9 +1,9 @@
 # Rust `pathfinding` Comparison Report
 
-- Generated at: `2026-07-05T13:20 UTC`
+- Generated at: `2026-07-05T13:25 UTC`
 - Sides: MoonBit `bench_rust/moon_side` (本库，已接入 indexed 快路径：
   CSR + 扁平数组 + 4 叉编码堆 + 可复用 SearchCtx/BfsCtx + 小整数权
-  Dial 桶队列 + 桶式 Dial A* + 层同步双向 BFS + 双向 Dial Dijkstra) vs Rust `bench_rust/` (`pathfinding` crate 4.11.0)
+  Dial 桶队列 + 桶式 Dial A* + 层同步双向 BFS + 双向 Dial Dijkstra + 双向 NBA* 剪枝 A*) vs Rust `bench_rust/` (`pathfinding` crate 4.11.0)
 - Seed: `1311768467463790320` (decimal, 64-bit)
 - Workload: BFS/Dijkstra/A* × sizes {`1000,10000`} × avg out-degree
   {`4,16`} × `100` queries
@@ -18,7 +18,7 @@
 
 ## Aggregate
 
-- Median of per-case median speedups (MoonBit over Rust): **14.9×**
+- Median of per-case median speedups (MoonBit over Rust): **14.0×**
   (>1 means MoonBit faster；2026-06-21 采集为 0.2498×)
 - Included cases: `12` / `12`（全部结果签名逐元素一致）
 
@@ -26,18 +26,18 @@
 
 | Algorithm | Nodes | Deg | Rust median ms | MoonBit median ms | Speedup (Moon/Rust) | Included |
 |---|---:|---:|---:|---:|---:|:--:|
-| BFS | 1000 | 4 | 1.608 | 0.039 | **41.4×** | ✅ |
-| Dijkstra | 1000 | 4 | 5.285 | 1.041 | **5.08×** | ✅ |
-| A* | 1000 | 4 | 6.579 | 3.339 | **1.97×** | ✅ |
-| BFS | 1000 | 16 | 1.502 | 0.057 | **26.4×** | ✅ |
-| Dijkstra | 1000 | 16 | 10.749 | 1.977 | **5.44×** | ✅ |
-| A* | 1000 | 16 | 12.618 | 5.591 | **2.26×** | ✅ |
-| BFS | 10000 | 4 | 17.515 | 0.228 | **76.7×** | ✅ |
-| Dijkstra | 10000 | 4 | 55.104 | 2.125 | **25.9×** | ✅ |
-| A* | 10000 | 4 | 75.213 | 27.972 | **2.69×** | ✅ |
-| BFS | 10000 | 16 | 10.414 | 0.231 | **45.0×** | ✅ |
-| Dijkstra | 10000 | 16 | 136.924 | 5.616 | **24.4×** | ✅ |
-| A* | 10000 | 16 | 159.338 | 57.900 | **2.75×** | ✅ |
+| BFS | 1000 | 4 | 1.608 | 0.070 | **22.8×** | ✅ |
+| Dijkstra | 1000 | 4 | 5.285 | 1.311 | **4.03×** | ✅ |
+| A* | 1000 | 4 | 6.579 | 1.856 | **3.54×** | ✅ |
+| BFS | 1000 | 16 | 1.502 | 0.079 | **18.9×** | ✅ |
+| Dijkstra | 1000 | 16 | 10.749 | 2.535 | **4.24×** | ✅ |
+| A* | 1000 | 16 | 12.618 | 3.932 | **3.21×** | ✅ |
+| BFS | 10000 | 4 | 17.515 | 0.303 | **57.9×** | ✅ |
+| Dijkstra | 10000 | 4 | 55.104 | 2.714 | **20.3×** | ✅ |
+| A* | 10000 | 4 | 75.213 | 8.334 | **9.03×** | ✅ |
+| BFS | 10000 | 16 | 10.414 | 0.383 | **27.2×** | ✅ |
+| Dijkstra | 10000 | 16 | 136.924 | 7.166 | **19.1×** | ✅ |
+| A* | 10000 | 16 | 159.338 | 19.302 | **8.26×** | ✅ |
 
 ## Methodology (R6.4)
 

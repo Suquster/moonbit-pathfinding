@@ -92,6 +92,8 @@ pub struct Condensation[N] {
 
 type EncodedHeap
 
+type RadixHeap
+
 pub struct SearchCtx {
   dist : Array[Int64]
   parent : Array[Int]
@@ -101,6 +103,7 @@ pub struct SearchCtx {
   heap : EncodedHeap
   bkt : Array[Array[Int64]]
   ov : Array[Int64]
+  rheap : RadixHeap
 }
 pub fn SearchCtx::new(Int) -> Self
 

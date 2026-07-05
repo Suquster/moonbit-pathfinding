@@ -107,3 +107,106 @@ test "astar_indexed with zero heuristic equals dijkstra_indexed (80 iterations)"
     }
   }
 }
+
+///|
+test "dijkstra_indexed_ctx differential PBT vs dijkstra_indexed (120 iterations, ctx reused)" {
+  let rng = @infra_pbt.rng_new(0xC7_D115UL)
+  for _iter in 0..<120 {
+    let n = 2 + rng.next_below(50)
+    let edges : Array[(Int, Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v, 1 + rng.next_below(100)))
+    }
+    let g = @directed.WeightedCsr::from_edges(n, edges)
+    let ctx = @directed.SearchCtx::new(n)
+    // 同一 ctx 连续复用多条查询：generation 戳必须彻底隔离前后查询状态。
+    for _q in 0..<10 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @directed.dijkstra_indexed_ctx(g, ctx, s, t)
+      let b = @directed.dijkstra_indexed(g, s, t)
+      match (a, b) {
+        (Some((pa, ca)), Some((pb, cb))) => {
+          assert_eq(ca, cb)
+          assert_eq(pa[0], pb[0])
+          assert_eq(pa[pa.length() - 1], t)
+        }
+        (None, None) => ()
+        _ => abort("ctx/plain reachability mismatch")
+      }
+    }
+  }
+}
+
+///|
+test "astar_indexed_ctx differential PBT vs astar_indexed (100 iterations, ctx reused)" {
+  let rng = @infra_pbt.rng_new(0xA5_C7C5UL)
+  for _iter in 0..<100 {
+    let n = 2 + rng.next_below(50)
+    let edges : Array[(Int, Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v, 1 + rng.next_below(100)))
+    }
+    let g = @directed.WeightedCsr::from_edges(n, edges)
+    let ctx = @directed.SearchCtx::new(n)
+    for _q in 0..<8 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @directed.astar_indexed_ctx(g, ctx, s, t, fn(_node) { 0 })
+      let b = @directed.astar_indexed(g, s, t, fn(_node) { 0 })
+      match (a, b) {
+        (Some((_, ca)), Some((_, cb))) => assert_eq(ca, cb)
+        (None, None) => ()
+        _ => abort("ctx/plain astar reachability mismatch")
+      }
+    }
+  }
+}
+
+///|
+test "dijkstra_indexed_ctx Dial vs heap paths agree on large weights (60 iterations)" {
+  // 边权含 > 1024 的用例走 4 叉堆路径；≤ 1024 走 Dial——两路径与
+  // 无 ctx 参照必须一致。
+  let rng = @infra_pbt.rng_new(0xD1A1UL)
+  for _iter in 0..<60 {
+    let n = 2 + rng.next_below(40)
+    let big = _iter % 2 == 0
+    let edges : Array[(Int, Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      let w = if big {
+        1 + rng.next_below(100000)
+      } else {
+        1 + rng.next_below(30)
+      }
+      edges.push((u, v, w))
+    }
+    let g = @directed.WeightedCsr::from_edges(n, edges)
+    let ctx = @directed.SearchCtx::new(n)
+    for _q in 0..<6 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @directed.dijkstra_indexed_ctx(g, ctx, s, t)
+      let b = @directed.dijkstra_indexed(g, s, t)
+      match (a, b) {
+        (Some((_, ca)), Some((_, cb))) => assert_eq(ca, cb)
+        (None, None) => ()
+        _ => abort("dial/heap reachability mismatch")
+      }
+    }
+  }
+}

@@ -8,9 +8,19 @@ pub fn[N : Eq + Hash] bfs_all(N, (N) -> Array[N]) -> BfsTree[N]
 
 pub fn bfs_indexed(CsrGraph, Int, Int) -> Array[Int]?
 
+pub fn bfs_indexed_ctx(CsrGraph, BfsCtx, Int, Int) -> Array[Int]?
+
 // Errors
 
 // Types and methods
+pub struct BfsCtx {
+  parent : Array[Int]
+  stamp : Array[Int]
+  queue : Array[Int]
+  mut gen : Int
+}
+pub fn BfsCtx::new(Int) -> Self
+
 pub struct BfsTree[N] {
   source : N
   dist : Map[N, Int]

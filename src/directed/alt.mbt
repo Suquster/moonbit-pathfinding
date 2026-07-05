@@ -31,7 +31,7 @@ fn alt_sssp(g : WeightedCsr, src : Int, out : Array[Int64], base : Int) -> Unit 
   for u in 0..<n {
     out[base + u] = INF_DIST
   }
-  let heap = EncodedHeap::new(16)
+  let heap = RadixHeap::new()
   out[base + src] = 0L
   heap.push(src.to_int64())
   while heap.len > 0 {

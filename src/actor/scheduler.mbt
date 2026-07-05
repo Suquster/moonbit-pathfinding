@@ -81,6 +81,7 @@ struct ActorCell[S, M] {
 /// 终止时清空其残留消息——这些消息按语义不再被处理（Requirement 10.6 / 10.7）。
 fn[M] Mailbox::discard_all(self : Mailbox[M]) -> Unit {
   self.items = []
+  self.head = 0
 }
 
 // ───────────────────────────── 调度器 ────────────────────────────────────

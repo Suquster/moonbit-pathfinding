@@ -350,9 +350,10 @@ fn ch_csr_contract(
 }
 
 ///|
-/// 节点排序估值（论文 §3.1）：`将新增捷径数 - 关联残差边数 +
-/// 已收缩邻居数`。值越小越先收缩；已收缩邻居项（deleted neighbours）
-/// 使收缩在图上均匀展开，避免局部退化。
+/// 节点排序估值（论文 §3.1）：`2·将新增捷径数 - 关联残差边数 +
+/// 2·已收缩邻居数`。值越小越先收缩；加重 edge difference 项抑制捷径
+/// 膨胀，已收缩邻居项（deleted neighbours）加权使收缩在图上均匀展开、
+/// 避免局部退化（权重经真实 OSM 路网网格扫描实测选定）。
 fn ch_csr_priority(
   n : Int,
   v : Int,
@@ -380,7 +381,7 @@ fn ch_csr_priority(
       deg = deg + 1
     }
   }
-  sims - deg + deleted_neighbours[v]
+  2 * sims - deg + 2 * deleted_neighbours[v]
 }
 
 ///|

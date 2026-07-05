@@ -21,6 +21,21 @@ pub fn[K : Compare, V] BTreeMap::remove(Self[K, V], K) -> V?
 pub fn[K, V] BTreeMap::size(Self[K, V]) -> Int
 pub fn[K, V] BTreeMap::to_array(Self[K, V]) -> Array[(K, V)]
 
+type Container
+
+pub struct RoaringBitmap {
+  chunk_keys : Array[Int]
+  containers : Array[Container]
+}
+pub fn RoaringBitmap::add(Self, Int) -> Bool
+pub fn RoaringBitmap::cardinality(Self) -> Int
+pub fn RoaringBitmap::contains(Self, Int) -> Bool
+pub fn RoaringBitmap::intersect_with(Self, Self) -> Self
+pub fn RoaringBitmap::new() -> Self
+pub fn RoaringBitmap::remove(Self, Int) -> Bool
+pub fn RoaringBitmap::to_array(Self) -> Array[Int]
+pub fn RoaringBitmap::union_with(Self, Self) -> Self
+
 // Type aliases
 
 // Traits

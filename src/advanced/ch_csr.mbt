@@ -109,6 +109,13 @@ struct ChHeap {
 }
 
 ///|
+/// 预处理残差邻接：逐节点「邻居/权重」平行数组，消除元组装箱。
+priv struct ChAdj {
+  nbr : Array[Array[Int]]
+  wt : Array[Array[Double]]
+}
+
+///|
 fn ChHeap::new() -> ChHeap {
   { keys: [], vals: [], len: 0, top_key: 0.0, top_val: -1 }
 }
@@ -211,8 +218,8 @@ fn ch_csr_key(n : Int, u : Int, x : Int) -> Int64 {
 fn ch_csr_contract(
   n : Int,
   v : Int,
-  fwd : Array[Array[(Int, Double)]],
-  bwd : Array[Array[(Int, Double)]],
+  fwd : ChAdj,
+  bwd : ChAdj,
   contracted : Array[Bool],
   shortcuts : Map[Int64, Array[ChCsrShortcut]],
   wdist : Array[Double],
@@ -227,21 +234,26 @@ fn ch_csr_contract(
     ch_csr_witness_settle_limit
   }
   let mut added = 0
-  for in_e in bwd[v] {
-    let (u, w_uv) = in_e
+  let v_in_n = bwd.nbr[v]
+  let v_in_w = bwd.wt[v]
+  let v_out_n = fwd.nbr[v]
+  let v_out_w = fwd.wt[v]
+  for ii in 0..<v_in_n.length() {
+    let u = v_in_n[ii]
+    let w_uv = v_in_w[ii]
     if u == v || contracted[u] {
       continue
     }
     // 该 u 经由 v 可达的最大代价，作为 witness 搜索的统一上界。
     let mut bound = 0.0
     let mut has_target = false
-    for out_e in fwd[v] {
-      let (x, w_vx) = out_e
+    for oi in 0..<v_out_n.length() {
+      let x = v_out_n[oi]
       if x == v || x == u || contracted[x] {
         continue
       }
       has_target = true
-      let via = w_uv + w_vx
+      let via = w_uv + v_out_w[oi]
       if via > bound {
         bound = via
       }
@@ -265,12 +277,14 @@ fn ch_csr_contract(
         continue
       }
       settled = settled + 1
-      for e in fwd[y] {
-        let (z, w) = e
+      let y_n = fwd.nbr[y]
+      let y_w = fwd.wt[y]
+      for k in 0..<y_n.length() {
+        let z = y_n[k]
         if z == v || contracted[z] {
           continue
         }
-        let nd = d + w
+        let nd = d + y_w[k]
         if nd > bound {
           continue
         }
@@ -281,11 +295,12 @@ fn ch_csr_contract(
         }
       }
     }
-    for out_e in fwd[v] {
-      let (x, w_vx) = out_e
+    for oi in 0..<v_out_n.length() {
+      let x = v_out_n[oi]
       if x == v || x == u || contracted[x] {
         continue
       }
+      let w_vx = v_out_w[oi]
       let via = w_uv + w_vx
       let has_witness = wstamp[x] == we && wdist[x] <= via
       if has_witness {
@@ -296,29 +311,33 @@ fn ch_csr_contract(
         // 平行边就地压缩：witness 已保证 via 严格优于既有 u->x 边
         // （若存在），替换而非追加，保持残差邻接不膨胀（witness 扫描
         // 量与后续估值成本随之收紧）。
-        let fu = fwd[u]
+        let fu_n = fwd.nbr[u]
+        let fu_w = fwd.wt[u]
         let mut replaced = false
-        for k in 0..<fu.length() {
-          if fu[k].0 == x && via < fu[k].1 {
-            fu[k] = (x, via)
+        for k in 0..<fu_n.length() {
+          if fu_n[k] == x && via < fu_w[k] {
+            fu_w[k] = via
             replaced = true
             break
           }
         }
         if !replaced {
-          fu.push((x, via))
+          fu_n.push(x)
+          fu_w.push(via)
         }
-        let bx = bwd[x]
+        let bx_n = bwd.nbr[x]
+        let bx_w = bwd.wt[x]
         let mut replaced_b = false
-        for k in 0..<bx.length() {
-          if bx[k].0 == u && via < bx[k].1 {
-            bx[k] = (u, via)
+        for k in 0..<bx_n.length() {
+          if bx_n[k] == u && via < bx_w[k] {
+            bx_w[k] = via
             replaced_b = true
             break
           }
         }
         if !replaced_b {
-          bx.push((u, via))
+          bx_n.push(u)
+          bx_w.push(via)
         }
         let key = ch_csr_key(n, u, x)
         let lst = shortcuts.get(key).unwrap_or([])
@@ -337,8 +356,8 @@ fn ch_csr_contract(
 fn ch_csr_priority(
   n : Int,
   v : Int,
-  fwd : Array[Array[(Int, Double)]],
-  bwd : Array[Array[(Int, Double)]],
+  fwd : ChAdj,
+  bwd : ChAdj,
   contracted : Array[Bool],
   deleted_neighbours : Array[Int],
   shortcuts : Map[Int64, Array[ChCsrShortcut]],
@@ -351,13 +370,13 @@ fn ch_csr_priority(
     n, v, fwd, bwd, contracted, shortcuts, wdist, wstamp, wepoch_box, pq, true,
   )
   let mut deg = 0
-  for e in fwd[v] {
-    if !contracted[e.0] && e.0 != v {
+  for x in fwd.nbr[v] {
+    if !contracted[x] && x != v {
       deg = deg + 1
     }
   }
-  for e in bwd[v] {
-    if !contracted[e.0] && e.0 != v {
+  for x in bwd.nbr[v] {
+    if !contracted[x] && x != v {
       deg = deg + 1
     }
   }
@@ -379,17 +398,26 @@ fn ch_csr_priority(
 /// 每次结算数以常量截断；十万节点合成路网在 release/native 下秒级完成。
 pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let n = g.n
-  // 残差邻接（正向 + 反向镜像），初始自 CSR 物化。
-  let fwd : Array[Array[(Int, Double)]] = Array::makei(n, fn(_) { [] })
-  let bwd : Array[Array[(Int, Double)]] = Array::makei(n, fn(_) { [] })
+  // 残差邻接（正向 + 反向镜像），初始自 CSR 物化；邻居/权重平行数组
+  // 存储，消除元组装箱（witness 热循环的主要常数开销）。
+  let fwd : ChAdj = {
+    nbr: Array::makei(n, fn(_) { [] }),
+    wt: Array::makei(n, fn(_) { [] }),
+  }
+  let bwd : ChAdj = {
+    nbr: Array::makei(n, fn(_) { [] }),
+    wt: Array::makei(n, fn(_) { [] }),
+  }
   for u in 0..<n {
     let lo = g.row_ptr[u]
     let hi = g.row_ptr[u + 1]
     for k in lo..<hi {
       let v = g.col_idx[k]
       let w = g.weights[k]
-      fwd[u].push((v, w))
-      bwd[v].push((u, w))
+      fwd.nbr[u].push(v)
+      fwd.wt[u].push(w)
+      bwd.nbr[v].push(u)
+      bwd.wt[v].push(w)
     }
   }
   let contracted : Array[Bool] = Array::make(n, false)
@@ -432,14 +460,14 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
     )
     contracted[v] = true
     // deleted-neighbours 项：通知未收缩邻居其邻域塌缩了一格。
-    for e in fwd[v] {
-      if !contracted[e.0] {
-        deleted_neighbours[e.0] = deleted_neighbours[e.0] + 1
+    for x in fwd.nbr[v] {
+      if !contracted[x] {
+        deleted_neighbours[x] = deleted_neighbours[x] + 1
       }
     }
-    for e in bwd[v] {
-      if !contracted[e.0] {
-        deleted_neighbours[e.0] = deleted_neighbours[e.0] + 1
+    for x in bwd.nbr[v] {
+      if !contracted[x] {
+        deleted_neighbours[x] = deleted_neighbours[x] + 1
       }
     }
   }
@@ -449,24 +477,28 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let dedup_stamp : Array[Int] = Array::make(n, -1)
   let dedup_pos : Array[Int] = Array::make(n, 0)
   for u in 0..<n {
-    let lst = fwd[u]
+    let ln = fwd.nbr[u]
+    let lw = fwd.wt[u]
     let mut keep = 0
-    for k in 0..<lst.length() {
-      let (v, w) = lst[k]
+    for k in 0..<ln.length() {
+      let v = ln[k]
+      let w = lw[k]
       if dedup_stamp[v] == u {
         let j = dedup_pos[v]
-        if w < lst[j].1 {
-          lst[j] = (v, w)
+        if w < lw[j] {
+          lw[j] = w
         }
       } else {
         dedup_stamp[v] = u
         dedup_pos[v] = keep
-        lst[keep] = (v, w)
+        ln[keep] = v
+        lw[keep] = w
         keep = keep + 1
       }
     }
-    while lst.length() > keep {
-      ignore(lst.pop())
+    while ln.length() > keep {
+      ignore(ln.pop())
+      ignore(lw.pop())
     }
   }
   // 终局残差边按 rank 分拣为向上（正向查询用）/向下（反向查询用，按低端
@@ -474,8 +506,7 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let up_cnt : Array[Int] = Array::make(n, 0)
   let dn_cnt : Array[Int] = Array::make(n, 0)
   for u in 0..<n {
-    for e in fwd[u] {
-      let (v, _) = e
+    for v in fwd.nbr[u] {
       if v == u {
         continue
       }
@@ -501,8 +532,11 @@ pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
   let up_fill : Array[Int] = Array::make(n, 0)
   let dn_fill : Array[Int] = Array::make(n, 0)
   for u in 0..<n {
-    for e in fwd[u] {
-      let (v, w) = e
+    let ln = fwd.nbr[u]
+    let lw = fwd.wt[u]
+    for k2 in 0..<ln.length() {
+      let v = ln[k2]
+      let w = lw[k2]
       if v == u {
         continue
       }

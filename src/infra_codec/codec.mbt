@@ -192,6 +192,38 @@ pub fn ByteReader::read_bytes(self : ByteReader) -> Array[Int]? {
 }
 
 ///|
+/// 字节长度前缀 + 码点 varint 序列载荷的字符串（FieldWriter::string_field
+/// 的编码形式）：顺序解码，畸形/越界返回 None。
+pub fn ByteReader::read_string_payload(self : ByteReader) -> String? {
+  match self.read_varint() {
+    Some(len64) => {
+      let len = len64.to_int()
+      if len < 0 || self.remaining() < len {
+        return None
+      }
+      let stop = self.pos + len
+      let sb = StringBuilder::new()
+      while self.pos < stop {
+        match self.read_varint() {
+          Some(cp) => {
+            if self.pos > stop {
+              return None
+            }
+            match cp.to_int().to_char() {
+              Some(c) => sb.write_char(c)
+              None => return None
+            }
+          }
+          None => return None
+        }
+      }
+      Some(sb.to_string())
+    }
+    None => None
+  }
+}
+
+///|
 /// length-prefixed 字符串。
 pub fn ByteReader::read_string(self : ByteReader) -> String? {
   match self.read_varint() {

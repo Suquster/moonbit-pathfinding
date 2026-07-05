@@ -429,8 +429,14 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   length-prefixed bytes/string，畸形输入一律 None 不 panic），边界值定向 +
   round-trip PBT 200 迭代（逐值一致 + 流精确耗尽）三后端全绿；吞吐 2.1×、
   传输体积 2.24×/内存 4.47× 压缩（benches/results/infra-codec-varint-e2-native-2026-07-05.md）。
-- 后续批次：零拷贝解析（惰性字段视图）、模式演化兼容测试。
-- KPI：round-trip 逐字节一致（✅ 已达）；吞吐 + 体积双维度优于朴素字符串序列化（✅ 已达）。
+- 零拷贝惰性字段视图 ✅ 已落地：`src/infra_codec/lazy_view.mbt`
+  （对标 protobuf lazy parsing / flatbuffers：编码态缓冲上键扫描 +
+  LEN O(1) 跳过 + 定点解码，不物化未访问字段，嵌套消息零拷贝子视图；
+  畸形/截断一律 None），差分 PBT 200 迭代 + 全 wire type/嵌套/逐字节
+  截断定向三后端全绿；稀疏访问（2/32 字段命中）基准 **163×** vs eager
+  单趟全量解码（benches/results/infra-codec-lazy-view-e2-native-2026-07-05.md）。
+- 后续批次：模式演化兼容测试。
+- KPI：round-trip 逐字节一致（✅ 已达）；吞吐 + 体积双维度优于朴素字符串序列化（✅ 已达）；稀疏访问数量级优于全量解码（✅ 163×）。
 
 ### E3 · 内存/分配基础设施 — 对标 arena / object-pool 模式
 

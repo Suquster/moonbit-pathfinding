@@ -109,6 +109,37 @@ pub fn affected_children(
 }
 
 ///|
+/// 修剪重启时刻历史：窗口外（`<= clock - window`）的旧时刻对任何后续强度
+/// 判定均无影响（逻辑时钟单调不减），陈旧前缀过半时一次性压缩，使
+/// `within_intensity` 扫描摄销为 O(窗口内条目数)，根除长周期高频重启下的
+/// 平方级退化；`window <= 0`（不限窗口）不修剪。
+fn prune_restart_times(
+  restart_times : Array[Int],
+  clock : Int,
+  window : Int,
+) -> Unit {
+  if window <= 0 {
+    return
+  }
+  // restart_times 按逻辑时钟单调追加；窗口外的旧时刻不再影响任何后续
+  // 强度判定（clock 单调不减），过半陈旧时一次性压缩，判定摊销 O(窗口内条目)。
+  let n = restart_times.length()
+  let mut first = 0
+  while first < n && restart_times[first] <= clock - window {
+    first = first + 1
+  }
+  if first >= 64 && first * 2 >= n {
+    let live = n - first
+    for i in 0..<live {
+      restart_times[i] = restart_times[first + i]
+    }
+    while restart_times.length() > live {
+      ignore(restart_times.pop())
+    }
+  }
+}
+
+///|
 /// 重启强度判定（within intensity）—— 在逻辑时钟 `clock` 处再触发一次重启前，
 /// 判定该 actor 是否仍在强度上界之内（Requirement 2.6 / 2.7）。
 ///

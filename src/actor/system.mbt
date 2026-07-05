@@ -26,7 +26,8 @@ pub(all) struct SupervisedCell[S, M] {
   mut directive : Directive // 失败处置（R2），可被 supervise / set_directive 覆盖
   mut status : ActorStatus // 复用既有生命周期枚举
   mut started : Bool // pre_start 是否已调用（R3.1 / 3.7）
-  restart_times : Array[Int] // 逻辑时钟上的重启时刻（强度窗口，R2.5~2.7）
+  restart_times : Array[Int] // 逻辑时钟上的重启时刻（强度窗口，R2.5~2.7；窗口外旧时刻会被修剪）
+  mut restart_total : Int // 累计重启次数（观测用，不随窗口修剪变化）
 }
 
 // ───────────────────────────── 旗舰系统结构 ──────────────────────────────
@@ -157,6 +158,7 @@ pub fn[S, M] ActorSystem::spawn(
     status: Running,
     started: false,
     restart_times: [],
+    restart_total: 0,
   })
   match supervisor {
     Some(sup) => {
@@ -337,6 +339,7 @@ fn[S, M] ActorSystem::do_restart(
   reason : String,
 ) -> Unit {
   cell.restart_times.push(self.clock)
+  cell.restart_total = cell.restart_total + 1
   cell.state = restart_state(cell.init_state, cell.hooks, cell.state, reason)
   while cell.behaviors.length() > 1 {
     let _ = cell.behaviors.pop()
@@ -463,7 +466,12 @@ fn[S, M] ActorSystem::on_child_failed(
       match cell.directive {
         Escalate => self.escalate(sup_id, cell, reason)
         Stop => self.apply_scope(sup_id, cell, spec, Stop, reason)
-        Restart =>
+        Restart => {
+          prune_restart_times(
+            cell.restart_times,
+            self.clock,
+            spec.intensity.window,
+          )
           if within_intensity(
               cell.restart_times,
               self.clock,
@@ -475,6 +483,7 @@ fn[S, M] ActorSystem::on_child_failed(
             // 强度超限：升级或停止（R2.6 / 2.7）。
             self.escalate(sup_id, cell, reason)
           }
+        }
       }
     }
   }
@@ -660,7 +669,7 @@ pub fn[S, M] ActorSystem::restart_count(
   r : ActorRef[M],
 ) -> Int {
   match self.cell_by_id(r.id.value) {
-    Some(cell) => cell.restart_times.length()
+    Some(cell) => cell.restart_total
     None => 0
   }
 }

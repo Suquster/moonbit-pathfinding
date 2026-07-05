@@ -1,4 +1,5 @@
 .DS_Store
 _build/
 .mooncakes/
-.moonagent/
+.moonagent/playground/web/playground.wasm
+playground/web/playground.js

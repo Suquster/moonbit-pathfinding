@@ -7,7 +7,7 @@
 # 流水线 (design.md §1.4):
 #   推送主干 → 安装 MoonBit → `moon build --target wasm-gc --release`
 #     → `scripts/wasm_size_guard.ps1` (.wasm ≤ 102400 字节, 超限非零退出 · R4.5)
-#     → 组装 `playground/web` + wasm 产物 + JS glue 为发布目录
+#     → 组装 `playground/web` + wasm 产物为发布目录
 #     → 发布到 GitHub Pages (configure-pages / upload-pages-artifact / deploy-pages)
 #
 # 失败语义 (R4.4 / R4.5):
@@ -77,16 +77,11 @@ jobs:
         uses: actions/configure-pages@v5
 
       # ─── 步骤 1: release 构建 (design.md §1.4 / R1.4) ─────────────────────
-      #   关闭调试信息的 wasm-gc release 构建产出体积优化后的 .wasm;
-      #   同时构建 js 后端产出 MoonBit JS glue (宿主 app.js 的可选回退路径)。
-      #   playground 是独立 module, 故在其目录内构建。
+      #   关闭调试信息的 wasm-gc release 构建产出体积优化后的 .wasm。
+      #   宿主 app.js 消费的 pg_* 导出层由根 module 的 src/playground 包链接
+      #   (moon.pkg 声明 wasm-gc link exports), 故在仓库根目录构建。
       - name: moon build --target wasm-gc --release
-        working-directory: playground
         run: moon build --target wasm-gc --release
-
-      - name: moon build --target js --release (JS glue)
-        working-directory: playground
-        run: moon build --target js --release
 
       # ─── 步骤 2: 体积门禁 (R4.5) ──────────────────────────────────────────
       #   pwsh 在 GitHub ubuntu runner 默认可用。脚本读取 .wasm 磁盘字节数,
@@ -98,7 +93,7 @@ jobs:
 
       # ─── 步骤 3: 组装发布目录 (R4.3) ──────────────────────────────────────
       #   将宿主静态资源 (index.html / app.js / style.css) 与构建产物
-      #   (.wasm + MoonBit 生成的 .js glue) 汇集到 $PUBLISH_DIR, 全部同源,
+      #   (playground.wasm) 汇集到 $PUBLISH_DIR, 全部同源,
       #   不引用任何外部网络服务。
       - name: Assemble publish directory
         shell: bash
@@ -116,23 +111,23 @@ jobs:
             exit 1
           fi
 
-          # 2) wasm-gc 构建产物 (.wasm) —— 复制到发布根目录, 保留原文件名
-          mapfile -t wasm_files < <(find playground -path '*wasm-gc/release*' -name '*.wasm' 2>/dev/null | sort)
-          if [ "${#wasm_files[@]}" -eq 0 ]; then
-            echo "::error::未找到 wasm-gc release 构建产物 (*.wasm), 无法组装发布产物"
+          # 2) wasm-gc 构建产物 (src/playground 包的 pg_* 导出层) ——
+          #    复制到发布根目录, 保留原文件名 (app.js fetch "playground.wasm")。
+          #    兼容新旧两种构建根 (_build/ 与 target/)。
+          wasm_artifact=""
+          for root in _build target; do
+            candidate="${root}/wasm-gc/release/build/src/playground/playground.wasm"
+            if [ -f "${candidate}" ]; then
+              wasm_artifact="${candidate}"
+              break
+            fi
+          done
+          if [ -z "${wasm_artifact}" ]; then
+            echo "::error::未找到 wasm-gc release 构建产物 playground.wasm, 无法组装发布产物"
             exit 1
           fi
-          for w in "${wasm_files[@]}"; do
-            echo "复制 wasm 产物: ${w}"
-            cp "${w}" "${publish}/"
-          done
-
-          # 3) MoonBit 生成的 JS glue (.js) —— 宿主 app.js 的可选回退路径
-          mapfile -t js_files < <(find playground -path '*js/release*' -name '*.js' 2>/dev/null | sort)
-          for j in "${js_files[@]}"; do
-            echo "复制 JS glue: ${j}"
-            cp "${j}" "${publish}/"
-          done
+          echo "复制 wasm 产物: ${wasm_artifact}"
+          cp "${wasm_artifact}" "${publish}/"
 
           # 防止 Jekyll 处理产物 (保留以下划线开头的文件名等)
           touch "${publish}/.nojekyll"

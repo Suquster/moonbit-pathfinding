@@ -7,7 +7,7 @@
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-v0.0.1-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
-[![Playground](https://img.shields.io/badge/Playground-planned-lightgrey)](#playground)
+[![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](#playground)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
 
 [![OSC 2026](https://img.shields.io/badge/OSC_2026-participant-brightgreen)](https://moonbitlang.github.io/OSC2026/)
@@ -237,15 +237,24 @@ CH / JPS / ALT 已有源码和测试，仍需要真实路网基准、论文到�
 
 ## Playground
 
-> **状态**: planned, not yet part of the verified acceptance surface.
+> **Status**: live — in-browser WASM demo, deployed to GitHub Pages on every
+> push to `main` (`.github/workflows/pages.yml`).
 
-The current repository ships examples and executable documentation, but not a
-browser playground yet. The planned playground acceptance target is:
+Interactive grid pathfinding visualiser, powered by the very library in
+`src/` compiled to wasm-gc:
 
-- `moon build --target wasm-gc` 产出 ≤ 100 KB 的 `.wasm` 模块
-- 鼠标拖拽起点/终点，并记录实际帧率、输入规模和浏览器环境
-- 逐帧动画展示 BFS / DFS / Dijkstra / A* / JPS 的扩展过程
-- 部署到 GitHub Pages: `https://Suquster.github.io/moonbit-pathfinding/`
+- **Live demo**: <https://Suquster.github.io/moonbit-pathfinding/>
+- `moon build --target wasm-gc --release` links the `src/playground` export
+  layer into a **≤ 100 KB** `playground.wasm` (enforced by
+  `scripts/wasm_size_guard.ps1` in CI)
+- Paint walls with the mouse, drag start/goal, and watch BFS / DFS /
+  Dijkstra / A* / JPS expand frame-by-frame at 60 fps with a live FPS meter
+- Three-tier fallback (wasm-gc → JS glue → pure-JS) so the demo runs in any
+  environment, including fully offline (`python -m http.server` from
+  `playground/web/` + the built `.wasm`)
+- Bridge correctness is test-gated: `playground/solver_test.mbt` and
+  `src/playground/*_test.mbt` assert the playground answers are identical to
+  the library's
 
 对应需求: R16 (WASM Playground) · R26 (实时 JPS Playground 杀手锏)。
 

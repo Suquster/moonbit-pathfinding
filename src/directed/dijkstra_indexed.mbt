@@ -606,6 +606,224 @@ pub fn dijkstra_bidirectional_ctx(
 }
 
 ///|
+/// 桶式双向 A*（小整数边权 + 双侧一致启发式专用）：正/反两侧各自
+/// 用 Dial 循环桶（f 取模散列 + 超窗 overflow 重分发）扫描，每轮
+/// 推进当前扫描 f 较小一侧一个 f 值；NBA* 剪枝（f(u) ≥ μ 或
+/// g(u) + F_other − h_other(u) ≥ μ）+ 双侧 f 扫描值均 ≥ μ 即终止。
+/// 无堆无比较。
+fn astar_bidial_ctx(
+  g : WeightedCsr,
+  rg : WeightedCsr,
+  ctx_f : SearchCtx,
+  ctx_b : SearchCtx,
+  start : Int,
+  target : Int,
+  h_f : (Int) -> Int,
+  h_b : (Int) -> Int,
+) -> (Array[Int], Int)? {
+  ctx_f.gen = ctx_f.gen + 1
+  ctx_b.gen = ctx_b.gen + 1
+  let gf = ctx_f.gen
+  let gb = ctx_b.gen
+  let df = ctx_f.dist
+  let db = ctx_b.dist
+  let pf = ctx_f.parent
+  let pb = ctx_b.parent
+  let sf = ctx_f.stamp
+  let sb = ctx_b.stamp
+  let cf = ctx_f.closed
+  let cb = ctx_b.closed
+  let m = g.max_weight + 1
+  let m64 = m.to_int64()
+  let bkf : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
+  let bkb : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
+  let ovf : Array[Int64] = []
+  let ovb : Array[Int64] = []
+  df[start] = 0L
+  sf[start] = gf
+  pf[start] = -1
+  db[target] = 0L
+  sb[target] = gb
+  pb[target] = -1
+  let f0f = h_f(start).to_int64()
+  let f0b = h_b(target).to_int64()
+  let mut d_f = f0f
+  let mut d_b = f0b
+  let mut wend_f = f0f + m64
+  let mut wend_b = f0b + m64
+  bkf[(f0f % m64).to_int()].push((f0f << NODE_BITS) | start.to_int64())
+  bkb[(f0b % m64).to_int()].push((f0b << NODE_BITS) | target.to_int64())
+  let mut pend_f = 1
+  let mut pend_b = 1
+  let mut mu = INF_DIST
+  let mut meet = -1
+  while pend_f > 0 && pend_b > 0 {
+    if meet >= 0 && d_f >= mu && d_b >= mu {
+      break
+    }
+    if d_f <= d_b {
+      // 正向推进一个 f 值。
+      if d_f >= wend_f {
+        if ovf.length() == pend_f && ovf.length() > 0 {
+          let mut fmin = ovf[0] >> NODE_BITS
+          for w in 1..<ovf.length() {
+            let f = ovf[w] >> NODE_BITS
+            if f < fmin {
+              fmin = f
+            }
+          }
+          if fmin > d_f {
+            d_f = fmin
+          }
+        }
+        wend_f = d_f + m64
+        let mut w = 0
+        while w < ovf.length() {
+          let enc = ovf[w]
+          if enc >> NODE_BITS < wend_f {
+            bkf[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+            let last = ovf.length() - 1
+            ovf[w] = ovf[last]
+            ovf.pop() |> ignore
+          } else {
+            w = w + 1
+          }
+        }
+      }
+      let b = bkf[(d_f % m64).to_int()]
+      let mut bi = 0
+      while bi < b.length() {
+        let enc = b[bi]
+        bi = bi + 1
+        pend_f = pend_f - 1
+        let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+        if cf[u] == gf {
+          continue
+        }
+        cf[u] = gf
+        let du = df[u]
+        if du + h_f(u).to_int64() >= mu || du + d_b - h_b(u).to_int64() >= mu {
+          continue
+        }
+        let stop = g.offsets[u + 1]
+        for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+          let pe = g.packed[ei]
+          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+          let nd = du + (pe >> NODE_BITS)
+          let dv = if sf[v] == gf { df[v] } else { INF_DIST }
+          if nd < dv {
+            df[v] = nd
+            sf[v] = gf
+            pf[v] = u
+            let nf = nd + h_f(v).to_int64()
+            let nenc = (nf << NODE_BITS) | v.to_int64()
+            if nf < wend_f {
+              bkf[(nf % m64).to_int()].push(nenc)
+            } else {
+              ovf.push(nenc)
+            }
+            pend_f = pend_f + 1
+            if sb[v] == gb && nd + db[v] < mu {
+              mu = nd + db[v]
+              meet = v
+            }
+          }
+        }
+      }
+      b.clear()
+      d_f = d_f + 1L
+    } else {
+      // 反向推进一个 f 值（rg 出边 = g 入边）。
+      if d_b >= wend_b {
+        if ovb.length() == pend_b && ovb.length() > 0 {
+          let mut fmin = ovb[0] >> NODE_BITS
+          for w in 1..<ovb.length() {
+            let f = ovb[w] >> NODE_BITS
+            if f < fmin {
+              fmin = f
+            }
+          }
+          if fmin > d_b {
+            d_b = fmin
+          }
+        }
+        wend_b = d_b + m64
+        let mut w = 0
+        while w < ovb.length() {
+          let enc = ovb[w]
+          if enc >> NODE_BITS < wend_b {
+            bkb[((enc >> NODE_BITS) % m64).to_int()].push(enc)
+            let last = ovb.length() - 1
+            ovb[w] = ovb[last]
+            ovb.pop() |> ignore
+          } else {
+            w = w + 1
+          }
+        }
+      }
+      let b = bkb[(d_b % m64).to_int()]
+      let mut bi = 0
+      while bi < b.length() {
+        let enc = b[bi]
+        bi = bi + 1
+        pend_b = pend_b - 1
+        let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
+        if cb[u] == gb {
+          continue
+        }
+        cb[u] = gb
+        let du = db[u]
+        if du + h_b(u).to_int64() >= mu || du + d_f - h_f(u).to_int64() >= mu {
+          continue
+        }
+        let stop = rg.offsets[u + 1]
+        for ei = rg.offsets[u]; ei < stop; ei = ei + 1 {
+          let pe = rg.packed[ei]
+          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
+          let nd = du + (pe >> NODE_BITS)
+          let dv = if sb[v] == gb { db[v] } else { INF_DIST }
+          if nd < dv {
+            db[v] = nd
+            sb[v] = gb
+            pb[v] = u
+            let nf = nd + h_b(v).to_int64()
+            let nenc = (nf << NODE_BITS) | v.to_int64()
+            if nf < wend_b {
+              bkb[(nf % m64).to_int()].push(nenc)
+            } else {
+              ovb.push(nenc)
+            }
+            pend_b = pend_b + 1
+            if sf[v] == gf && nd + df[v] < mu {
+              mu = nd + df[v]
+              meet = v
+            }
+          }
+        }
+      }
+      b.clear()
+      d_b = d_b + 1L
+    }
+  }
+  if meet < 0 {
+    return None
+  }
+  let path = [meet]
+  let mut node = meet
+  while pf[node] >= 0 {
+    node = pf[node]
+    path.push(node)
+  }
+  path.rev_in_place()
+  node = meet
+  while pb[node] >= 0 {
+    node = pb[node]
+    path.push(node)
+  }
+  Some((path, mu.to_int()))
+}
+
+///|
 /// 双向 A*（NBA* 剪枝式，Pijls & Post 2009）：正向用 `h_f`（到 target
 /// 的一致下界）、反向沿 `rg` 用 `h_b`（到 start 的一致下界）各跑一支
 /// A*，每轮扩展堆顶 f 较小的一侧；松弛时维护会合上界 μ；弹出节点满足
@@ -629,6 +847,9 @@ pub fn astar_bidirectional_ctx(
   }
   if start == target {
     return Some(([start], 0))
+  }
+  if g.max_weight >= 1 && g.max_weight <= DIAL_MAX_W {
+    return astar_bidial_ctx(g, rg, ctx_f, ctx_b, start, target, h_f, h_b)
   }
   ctx_f.gen = ctx_f.gen + 1
   ctx_b.gen = ctx_b.gen + 1

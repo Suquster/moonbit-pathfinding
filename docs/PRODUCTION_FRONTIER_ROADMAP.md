@@ -518,7 +518,12 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   双向转换 / 行列定位 / 行首偏移均 O(log n)；随机编辑后与朴素全扫描差分
   PBT 200 迭代（含 2B/3B/4B 代理对负载）三后端全绿；1M 码元文档 line_col
   基准 **570×** vs 朴素全扫描（同上工件）。
-- 后续批次：piece-table 变体。
+- piece-table 变体 ✅ 已落地：`src/infra_text/piece_table.mbt`
+  （对标 VS Code 文本缓冲线性 piece 变体 / Crowley 1998：original +
+  append-only add 缓冲上的 piece 序列，编辑不移动已有字节、O(#pieces)/
+  编辑与文档字节数无关），与朴素 String 差分 PBT 250 迭代 + 与 Rope
+  交叉差分 100 迭代三后端全绿；100k 文档 ×256 编辑基准 **45.9×** vs
+  朴素拼接（benches/results/infra-text-piece-table-e6-native-2026-07-05.md）。
 - KPI：百万字符文档随机编辑摊销 O(log n)（✅ 平衡不变量 + 27.2× 已达）；
   与朴素字符串重建差分逐位一致（✅ 已达）；UTF-8/16 索引双向转换编辑器级
   （✅ 570× 已达）。

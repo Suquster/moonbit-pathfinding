@@ -25,6 +25,25 @@ pub(all) enum DiffOp {
   Insert(String)
 } derive(Eq, @debug.Debug)
 
+type Piece
+
+pub struct PieceTable {
+  original : String
+  add : StringBuilder
+  mut add_len : Int
+  pieces : Array[Piece]
+  mut total : Int
+  mut add_cache : String
+  mut add_cache_len : Int
+}
+pub fn PieceTable::code_unit_at(Self, Int) -> Int?
+pub fn PieceTable::delete(Self, Int, Int) -> Unit
+pub fn PieceTable::from_string(String) -> Self
+pub fn PieceTable::insert(Self, Int, String) -> Unit
+pub fn PieceTable::len(Self) -> Int
+pub fn PieceTable::piece_count(Self) -> Int
+pub fn PieceTable::to_string(Self) -> String
+
 pub struct Rope {
   mut root : RopeNode
 }

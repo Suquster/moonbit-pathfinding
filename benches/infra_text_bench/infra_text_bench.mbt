@@ -163,3 +163,51 @@ test "bench: myers diff vs O(NM) DP on similar text (n=4096, k=8 edits)" (
     b.keep(@text.lcs_dp_cost(a, target))
   })
 }
+
+///|
+test "bench: piece table edits vs naive string splice (doc=100k, 256 edits)" (
+  b : @bench.T,
+) {
+  // 负载：100k 字符文档，256 次随机小编辑（2/3 插入 8 字符、1/3 删除
+  // ≤8 字符），最后物化一次。piece-table 每次编辑 O(#pieces)（与文档
+  // 字节数无关）；朴素 String 拼接每次编辑 O(文档长度) 重建。
+  let sb = StringBuilder::new()
+  for i in 0..<100_000 {
+    sb.write_char((97 + i % 26).unsafe_to_char())
+  }
+  let doc = sb.to_string()
+  let ops : Array[(Bool, Int)] = []
+  let mut seed = 20260719UL
+  for _ in 0..<256 {
+    seed = xorshift(seed)
+    let is_ins = seed % 3UL != 0UL
+    seed = xorshift(seed)
+    ops.push((is_ins, (seed % 99_000UL).to_int()))
+  }
+  b.bench(name="piece_table_edits_100k_x256", fn() {
+    let pt = @text.PieceTable::from_string(doc)
+    for op in ops {
+      let (is_ins, off) = op
+      if is_ins {
+        pt.insert(off, "INSERTED")
+      } else {
+        pt.delete(off, 8)
+      }
+    }
+    b.keep(pt.to_string().length())
+  })
+  b.bench(name="naive_string_edits_100k_x256", fn() {
+    let mut s = doc
+    for op in ops {
+      let (is_ins, off0) = op
+      let off = if off0 > s.length() { s.length() } else { off0 }
+      if is_ins {
+        s = s[0:off].to_owned() + "INSERTED" + s[off:].to_owned()
+      } else {
+        let hi = if off + 8 > s.length() { s.length() } else { off + 8 }
+        s = s[0:off].to_owned() + s[hi:].to_owned()
+      }
+    }
+    b.keep(s.length())
+  })
+}

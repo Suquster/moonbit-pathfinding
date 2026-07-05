@@ -90,6 +90,29 @@ test "Feature: logging, Contract: OTLP/JSON carries aligned field names and valu
 }
 
 ///|
+test "Feature: logging, Golden: OTLP links and status message (externally verified)" {
+  let sd = SpanData::new({
+    id: { value: 5L },
+    parent: None,
+    start: 10L,
+    end: Some(20L),
+  })
+  sd.add_link({ value: 0xABCDL }, { value: 0x1234L }, Map([("src", VStr("q"))]))
+  sd.set_status_with_message(SpanStatus::Error, "boom")
+  let bytes = otlp_export_traces("svc", { value: 3L }, [("linked", sd)])
+  // 外部验证：官方 opentelemetry-proto 解码后 links[0].trace_id/span_id、
+  // link 属性、status{code=ERROR, message="boom"} 逐字段相等
+  // （docs/verification/otlp-export-t7.md）。
+  let expected_hex =
+    #|0a9c010a170a150a0c736572766963652e6e616d6512050a037376631280010a100a076c6f6767696e671205302e322e30126c0a1000000000000000000000000000000003120800000000000000052a066c696e6b65643001390a000000000000004114000000000000006a280a100000000000000000000000000000abcd12080000000000001234220a0a0373726312030a01717a081204626f6f6d1802
+  assert_eq(otlp_hex(bytes), expected_hex)
+  match @serialization.decode_typed(otlp_schema(), "TracesData", bytes) {
+    Ok(_) => ()
+    Err(_) => fail("含 links/status message 的 OTLP 字节应可解回")
+  }
+}
+
+///|
 test "Feature: logging, Property: OTLP emission is deterministic and total on random spans" {
   let rng = @infra_pbt.rng_new(20260705UL)
   for _ in 0..<100 {

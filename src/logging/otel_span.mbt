@@ -43,14 +43,26 @@ pub(all) struct SpanEvent {
 } derive(Eq, Debug)
 
 ///|
-/// OTel 语义包裹：在既有 `Span` 之上旁路叠加属性 / 事件 / 状态 / kind
-/// （Requirement 5.1–5.5）。持有既有 `Span` 而不改其字段或时长语义。
+/// span 链接（link）：指向另一条 trace/span 的因果引用（OTel 数据模型
+/// `Span.links`，用于批处理 / 扇入聚合等非父子关系）。
+pub(all) struct SpanLink {
+  trace : TraceId
+  span : SpanId
+  attributes : Map[String, Value]
+} derive(Eq, Debug)
+
+///|
+/// OTel 语义包裹：在既有 `Span` 之上旁路叠加属性 / 事件 / 状态 / kind /
+/// 链接 / 状态描述（Requirement 5.1–5.5，OTel 数据模型逐字段对齐）。
+/// 持有既有 `Span` 而不改其字段或时长语义。
 pub(all) struct SpanData {
   span : Span
   mut attributes : Map[String, Value]
   mut events : Array[SpanEvent]
   mut status : SpanStatus
   mut kind : SpanKind
+  mut links : Array[SpanLink]
+  mut status_message : String
 } derive(Eq, Debug)
 
 ///|
@@ -63,6 +75,8 @@ pub fn SpanData::new(span : Span) -> SpanData {
     events: [],
     status: SpanStatus::Unset,
     kind: SpanKind::Internal,
+    links: [],
+    status_message: "",
   }
 }
 
@@ -98,4 +112,28 @@ pub fn SpanData::set_status(self : SpanData, status : SpanStatus) -> Unit {
 /// 为 span 设置 kind（Requirement 5.4）。
 pub fn SpanData::set_kind(self : SpanData, kind : SpanKind) -> Unit {
   self.kind = kind
+}
+
+///|
+/// 为 span 添加一条链接（OTel `Span.links`）：指向另一条 trace/span 的因果引用，
+/// 可携带属性；按添加顺序保留。
+pub fn SpanData::add_link(
+  self : SpanData,
+  trace : TraceId,
+  span : SpanId,
+  attributes : Map[String, Value],
+) -> Unit {
+  self.links.push({ trace, span, attributes })
+}
+
+///|
+/// 为 span 设置带描述的状态（OTel `Status{message, code}`）：按 OTel 规范，
+/// `message` 仅对 `Error` 状态有意义。
+pub fn SpanData::set_status_with_message(
+  self : SpanData,
+  status : SpanStatus,
+  message : String,
+) -> Unit {
+  self.status = status
+  self.status_message = message
 }

@@ -173,6 +173,14 @@ pub(all) struct RedactionPolicy {
 pub fn RedactionPolicy::by_names(Array[String]) -> Self
 pub fn RedactionPolicy::with_predicate(Self, (String, Value) -> Bool) -> Self
 
+pub(all) enum Sampler {
+  AlwaysOn
+  AlwaysOff
+  TraceIdRatio(Double)
+  ParentBased(Sampler)
+} derive(Eq, @debug.Debug)
+pub fn Sampler::should_sample(Self, Bool?, TraceId, UInt64) -> Bool
+
 pub(all) struct Sink {
   name : String
   formatter : Formatter
@@ -213,12 +221,16 @@ pub(all) struct SpanData {
   mut events : Array[SpanEvent]
   mut status : SpanStatus
   mut kind : SpanKind
+  mut links : Array[SpanLink]
+  mut status_message : String
 } derive(Eq, @debug.Debug)
 pub fn SpanData::add_event(Self, String, Int64, Map[String, Value]) -> Unit
+pub fn SpanData::add_link(Self, TraceId, SpanId, Map[String, Value]) -> Unit
 pub fn SpanData::new(Span) -> Self
 pub fn SpanData::set_attribute(Self, String, Value) -> Unit
 pub fn SpanData::set_kind(Self, SpanKind) -> Unit
 pub fn SpanData::set_status(Self, SpanStatus) -> Unit
+pub fn SpanData::set_status_with_message(Self, SpanStatus, String) -> Unit
 
 pub(all) struct SpanEvent {
   name : String
@@ -236,6 +248,12 @@ pub(all) enum SpanKind {
   Client
   Producer
   Consumer
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SpanLink {
+  trace : TraceId
+  span : SpanId
+  attributes : Map[String, Value]
 } derive(Eq, @debug.Debug)
 
 pub(all) enum SpanStatus {

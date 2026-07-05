@@ -139,6 +139,8 @@ pub struct SearchCtx {
   closed : Array[Int]
   mut gen : Int
   heap : EncodedHeap
+  bkt : Array[Array[Int64]]
+  ov : Array[Int64]
 }
 
 ///|
@@ -151,7 +153,23 @@ pub fn SearchCtx::new(n : Int) -> SearchCtx {
     closed: Array::make(n, 0),
     gen: 0,
     heap: EncodedHeap::new(16),
+    bkt: [],
+    ov: [],
   }
+}
+
+///|
+/// 取出容量 ≥ m 且全空的可复用 Dial 桶数组（跨查询复用，免去每次
+/// 分配 m 个空数组——小图批量查询的主要分配开销）。
+fn SearchCtx::dial_buckets(self : SearchCtx, m : Int) -> Array[Array[Int64]] {
+  while self.bkt.length() < m {
+    self.bkt.push([])
+  }
+  for i in 0..<m {
+    self.bkt[i].clear()
+  }
+  self.ov.clear()
+  self.bkt
 }
 
 ///|
@@ -175,11 +193,11 @@ fn dial_indexed_ctx(
   let parent = ctx.parent
   let stamp = ctx.stamp
   let m = g.max_weight + 1
-  let buckets : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
+  let buckets = ctx.dial_buckets(m)
   dist[start] = 0L
   stamp[start] = gen
   parent[start] = -1
-  buckets[0].push(start)
+  buckets[0].push(start.to_int64())
   let mut pending = 1
   let mut d = 0L
   let inf = 0x3FFF_FFFF_FFFFL
@@ -188,7 +206,7 @@ fn dial_indexed_ctx(
     // 用下标推进：零权边可能在处理中向当前桶追加。
     let mut bi = 0
     while bi < b.length() {
-      let u = b[bi]
+      let u = b[bi].to_int()
       bi = bi + 1
       pending = pending - 1
       if dist[u] != d {
@@ -214,7 +232,7 @@ fn dial_indexed_ctx(
           dist[v] = nd
           stamp[v] = gen
           parent[v] = u
-          buckets[(nd % m.to_int64()).to_int()].push(v)
+          buckets[(nd % m.to_int64()).to_int()].push(v.to_int64())
           pending = pending + 1
         }
       }
@@ -372,8 +390,8 @@ fn astar_dial_ctx(
   let closed = ctx.closed
   let m = g.max_weight + 1
   let m64 = m.to_int64()
-  let buckets : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
-  let overflow : Array[Int64] = []
+  let buckets = ctx.dial_buckets(m)
+  let overflow = ctx.ov
   dist[start] = 0L
   stamp[start] = gen
   parent[start] = -1
@@ -501,16 +519,16 @@ pub fn dijkstra_bidirectional_ctx(
   let sb = ctx_b.stamp
   let m = g.max_weight + 1
   let m64 = m.to_int64()
-  let bf : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
-  let bb : Array[Array[Int]] = Array::makei(m, fn(_i) { [] })
+  let bf = ctx_f.dial_buckets(m)
+  let bb = ctx_b.dial_buckets(m)
   df[start] = 0L
   sf[start] = gf
   pf[start] = -1
-  bf[0].push(start)
+  bf[0].push(start.to_int64())
   db[target] = 0L
   sb[target] = gb
   pb[target] = -1
-  bb[0].push(target)
+  bb[0].push(target.to_int64())
   let mut pend_f = 1
   let mut pend_b = 1
   let mut d_f = 0L
@@ -526,7 +544,7 @@ pub fn dijkstra_bidirectional_ctx(
       let b = bf[(d_f % m64).to_int()]
       let mut bi = 0
       while bi < b.length() {
-        let u = b[bi]
+        let u = b[bi].to_int()
         bi = bi + 1
         pend_f = pend_f - 1
         if df[u] != d_f {
@@ -542,7 +560,7 @@ pub fn dijkstra_bidirectional_ctx(
             df[v] = nd
             sf[v] = gf
             pf[v] = u
-            bf[(nd % m64).to_int()].push(v)
+            bf[(nd % m64).to_int()].push(v.to_int64())
             pend_f = pend_f + 1
             if sb[v] == gb && nd + db[v] < mu {
               mu = nd + db[v]
@@ -558,7 +576,7 @@ pub fn dijkstra_bidirectional_ctx(
       let b = bb[(d_b % m64).to_int()]
       let mut bi = 0
       while bi < b.length() {
-        let u = b[bi]
+        let u = b[bi].to_int()
         bi = bi + 1
         pend_b = pend_b - 1
         if db[u] != d_b {
@@ -574,7 +592,7 @@ pub fn dijkstra_bidirectional_ctx(
             db[v] = nd
             sb[v] = gb
             pb[v] = u
-            bb[(nd % m64).to_int()].push(v)
+            bb[(nd % m64).to_int()].push(v.to_int64())
             pend_b = pend_b + 1
             if sf[v] == gf && nd + df[v] < mu {
               mu = nd + df[v]
@@ -635,10 +653,10 @@ fn astar_bidial_ctx(
   let cb = ctx_b.closed
   let m = g.max_weight + 1
   let m64 = m.to_int64()
-  let bkf : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
-  let bkb : Array[Array[Int64]] = Array::makei(m, fn(_i) { [] })
-  let ovf : Array[Int64] = []
-  let ovb : Array[Int64] = []
+  let bkf = ctx_f.dial_buckets(m)
+  let bkb = ctx_b.dial_buckets(m)
+  let ovf = ctx_f.ov
+  let ovb = ctx_b.ov
   df[start] = 0L
   sf[start] = gf
   pf[start] = -1

@@ -87,6 +87,8 @@ pub struct SearchCtx {
   closed : Array[Int]
   mut gen : Int
   heap : EncodedHeap
+  bkt : Array[Array[Int64]]
+  ov : Array[Int64]
 }
 pub fn SearchCtx::new(Int) -> Self
 

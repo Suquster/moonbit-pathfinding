@@ -119,3 +119,100 @@ test "bench: slab vs linear-scan pool vs map handles (churn, n=32000/128000, liv
     })
   }
 }
+
+///|
+test "bench: arena generational reuse vs fresh boxed nodes per frame" (
+  b : @bench.T,
+) {
+  // 负载：frames 帧，每帧构建 4096 节点的临时二叉树（build）并两次遍历
+  // 求和（traverse）。arena 侧节点为 SoA 稠密下标（reset 复用底层存储，
+  // 稳态每帧分配归零）；朴素侧每帧新建 boxed 节点对象图（逐帧 GC 压力 +
+  // 指针追踪局部性差）。
+  let frames = 64
+  let nodes = 4096
+  b.bench(name="arena_soa_frame_tree_\{frames}x\{nodes}", fn() {
+    let val : @alloc.Arena[Int] = @alloc.Arena::new()
+    let lhs : @alloc.Arena[Int] = @alloc.Arena::new()
+    let rhs : @alloc.Arena[Int] = @alloc.Arena::new()
+    let mut acc = 0
+    for f in 0..<frames {
+      val.reset()
+      lhs.reset()
+      rhs.reset()
+      // 完全二叉树：节点 i 的孩子 2i+1 / 2i+2。
+      for i in 0..<nodes {
+        let _ = val.alloc(f + i)
+        let l = 2 * i + 1
+        let r = 2 * i + 2
+        let _ = lhs.alloc(if l < nodes { l } else { -1 })
+        let _ = rhs.alloc(if r < nodes { r } else { -1 })
+      }
+      // 两次显式栈遍历。
+      for _pass in 0..<2 {
+        let stack : Array[Int] = [0]
+        while stack.length() > 0 {
+          let id = stack.unsafe_pop()
+          match val.get(id) {
+            Some(v) => acc = acc + v
+            None => ()
+          }
+          match lhs.get(id) {
+            Some(l) => if l >= 0 { stack.push(l) }
+            None => ()
+          }
+          match rhs.get(id) {
+            Some(r) => if r >= 0 { stack.push(r) }
+            None => ()
+          }
+        }
+      }
+    }
+    b.keep(acc)
+  })
+  b.bench(name="naive_boxed_frame_tree_\{frames}x\{nodes}", fn() {
+    let mut acc = 0
+    for f in 0..<frames {
+      // 每帧新建 boxed 节点数组（对象图）。
+      let tree : Array[BoxedNode] = []
+      for i in 0..<nodes {
+        let l = 2 * i + 1
+        let r = 2 * i + 2
+        tree.push({
+          value: f + i,
+          left: if l < nodes {
+            l
+          } else {
+            -1
+          },
+          right: if r < nodes {
+            r
+          } else {
+            -1
+          },
+        })
+      }
+      for _pass in 0..<2 {
+        let stack : Array[Int] = [0]
+        while stack.length() > 0 {
+          let id = stack.unsafe_pop()
+          let n = tree[id]
+          acc = acc + n.value
+          if n.left >= 0 {
+            stack.push(n.left)
+          }
+          if n.right >= 0 {
+            stack.push(n.right)
+          }
+        }
+      }
+    }
+    b.keep(acc)
+  })
+}
+
+///|
+priv struct BoxedNode {
+  value : Int
+  left : Int
+  right : Int
+}

@@ -120,6 +120,17 @@ pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
 
 type EncodedHeap
 
+pub struct HubLabels {
+  n : Int
+  flo : Array[Int]
+  fla : Array[Int64]
+  blo : Array[Int]
+  bla : Array[Int64]
+}
+pub fn HubLabels::avg_label_size(Self) -> Double
+pub fn HubLabels::build(ContractionHierarchy) -> Self
+pub fn HubLabels::query(Self, Int, Int) -> Int64?
+
 type RadixHeap
 
 pub struct SearchCtx {

@@ -102,6 +102,7 @@ pub fn[T] PrioritySched::len(self : PrioritySched[T]) -> Int {
 }
 
 ///|
+/// 调度器是否为空（无待处理任务）。
 pub fn[T] PrioritySched::is_empty(self : PrioritySched[T]) -> Bool {
   self.total == 0
 }

@@ -22,6 +22,34 @@ pub fn TimerWheel::now(Self) -> Int
 pub fn TimerWheel::pending(Self) -> Int
 pub fn TimerWheel::schedule(Self, Int) -> Int
 
+pub struct WorkDeque[T] {
+  mut buf : Array[T?]
+  mut top : Int
+  mut bottom : Int
+}
+pub fn[T] WorkDeque::new() -> Self[T]
+pub fn[T] WorkDeque::pop(Self[T]) -> T?
+pub fn[T] WorkDeque::push(Self[T], T) -> Unit
+pub fn[T] WorkDeque::size(Self[T]) -> Int
+pub fn[T] WorkDeque::steal(Self[T]) -> T?
+
+pub struct WorkStealingScheduler {
+  deques : Array[WorkDeque[WsTask]]
+  mut next_id : Int
+  executed : Array[Int]
+  mut steals : Int
+}
+pub fn WorkStealingScheduler::new(Int) -> Self
+pub fn WorkStealingScheduler::run(Self) -> Array[(Int, Int)]
+pub fn WorkStealingScheduler::steal_count(Self) -> Int
+pub fn WorkStealingScheduler::submit(Self, Int, Int) -> Int
+pub fn WorkStealingScheduler::workers(Self) -> Int
+
+pub struct WsTask {
+  id : Int
+  spawn_count : Int
+}
+
 // Type aliases
 
 // Traits

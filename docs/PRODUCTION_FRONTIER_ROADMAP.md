@@ -409,9 +409,11 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   `astar_indexed` 支持可采纳启发式），与泛型 Map 版差分 PBT 150+150+80
   迭代（代价/边数一致 + 路径合法逐边复核）三后端全绿；Rust 对比矩阵
   同款负载（n=1000/deg=16/100 查询）BFS **13.7×**、Dijkstra **4.0×**
-  vs 泛型版——对照 2026-06-21 Rust 采集（BFS 1.82ms / Dijkstra 14.30ms）
-  从 0.19-0.30× 劣势翻转为 BFS ≈3.1×、Dijkstra ≈1.5× 优于 Rust
-  （benches/results/indexed-fast-path-native-2026-07-05.md）。
+  vs 泛型版（benches/results/indexed-fast-path-native-2026-07-05.md）。
+- Rust 对比同机重跑 ✅：moon_side 接入 indexed 快路径后，golden 逐元素
+  一致 + 6/6 用例签名一致，**每用例中位加速比中位数 0.2498× → 1.41×**
+  （BFS 2.4-2.6×、Dijkstra 1.06-1.15×、A* 1.40-1.43×，全部快于 Rust
+  `pathfinding` 4.11.0；benches/results/rust-comparison-indexed-20260705.md）。
 
 ### E1 · 核心数据结构库 — 对标 Rust `std::collections` / `im`
 

@@ -58,48 +58,32 @@ fn generate(
 }
 
 ///|
-/// 由边集构建带权邻接表（successors 视图，供 Dijkstra / A* 复用）。
-fn build_weighted_adjacency(w : Workload) -> Array[Array[(Int, Int)]] {
-  let adj : Array[Array[(Int, Int)]] = Array::makei(
-    if w.n > 0 {
-      w.n
-    } else {
-      0
-    },
-    fn(_idx) { [] },
-  )
-  for e in w.edges {
-    let (u, v, wt) = e
-    adj[u].push((v, wt))
-  }
-  adj
+/// 由边集构建带权 CSR（indexed 快路径，供 Dijkstra / A* 复用）。
+fn build_weighted_adjacency(w : Workload) -> @directed.WeightedCsr {
+  @directed.WeightedCsr::from_edges(w.n, w.edges)
 }
 
 ///|
-/// 由边集构建无权邻接表（供 BFS 复用，忽略权重）。
-fn build_unweighted_adjacency(w : Workload) -> Array[Array[Int]] {
-  let adj : Array[Array[Int]] = Array::makei(if w.n > 0 { w.n } else { 0 }, fn(
-    _idx,
-  ) {
-    []
-  })
+/// 由边集构建无权 CSR（indexed 快路径，供 BFS 复用，忽略权重）。
+fn build_unweighted_adjacency(w : Workload) -> @unweighted.CsrGraph {
+  let pairs : Array[(Int, Int)] = []
   for e in w.edges {
     let (u, v, _wt) = e
-    adj[u].push(v)
+    pairs.push((u, v))
   }
-  adj
+  @unweighted.CsrGraph::from_edges(w.n, pairs)
 }
 
 ///|
 /// BFS 跳数签名：可达取边数，不可达取 -1。
 fn bfs_signatures(
-  adj : Array[Array[Int]],
+  g : @unweighted.CsrGraph,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @unweighted.bfs(s, fn(node) { adj[node] }, fn(node) { node == t })
+    let res = @unweighted.bfs_indexed(g, s, t)
     match res {
       Some(path) => out.push(path.length() - 1)
       None => out.push(-1)
@@ -111,15 +95,13 @@ fn bfs_signatures(
 ///|
 /// Dijkstra 代价签名：可达取路径代价，不可达取 -1。
 fn dijkstra_signatures(
-  adj : Array[Array[(Int, Int)]],
+  g : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.dijkstra(s, fn(node) { adj[node] }, fn(node) {
-      node == t
-    })
+    let res = @directed.dijkstra_indexed(g, s, t)
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)
@@ -132,17 +114,13 @@ fn dijkstra_signatures(
 /// A*（零启发式）代价签名：可达取路径代价，不可达取 -1。零启发式在一般图上
 /// 可采纳（admissible），等价一致代价搜索，与 Rust 侧完全一致。
 fn astar_signatures(
-  adj : Array[Array[(Int, Int)]],
+  g : @directed.WeightedCsr,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @directed.astar(s, fn(node) { adj[node] }, fn(_node) { 0 }, fn(
-      node,
-    ) {
-      node == t
-    })
+    let res = @directed.astar_indexed(g, s, t, fn(_node) { 0 })
     match res {
       Some((_path, cost)) => out.push(cost)
       None => out.push(-1)

@@ -63,32 +63,32 @@ fn[T] fail_info(r : ParseResult[T]) -> (Int, Array[String])? {
 
 ///|
 /// 校验单个解析器在给定输入上的守恒律：成功时，把"已消费前缀"与"剩余输入"
-/// 重新拼接应逐字符等于原输入；剩余输入指向同一不可变字符缓冲、偏移落在
+/// 重新拼接应逐码元等于原输入；剩余输入指向同一不可变源字符串、偏移落在
 /// `[0, len]` 区间内。失败不属于守恒子句，直接视为通过（由 9b 覆盖）。
 fn[T] check_conservation(p : Parser[T], s : String) -> Bool {
-  let original = s.iter().to_array()
   match p.parse_string(s) {
     Fail(_, ..) => true
     Ok(_, rest) => {
       let off = rest.pos.offset
-      if off < 0 || off > original.length() {
+      if off < 0 || off > s.length() {
         false
-      } else if rest.chars != original {
-        // 剩余输入必须共享原始（未被修改的）字符缓冲。
+      } else if rest.source != s {
+        // 剩余输入必须共享原始（未被修改的）源字符串。
         false
       } else {
-        // 重建：consumed ++ remaining 必须逐字符等于原输入。
-        let recon : Array[Char] = []
+        // 重建：consumed ++ remaining 必须逐码元等于原输入。
+        let units = s.code_units()
+        let recon = StringBuilder::new()
         let mut i = 0
         while i < off {
-          recon.push(original[i])
+          recon.write_char(units[i].to_int().unsafe_to_char())
           i = i + 1
         }
-        while i < original.length() {
-          recon.push(original[i])
+        while i < s.length() {
+          recon.write_char(units[i].to_int().unsafe_to_char())
           i = i + 1
         }
-        recon == original
+        recon.to_string() == s
       }
     }
   }

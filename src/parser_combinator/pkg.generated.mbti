@@ -94,6 +94,8 @@ pub fn release_info() -> @release_meta.DirectionRelease
 
 pub fn release_info_with_gates(@release_meta.QualityGates) -> @release_meta.DirectionRelease
 
+pub fn[T] render_error(ParseResult[T], String) -> String?
+
 pub fn satisfy((Char) -> Bool, label~ : String) -> Parser[Char]
 
 pub fn[T, S] sep_by(Parser[T], Parser[S]) -> Parser[Array[T]]
@@ -145,7 +147,7 @@ pub fn[T] Grammar::run_packrat_bounded_string(Self[T], String, cap~ : Int) -> Pa
 pub fn[T] Grammar::run_packrat_string(Self[T], String) -> ParseResult[T]
 
 pub struct Input {
-  chars : Array[Char]
+  source : String
   pos : Pos
 }
 pub fn Input::advance(Self) -> Self
@@ -184,6 +186,7 @@ pub fn[T] ParseResult::value(Self[T]) -> T?
 pub struct Parser[T] {
   run : (Input) -> ParseResult[T]
 }
+pub fn[T] Parser::explain_failure(Self[T], String) -> String?
 pub fn[T] Parser::new((Input) -> ParseResult[T]) -> Self[T]
 pub fn[T] Parser::parse(Self[T], Input) -> ParseResult[T]
 pub fn[T] Parser::parse_string(Self[T], String) -> ParseResult[T]

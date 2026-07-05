@@ -106,10 +106,10 @@ pub fn[T] with_recovery(
 /// 内部辅助：选取恢复扫描的起始 `Input`。
 ///
 /// 失败位置可能比进入位置更深（序列解析中前缀已成功消费），取偏移更大者作为
-/// 起点，避免重复扫描已消费的合法前缀；并复用进入输入的共享只读 `chars`。
+/// 起点，避免重复扫描已消费的合法前缀；并复用进入输入的共享只读 `source`。
 fn recovery_scan_start(input : Input, fail_pos : Pos) -> Input {
   if fail_pos.offset > input.pos.offset {
-    { chars: input.chars, pos: fail_pos }
+    { source: input.source, pos: fail_pos }
   } else {
     input
   }

@@ -6,6 +6,8 @@ pub fn[N : Eq + Hash] bfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
 pub fn[N : Eq + Hash] bfs_all(N, (N) -> Array[N]) -> BfsTree[N]
 
+pub fn bfs_bidirectional_ctx(CsrGraph, CsrGraph, BiBfsCtx, Int, Int) -> Array[Int]?
+
 pub fn bfs_indexed(CsrGraph, Int, Int) -> Array[Int]?
 
 pub fn bfs_indexed_ctx(CsrGraph, BfsCtx, Int, Int) -> Array[Int]?
@@ -28,6 +30,19 @@ pub struct BfsTree[N] {
 }
 pub fn[N : Eq + Hash] BfsTree::distance_to(Self[N], N) -> Int?
 pub fn[N : Eq + Hash] BfsTree::path_to(Self[N], N) -> Array[N]?
+
+pub struct BiBfsCtx {
+  parent_f : Array[Int]
+  parent_b : Array[Int]
+  dist_f : Array[Int]
+  dist_b : Array[Int]
+  stamp_f : Array[Int]
+  stamp_b : Array[Int]
+  queue_f : Array[Int]
+  queue_b : Array[Int]
+  mut gen : Int
+}
+pub fn BiBfsCtx::new(Int) -> Self
 
 pub struct CsrGraph {
   offsets : Array[Int]

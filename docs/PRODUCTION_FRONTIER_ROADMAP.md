@@ -179,8 +179,8 @@ Damas-Milner（Algorithm W）、Hindley-Milner。
 - [x] **T1.2 真·JS 产物**：`js_backend.mbt` emit Node 可直接执行的 JS（32 位环绕
       `|0`/`Math.imul`、除零=0），端到端 22/22 与解释器一致；并顺带修复解释器
       `INT_MIN / -1` 陷阱 bug（三处统一环绕，回归锁定）。
-- [ ] **T1.3 类型推断深化**：let-多态泛化/实例化、代数数据类型穷尽性检查、行多态。
-- [ ] **T1.4 字节码优化 + 诊断**：常量传播/DCE/跳转线程化（等价 PBT）；类型错误带期望/实际/源位置/修复建议。
+- [x] **T1.3 类型推断深化** ✅：let-多态泛化/实例化（既有 infer.mbt）+ match 穷尽性/冗余 arm 检查（Maranget 2007 usefulness 算法含缺失模式见证，exhaustive.mbt）+ 行多态记录合一（Rémy/Gaster–Jones 行重排，row_poly.mbt，开放行吸收缺字段，见证健全性 PBT 100 迭代）。
+- [x] **T1.4 字节码优化 + 诊断** ✅：常量折叠/DCE（optimize.mbt）+ 跳转穿透/跳到下一条消除/不可达消除（peephole.mbt，等价 PBT 既有）；类型错误报告 render_diagnostic：源码行摘录 + caret + 按消息形态的修复建议（Int/Bool 混用、非函数调用、元组元数、occurs、未绑定变量，diagnostics_ext.mbt）。
 
 **依赖与风险**：wasm 产物的外部执行验证需 wasmtime/Node 可用（CI 可固化为黄金字节对比，外部执行作可选证据）。
 
@@ -349,8 +349,8 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 | 三 Codegen | T3.3 代价指令选择 | ✅ 完成 | `burs.mbt` BURS 代价最优 tiling + 最大吞噬对照基线 + PBT |
 | 一 Mini_Compiler | T1.1 真·wasm 产物 | ✅ 完成 | wat2wasm+V8 真实执行 22/22 与解释器逐字符一致（docs/verification/backend-products-t1.md） |
 | 一 Mini_Compiler | T1.2 真·JS 产物 | ✅ 完成 | node 直接执行 22/22 一致；附 INT_MIN/-1 陷阱修复（同上） |
-| 一 Mini_Compiler | T1.3 类型推断深化 | ⬜ 待办 | — |
-| 一 Mini_Compiler | T1.4 字节码优化+诊断 | ⬜ 待办 | — |
+| 一 Mini_Compiler | T1.3 类型推断深化 | ✅ 完成 | 穷尽性/冗余检查（Maranget usefulness + 缺失见证，exhaustive.mbt）+ 行多态记录合一（row_poly.mbt，见证健全 PBT）；let-多态既有 |
+| 一 Mini_Compiler | T1.4 字节码优化+诊断 | ✅ 完成 | 常量折叠/DCE/跳转线程化既有（等价 PBT）；新增 render_diagnostic 源码摘录+caret+修复建议（diagnostics_ext.mbt，确定性 PBT） |
 | 四 Parser | T4.1 零拷贝输入 | ✅ 完成 | Input 改 String+码元偏移零物化，json 基准 +17.5%~24.8%（benches/results/parser-zero-copy-t41-native-2026-07-05.md） |
 | 四 Parser | T4.2 错误消息质量 | ✅ 完成 | 最远失败合并（error_model.mbt）+ megaparsec 同构 render_error（源码行摘录/caret/unexpected/expecting，error_report_test.mbt 5 项锁定） |
 | 四 Parser | T4.3 性能基准 | ✅ 完成 | packrat/朴素对照基准 + BoundedCache O(1) LRU（benches/results/latest-parser-combinator.md） |

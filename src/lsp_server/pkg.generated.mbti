@@ -223,6 +223,16 @@ pub(all) struct Reference {
   range : Range
 } derive(Eq)
 
+pub struct RopeDocument {
+  // private fields
+}
+pub fn RopeDocument::apply_change(Self, ContentChange, PositionEncoding) -> Result[Self, @lsp_binding.RpcError]
+pub fn RopeDocument::apply_changes(Self, Array[ContentChange], PositionEncoding) -> Result[Self, @lsp_binding.RpcError]
+pub fn RopeDocument::from_string(String) -> Self
+pub fn RopeDocument::length(Self) -> Int
+pub fn RopeDocument::line_count(Self) -> Int
+pub fn RopeDocument::to_string(Self) -> String
+
 pub(all) struct ServerCapabilities {
   diagnostic_provider : Bool
   completion_provider : Bool

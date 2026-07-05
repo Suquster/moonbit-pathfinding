@@ -528,7 +528,8 @@ pub fn dijkstra_bidirectional_ctx(
     return Some(([start], 0))
   }
   if g.max_weight > DIAL_MAX_W || g.max_weight <= 0 {
-    return dijkstra_indexed_ctx(g, ctx_f, start, target)
+    // 大权/零权：走堆式双向（零启发式 NBA*，meet-in-the-middle）。
+    return astar_biheap_ctx(g, rg, ctx_f, ctx_b, start, target, zero_h, zero_h)
   }
   ctx_f.gen = ctx_f.gen + 1
   ctx_b.gen = ctx_b.gen + 1
@@ -541,7 +542,6 @@ pub fn dijkstra_bidirectional_ctx(
   let sf = ctx_f.stamp
   let sb = ctx_b.stamp
   let m = g.max_weight + 1
-  let m64 = m.to_int64()
   let bf = ctx_f.dial_buckets(m)
   let bb = ctx_b.dial_buckets(m)
   df[start] = 0L
@@ -941,6 +941,26 @@ pub fn astar_bidirectional_ctx(
   if g.max_weight >= 1 && g.max_weight <= DIAL_MAX_W {
     return astar_bidial_ctx(g, rg, ctx_f, ctx_b, start, target, h_f, h_b)
   }
+  astar_biheap_ctx(g, rg, ctx_f, ctx_b, start, target, h_f, h_b)
+}
+
+///|
+let zero_h : (Int) -> Int = fn(_v) { 0 }
+
+///|
+/// 堆式双向 A*（NBA* 剪枝）主体：`astar_bidirectional_ctx` 的编码堆
+/// 分支；也作为大权/零权图 `dijkstra_bidirectional_ctx` 的零启发式
+/// 双向 Dijkstra 后端。
+fn astar_biheap_ctx(
+  g : WeightedCsr,
+  rg : WeightedCsr,
+  ctx_f : SearchCtx,
+  ctx_b : SearchCtx,
+  start : Int,
+  target : Int,
+  h_f : (Int) -> Int,
+  h_b : (Int) -> Int,
+) -> (Array[Int], Int)? {
   ctx_f.gen = ctx_f.gen + 1
   ctx_b.gen = ctx_b.gen + 1
   let gf = ctx_f.gen

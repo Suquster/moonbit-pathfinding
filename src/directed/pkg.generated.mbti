@@ -72,6 +72,18 @@ pub struct AllPairs[N, W] {
 pub fn[N : Eq + Hash, W] AllPairs::distance(Self[N, W], N, N) -> W?
 pub fn[N : Eq + Hash, W] AllPairs::path(Self[N, W], N, N) -> Array[N]?
 
+pub struct AltLandmarks {
+  k : Int
+  n : Int
+  dist_from : Array[Int64]
+  dist_to : Array[Int64]
+}
+pub fn AltLandmarks::build(WeightedCsr, WeightedCsr, Int) -> Self
+pub fn AltLandmarks::h_from(Self, Int, Int) -> Int
+pub fn AltLandmarks::h_from_closure(Self, Int) -> (Int) -> Int
+pub fn AltLandmarks::h_to(Self, Int, Int) -> Int
+pub fn AltLandmarks::h_to_closure(Self, Int) -> (Int) -> Int
+
 pub struct Condensation[N] {
   components : Array[Array[N]]
   component_of : Map[N, Int]

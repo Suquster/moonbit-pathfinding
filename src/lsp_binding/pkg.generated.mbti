@@ -10,6 +10,8 @@ pub fn cancel_id_of(Json) -> Id?
 
 pub fn cancelled_response(Id) -> JsonRpcMessage
 
+pub let content_modified_code : Int
+
 pub fn correlate(JsonRpcMessage, JsonRpcMessage) -> Bool
 
 pub fn decode_batch(Bytes) -> Result[Array[Result[JsonRpcMessage, RpcError]], RpcError]
@@ -44,7 +46,19 @@ pub let method_not_found_code : Int
 
 pub let parse_error_code : Int
 
+pub fn progress_notification(ProgressToken, WorkDoneProgress) -> JsonRpcMessage
+
+pub fn progress_of(Json) -> (ProgressToken, WorkDoneProgress)?
+
 pub let request_cancelled_code : Int
+
+pub let request_failed_code : Int
+
+pub let server_cancelled_code : Int
+
+pub let server_not_initialized_code : Int
+
+pub let unknown_error_code : Int
 
 // Errors
 
@@ -84,6 +98,17 @@ pub(all) enum JsonRpcMessage {
   Notification(method_name~ : String, params~ : Json)
 } derive(Eq, @debug.Debug)
 
+pub(all) enum ProgressToken {
+  TokNum(Int)
+  TokStr(String)
+} derive(Eq, @debug.Debug)
+
+pub struct ProgressTracker {
+  // private fields
+}
+pub fn ProgressTracker::new() -> Self
+pub fn ProgressTracker::observe(Self, ProgressToken, WorkDoneProgress) -> Result[Self, String]
+
 pub struct Router {
   handlers : Map[String, (JsonRpcMessage) -> JsonRpcMessage?]
 }
@@ -98,6 +123,12 @@ pub(all) struct RpcError {
 } derive(Eq, @debug.Debug)
 pub fn RpcError::new(Int, String) -> Self
 pub fn RpcError::with_data(Int, String, Json) -> Self
+
+pub(all) enum WorkDoneProgress {
+  Begin(title~ : String, cancellable~ : Bool?, message~ : String?, percentage~ : Int?)
+  Report(cancellable~ : Bool?, message~ : String?, percentage~ : Int?)
+  End(message~ : String?)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

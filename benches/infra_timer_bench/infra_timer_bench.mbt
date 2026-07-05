@@ -62,6 +62,59 @@ test "bench: timer wheel vs naive scan (n=1000/4000/16000)" (b : @bench.T) {
 }
 
 ///|
+test "bench: priority sched O(1) bitmap vs naive linear scan (churn, live~2048)" (
+  b : @bench.T,
+) {
+  // 稳态 churn：保持 ~2048 就绪任务，交替 enqueue（2/3）/pick_next（1/3），
+  // 共 n 次操作。位图调度 O(1)/操作；朴素参照每次 pick 线性扫描全部就绪。
+  for n in [32000, 128000] {
+    b.bench(name="prio_sched_bitmap_\{n}", fn() {
+      let s : @tw.PrioritySched[Int] = @tw.PrioritySched::new()
+      let mut acc = 0
+      let mut seed = 20260712UL
+      for i in 0..<n {
+        seed = xorshift(seed)
+        if s.len() < 2048 && (s.is_empty() || seed % 3UL != 0UL) {
+          s.enqueue((seed % 64UL).to_int(), i)
+        } else {
+          match s.pick_next() {
+            Some((p, t)) => acc = acc + p + t
+            None => ()
+          }
+        }
+      }
+      b.keep(acc)
+    })
+    b.bench(name="naive_linear_scan_\{n}", fn() {
+      let live : Array[(Int, Int, Int)] = []
+      let mut acc = 0
+      let mut seq = 0
+      let mut seed = 20260712UL
+      for i in 0..<n {
+        seed = xorshift(seed)
+        if live.length() < 2048 && (live.length() == 0 || seed % 3UL != 0UL) {
+          live.push(((seed % 64UL).to_int(), seq, i))
+          seq = seq + 1
+        } else {
+          let mut best = 0
+          for j in 1..<live.length() {
+            let (bp, bs, _) = live[best]
+            let (jp, js, _) = live[j]
+            if jp < bp || (jp == bp && js < bs) {
+              best = j
+            }
+          }
+          let (bp, _, bt) = live[best]
+          let _ = live.remove(best)
+          acc = acc + bp + bt
+        }
+      }
+      b.keep(acc)
+    })
+  }
+}
+
+///|
 test "bench: work deque vs naive array queue (mixed push/pop/steal)" (
   b : @bench.T,
 ) {

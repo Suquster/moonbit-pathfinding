@@ -401,6 +401,18 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
 > 2026-07-05 新增：在十大方向之外识别出的 Infra 空白版图。每项均沿用第 0 章五条硬判据、
 > DoD 与统一验证协议（三后端全绿 + 基准守卫 + 证据工件），逐个做到极致后合入 main。
 
+### E0 · 核心寻路快路径 — 对标 Rust `pathfinding` crate（本库主战场）
+
+- 稠密整数节点 indexed 快路径 ✅ 已落地：`src/unweighted/bfs_indexed.mbt`、
+  `src/directed/dijkstra_indexed.mbt`（CSR 邻接 + visited/dist/parent
+  全扁平数组 + (dist<<21|node) Int64 编码二叉堆，无哈希无装箱；
+  `astar_indexed` 支持可采纳启发式），与泛型 Map 版差分 PBT 150+150+80
+  迭代（代价/边数一致 + 路径合法逐边复核）三后端全绿；Rust 对比矩阵
+  同款负载（n=1000/deg=16/100 查询）BFS **13.7×**、Dijkstra **4.0×**
+  vs 泛型版——对照 2026-06-21 Rust 采集（BFS 1.82ms / Dijkstra 14.30ms）
+  从 0.19-0.30× 劣势翻转为 BFS ≈3.1×、Dijkstra ≈1.5× 优于 Rust
+  （benches/results/indexed-fast-path-native-2026-07-05.md）。
+
 ### E1 · 核心数据结构库 — 对标 Rust `std::collections` / `im`
 
 - B-tree（有序映射，缓存友好分裂/合并）✅ 已落地：`src/infra_ds/btree.mbt`

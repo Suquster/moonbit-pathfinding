@@ -5,4 +5,5 @@
 import {
   "moonbitlang/core/bench",
   "Suquster/moonbit-pathfinding/src/directed" @dir,
+  "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }

@@ -83,3 +83,97 @@ test "bench: dijkstra on 1k-node sparse weighted graph (density 1%)" (
     b.keep(@dir.dijkstra(0, fn(u) { adj[u] }, fn(v) { v == n - 1 }))
   })
 }
+
+///|
+test "bench: indexed flat-array dijkstra/bfs vs generic Map-based (n=1000, deg=16, 100 queries)" (
+  b : @bench.T,
+) {
+  // Rust 对比矩阵同款负载：n=1000、平均出度 16、100 条随机查询。
+  // indexed 版：CSR 邻接 + 扁平 dist/parent 数组 + 编码二叉堆（无哈希
+  // 无装箱）；generic 版：Map[N,W] + 泛型 PQueue（本库通用 API）。
+  let n = 1000
+  let m = n * 16
+  let mut seed = 0x123456789ABCDEFUL
+  fn nxt() -> UInt64 {
+    seed = seed ^ (seed << 13)
+    seed = seed ^ (seed >> 7)
+    seed = seed ^ (seed << 17)
+    seed
+  }
+
+  let edges3 : Array[(Int, Int, Int)] = []
+  for _ in 0..<m {
+    let u = (nxt() % 1000UL).to_int()
+    let mut v = (nxt() % 1000UL).to_int()
+    if v == u {
+      v = (u + 1) % n
+    }
+    edges3.push((u, v, 1 + (nxt() % 100UL).to_int()))
+  }
+  let queries : Array[(Int, Int)] = []
+  for _ in 0..<100 {
+    queries.push(((nxt() % 1000UL).to_int(), (nxt() % 1000UL).to_int()))
+  }
+  let g = @dir.WeightedCsr::from_edges(n, edges3)
+  let adj : Array[Array[(Int, Int)]] = Array::makei(n, fn(_i) { [] })
+  for e in edges3 {
+    let (u, v, w) = e
+    adj[u].push((v, w))
+  }
+  let ug = @uw.CsrGraph::from_edges(
+    n,
+    edges3.map(fn(e) {
+      let (u, v, _) = e
+      (u, v)
+    }),
+  )
+  let uadj : Array[Array[Int]] = Array::makei(n, fn(_i) { [] })
+  for e in edges3 {
+    let (u, v, _) = e
+    uadj[u].push(v)
+  }
+  b.bench(name="dijkstra_indexed_1000x16_100q", fn() {
+    let mut acc = 0
+    for q in queries {
+      let (s, t) = q
+      match @dir.dijkstra_indexed(g, s, t) {
+        Some((_, c)) => acc = acc + c
+        None => acc = acc - 1
+      }
+    }
+    b.keep(acc)
+  })
+  b.bench(name="dijkstra_generic_1000x16_100q", fn() {
+    let mut acc = 0
+    for q in queries {
+      let (s, t) = q
+      match @dir.dijkstra(s, fn(node) { adj[node] }, fn(node) { node == t }) {
+        Some((_, c)) => acc = acc + c
+        None => acc = acc - 1
+      }
+    }
+    b.keep(acc)
+  })
+  b.bench(name="bfs_indexed_1000x16_100q", fn() {
+    let mut acc = 0
+    for q in queries {
+      let (s, t) = q
+      match @uw.bfs_indexed(ug, s, t) {
+        Some(p) => acc = acc + p.length()
+        None => acc = acc - 1
+      }
+    }
+    b.keep(acc)
+  })
+  b.bench(name="bfs_generic_1000x16_100q", fn() {
+    let mut acc = 0
+    for q in queries {
+      let (s, t) = q
+      match @uw.bfs(s, fn(node) { uadj[node] }, fn(node) { node == t }) {
+        Some(p) => acc = acc + p.length()
+        None => acc = acc - 1
+      }
+    }
+    b.keep(acc)
+  })
+}

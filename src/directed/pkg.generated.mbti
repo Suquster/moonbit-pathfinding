@@ -8,6 +8,8 @@ import {
 // Values
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] astar(N, (N) -> Array[(N, W)], (N) -> W, (N) -> Bool) -> (Array[N], W)?
 
+pub fn astar_indexed(WeightedCsr, Int, Int, (Int) -> Int) -> (Array[Int], Int)?
+
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford(Array[N], Array[(N, N, W)], N) -> Result[Map[N, W], @core.PathError]
 
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_paths(Array[N], Array[(N, N, W)], N) -> Result[ShortestPathTree[N, W], @core.PathError]
@@ -25,6 +27,8 @@ pub fn[N : Eq + Hash] dfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra(N, (N) -> Array[(N, W)], (N) -> Bool) -> (Array[N], W)?
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] dijkstra_all(N, (N) -> Array[(N, W)]) -> ShortestPathTree[N, W]
+
+pub fn dijkstra_indexed(WeightedCsr, Int, Int) -> (Array[Int], Int)?
 
 pub fn[N : Eq + Hash] dinic(Array[N], Map[(N, N), Int], N, N) -> Int
 
@@ -73,6 +77,14 @@ pub struct ShortestPathTree[N, W] {
 }
 pub fn[N : Eq + Hash, W] ShortestPathTree::distance_to(Self[N, W], N) -> W?
 pub fn[N : Eq + Hash, W] ShortestPathTree::path_to(Self[N, W], N) -> Array[N]?
+
+pub struct WeightedCsr {
+  offsets : Array[Int]
+  targets : Array[Int]
+  weights : Array[Int]
+}
+pub fn WeightedCsr::from_edges(Int, Array[(Int, Int, Int)]) -> Self
+pub fn WeightedCsr::node_count(Self) -> Int
 
 // Type aliases
 

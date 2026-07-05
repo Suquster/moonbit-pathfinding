@@ -6,6 +6,8 @@ pub fn[N : Eq + Hash] bfs(N, (N) -> Array[N], (N) -> Bool) -> Array[N]?
 
 pub fn[N : Eq + Hash] bfs_all(N, (N) -> Array[N]) -> BfsTree[N]
 
+pub fn bfs_indexed(CsrGraph, Int, Int) -> Array[Int]?
+
 // Errors
 
 // Types and methods
@@ -16,6 +18,13 @@ pub struct BfsTree[N] {
 }
 pub fn[N : Eq + Hash] BfsTree::distance_to(Self[N], N) -> Int?
 pub fn[N : Eq + Hash] BfsTree::path_to(Self[N], N) -> Array[N]?
+
+pub struct CsrGraph {
+  offsets : Array[Int]
+  targets : Array[Int]
+}
+pub fn CsrGraph::from_edges(Int, Array[(Int, Int)]) -> Self
+pub fn CsrGraph::node_count(Self) -> Int
 
 // Type aliases
 

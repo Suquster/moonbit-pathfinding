@@ -1,0 +1,20 @@
+# https://docs.devin.ai/onboard-devin/environment-yaml
+initialize: |
+  curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+  echo "PATH=$HOME/.moon/bin:$PATH" >> $ENVRC
+  echo "LIBRARY_PATH=/usr/lib64:/usr/lib" >> $ENVRC
+maintenance: |
+  moon check
+knowledge:
+  - name: lint
+    contents: |
+      moon check && moon info && moon fmt
+  - name: test
+    contents: |
+      moon test --target native   # 也验证 wasm-gc / js 两后端
+  - name: bench
+    contents: |
+      moon bench -p benches/<pkg> --target native
+  - name: submit
+    contents: |
+      提交只用仓库根目录的 ./push-to-upstream.sh main（不要直接 git push）

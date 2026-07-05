@@ -80,10 +80,19 @@ fn default_spec() -> SupervisorSpec {
 
 ///|
 /// 按 id 查找内部单元；未找到返回 None。
+///
+/// id 由 `spawn` 顺次分配（1 起）、单元只增不删，故 `cells[id - 1]` 即目标，
+/// O(1) 定位（防御性校验 id 一致，杜绝顺序假设失效时的错配）。
 fn[S, M] ActorSystem::cell_by_id(
   self : ActorSystem[S, M],
   id : Int,
 ) -> SupervisedCell[S, M]? {
+  if id >= 1 && id <= self.cells.length() {
+    let cell = self.cells[id - 1]
+    if cell.id.value == id {
+      return Some(cell)
+    }
+  }
   for cell in self.cells {
     if cell.id.value == id {
       return Some(cell)

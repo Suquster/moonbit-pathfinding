@@ -675,7 +675,11 @@ fn pass_const_fold(p : SsaProgram) -> SsaProgram {
                 new_instrs.push(join_tokens([toks[0], "=", r.to_string()]))
               None => new_instrs.push(instr)
             }
-          _ => new_instrs.push(instr)
+          _ =>
+            match fold_identity(toks[2], toks[3], toks[4]) {
+              Some(rhs) => new_instrs.push(join_tokens([toks[0], "=", rhs]))
+              None => new_instrs.push(instr)
+            }
         }
       } else {
         new_instrs.push(instr)
@@ -684,6 +688,37 @@ fn pass_const_fold(p : SsaProgram) -> SsaProgram {
     new_blocks.push({ label: b.label, instrs: new_instrs, succs: b.succs })
   }
   { blocks: new_blocks, phis: p.phis }
+}
+
+///|
+/// 代数恒等化简：`a + 0` / `0 + a` / `a - 0` / `a * 1` / `1 * a` → 复制 `a`；
+/// `a * 0` / `0 * a` → 常量 `0`。返回化简后的右值记号；不适用返回 `None`。
+fn fold_identity(lhs : String, op : String, rhs : String) -> String? {
+  let l = parse_int(lhs)
+  let r = parse_int(rhs)
+  if op == "+" {
+    if r == Some(0) {
+      return Some(lhs)
+    }
+    if l == Some(0) {
+      return Some(rhs)
+    }
+  } else if op == "-" {
+    if r == Some(0) {
+      return Some(lhs)
+    }
+  } else if op == "*" {
+    if r == Some(1) {
+      return Some(lhs)
+    }
+    if l == Some(1) {
+      return Some(rhs)
+    }
+    if r == Some(0) || l == Some(0) {
+      return Some("0")
+    }
+  }
+  None
 }
 
 ///|

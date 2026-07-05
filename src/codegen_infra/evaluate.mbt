@@ -224,6 +224,19 @@ pub fn evaluate(
     lst.push(s)
     sites_by_block[s.block] = lst
   }
+  // 版本号 → 变量名（含定义与使用记号）：φ 实参经复制传播可能被改写为
+  // 其它变量的版本，取实参取值时须按实参自身的变量名定位记号。
+  let ver2name : Map[Int, String] = Map([])
+  for b in p.blocks {
+    for instr in b.instrs {
+      for t in tokenize(instr) {
+        match split_versioned(t) {
+          Some((nm, v)) => if !ver2name.contains(v) { ver2name[v] = nm }
+          None => ()
+        }
+      }
+    }
+  }
   let values : Map[String, Int] = Map([])
   let output : Array[Int] = []
   let mut prev = ""
@@ -244,7 +257,9 @@ pub fn evaluate(
                   }
                 }
                 if idx >= 0 && idx < site.args.length() {
-                  let arg_tok = site.var_name + "#" + site.args[idx].to_string()
+                  let arg_id = site.args[idx]
+                  let arg_name = ver2name.get(arg_id).unwrap_or(site.var_name)
+                  let arg_tok = arg_name + "#" + arg_id.to_string()
                   let dest_tok = site.var_name + "#" + site.dest.to_string()
                   values[dest_tok] = eval_lookup(arg_tok, values, init)
                 }

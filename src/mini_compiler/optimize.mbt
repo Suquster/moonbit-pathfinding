@@ -107,7 +107,15 @@ fn fold_arith(op : BinOp, a : Int, b : Int) -> Int {
     Add => a + b
     Sub => a - b
     Mul => a * b
-    Div => if b == 0 { 0 } else { a / b }
+    Div =>
+      if b == 0 {
+        0
+      } else if b == -1 {
+        // INT_MIN / -1 不可表示（trap）；按环绕语义定义为 0 - a（与 ml_eval 一致）。
+        0 - a
+      } else {
+        a / b
+      }
   }
 }
 

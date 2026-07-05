@@ -163,7 +163,15 @@ fn apply_binop(op : BinOp, a : Int, b : Int) -> Int {
     Sub => a - b
     Mul => a * b
     // 除零定义为 0，保证 eval 为全函数且三后端一致（见文件头说明）。
-    Div => if b == 0 { 0 } else { a / b }
+    Div =>
+      if b == 0 {
+        0
+      } else if b == -1 {
+        // INT_MIN / -1 不可表示（trap）；按环绕语义定义为 0 - a（与 ml_eval 一致）。
+        0 - a
+      } else {
+        a / b
+      }
   }
 }
 

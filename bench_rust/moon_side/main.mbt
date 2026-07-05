@@ -75,16 +75,28 @@ fn build_unweighted_adjacency(w : Workload) -> @unweighted.CsrGraph {
 }
 
 ///|
+/// 逆图无权 CSR（双向 BFS 的反向前沿沿入边推进）。
+fn build_unweighted_reverse_adjacency(w : Workload) -> @unweighted.CsrGraph {
+  let pairs : Array[(Int, Int)] = []
+  for e in w.edges {
+    let (u, v, _wt) = e
+    pairs.push((v, u))
+  }
+  @unweighted.CsrGraph::from_edges(w.n, pairs)
+}
+
+///|
 /// BFS 跳数签名：可达取边数，不可达取 -1。
 fn bfs_signatures(
   g : @unweighted.CsrGraph,
+  rg : @unweighted.CsrGraph,
   queries : Array[(Int, Int)],
 ) -> Array[Int] {
-  let ctx = @unweighted.BfsCtx::new(g.node_count())
+  let ctx = @unweighted.BiBfsCtx::new(g.node_count())
   let out : Array[Int] = []
   for qr in queries {
     let (s, t) = qr
-    let res = @unweighted.bfs_indexed_ctx(g, ctx, s, t)
+    let res = @unweighted.bfs_bidirectional_ctx(g, rg, ctx, s, t)
     match res {
       Some(path) => out.push(path.length() - 1)
       None => out.push(-1)
@@ -392,10 +404,11 @@ fn run_bench(map : Map[String, String]) -> Unit {
       let query_count = w.queries.length()
       let wadj = build_weighted_adjacency(w)
       let uadj = build_unweighted_adjacency(w)
+      let uradj = build_unweighted_reverse_adjacency(w)
       let queries = w.queries
       // 三种算法的「整批查询」工作闭包。
       let algos : Array[(String, () -> Array[Int])] = [
-        ("BFS", fn() { bfs_signatures(uadj, queries) }),
+        ("BFS", fn() { bfs_signatures(uadj, uradj, queries) }),
         ("Dijkstra", fn() { dijkstra_signatures(wadj, queries) }),
         ("A*", fn() { astar_signatures(wadj, queries) }),
       ]

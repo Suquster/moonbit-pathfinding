@@ -101,3 +101,57 @@ test "bfs_indexed_ctx differential PBT vs bfs_indexed (120 iterations, ctx reuse
     }
   }
 }
+
+///|
+test "bfs_bidirectional_ctx differential PBT vs bfs_indexed (150 iterations, ctx reused)" {
+  let rng = @infra_pbt.rng_new(0xB1D1_BF5UL)
+  for _iter in 0..<150 {
+    let n = 2 + rng.next_below(60)
+    let edges : Array[(Int, Int)] = []
+    for _ in 0..<rng.next_below(n * 3) {
+      let u = rng.next_below(n)
+      let mut v = rng.next_below(n)
+      if v == u {
+        v = (u + 1) % n
+      }
+      edges.push((u, v))
+    }
+    let g = @unweighted.CsrGraph::from_edges(n, edges)
+    let redges : Array[(Int, Int)] = []
+    for e in edges {
+      let (u, v) = e
+      redges.push((v, u))
+    }
+    let rg = @unweighted.CsrGraph::from_edges(n, redges)
+    let ctx = @unweighted.BiBfsCtx::new(n)
+    for _q in 0..<8 {
+      let s = rng.next_below(n)
+      let t = rng.next_below(n)
+      let a = @unweighted.bfs_bidirectional_ctx(g, rg, ctx, s, t)
+      let b = @unweighted.bfs_indexed(g, s, t)
+      match (a, b) {
+        (Some(pa), Some(pb)) => {
+          // 最短长度一致 + 双向路径逐边合法。
+          assert_eq(pa.length(), pb.length())
+          assert_eq(pa[0], s)
+          assert_eq(pa[pa.length() - 1], t)
+          for i in 0..<(pa.length() - 1) {
+            let u = pa[i]
+            let v = pa[i + 1]
+            let mut found = false
+            let stop = g.offsets[u + 1]
+            for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+              if g.targets[ei] == v {
+                found = true
+                break
+              }
+            }
+            assert_true(found)
+          }
+        }
+        (None, None) => ()
+        _ => abort("bidirectional/unidirectional reachability mismatch")
+      }
+    }
+  }
+}

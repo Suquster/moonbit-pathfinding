@@ -24,6 +24,18 @@ pub struct AltLandmarks {
 }
 
 ///|
+/// 全量 Dijkstra 一到全最短距离（无目标提前退出），dist 长度须为 n，
+/// 不可达为 `INF_DIST`（PHAST 的原图基线，语义一致）。
+pub fn dijkstra_one_to_all(
+  g : WeightedCsr,
+  src : Int,
+  dist : Array[Int64],
+) -> Unit {
+  guard src >= 0 && src < g.node_count() && dist.length() == g.node_count()
+  alt_sssp(g, src, dist, 0)
+}
+
+///|
 /// 全量 Dijkstra（无目标提前退出），结果写入 out[base + u]；
 /// 不可达为 `INF_DIST`。
 fn alt_sssp(g : WeightedCsr, src : Int, out : Array[Int64], base : Int) -> Unit {

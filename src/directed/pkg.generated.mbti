@@ -38,6 +38,8 @@ pub fn dijkstra_indexed(WeightedCsr, Int, Int) -> (Array[Int], Int)?
 
 pub fn dijkstra_indexed_ctx(WeightedCsr, SearchCtx, Int, Int) -> (Array[Int], Int)?
 
+pub fn dijkstra_one_to_all(WeightedCsr, Int, Array[Int64]) -> Unit
+
 pub fn[N : Eq + Hash] dinic(Array[N], Map[(N, N), Int], N, N) -> Int
 
 pub fn[N : Eq + Hash] edmonds_karp(Array[N], Map[(N, N), Int], N, N) -> Int
@@ -103,6 +105,12 @@ pub struct ContractionHierarchy {
   bw : Array[Int64]
   bm : Array[Int]
   bh : Array[Int64]
+  ord : Array[Int]
+  pos : Array[Int]
+  dofs : Array[Int]
+  dsrc : Array[Int]
+  dwt : Array[Int64]
+  pd : Array[Int64]
   df : Array[Int64]
   db : Array[Int64]
   sf : Array[Int]
@@ -116,6 +124,8 @@ pub struct ContractionHierarchy {
   hb : RadixHeap
 }
 pub fn ContractionHierarchy::build(WeightedCsr) -> Self
+pub fn ContractionHierarchy::is_unreachable(Int64) -> Bool
+pub fn ContractionHierarchy::one_to_all(Self, Int, Array[Int64]) -> Unit
 pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
 
 type EncodedHeap

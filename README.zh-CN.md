@@ -299,6 +299,7 @@ smoke artifact 用于端到端包执行守卫。
 
 ## 延伸阅读
 
+- [docs/zh/development-article.md](./docs/zh/development-article.md) — **开发实录长文**：从 BFS 到 Hub Labeling 的设计取舍、路网 SOTA 攻坚历程、证伪实验与 AI 协作记录
 - [README.md](./README.md) — 英文原版完整文档（含 Quick Start、算法对照表、Benchmarks 全文）
 - [README.mbt.md](./README.mbt.md) — 可执行 README（代码即测试）
 - [GRAPH_GUIDE.zh-CN.md](./GRAPH_GUIDE.zh-CN.md) — 图输入四种惯用写法

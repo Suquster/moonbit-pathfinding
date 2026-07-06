@@ -449,6 +449,11 @@ project grows. Pull requests are warmly welcomed — see
 For code agents and scripted integrations, see
 [AI_AGENT_USAGE.md](./docs/AI_AGENT_USAGE.md).
 
+For the full development story — design tradeoffs, the road-network SOTA
+climb (Dijkstra → ALT → CH → Hub Labeling), falsified experiments, and the
+human–AI collaboration record — see the development article (Chinese):
+[docs/zh/development-article.md](./docs/zh/development-article.md).
+
 ---
 
 ## License

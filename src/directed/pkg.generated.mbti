@@ -132,6 +132,26 @@ pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
 pub fn ContractionHierarchy::rphast_query(Self, RphastTargets, Int, Array[Int64]) -> Unit
 pub fn ContractionHierarchy::rphast_targets(Self, Array[Int]) -> RphastTargets
 
+pub struct CustomizableCch {
+  n : Int
+  rank : Array[Int]
+  ord : Array[Int]
+  fo : Array[Int]
+  ft : Array[Int]
+  fw : Array[Int64]
+  gw : Array[Int64]
+  df : Array[Int64]
+  db : Array[Int64]
+  sf : Array[Int]
+  sb : Array[Int]
+  mut gen : Int
+  hf : RadixHeap
+  hb : RadixHeap
+}
+pub fn CustomizableCch::build(WeightedCsr) -> Self
+pub fn CustomizableCch::customize(Self, WeightedCsr) -> Unit
+pub fn CustomizableCch::query_dist(Self, Int, Int) -> Int64?
+
 type EncodedHeap
 
 pub struct HubLabels {

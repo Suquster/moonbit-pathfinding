@@ -129,7 +129,7 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
   - Evidence: `docs/verification/paper-to-code-advanced.md` — CH (Geisberger 2008) / JPS (Harabor & Grastien 2011) / ALT (Goldberg & Harrelson 2005), paper construct → code lines → tests, plus documented departures (witness budget, uniform-cost JPS); production variants in section 4 add HL / PHAST / RPHAST / many-to-many traceability, and stall-on-demand is now implemented in `src/directed/ch.mbt`.
 - [x] Prepare defense assets.
   - Acceptance: slides, script, Q&A, and offline demo all reflect the current repository instead of future plans.
-  - Evidence: `docs/presentation/slides.md`, `docs/presentation/video_script.md`, and `docs/rehearsal/qa.md` refreshed (2026-07-05) to cite measured OSM speedups and archived artifacts instead of hedged future-work language; bilingual READMEs list all 37 algorithms with identical status columns.
+  - Evidence: `docs/presentation/slides.md`, `docs/presentation/video_script.md`, and `docs/rehearsal/qa.md` refreshed (2026-07-05) to cite measured OSM speedups and archived artifacts instead of hedged future-work language; bilingual READMEs list all 38 algorithms with identical status columns (CCH added 2026-07-06, `benches/results/cch-osm-20260706.md`).
 
 ## Next Attack Order
 

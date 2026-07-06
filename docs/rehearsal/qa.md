@@ -53,7 +53,7 @@
 > 2. successor function 风格适合 AI Agent 生成调用代码，也适合真实项目把数组、Map 或外部数据源接入。
 > 3. `README.mbt.md` 可被 `moon test` 执行，文档不是静态宣传页。
 > 4. runtime proof predicates 让路径合法性、代价一致性、BFS minimality 变成可运行检查。
-> 5. 7 种前沿路网算法（CH / ALT / HL / PHAST / RPHAST / m2m / JPS）Rust pathfinding 均未提供，且附真实 OSM 路网实测证据（北京 CH 46×、HL 14304×）。
+> 5. 8 种前沿路网算法（CH / ALT / HL / PHAST / RPHAST / m2m / CCH / JPS）Rust pathfinding 均未提供，且附真实 OSM 路网实测证据（北京 CH 46×、HL 14304×、CCH 换权 13.4×）。
 > 6. 跨语言等价工作负载对比基础设施（`bench_rust/` + 逐位一致随机源 + 黄金交叉校验）把“和 Rust 比”变成可复现命令而非口号。
 >
 > 也就是说，我的差异化不是“语言换皮”，而是把 MoonBit 的多后端、可执行文档和未来证明链路组合成一个可交付库。

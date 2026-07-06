@@ -187,7 +187,7 @@ The current local guard passes with one environment warning: `moon publish
 
 ## Algorithm Catalog
 
-当前已落地 **30 种经典图/路径算法** 与 **7 种前沿算法**。
+当前已落地 **30 种经典图/路径算法** 与 **8 种前沿算法**。
 CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）
 并附真实 OSM 路网基准证据（北京驾车网：CH 相对双向 Dijkstra
 **46×**，HL 距离查询 **0.44 µs（14304×）**，PHAST 一到全 SSSP
@@ -235,6 +235,7 @@ CH **16–25×**，RPHAST 目标子集限定再提 **6.9–9.8×**，见
 | 35 | 🔥 PHAST (一到全 SSSP)        | [`src/directed/phast.mbt`](./src/directed/phast.mbt)                         | ✅ OSM 实测 6.15× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
 | 36 | 🔥 Many-to-many 距离表         | [`src/directed/many_to_many.mbt`](./src/directed/many_to_many.mbt)           | ✅ OSM 实测 16–25× | [Knopp, Sanders, Schultes, Schulz & Wagner 2007](https://doi.org/10.1137/1.9781611972870.4)                        |
 | 37 | 🔥 RPHAST (目标子集限定)      | [`src/directed/rphast.mbt`](./src/directed/rphast.mbt)                       | ✅ OSM 实测 6.9–9.8× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
+| 38 | 🔥 Customizable CH (CCH)      | [`src/directed/cch.mbt`](./src/directed/cch.mbt)                             | ✅ OSM 实测换权 13–19× | [Dibbelt, Strasser & Wagner 2014](https://doi.org/10.1007/978-3-319-07959-2_24)                                              |
 
 > ✅ v0.0.1 = 源码 + 单元测试 + PBT 已合入主干
 > ✅ v0.0.2 = 新增算法（Prim / DAG-SP / 桥与割点 / 双向 Dijkstra），源码 + 单元测试已合入主干

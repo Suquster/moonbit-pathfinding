@@ -147,6 +147,22 @@ OSM 实测每对相对逐对 CH 北京 16.0× / 厦门 24.8×。
 - **ALT 生产级（`src/directed/alt.mbt`）**：farthest 选点 + 节点主序
   布局 + INF 统一截断保证下界可采纳一致；OSM 北京 6.6×。
 
+### 4.7 Customizable CH 生产级（`src/directed/cch.mbt`）
+
+- **论文**：Dibbelt, Strasser & Wagner 2014（Customizable Route Planning
+  in Road Networks 谱系）。
+- **实现要点**：度量无关最小度贪心收缩 + 弦图补全一次成型
+  （`CustomizableCch::build`）；换权只跑 basic customization——按
+  rank 升序下三角 relax（`customize`，无堆无搜索）；查询与 CH 同款
+  双向向上 Dijkstra 含 stall-on-demand（`query_dist`）。
+- **测试**：`src/directed/cch_test.mbt` 差分 PBT 100 迭代（含同拓扑
+  换权重 recustomize 再对拍）；`benches/advanced_bench/osm_cch_bench.mbt`
+  厦门网 8 组守卫。
+- **OSM 实测**（`benches/results/cch-osm-20260706.md`）：换权成本北京
+  1.90 s vs CH 全量重建 25.3 s（**13.4×**）、厦门 **18.8×**；查询比 CH
+  慢 3.9–5.9×（论文已知取舍，无 witness 剪枝骨架更密），相对双向
+  Dijkstra 仍 4.4–7.9×。
+
 ---
 
 ## 5. 取舍与已知边界（答辩 Q&A 素材）

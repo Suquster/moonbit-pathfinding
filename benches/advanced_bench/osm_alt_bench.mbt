@@ -197,8 +197,46 @@ fn run_osm_alt_benchmark_on(
       sink64[0] = sink64[0] + dist_b[n - 1]
     }
   })
+  // many-to-many：64×64 距离表（bucket 法）vs 逐对 CH 查询。
+  let m2m_s : Array[Int] = []
+  let m2m_t : Array[Int] = []
+  for i in 0..<64 {
+    let q = queries[i % queries.length()]
+    m2m_s.push(q.0)
+    m2m_t.push(q.1)
+  }
+  let mut m2m_parity = true
+  let tbl = ch.many_to_many(m2m_s, m2m_t)
+  for i in 0..<64 {
+    for j in 0..<64 {
+      let got = tbl[i * 64 + j]
+      match ch.query(m2m_s[i], m2m_t[j]) {
+        Some((_, c)) => if got != c.to_int64() { m2m_parity = false }
+        None =>
+          if !@dir.ContractionHierarchy::is_unreachable(got) {
+            m2m_parity = false
+          }
+      }
+    }
+  }
+  let m2m_samples = collect_samples(warmup, samples, fn() {
+    let t = ch.many_to_many(m2m_s, m2m_t)
+    sink64[0] = sink64[0] + t[0]
+  })
+  let m2m_pair_samples = collect_samples(warmup, samples, fn() {
+    for i in 0..<64 {
+      for j in 0..<64 {
+        match ch.query(m2m_s[i], m2m_t[j]) {
+          Some((_, c)) => sink64[0] = sink64[0] + c.to_int64()
+          None => ()
+        }
+      }
+    }
+  })
   ignore(sink[0])
   ignore(sink64[0])
+  let m2m_med = csr_bench_median(m2m_samples)
+  let m2m_pair_med = csr_bench_median(m2m_pair_samples)
   let full_dij_med = csr_bench_median(full_dij_samples)
   let phast_med = csr_bench_median(phast_samples)
   let hl_med = csr_bench_median(hl_samples)
@@ -237,6 +275,9 @@ fn run_osm_alt_benchmark_on(
   )
   tb.push_str(
     "- 一到全对拍一致: \{sssp_parity}; 全量 Dijkstra 每源: \{full_dij_med / 16.0} µs; PHAST 每源: \{phast_med / 16.0} µs（**\{full_dij_med / phast_med}×**）\n",
+  )
+  tb.push_str(
+    "- many-to-many 64×64 对拍一致: \{m2m_parity}; 逐对 CH: \{m2m_pair_med / 1.0e3} ms; bucket 表: \{m2m_med / 1.0e3} ms（**\{m2m_pair_med / m2m_med}×**，每对 \{m2m_med / 4096.0} µs）\n",
   )
   if !parity_ok {
     tb.push_str(

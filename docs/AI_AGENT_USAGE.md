@@ -54,6 +54,27 @@ let is_goal = fn(n : Int) -> Bool { n == 3 }
 let answer = @dir.dijkstra(0, successors, is_goal)
 ```
 
+## Road-Network Speedup Stack (dense fast paths)
+
+For large integer-indexed graphs (e.g. road networks), `src/directed` also
+ships CSR-based production variants measured on real OSM networks:
+
+```moonbit
+let g = @dir.WeightedCsr::from_edges(n, edges)          // (u, v, w) triples
+let ch = @dir.ContractionHierarchy::build(g)            // preprocess once
+let pq = ch.query(s, t)                                 // point-to-point, ~46x
+let hl = @dir.HubLabels::build(ch)                      // 2-hop labels on CH
+let d = hl.query(s, t)                                  // ~0.4 us distance
+let dist = Array::make(n, 0L)
+ch.one_to_all(s, dist)                                  // PHAST one-to-all
+let table = ch.many_to_many(sources, targets)           // |S|x|T| table
+```
+
+Pick the cheapest tier that fits: one-off queries -> plain `dijkstra`;
+repeated point-to-point -> `ContractionHierarchy`; distance-only at scale ->
+`HubLabels`; batch workloads -> `one_to_all` / `rphast_query` /
+`many_to_many`. Measured evidence: `benches/results/ch-osm-20260705.md`.
+
 ## Return Value Pattern
 
 Shortest-path functions use option-style results. Always handle `None`.

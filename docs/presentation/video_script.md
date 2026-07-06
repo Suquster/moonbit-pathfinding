@@ -18,7 +18,7 @@
 | 2:20-3:10 | README 即测试 | 运行 `moon test README.mbt.md`，说明 README 示例不是截图而是黑盒测试。 | 终端 + README |
 | 3:10-4:10 | Proof predicates | 展示 `src/proofs/bfs_proof.mbt` 与 `src/proofs/bfs_proof_test.mbt`，解释 runtime minimality witness。 | 代码高亮 |
 | 4:10-5:00 | 质量保障 | 运行 `scripts\acceptance.ps1 -SkipCoverage`，展示 check/fmt/test/doc/audit 链路。 | 终端录屏 |
-| 5:00-5:45 | 高级算法 | 展示 CH/JPS/ALT 源码、测试与 native benchmark guard，明确真实路网加速比仍需 OSM artifact。 | PPT + 文件路径 |
+| 5:00-5:45 | 高级算法 | 展示 7 种前沿路网算法（CH/ALT/HL/PHAST/RPHAST/m2m/JPS）与 OSM 真实路网实测归档（北京 CH 46×、HL 0.44 µs/14304×）。 | PPT + benches/results |
 | 5:45-6:30 | 对标与差异化 | 对标 Rust pathfinding：MoonBit 原生、多后端、README doctest、runtime predicates、release evidence。 | 表格页 |
 | 6:30-7:00 | 路线图与结尾 | 下一步是边界回归、双语文档/答辩打磨、OSM benchmark 与 playground 取舍。 | 路线图页 |
 
@@ -80,11 +80,11 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\acceptance.ps1 -Sk
 
 ### 高级算法 (5:00-5:45)
 
-> “高级算法不是拿来贴标签的。CH、JPS、ALT 已经进入 `src/advanced`，并有测试覆盖；native benchmark guard 已经固化为本地回归证据。真正的路网加速比会等 OSM 真实路网 artifact 落库后再讲，避免把 smoke benchmark 说成性能结论。”
+> “高级算法不是拿来贴标签的。除教学版 `src/advanced` 外，`src/directed` 提供生产级 CH / ALT / Hub Labeling / PHAST / RPHAST / many-to-many：在真实 OSM 北京驾车网上，CH 每查询 134 µs（相对双向 Dijkstra 46×），Hub Labeling 0.44 µs（14304×），批量档 PHAST/RPHAST/m2m 全部实测归档在 benches/results/ch-osm-20260705.md，且每个数字都有全量对拍与差分 PBT 守卫。”
 
 ### 对标与差异化 (5:45-6:30)
 
-> “和 Rust pathfinding 对标，我避免使用无法一次证明的绝对化说法。当前能证明的差异化是：MoonBit 原生、多后端目标、README 可执行、runtime proof predicates、中英文文档、CH/JPS/ALT 的 MoonBit 实现、benchmark regression artifacts 和 release readiness evidence。未验证的真实路网加速比、浏览器 playground、外部语言绑定都不当作当前事实。”
+> “和 Rust pathfinding 对标，我避免使用无法一次证明的绝对化说法。当前能证明的差异化是：MoonBit 原生、多后端目标、README 可执行、runtime proof predicates、中英文文档、7 种前沿路网算法的生产级 MoonBit 实现、OSM 真实路网实测归档（北京 CH 46×、HL 14304×）、跨语言等价负载对比基础设施与 release readiness evidence。未验证的外部语言绑定不当作当前事实。”
 
 ### 路线图与结尾 (6:30-7:00)
 

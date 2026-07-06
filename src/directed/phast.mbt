@@ -73,6 +73,45 @@ pub fn ContractionHierarchy::one_to_all(
 }
 
 ///|
+/// 一到全最短路「树」（PHAST + 一次原图边扫描定父指针）。
+/// dist/parent 长度须为 n；parent[v] 为树上前驱（源点与不可达
+/// 节点为 -1）。g 须为构建本 CH 时的同一原图。距离先由 PHAST
+/// 得到，再对每条原图边 u→v 以 dist[u]+w == dist[v] 认定树边，
+/// 总计 O(n + m + 向上搜索)。
+pub fn ContractionHierarchy::one_to_all_tree(
+  self : ContractionHierarchy,
+  g : WeightedCsr,
+  s : Int,
+  dist : Array[Int64],
+  parent : Array[Int],
+) -> Unit {
+  let n = self.n
+  guard g.node_count() == n && parent.length() == n
+  self.one_to_all(s, dist)
+  let mask = (1L << NODE_BITS) - 1L
+  for v in 0..<n {
+    parent[v] = -1
+  }
+  for u in 0..<n {
+    if dist[u] >= INF_DIST {
+      continue
+    }
+    let stop = g.offsets[u + 1]
+    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
+      let pe = g.packed[ei]
+      let v = (pe & mask).to_int()
+      // dist[u] < dist[v] 保证父链距离严格递减（无环；正权下必然）。
+      if v != s &&
+        parent[v] < 0 &&
+        dist[u] < dist[v] &&
+        dist[u] + (pe >> NODE_BITS) == dist[v] {
+        parent[v] = u
+      }
+    }
+  }
+}
+
+///|
 /// PHAST 距离数组中的不可达判定。
 pub fn ContractionHierarchy::is_unreachable(d : Int64) -> Bool {
   d >= INF_DIST

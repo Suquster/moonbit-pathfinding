@@ -127,6 +127,7 @@ pub fn ContractionHierarchy::build(WeightedCsr) -> Self
 pub fn ContractionHierarchy::is_unreachable(Int64) -> Bool
 pub fn ContractionHierarchy::many_to_many(Self, Array[Int], Array[Int]) -> Array[Int64]
 pub fn ContractionHierarchy::one_to_all(Self, Int, Array[Int64]) -> Unit
+pub fn ContractionHierarchy::one_to_all_tree(Self, WeightedCsr, Int, Array[Int64], Array[Int]) -> Unit
 pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
 pub fn ContractionHierarchy::rphast_query(Self, RphastTargets, Int, Array[Int64]) -> Unit
 pub fn ContractionHierarchy::rphast_targets(Self, Array[Int]) -> RphastTargets

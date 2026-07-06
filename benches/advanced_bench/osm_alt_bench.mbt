@@ -197,6 +197,14 @@ fn run_osm_alt_benchmark_on(
       sink64[0] = sink64[0] + dist_b[n - 1]
     }
   })
+  // 一到全最短路树（PHAST + 原图边扫描定父指针）。
+  let par = Array::make(n, 0)
+  let tree_samples = collect_samples(warmup, samples, fn() {
+    for s in sssp_src {
+      ch.one_to_all_tree(g, s, dist_b, par)
+      sink64[0] = sink64[0] + par[n - 1].to_int64()
+    }
+  })
   // many-to-many：64×64 距离表（bucket 法）vs 逐对 CH 查询。
   let m2m_s : Array[Int] = []
   let m2m_t : Array[Int] = []
@@ -260,6 +268,7 @@ fn run_osm_alt_benchmark_on(
   let m2m_pair_med = csr_bench_median(m2m_pair_samples)
   let full_dij_med = csr_bench_median(full_dij_samples)
   let phast_med = csr_bench_median(phast_samples)
+  let tree_med = csr_bench_median(tree_samples)
   let hl_med = csr_bench_median(hl_samples)
   let ch_med = csr_bench_median(ch_samples)
   let uni_med = csr_bench_median(uni_samples)
@@ -295,7 +304,7 @@ fn run_osm_alt_benchmark_on(
     "- HL 预处理耗时: \{hl_pre_us / 1.0e3} ms; 平均标签长: \{hl.avg_label_size()}; HL 每查询中位耗时: \{hl_med / qd} µs（相对 CH \{ch_med / hl_med}×、相对双向 Dijkstra \{dij_med / hl_med}×）\n",
   )
   tb.push_str(
-    "- 一到全对拍一致: \{sssp_parity}; 全量 Dijkstra 每源: \{full_dij_med / 16.0} µs; PHAST 每源: \{phast_med / 16.0} µs（**\{full_dij_med / phast_med}×**）\n",
+    "- 一到全对拍一致: \{sssp_parity}; 全量 Dijkstra 每源: \{full_dij_med / 16.0} µs; PHAST 每源: \{phast_med / 16.0} µs（**\{full_dij_med / phast_med}×**）; 树（含父指针）每源: \{tree_med / 16.0} µs\n",
   )
   tb.push_str(
     "- many-to-many 64×64 对拍一致: \{m2m_parity}; 逐对 CH: \{m2m_pair_med / 1.0e3} ms; bucket 表: \{m2m_med / 1.0e3} ms（**\{m2m_pair_med / m2m_med}×**，每对 \{m2m_med / 4096.0} µs）\n",

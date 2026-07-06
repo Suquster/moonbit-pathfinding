@@ -14,6 +14,9 @@ test "CustomizableCch basic: chain with recustomization" {
   assert_true(cch.query_dist(0, 3) is Some(9L))
   assert_true(cch.query_dist(3, 0) is None)
   assert_true(cch.query_dist(2, 2) is Some(0L))
+  assert_true(cch.query_dist_tree(0, 3) is Some(9L))
+  assert_true(cch.query_dist_tree(3, 0) is None)
+  assert_true(cch.query_dist_tree(2, 2) is Some(0L))
   // 换权重（同拓扑）：直连边变便宜，链路变贵。
   let edges2 : Array[(Int, Int, Int)] = [
     (0, 1, 20),
@@ -25,6 +28,8 @@ test "CustomizableCch basic: chain with recustomization" {
   cch.customize(g2)
   assert_true(cch.query_dist(0, 3) is Some(10L))
   assert_true(cch.query_dist(0, 2) is Some(50L))
+  assert_true(cch.query_dist_tree(0, 3) is Some(10L))
+  assert_true(cch.query_dist_tree(0, 2) is Some(50L))
 }
 
 ///|
@@ -80,6 +85,18 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
         (None, None) => ()
         _ => abort("reachability mismatch (nd order)")
       }
+      let got_tree = cch.query_dist_tree(s, t)
+      match (expect, got_tree) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (elim tree)")
+      }
+      let got_tree_nd = cch_nd.query_dist_tree(s, t)
+      match (expect, got_tree_nd) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (nd elim tree)")
+      }
     }
     // 同拓扑换权重：只跑 customize（不重建），再与 Dijkstra 对拍。
     let edges2 : Array[(Int, Int, Int)] = []
@@ -104,6 +121,18 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
         (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
         (None, None) => ()
         _ => abort("reachability mismatch (nd recustomize)")
+      }
+      let got_tree = cch.query_dist_tree(s, t)
+      match (expect, got_tree) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (elim tree recustomize)")
+      }
+      let got_tree_nd = cch_nd.query_dist_tree(s, t)
+      match (expect, got_tree_nd) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (nd elim tree recustomize)")
       }
     }
   }

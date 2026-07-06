@@ -40,6 +40,9 @@ pub struct CustomizableCch {
   mut gen : Int
   hf : RadixHeap
   hb : RadixHeap
+  /// 消除树父指针：v 的最低 rank 上邻（弦图性质保证上邻均为 v 的
+  /// 祖先），根为 -1。供无堆的消除树查询使用。
+  ep : Array[Int]
 }
 
 ///|
@@ -198,6 +201,18 @@ fn cch_assemble(
       ft[base + i] = uv[i]
     }
   }
+  // 消除树：parent(v) = rank 最小的上邻（无上邻即根）。
+  let ep = Array::make(n, -1)
+  for v in 0..<n {
+    let mut best = -1
+    for i = fo[v]; i < fo[v + 1]; i = i + 1 {
+      let w = ft[i]
+      if best < 0 || rank[w] < rank[best] {
+        best = w
+      }
+    }
+    ep[v] = best
+  }
   let cch = {
     n,
     rank,
@@ -213,6 +228,7 @@ fn cch_assemble(
     gen: 0,
     hf: RadixHeap::new(),
     hb: RadixHeap::new(),
+    ep,
   }
   cch.customize(g)
   cch
@@ -610,6 +626,92 @@ pub fn CustomizableCch::query_dist(
         }
       }
     }
+  }
+  if mu >= INF_DIST {
+    None
+  } else {
+    Some(mu)
+  }
+}
+
+///|
+/// 消除树查询（Bauer et al. / CCH 论文的无堆查询）：沿消除树父链从
+/// s、t 各自走到根，途中按 rank 升序松弛全部上邻——弦图性质保证被
+/// 松弛的节点都是自身祖先、必在同一条父链上后续被定稿，因此无需
+/// 优先队列、无需 stall。会合值在后向链定稿时取 min。语义与
+/// `query_dist` / 原图 Dijkstra 一致。
+pub fn CustomizableCch::query_dist_tree(
+  self : CustomizableCch,
+  start : Int,
+  target : Int,
+) -> Int64? {
+  if start < 0 || start >= self.n || target < 0 || target >= self.n {
+    return None
+  }
+  if start == target {
+    return Some(0L)
+  }
+  self.gen = self.gen + 1
+  let gen = self.gen
+  let df = self.df
+  let db = self.db
+  let sf = self.sf
+  let sb = self.sb
+  let fo = self.fo
+  let ft = self.ft
+  let fw = self.fw
+  let gw = self.gw
+  let ep = self.ep
+  df[start] = 0L
+  sf[start] = gen
+  let mut v = start
+  while v >= 0 {
+    if sf[v] == gen {
+      let dv = df[v]
+      let stop = fo[v + 1]
+      for ei = fo[v]; ei < stop; ei = ei + 1 {
+        let w = fw[ei]
+        if w >= INF_DIST {
+          continue
+        }
+        let u = ft[ei]
+        let nd = dv + w
+        if sf[u] != gen || nd < df[u] {
+          df[u] = nd
+          sf[u] = gen
+        }
+      }
+    }
+    v = ep[v]
+  }
+  db[target] = 0L
+  sb[target] = gen
+  let mut mu = INF_DIST
+  let mut u0 = target
+  while u0 >= 0 {
+    if sb[u0] == gen {
+      let du = db[u0]
+      if sf[u0] == gen {
+        let cand = du + df[u0]
+        if cand < mu {
+          mu = cand
+        }
+      }
+      let stop = fo[u0 + 1]
+      for ei = fo[u0]; ei < stop; ei = ei + 1 {
+        let w = gw[ei]
+        if w >= INF_DIST {
+          continue
+        }
+        let u = ft[ei]
+        let nd = du + w
+        if sb[u] != gen || nd < db[u] {
+          db[u] = nd
+          sb[u] = gen
+        }
+      }
+    }
+    u0 = ep[u0]
   }
   if mu >= INF_DIST {
     None

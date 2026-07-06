@@ -26,6 +26,40 @@ pub struct HubLabels {
 const HL_HUB_SHIFT : Int = 42
 
 ///|
+/// 归并判定是否存在 sum <= bound 的公共 hub（跳过 skip_hub），
+/// 命中即早退（支配剪枝热路径，免算完整最小和）。
+fn hl_dominated(
+  a : Array[Int64],
+  a_lo : Int,
+  a_hi : Int,
+  b : Array[Int64],
+  b_lo : Int,
+  b_hi : Int,
+  skip_hub : Int,
+  bound : Int64,
+) -> Bool {
+  let dmask = (1L << HL_HUB_SHIFT) - 1L
+  let mut i = a_lo
+  let mut j = b_lo
+  while i < a_hi && j < b_hi {
+    let ha = a[i] >> HL_HUB_SHIFT
+    let hb = b[j] >> HL_HUB_SHIFT
+    if ha < hb {
+      i = i + 1
+    } else if ha > hb {
+      j = j + 1
+    } else {
+      if ha.to_int() != skip_hub && (a[i] & dmask) + (b[j] & dmask) <= bound {
+        return true
+      }
+      i = i + 1
+      j = j + 1
+    }
+  }
+  false
+}
+
+///|
 /// 有序标签归并取最小和；skip_hub >= 0 时跳过该 hub（剪枝自查用）。
 fn hl_merge_min(
   a : Array[Int64],
@@ -134,8 +168,7 @@ pub fn HubLabels::build(ch : ContractionHierarchy) -> HubLabels {
       }
       let d = cand[i] & dmask
       let lo = other[h]
-      let q = hl_merge_min(cand, 0, cand.length(), lo, 0, lo.length(), h)
-      if q > d {
+      if !hl_dominated(cand, 0, cand.length(), lo, 0, lo.length(), h, d) {
         out.push(cand[i])
       }
     }

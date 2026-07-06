@@ -128,6 +128,8 @@ pub fn ContractionHierarchy::is_unreachable(Int64) -> Bool
 pub fn ContractionHierarchy::many_to_many(Self, Array[Int], Array[Int]) -> Array[Int64]
 pub fn ContractionHierarchy::one_to_all(Self, Int, Array[Int64]) -> Unit
 pub fn ContractionHierarchy::query(Self, Int, Int) -> (Array[Int], Int)?
+pub fn ContractionHierarchy::rphast_query(Self, RphastTargets, Int, Array[Int64]) -> Unit
+pub fn ContractionHierarchy::rphast_targets(Self, Array[Int]) -> RphastTargets
 
 type EncodedHeap
 
@@ -141,8 +143,23 @@ pub struct HubLabels {
 pub fn HubLabels::avg_label_size(Self) -> Double
 pub fn HubLabels::build(ContractionHierarchy) -> Self
 pub fn HubLabels::query(Self, Int, Int) -> Int64?
+pub fn HubLabels::query_path(Self, ContractionHierarchy, Int, Int) -> (Array[Int], Int64)?
+pub fn HubLabels::query_via(Self, Int, Int) -> (Int64, Int)?
 
 type RadixHeap
+
+pub struct RphastTargets {
+  nodes : Array[Int]
+  tpos : Array[Int]
+  dofs : Array[Int]
+  dsrc : Array[Int]
+  dwt : Array[Int64]
+  rd : Array[Int64]
+  fd : Array[Int64]
+  fs : Array[Int]
+  mut fgen : Int
+}
+pub fn RphastTargets::restricted_size(Self) -> Int
 
 pub struct SearchCtx {
   dist : Array[Int64]

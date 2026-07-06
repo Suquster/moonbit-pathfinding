@@ -147,9 +147,19 @@ pub fn ContractionHierarchy::build(g : WeightedCsr) -> ContractionHierarchy {
     }
     c
   }
-  // 收缩 v（apply=false 仅数捷径）：对每对 (u→v, v→x) 活跃邻居做
-  // witness 搜索，非必要则免补。返回补（或需要补）的捷径数。
-  fn contract(v : Int, apply : Bool) -> Int {
+  // 捷径缓冲：contract 只计算并填缓冲，中标后由外层一次性写入，
+  // 使懒重估与实际收缩共享同一次 witness 搜索。
+  let sc_u : Array[Int] = []
+  let sc_x : Array[Int] = []
+  let sc_via : Array[Int64] = []
+  let sc_w1 : Array[Int64] = []
+  // 收缩 v（仅计算）：对每对 (u→v, v→x) 活跃邻居做 witness 搜索，
+  // 非必要则免补；需补的捷径写入缓冲并返回个数。
+  fn contract(v : Int) -> Int {
+    sc_u.clear()
+    sc_x.clear()
+    sc_via.clear()
+    sc_w1.clear()
     let pin = ins.pk[v]
     let pout = outs.pk[v]
     let mut max_out = 0L
@@ -209,10 +219,10 @@ pub fn ContractionHierarchy::build(g : WeightedCsr) -> ContractionHierarchy {
           continue // witness 路径不经 v 且不更长，免捷径
         }
         added = added + 1
-        if apply {
-          outs.add(u, x, via, v, w1)
-          ins.add(x, u, via, v, w1)
-        }
+        sc_u.push(u)
+        sc_x.push(x)
+        sc_via.push(via)
+        sc_w1.push(w1)
       }
     }
     added
@@ -220,7 +230,7 @@ pub fn ContractionHierarchy::build(g : WeightedCsr) -> ContractionHierarchy {
   fn prio(v : Int) -> Int64 {
     let di = live_deg(ins, v)
     let dout = live_deg(outs, v)
-    (contract(v, false) - di - dout + 2 * del_nbr[v]).to_int64()
+    (contract(v) - di - dout + 2 * del_nbr[v]).to_int64()
   }
   let pq = EncodedHeap::new(16)
   for v in 0..<n {
@@ -239,7 +249,11 @@ pub fn ContractionHierarchy::build(g : WeightedCsr) -> ContractionHierarchy {
       pq.push(((p + bias) << NODE_BITS) | v.to_int64())
       continue
     }
-    contract(v, true) |> ignore
+    // 中标：直接写入 prio 计算时填好的捷径缓冲，免重复 witness 搜索。
+    for i = 0; i < sc_u.length(); i = i + 1 {
+      outs.add(sc_u[i], sc_x[i], sc_via[i], v, sc_w1[i])
+      ins.add(sc_x[i], sc_u[i], sc_via[i], v, sc_w1[i])
+    }
     let pin = ins.pk[v]
     let pout = outs.pk[v]
     contracted[v] = true

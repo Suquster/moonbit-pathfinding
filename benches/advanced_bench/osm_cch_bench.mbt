@@ -18,6 +18,7 @@ fn run_osm_cch_benchmark_on(
   qcount : Int,
   warmup : Int,
   samples : Int,
+  include_nd : Bool,
 ) -> String {
   let (g, rg) = build_osm_weighted_csr(n, edge_count, payload)
   let qrng = Lcg::new(query_seed_int)
@@ -135,6 +136,34 @@ fn run_osm_cch_benchmark_on(
     }
   }
   cch.customize(g)
+  if !include_nd {
+    let tb = @infra_text.TextBuilder::new()
+    tb.push_str("### \{dataset}（节点 \{n}，边 \{edge_count}）CCH\n\n")
+    tb.push_str(
+      "- 代价对拍一致（原权重）: \{parity_ok}; 换权重后: \{parity2_ok}\n",
+    )
+    tb.push_str(
+      "- CH 全量重建: \{ch_pre_us / 1.0e3} ms; CCH 度量无关构建（含首次 customize）: \{cch_build_us / 1.0e3} ms\n",
+    )
+    tb.push_str(
+      "- **customization（换权成本）中位: \{cust_med / 1.0e3} ms（相对 CH 重建 \{ch_pre_us / cust_med}×）**; 实测换权再绑: \{recust_us / 1.0e3} ms\n",
+    )
+    tb.push_str(
+      "- 每查询中位: 双向 Dijkstra \{dij_med / qd} µs; CH \{ch_med / qd} µs; CCH \{cch_med / qd} µs（相对双向 Dijkstra \{dij_med / cch_med}×、相对 CH \{cch_med / ch_med}× 慢因子）\n",
+    )
+    tb.push_str(
+      "- 消除树查询（无堆）: 对拍一致 \{parity_tree_ok}; 每查询 \{tree_med / qd} µs（vs 堆版 CCH \{cch_med / tree_med}×）\n",
+    )
+    tb.push_str(
+      "- ND 收缩序变体: 未采集（当前 BFS 层分隔符实现在此规模填充过大，构建不可行，已知问题）\n",
+    )
+    if !parity_ok || !parity2_ok || !parity_tree_ok {
+      tb.push_str(
+        "\n**警告：代价对拍存在不一致，数字无效。**\n",
+      )
+    }
+    return tb.build()
+  }
   // 嵌套剖分收缩序变体：对比填充规模 / customization / 查询。
   let mut cch_nd_opt : @dir.CustomizableCch? = None
   let nd_build_us = elapsed(fn() {
@@ -220,11 +249,12 @@ fn run_osm_cch_benchmark_on(
 test "bench: collect real OSM road-network CCH artifacts" (b : @bench.T) {
   let xm_md = run_osm_cch_benchmark_on(
     "厦门驾车网", osm_xiamen_node_count, osm_xiamen_edge_count, osm_xiamen_payload,
-    osm_bench_queries, csr_bench_warmup, csr_bench_samples,
+    osm_bench_queries, csr_bench_warmup, csr_bench_samples, true,
   )
+  // 北京不采 ND：当前 BFS 层分隔符序填充过大，构建不可行（已知问题）。
   let bj_md = run_osm_cch_benchmark_on(
     "北京驾车网", osm_beijing_node_count, osm_beijing_edge_count, osm_beijing_payload,
-    osm_bench_queries, csr_bench_warmup, csr_bench_samples,
+    osm_bench_queries, csr_bench_warmup, csr_bench_samples, false,
   )
   println("===OSM_CCH_EVIDENCE_BEGIN===")
   println(xm_md)

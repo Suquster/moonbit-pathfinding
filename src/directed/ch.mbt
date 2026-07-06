@@ -27,6 +27,16 @@ pub struct ContractionHierarchy {
   bw : Array[Int64]
   bm : Array[Int]
   bh : Array[Int64]
+  /// rank 降序节点序（PHAST 线性扫描用）。
+  ord : Array[Int]
+  /// 位置映射 pos[v] = n-1-rank[v]（PHAST 位置空间用）。
+  pos : Array[Int]
+  /// 下行边 CSR（扫描序：按目标位置分桶，源存位置，顺序访存）。
+  dofs : Array[Int]
+  dsrc : Array[Int]
+  dwt : Array[Int64]
+  /// PHAST 位置空间距离暂存。
+  pd : Array[Int64]
   // 查询暂存（代戳懒失效）
   df : Array[Int64]
   db : Array[Int64]
@@ -306,9 +316,40 @@ pub fn ContractionHierarchy::build(g : WeightedCsr) -> ContractionHierarchy {
       }
     }
   }
+  let ord = Array::make(n, 0)
+  let pos = Array::make(n, 0)
+  for v in 0..<n {
+    ord[n - 1 - rank[v]] = v
+    pos[v] = n - 1 - rank[v]
+  }
+  // 下行边扫描序 CSR（位置空间）：目标位置 i 的入边来自更高 rank
+  // （更小位置）的源，扫描时边与距离均顺序/近期访存。
+  let dofs = Array::make(n + 1, 0)
+  for i in 0..<n {
+    let v = ord[i]
+    dofs[i + 1] = dofs[i] + (bo[v + 1] - bo[v])
+  }
+  let dsrc = Array::make(dofs[n], 0)
+  let dwt = Array::make(dofs[n], 0L)
+  for i in 0..<n {
+    let v = ord[i]
+    let mut c = dofs[i]
+    let stop = bo[v + 1]
+    for ei = bo[v]; ei < stop; ei = ei + 1 {
+      dsrc[c] = pos[bt[ei]]
+      dwt[c] = bw[ei]
+      c = c + 1
+    }
+  }
   {
     n,
     rank,
+    ord,
+    pos,
+    dofs,
+    dsrc,
+    dwt,
+    pd: Array::make(n, 0L),
     fo,
     ft,
     fw,

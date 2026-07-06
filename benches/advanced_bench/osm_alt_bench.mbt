@@ -167,8 +167,40 @@ fn run_osm_alt_benchmark_on(
       }
     }
   })
+  // 一到全 SSSP：PHAST vs 全量 Dijkstra（各 16 源，同源集）。
+  let sssp_src : Array[Int] = []
+  for i in 0..<16 {
+    sssp_src.push(queries[i % queries.length()].0)
+  }
+  let dist_a = Array::make(n, 0L)
+  let dist_b = Array::make(n, 0L)
+  let mut sssp_parity = true
+  for s in sssp_src {
+    @dir.dijkstra_one_to_all(g, s, dist_a)
+    ch.one_to_all(s, dist_b)
+    for v in 0..<n {
+      if dist_a[v] != dist_b[v] {
+        sssp_parity = false
+        break
+      }
+    }
+  }
+  let full_dij_samples = collect_samples(warmup, samples, fn() {
+    for s in sssp_src {
+      @dir.dijkstra_one_to_all(g, s, dist_a)
+      sink64[0] = sink64[0] + dist_a[n - 1]
+    }
+  })
+  let phast_samples = collect_samples(warmup, samples, fn() {
+    for s in sssp_src {
+      ch.one_to_all(s, dist_b)
+      sink64[0] = sink64[0] + dist_b[n - 1]
+    }
+  })
   ignore(sink[0])
   ignore(sink64[0])
+  let full_dij_med = csr_bench_median(full_dij_samples)
+  let phast_med = csr_bench_median(phast_samples)
   let hl_med = csr_bench_median(hl_samples)
   let ch_med = csr_bench_median(ch_samples)
   let uni_med = csr_bench_median(uni_samples)
@@ -202,6 +234,9 @@ fn run_osm_alt_benchmark_on(
   )
   tb.push_str(
     "- HL 预处理耗时: \{hl_pre_us / 1.0e3} ms; 平均标签长: \{hl.avg_label_size()}; HL 每查询中位耗时: \{hl_med / qd} µs（相对 CH \{ch_med / hl_med}×、相对双向 Dijkstra \{dij_med / hl_med}×）\n",
+  )
+  tb.push_str(
+    "- 一到全对拍一致: \{sssp_parity}; 全量 Dijkstra 每源: \{full_dij_med / 16.0} µs; PHAST 每源: \{phast_med / 16.0} µs（**\{full_dij_med / phast_med}×**）\n",
   )
   if !parity_ok {
     tb.push_str(

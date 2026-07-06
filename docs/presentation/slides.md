@@ -93,7 +93,7 @@ pub fn dijkstra[N, W](start, successors: (N) -> Array[(N, W)], goal) -> (Array[N
 | 图结构 | Kruskal / Connected Components / Tarjan SCC / Topo Sort | 已实现并测试 |
 | 流与匹配 | Edmonds-Karp / Kuhn-Munkres | 已实现并测试 |
 | 组合路径 | Bidirectional BFS / IDA* / Yen | 已实现并测试 |
-| 前沿方向 | CH / JPS / ALT | 已实现，继续补基准与论文追踪 |
+| 前沿方向 | CH / JPS / ALT / Hub Labeling / PHAST / RPHAST / many-to-many | 生产级实现 + OSM 真实路网实测（北京：CH 46×、HL 14304×）+ 论文追踪 |
 
 ---
 
@@ -263,7 +263,7 @@ let result = ch_query(graph, source, target)
 | 可执行文档 | crate docs / tests | README.mbt.md 可由 `moon test` 执行 |
 | 合约验证 | 无内建证明链路 | runtime proof predicates 已测试 |
 | 多后端 | Rust native / wasm 需额外链路 | MoonBit wasm-gc / js / native CI 目标 |
-| 前沿算法 | 无 CH/JPS/ALT | 已实现，继续补 benchmark 证据 |
+| 前沿算法 | 无 CH/HL/PHAST 等路网 SOTA | 7 种已实现，OSM 实测证据归档（benches/results/ch-osm-20260705.md） |
 
 ---
 

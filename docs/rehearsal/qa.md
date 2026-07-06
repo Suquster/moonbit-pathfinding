@@ -24,24 +24,23 @@
 
 **30 秒应答**：
 
-> 当前 ALT 的首要目标是正确性而不是抢跑性能数字。对有向图，如果启发式 admissible 但不 consistent，A* 早停可能返回次优解，所以实现必须谨慎。
+> 生产级 ALT（`src/directed/alt.mbt`）已在真实 OSM 路网上拿到实测证据：北京驾车网 ALT 双向 A* 相对双向 Dijkstra **6.60×**（k=16 farthest 选点，预处理约 88 次查询回本），证据归档 `benches/results/alt-indexed-osm-20260705.md`。
 >
-> 目前的价值有三点：一是 landmark 预处理和三角不等式启发式已经落地；二是测试可以和 Dijkstra 做结果对照；三是 native benchmark guard 已经能把基础回归记录成 artifact。
+> 正确性不靠口头保证：INF 统一截断保证下界可采纳且一致（不存在早停次优问题），并有差分 PBT 与 OSM 全量对拍守卫。
 >
-> 下一阶段我会补更强的 ALT 专项证据：记录真实输入图、查询对、扩展节点数和 Dijkstra 对照，再决定是实现 reopen closed nodes，还是只在 consistent heuristic 下启用早停。
+> 同时诚实报告边界：合成随机图（expander）上三角不等式下界退化为零，故跨语言对比基准侧维持零启发式——该证伪实验也归档在同一文件，说明每个数字都区分输入分布。
 
 ---
 
-## Q3：CH 预处理还没有精细收缩顺序，加速比能保证吗？
+## Q3：CH 的加速比能保证吗？
 
 **30 秒应答**：
 
-> 不能直接保证论文级巨大加速，这类数字必须来自具体路网、具体机器和具体实现策略。当前 CH 的定位是正确性版本：预处理、shortcut、双向查询和路径展开链路先打通。
+> 能，而且是真实路网实测而非引用论文数字：生产级 CH（`src/directed/ch.mbt`，edge-difference 懒更新收缩序 + witness 搜索 + stall-on-demand）在 OSM 北京驾车网 **134 µs/查询，相对双向 Dijkstra 46×**，厦门 17×；预处理北京 24.6 s（约 4500 查询回本）。
 >
-> 我会用两类证据回答：源码在 `src/advanced/ch.mbt`，测试在 advanced 包；答辩时只承诺“实现与正确性验证正在完善”，不承诺未记录的加速比。
+> 在 CH 之上还有完整上层建筑：Hub Labeling 距离查询 **0.44 µs（14304×）**、PHAST 一到全 6.15×、many-to-many 距离表 16–25×、RPHAST 目标子集再 6.9–9.8×。
 >
-> 真正的性能叙事要等 edge-difference 收缩顺序、lazy update、witness search 调参和真实路网 benchmark artifact 一起完成；当前 native benchmark guard 只作为回归证据，不包装成论文级加速比。
-
+> 每个数字都附全量对拍一致性校验 + 差分 PBT，调参轨迹与回本分析归档 `benches/results/ch-osm-20260705.md`，论文到代码追溯在 `docs/verification/paper-to-code-advanced.md`。
 ---
 
 ## Q4：相对 Rust pathfinding，这个项目不可替代的价值是什么？
@@ -54,7 +53,8 @@
 > 2. successor function 风格适合 AI Agent 生成调用代码，也适合真实项目把数组、Map 或外部数据源接入。
 > 3. `README.mbt.md` 可被 `moon test` 执行，文档不是静态宣传页。
 > 4. runtime proof predicates 让路径合法性、代价一致性、BFS minimality 变成可运行检查。
-> 5. CH / JPS / ALT 已有 MoonBit 实现，native benchmark guard 已可复现；后续用真实路网 benchmark artifact 补齐性能叙事。
+> 5. 7 种前沿路网算法（CH / ALT / HL / PHAST / RPHAST / m2m / JPS）Rust pathfinding 均未提供，且附真实 OSM 路网实测证据（北京 CH 46×、HL 14304×）。
+> 6. 跨语言等价工作负载对比基础设施（`bench_rust/` + 逐位一致随机源 + 黄金交叉校验）把“和 Rust 比”变成可复现命令而非口号。
 >
 > 也就是说，我的差异化不是“语言换皮”，而是把 MoonBit 的多后端、可执行文档和未来证明链路组合成一个可交付库。
 
@@ -77,7 +77,7 @@
 | 问题类型 | 第一句 | 第二句 | 第三句 |
 |----------|--------|--------|--------|
 | 功能完整度 | 先给当前版本边界 | 列文件和命令证据 | 给下一步验收条件 |
-| 性能质疑 | 不报未测数字 | 区分 native 回归证据和真实路网缺口 | 承诺 artifact 格式和对照方法 |
+| 性能质疑 | 只报已归档实测数字（OSM 北京/厦门） | 指向 benches/results 工件与复现命令 | 说明对拍/PBT 正确性守卫 |
 | 证明质疑 | 区分 runtime predicates 和 static prove | 展示 `src/proofs` | 说明升级路径 |
 | 创新性质疑 | 避免贬低成熟库 | 强调 MoonBit 原生和证据链 | 回到官方评分项 |
 | 测试质疑 | 强调测试类型 | 举一个抓语义的测试 | 说明还会补哪些边界 |

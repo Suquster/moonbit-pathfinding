@@ -111,27 +111,30 @@ Official contest page: <https://www.moonbitlang.cn/2026-scc>
 
 - [x] Turn the playground from TBD into a usable demo or remove the badge until it exists.
   - Acceptance: web demo builds locally and is linked from README, or README no longer implies a ready playground.
-  - Evidence: README / README.zh-CN badge and section say `planned`; presentation and offline demo scripts no longer require a browser playground or 60fps claim as current evidence.
+  - Evidence: the playground is now live — a wasm-gc browser demo built from `playground/` is auto-deployed to GitHub Pages on every push to `main` (`.github/workflows/pages.yml`), badge and README sections link it, and bridge correctness is test-gated (`playground/solver_test.mbt`).
 - [x] Create an AI-agent usage guide.
   - Acceptance: a concise guide shows install, package imports, common calls, and known pitfalls for code agents.
   - Evidence: `docs/AI_AGENT_USAGE.md`, linked from both README files.
-- [ ] Polish bilingual docs.
+- [x] Polish bilingual docs.
   - Acceptance: English and Chinese README files agree on status, scope, and commands.
+  - Evidence: README.md and README.zh-CN.md both list the same 37-algorithm catalog (30 classical + 7 frontier) with identical OSM-measured status columns and archived benchmark links (synced 2026-07-05).
 
 ### P2 - Championship Differentiators
 
-- [ ] Deepen the advanced algorithm trio: CH, JPS, ALT.
+- [x] Deepen the advanced algorithm trio: CH, JPS, ALT — and beyond.
   - Acceptance: each has implementation, tests, docs, and benchmark story; claims avoid "skeleton" ambiguity.
+  - Evidence: production-grade `src/directed/{ch,alt,hub_labels,phast,rphast,many_to_many}.mbt` with real OSM road-network benchmarks (Beijing driving network: CH 46x vs bidirectional Dijkstra at 134 us/query, Hub Labeling 0.44 us/query = 14304x, PHAST one-to-all 6.15x, many-to-many 16-25x, RPHAST 6.9-9.8x, ALT 6.6x), archived in `benches/results/ch-osm-20260705.md` and `benches/results/alt-indexed-osm-20260705.md`; every number is guarded by full-query parity checks against Dijkstra plus differential PBT; paper-to-code traceability extended in `docs/verification/paper-to-code-advanced.md` (sections 4.1-4.6).
 - [x] Add paper-to-code traceability.
   - Acceptance: each advanced algorithm doc links assumptions and departures from the source paper to code sections and tests.
-  - Evidence: `docs/verification/paper-to-code-advanced.md` — CH (Geisberger 2008) / JPS (Harabor & Grastien 2011) / ALT (Goldberg & Harrelson 2005), paper construct → code lines → tests, plus documented departures (witness budget, no stall-on-demand, uniform-cost JPS).
-- [ ] Prepare defense assets.
+  - Evidence: `docs/verification/paper-to-code-advanced.md` — CH (Geisberger 2008) / JPS (Harabor & Grastien 2011) / ALT (Goldberg & Harrelson 2005), paper construct → code lines → tests, plus documented departures (witness budget, uniform-cost JPS); production variants in section 4 add HL / PHAST / RPHAST / many-to-many traceability, and stall-on-demand is now implemented in `src/directed/ch.mbt`.
+- [x] Prepare defense assets.
   - Acceptance: slides, script, Q&A, and offline demo all reflect the current repository instead of future plans.
+  - Evidence: `docs/presentation/slides.md`, `docs/presentation/video_script.md`, and `docs/rehearsal/qa.md` refreshed (2026-07-05) to cite measured OSM speedups and archived artifacts instead of hedged future-work language; bilingual READMEs list all 37 algorithms with identical status columns.
 
 ## Next Attack Order
 
-1. Add negative and edge-case regression tests across algorithms.
-2. Polish bilingual docs and defense assets from verified artifacts only.
-3. Deepen CH / JPS / ALT paper-to-code traceability and benchmark narratives.
-4. Add large real-road / OSM benchmark artifacts before making speedup claims.
-5. Decide whether the playground becomes a real local demo or remains outside score-facing claims.
+1. Keep bilingual READMEs, defense assets, and this backlog in lockstep with new measured evidence (refresh after every capability jump).
+2. Optional frontier work: CCH (customizable CH for fast metric swaps), HL label memory compression, nested-dissection contraction order.
+3. Re-run and re-archive OSM benchmarks whenever preprocessing or query paths change; never let docs cite stale numbers.
+
+Completed since the original list: edge-case regression suites, OSM real-road benchmark artifacts (Beijing/Xiamen), production-grade CH/ALT/HL/PHAST/RPHAST/m2m with parity+PBT guards, live GitHub Pages playground, radix-heap infrastructure, and the Rust cross-language comparison harness (`bench_rust/`).

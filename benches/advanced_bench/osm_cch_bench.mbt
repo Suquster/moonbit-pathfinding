@@ -116,6 +116,37 @@ fn run_osm_cch_benchmark_on(
     }
   }
   cch.customize(g)
+  // 嵌套剖分收缩序变体：对比填充规模 / customization / 查询。
+  let mut cch_nd_opt : @dir.CustomizableCch? = None
+  let nd_build_us = elapsed(fn() {
+    cch_nd_opt = Some(
+      @dir.CustomizableCch::build_with_order(g, @dir.cch_nd_order(g)),
+    )
+  })
+  let cch_nd = cch_nd_opt.unwrap()
+  let nd_cust_samples = collect_samples(warmup, samples, fn() {
+    cch_nd.customize(g)
+  })
+  let nd_cust_med = csr_bench_median(nd_cust_samples)
+  let mut parity_nd_ok = true
+  for q in queries {
+    let (s, t) = q
+    let a = @dir.dijkstra_bidirectional_ctx(g, rg, cf, cb, s, t)
+    match (a, cch_nd.query_dist(s, t)) {
+      (Some((_, x)), Some(y)) => if x.to_int64() != y { parity_nd_ok = false }
+      (None, None) => ()
+      _ => parity_nd_ok = false
+    }
+  }
+  let nd_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match cch_nd.query_dist(q.0, q.1) {
+        Some(c) => sink[0] = sink[0] + c
+        None => ()
+      }
+    }
+  })
+  let nd_med = csr_bench_median(nd_samples)
   let tb = @infra_text.TextBuilder::new()
   tb.push_str("### \{dataset}（节点 \{n}，边 \{edge_count}）CCH\n\n")
   tb.push_str(
@@ -130,7 +161,10 @@ fn run_osm_cch_benchmark_on(
   tb.push_str(
     "- 每查询中位: 双向 Dijkstra \{dij_med / qd} µs; CH \{ch_med / qd} µs; CCH \{cch_med / qd} µs（相对双向 Dijkstra \{dij_med / cch_med}×、相对 CH \{cch_med / ch_med}× 慢因子）\n",
   )
-  if !parity_ok || !parity2_ok {
+  tb.push_str(
+    "- ND 收缩序变体: 对拍一致 \{parity_nd_ok}; 构建 \{nd_build_us / 1.0e3} ms; 骨架边 \{cch_nd.edge_count()}（min-degree \{cch.edge_count()}）; customization 中位 \{nd_cust_med / 1.0e3} ms; 每查询 \{nd_med / qd} µs\n",
+  )
+  if !parity_ok || !parity2_ok || !parity_nd_ok {
     tb.push_str(
       "\n**警告：代价对拍存在不一致，数字无效。**\n",
     )

@@ -58,6 +58,11 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
     }
     let g = @directed.WeightedCsr::from_edges(n, edges)
     let cch = @directed.CustomizableCch::build(g)
+    // 嵌套剖分序变体：同图另一收缩序，结果必须与 min-degree 版一致。
+    let cch_nd = @directed.CustomizableCch::build_with_order(
+      g,
+      @directed.cch_nd_order(g),
+    )
     let ctx = @directed.SearchCtx::new(n)
     for _q in 0..<6 {
       let s = rng.next_below(n)
@@ -69,6 +74,12 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
         (None, None) => ()
         _ => abort("reachability mismatch (initial customize)")
       }
+      let got_nd = cch_nd.query_dist(s, t)
+      match (expect, got_nd) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (nd order)")
+      }
     }
     // 同拓扑换权重：只跑 customize（不重建），再与 Dijkstra 对拍。
     let edges2 : Array[(Int, Int, Int)] = []
@@ -77,6 +88,7 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
     }
     let g2 = @directed.WeightedCsr::from_edges(n, edges2)
     cch.customize(g2)
+    cch_nd.customize(g2)
     for _q in 0..<6 {
       let s = rng.next_below(n)
       let t = rng.next_below(n)
@@ -86,6 +98,12 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
         (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
         (None, None) => ()
         _ => abort("reachability mismatch (recustomize)")
+      }
+      let got_nd = cch_nd.query_dist(s, t)
+      match (expect, got_nd) {
+        (Some((_, ec)), Some(gc)) => assert_eq(gc, ec.to_int64())
+        (None, None) => ()
+        _ => abort("reachability mismatch (nd recustomize)")
       }
     }
   }

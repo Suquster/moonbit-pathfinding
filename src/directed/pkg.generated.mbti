@@ -22,6 +22,8 @@ pub fn[N : Eq + Hash] bidirectional_bfs(N, N, (N) -> Array[N], (N) -> Array[N]) 
 
 pub fn[N : Eq + Hash, W : @core.Weight + Compare] bidirectional_dijkstra(N, N, (N) -> Array[(N, W)], (N) -> Array[(N, W)]) -> (Array[N], W)?
 
+pub fn cch_nd_order(WeightedCsr) -> Array[Int]
+
 pub fn[N : Eq + Hash] condensation(Array[N], (N) -> Array[N]) -> Condensation[N]
 
 pub fn[N : Eq + Hash, W : @core.Weight] dag_shortest_path(Array[N], N, (N) -> Array[(N, W)], (N) -> Bool) -> Result[(Array[N], W)?, @core.PathError]
@@ -149,7 +151,9 @@ pub struct CustomizableCch {
   hb : RadixHeap
 }
 pub fn CustomizableCch::build(WeightedCsr) -> Self
+pub fn CustomizableCch::build_with_order(WeightedCsr, Array[Int]) -> Self
 pub fn CustomizableCch::customize(Self, WeightedCsr) -> Unit
+pub fn CustomizableCch::edge_count(Self) -> Int
 pub fn CustomizableCch::query_dist(Self, Int, Int) -> Int64?
 
 type EncodedHeap

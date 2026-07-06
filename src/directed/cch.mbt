@@ -62,58 +62,70 @@ fn cch_bsearch(ft : Array[Int], lo0 : Int, hi0 : Int, target : Int) -> Int {
 }
 
 ///|
-/// 度量无关构建：最小度贪心懒更新收缩 + 弦图补全，随后用 g 的权做
-/// 首次 customization。拓扑只依赖 g 的边集（方向合并为无向骨架）。
-pub fn CustomizableCch::build(g : WeightedCsr) -> CustomizableCch {
+/// 有序邻居表二分插入（去重）。
+fn cch_adj_insert(a : Array[Int], v : Int) -> Unit {
+  let mut lo = 0
+  let mut hi = a.length()
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if a[mid] == v {
+      return
+    } else if a[mid] < v {
+      lo = mid + 1
+    } else {
+      hi = mid
+    }
+  }
+  a.insert(lo, v)
+}
+
+///|
+/// 有序邻居表二分删除。
+fn cch_adj_remove(a : Array[Int], v : Int) -> Unit {
+  let mut lo = 0
+  let mut hi = a.length()
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if a[mid] == v {
+      let _ = a.remove(mid)
+      return
+    } else if a[mid] < v {
+      lo = mid + 1
+    } else {
+      hi = mid
+    }
+  }
+}
+
+///|
+/// 无向骨架邻接（每节点有序邻居表）。
+fn cch_skeleton(g : WeightedCsr) -> Array[Array[Int]] {
   let n = g.node_count()
   let mask = (1L << NODE_BITS) - 1L
-  // 无向骨架邻接：每节点有序邻居表（二分去重/删除）。
   let adj : Array[Array[Int]] = []
   for _ in 0..<n {
     adj.push([])
   }
-  fn adj_insert(a : Array[Int], v : Int) -> Unit {
-    let mut lo = 0
-    let mut hi = a.length()
-    while lo < hi {
-      let mid = lo + (hi - lo) / 2
-      if a[mid] == v {
-        return
-      } else if a[mid] < v {
-        lo = mid + 1
-      } else {
-        hi = mid
-      }
-    }
-    a.insert(lo, v)
-  }
-
-  fn adj_remove(a : Array[Int], v : Int) -> Unit {
-    let mut lo = 0
-    let mut hi = a.length()
-    while lo < hi {
-      let mid = lo + (hi - lo) / 2
-      if a[mid] == v {
-        let _ = a.remove(mid)
-        return
-      } else if a[mid] < v {
-        lo = mid + 1
-      } else {
-        hi = mid
-      }
-    }
-  }
-
   for u in 0..<n {
     let stop = g.offsets[u + 1]
     for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
       let v = (g.packed[ei] & mask).to_int()
       if v != u {
-        adj_insert(adj[u], v)
-        adj_insert(adj[v], u)
+        cch_adj_insert(adj[u], v)
+        cch_adj_insert(adj[v], u)
       }
     }
   }
+  adj
+}
+
+///|
+/// 度量无关构建：最小度贪心懒更新收缩 + 弦图补全，随后用 g 的权做
+/// 首次 customization。拓扑只依赖 g 的边集（方向合并为无向骨架）。
+pub fn CustomizableCch::build(g : WeightedCsr) -> CustomizableCch {
+  let n = g.node_count()
+  let mask = (1L << NODE_BITS) - 1L
+  let adj = cch_skeleton(g)
   // 最小度贪心（懒更新：pop 后度数变了就按当前度重新入队）。
   let rank = Array::make(n, -1)
   let ord = Array::make(n, 0)
@@ -151,15 +163,28 @@ pub fn CustomizableCch::build(g : WeightedCsr) -> CustomizableCch {
     // 弦图补全：存活邻居两两连边，并把 v 从各邻接表中摘除。
     for i = 0; i < nbrs.length(); i = i + 1 {
       let a = nbrs[i]
-      adj_remove(adj[a], v)
+      cch_adj_remove(adj[a], v)
       for j = i + 1; j < nbrs.length(); j = j + 1 {
         let b = nbrs[j]
-        adj_insert(adj[a], b)
-        adj_insert(adj[b], a)
+        cch_adj_insert(adj[a], b)
+        cch_adj_insert(adj[b], a)
       }
     }
     adj[v].clear()
   }
+  cch_assemble(g, n, rank, ord, ups, edge_total)
+}
+
+///|
+/// 从收缩产物组装 CCH 并做首次 customization。
+fn cch_assemble(
+  g : WeightedCsr,
+  n : Int,
+  rank : Array[Int],
+  ord : Array[Int],
+  ups : Array[Array[Int]],
+  edge_total : Int,
+) -> CustomizableCch {
   // 上邻 CSR（ups[v] 收缩时即有序，直接铺平）。
   let fo = Array::make(n + 1, 0)
   for v in 0..<n {
@@ -191,6 +216,225 @@ pub fn CustomizableCch::build(g : WeightedCsr) -> CustomizableCch {
   }
   cch.customize(g)
   cch
+}
+
+///|
+/// 按预先给定的消除序收缩（rank[v] = 序号，越大越重要），弦图补全
+/// 后组装并首次 customization。供嵌套剖分等外部收缩序使用。
+pub fn CustomizableCch::build_with_order(
+  g : WeightedCsr,
+  rank : Array[Int],
+) -> CustomizableCch {
+  let n = g.node_count()
+  let adj = cch_skeleton(g)
+  let ord = Array::make(n, 0)
+  for v in 0..<n {
+    ord[rank[v]] = v
+  }
+  let ups : Array[Array[Int]] = []
+  for _ in 0..<n {
+    ups.push([])
+  }
+  let mut edge_total = 0
+  for oi = 0; oi < n; oi = oi + 1 {
+    let v = ord[oi]
+    let nbrs = adj[v]
+    edge_total = edge_total + nbrs.length()
+    for i = 0; i < nbrs.length(); i = i + 1 {
+      ups[v].push(nbrs[i])
+    }
+    for i = 0; i < nbrs.length(); i = i + 1 {
+      let a = nbrs[i]
+      cch_adj_remove(adj[a], v)
+      for j = i + 1; j < nbrs.length(); j = j + 1 {
+        let b = nbrs[j]
+        cch_adj_insert(adj[a], b)
+        cch_adj_insert(adj[b], a)
+      }
+    }
+    adj[v].clear()
+  }
+  cch_assemble(g, n, rank, ord, ups, edge_total)
+}
+
+///|
+/// 嵌套剖分消除序（Bauer et al. / CCH 论文推荐的序族）：BFS 层集
+/// 二分递归切割，分隔符拿最高 rank，两半递归；小单元用局部最小度
+/// 贪心收尾。只依赖拓扑，与权重无关。
+pub fn cch_nd_order(g : WeightedCsr) -> Array[Int] {
+  let n = g.node_count()
+  let adj = cch_skeleton(g)
+  let rank = Array::make(n, -1)
+  let mut next_rank = 0
+  // 小单元：局部最小度贪心（在子图内动态收缩，只看 cell 内邻居）。
+  let cell_threshold = 48
+  let in_cell = Array::make(n, -1)
+  let mut cell_id = 0
+  let dist = Array::make(n, -1)
+  let queue = Array::make(n, 0)
+  // 显式栈：待处理节点集（分隔符先入 pending 高位，最后统一赋号）。
+  // 每个子问题处理完后分隔符按弹栈序获得更高 rank。
+  let sep_stack : Array[Array[Int]] = []
+  let work : Array[Array[Int]] = []
+  let comp : Array[Int] = []
+  for v in 0..<n {
+    comp.push(v)
+  }
+  work.push(comp)
+  while work.length() > 0 {
+    let cell = work.unsafe_pop()
+    if cell.length() == 0 {
+      continue
+    }
+    if cell.length() <= cell_threshold {
+      // 局部最小度贪心：只计 cell 内邻居（cell 外的要么已赋号更低
+      // 要么是更高层分隔符，收缩序内部相对即可）。
+      cell_id = cell_id + 1
+      for v in cell {
+        in_cell[v] = cell_id
+      }
+      let remaining = cell.copy()
+      while remaining.length() > 0 {
+        let mut best = 0
+        let mut best_deg = n + 1
+        for i = 0; i < remaining.length(); i = i + 1 {
+          let v = remaining[i]
+          let mut d = 0
+          for u in adj[v] {
+            if in_cell[u] == cell_id && rank[u] < 0 {
+              d = d + 1
+            }
+          }
+          if d < best_deg {
+            best_deg = d
+            best = i
+          }
+        }
+        let v = remaining[best]
+        let _ = remaining.remove(best)
+        rank[v] = next_rank
+        next_rank = next_rank + 1
+      }
+      continue
+    }
+    // BFS 层集二分：从伪周边点出发，取累计过半的层作分隔符。
+    cell_id = cell_id + 1
+    for v in cell {
+      in_cell[v] = cell_id
+      dist[v] = -1
+    }
+    // 伪周边点：从 cell[0] BFS 取最远点再 BFS 一次。
+    let mut src = cell[0]
+    for _pass in 0..<2 {
+      for v in cell {
+        dist[v] = -1
+      }
+      let mut qh = 0
+      let mut qt = 0
+      dist[src] = 0
+      queue[qt] = src
+      qt = qt + 1
+      let mut far = src
+      while qh < qt {
+        let u = queue[qh]
+        qh = qh + 1
+        far = u
+        for w in adj[u] {
+          if in_cell[w] == cell_id && rank[w] < 0 && dist[w] < 0 {
+            dist[w] = dist[u] + 1
+            queue[qt] = w
+            qt = qt + 1
+          }
+        }
+      }
+      src = far
+    }
+    // 最后一次 BFS 的 dist 已就位；未触达节点（cell 内其他连通块）
+    // 归入 part_a。找累计节点数过半的层作分隔符。
+    let mut maxd = 0
+    for v in cell {
+      if dist[v] > maxd {
+        maxd = dist[v]
+      }
+    }
+    let layer_cnt = Array::make(maxd + 1, 0)
+    let mut reached = 0
+    for v in cell {
+      if dist[v] >= 0 {
+        layer_cnt[dist[v]] = layer_cnt[dist[v]] + 1
+        reached = reached + 1
+      }
+    }
+    let mut acc = 0
+    let mut sep_layer = 0
+    for d = 0; d <= maxd; d = d + 1 {
+      acc = acc + layer_cnt[d]
+      if acc * 2 >= reached {
+        sep_layer = d
+        break
+      }
+    }
+    let part_a : Array[Int] = []
+    let part_b : Array[Int] = []
+    let sep : Array[Int] = []
+    for v in cell {
+      if dist[v] == sep_layer {
+        sep.push(v)
+      } else if dist[v] >= 0 && dist[v] < sep_layer {
+        part_a.push(v)
+      } else {
+        part_b.push(v)
+      }
+    }
+    // 退化护栏：分隔失败（某半为空）则整个 cell 降级为小单元处理。
+    if part_a.length() == 0 || part_b.length() == 0 {
+      cell_id = cell_id + 1
+      for v in cell {
+        in_cell[v] = cell_id
+      }
+      let remaining = cell.copy()
+      while remaining.length() > 0 {
+        let mut best = 0
+        let mut best_deg = n + 1
+        for i = 0; i < remaining.length(); i = i + 1 {
+          let v = remaining[i]
+          let mut d = 0
+          for u in adj[v] {
+            if in_cell[u] == cell_id && rank[u] < 0 {
+              d = d + 1
+            }
+          }
+          if d < best_deg {
+            best_deg = d
+            best = i
+          }
+        }
+        let v = remaining[best]
+        let _ = remaining.remove(best)
+        rank[v] = next_rank
+        next_rank = next_rank + 1
+      }
+      continue
+    }
+    sep_stack.push(sep)
+    work.push(part_a)
+    work.push(part_b)
+  }
+  // 分隔符自底向上赋最高 rank（深层分隔符先、顶层分隔符最后/最高）。
+  while sep_stack.length() > 0 {
+    let sep = sep_stack.unsafe_pop()
+    for v in sep {
+      rank[v] = next_rank
+      next_rank = next_rank + 1
+    }
+  }
+  rank
+}
+
+///|
+/// 骨架边数（弦图补全后的上邻总数，衡量收缩序质量的填充规模）。
+pub fn CustomizableCch::edge_count(self : CustomizableCch) -> Int {
+  self.ft.length()
 }
 
 ///|

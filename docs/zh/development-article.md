@@ -20,7 +20,7 @@ NetworkX，而 MoonBit 在本项目之前没有对应基础设施。
    而是真实 OSM 路网上可测量的数量级加速；
 3. **可信度**：每个声明都有可复现证据，每个优化都有差分测试守卫。
 
-最终交付：**30 种经典算法 + 7 种前沿路网算法**，三后端
+最终交付：**30 种经典算法 + 8 种前沿路网算法**，三后端
 （native / wasm-gc / js）2158 项测试全绿，真实北京驾车路网上
 距离查询从双向 Dijkstra 的 6.3 ms 压到 Hub Labeling 的
 **0.44 µs（14304×）**。
@@ -135,7 +135,7 @@ PHAST（Delling 2011）把一到全查询拆成向上 Dijkstra + rank 降序
 的用例标注并排除。方法学声明、机器信息与两套工具链版本全部写进
 报告工件（`benches/results/latest-rust-comparison.{md,json}`）。
 
-差异化不在"语言换皮"，而在 Rust `pathfinding` 未提供的 7 种
+差异化不在"语言换皮"，而在 Rust `pathfinding` 未提供的 8 种
 前沿路网算法，以及 MoonBit 的多后端一键部署（同一份算法代码
 驱动 native 基准与浏览器 playground）。
 

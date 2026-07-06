@@ -149,12 +149,14 @@ pub struct CustomizableCch {
   mut gen : Int
   hf : RadixHeap
   hb : RadixHeap
+  ep : Array[Int]
 }
 pub fn CustomizableCch::build(WeightedCsr) -> Self
 pub fn CustomizableCch::build_with_order(WeightedCsr, Array[Int]) -> Self
 pub fn CustomizableCch::customize(Self, WeightedCsr) -> Unit
 pub fn CustomizableCch::edge_count(Self) -> Int
 pub fn CustomizableCch::query_dist(Self, Int, Int) -> Int64?
+pub fn CustomizableCch::query_dist_tree(Self, Int, Int) -> Int64?
 
 type EncodedHeap
 

@@ -82,9 +82,28 @@ fn run_osm_cch_benchmark_on(
       }
     }
   })
+  // 消除树查询（无堆）：先对拍护栏再采样。
+  let mut parity_tree_ok = true
+  for q in queries {
+    let (s, t) = q
+    match (cch.query_dist(s, t), cch.query_dist_tree(s, t)) {
+      (Some(x), Some(y)) => if x != y { parity_tree_ok = false }
+      (None, None) => ()
+      _ => parity_tree_ok = false
+    }
+  }
+  let tree_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match cch.query_dist_tree(q.0, q.1) {
+        Some(c) => sink[0] = sink[0] + c
+        None => ()
+      }
+    }
+  })
   let dij_med = csr_bench_median(dij_samples)
   let ch_med = csr_bench_median(ch_samples)
   let cch_med = csr_bench_median(cch_samples)
+  let tree_med = csr_bench_median(tree_samples)
   let qd = qcount.to_double()
   // 换权重（全边权 ×3+7 扰动）后 customize，再对拍守卫语义。
   let edges2 : Array[(Int, Int, Int)] = []
@@ -147,6 +166,24 @@ fn run_osm_cch_benchmark_on(
     }
   })
   let nd_med = csr_bench_median(nd_samples)
+  let mut parity_nd_tree_ok = true
+  for q in queries {
+    let (s, t) = q
+    match (cch_nd.query_dist(s, t), cch_nd.query_dist_tree(s, t)) {
+      (Some(x), Some(y)) => if x != y { parity_nd_tree_ok = false }
+      (None, None) => ()
+      _ => parity_nd_tree_ok = false
+    }
+  }
+  let nd_tree_samples = collect_samples(warmup, samples, fn() {
+    for q in queries {
+      match cch_nd.query_dist_tree(q.0, q.1) {
+        Some(c) => sink[0] = sink[0] + c
+        None => ()
+      }
+    }
+  })
+  let nd_tree_med = csr_bench_median(nd_tree_samples)
   let tb = @infra_text.TextBuilder::new()
   tb.push_str("### \{dataset}（节点 \{n}，边 \{edge_count}）CCH\n\n")
   tb.push_str(
@@ -164,7 +201,14 @@ fn run_osm_cch_benchmark_on(
   tb.push_str(
     "- ND 收缩序变体: 对拍一致 \{parity_nd_ok}; 构建 \{nd_build_us / 1.0e3} ms; 骨架边 \{cch_nd.edge_count()}（min-degree \{cch.edge_count()}）; customization 中位 \{nd_cust_med / 1.0e3} ms; 每查询 \{nd_med / qd} µs\n",
   )
-  if !parity_ok || !parity2_ok || !parity_nd_ok {
+  tb.push_str(
+    "- 消除树查询（无堆）: 对拍一致 \{parity_tree_ok}/\{parity_nd_tree_ok}; min-degree 每查询 \{tree_med / qd} µs（vs 堆版 CCH \{cch_med / tree_med}×）; ND 序每查询 \{nd_tree_med / qd} µs（vs ND 堆版 \{nd_med / nd_tree_med}×）\n",
+  )
+  if !parity_ok ||
+    !parity2_ok ||
+    !parity_nd_ok ||
+    !parity_tree_ok ||
+    !parity_nd_tree_ok {
     tb.push_str(
       "\n**警告：代价对拍存在不一致，数字无效。**\n",
     )

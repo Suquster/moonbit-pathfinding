@@ -233,8 +233,29 @@ fn run_osm_alt_benchmark_on(
       }
     }
   })
+  // RPHAST：64 目标集限定，每源到全部目标 vs PHAST 全量一到全。
+  let mut rt_opt : @dir.RphastTargets? = None
+  let rphast_pre_us = elapsed(fn() { rt_opt = Some(ch.rphast_targets(m2m_t)) })
+  let rt = rt_opt.unwrap()
+  let rp_out = Array::make(64, 0L)
+  let mut rphast_parity = true
+  for i in 0..<64 {
+    ch.rphast_query(rt, m2m_s[i], rp_out)
+    for j in 0..<64 {
+      if rp_out[j] != tbl[i * 64 + j] {
+        rphast_parity = false
+      }
+    }
+  }
+  let rphast_samples = collect_samples(warmup, samples, fn() {
+    for i in 0..<64 {
+      ch.rphast_query(rt, m2m_s[i], rp_out)
+      sink64[0] = sink64[0] + rp_out[0]
+    }
+  })
   ignore(sink[0])
   ignore(sink64[0])
+  let rphast_med = csr_bench_median(rphast_samples)
   let m2m_med = csr_bench_median(m2m_samples)
   let m2m_pair_med = csr_bench_median(m2m_pair_samples)
   let full_dij_med = csr_bench_median(full_dij_samples)
@@ -278,6 +299,9 @@ fn run_osm_alt_benchmark_on(
   )
   tb.push_str(
     "- many-to-many 64×64 对拍一致: \{m2m_parity}; 逐对 CH: \{m2m_pair_med / 1.0e3} ms; bucket 表: \{m2m_med / 1.0e3} ms（**\{m2m_pair_med / m2m_med}×**，每对 \{m2m_med / 4096.0} µs）\n",
+  )
+  tb.push_str(
+    "- RPHAST 对拍一致: \{rphast_parity}; 目标集预处理: \{rphast_pre_us / 1.0e3} ms; |R|: \{rt.restricted_size()}; 每源: \{rphast_med / 64.0} µs（vs PHAST 每源 \{phast_med / 16.0} µs，**\{phast_med / 16.0 / (rphast_med / 64.0)}×**）\n",
   )
   if !parity_ok {
     tb.push_str(

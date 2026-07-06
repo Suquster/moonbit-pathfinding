@@ -197,3 +197,95 @@ pub fn HubLabels::query(self : HubLabels, s : Int, t : Int) -> Int64? {
     Some(best)
   }
 }
+
+///|
+/// 有序标签归并取最小和并返回取得最小值的 hub。
+fn hl_merge_min_hub(
+  a : Array[Int64],
+  a_lo : Int,
+  a_hi : Int,
+  b : Array[Int64],
+  b_lo : Int,
+  b_hi : Int,
+) -> (Int64, Int) {
+  let dmask = (1L << HL_HUB_SHIFT) - 1L
+  let mut i = a_lo
+  let mut j = b_lo
+  let mut best = INF_DIST
+  let mut hub = -1
+  while i < a_hi && j < b_hi {
+    let ha = a[i] >> HL_HUB_SHIFT
+    let hb = b[j] >> HL_HUB_SHIFT
+    if ha < hb {
+      i = i + 1
+    } else if ha > hb {
+      j = j + 1
+    } else {
+      let s = (a[i] & dmask) + (b[j] & dmask)
+      if s < best {
+        best = s
+        hub = ha.to_int()
+      }
+      i = i + 1
+      j = j + 1
+    }
+  }
+  (best, hub)
+}
+
+///|
+/// 点对点最短距离及其经停 hub（最短路径上 rank 最高的节点）。
+/// 不可达返回 None。O(|L_s|+|L_t|)。
+pub fn HubLabels::query_via(
+  self : HubLabels,
+  s : Int,
+  t : Int,
+) -> (Int64, Int)? {
+  guard s >= 0 && s < self.n && t >= 0 && t < self.n else { None }
+  let (best, hub) = hl_merge_min_hub(
+    self.fla,
+    self.flo[s],
+    self.flo[s + 1],
+    self.bla,
+    self.blo[t],
+    self.blo[t + 1],
+  )
+  if best >= INF_DIST {
+    None
+  } else {
+    Some((best, hub))
+  }
+}
+
+///|
+/// 点对点最短「路径」还原：HL 归并定位经停 hub，两段各用 CH
+/// 查询展开（s→hub、hub→t）后拼接。返回 (节点序列, 总代价)；
+/// 不可达返回 None。距离由标签保证最优，两段展开各自最优且
+/// 经 hub 分界拼接仍为最短路径。
+pub fn HubLabels::query_path(
+  self : HubLabels,
+  ch : ContractionHierarchy,
+  s : Int,
+  t : Int,
+) -> (Array[Int], Int64)? {
+  match self.query_via(s, t) {
+    None => None
+    Some((d, hub)) => {
+      if hub == -1 || s == t {
+        return Some(([s], 0L))
+      }
+      let first = if hub == s { Some(([s], 0)) } else { ch.query(s, hub) }
+      let second = if hub == t { Some(([t], 0)) } else { ch.query(hub, t) }
+      match (first, second) {
+        (Some((p1, _)), Some((p2, _))) => {
+          let path = p1.copy()
+          for i = 1; i < p2.length(); i = i + 1 {
+            path.push(p2[i])
+          }
+          Some((path, d))
+        }
+        _ => None
+      }
+    }
+  }
+}

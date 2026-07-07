@@ -177,8 +177,26 @@ jobs:
       - name: Install MoonBit toolchain
         uses: hustcer/setup-moonbit@v1
 
+      # moondoc 尚未适配新格式 moon.mod (内部仍读 moon.mod.json),
+      # 仓库已按预验收要求删除废弃 moon.mod.json —— 这里临时生成一份
+      # 等价 JSON 供 moon doc 使用, 用完即删, 不进仓库、不触发重复告警。
       - name: moon doc (build only, server disabled by default)
-        run: moon doc
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > moon.mod.json <<'EOF'
+          {
+            "name": "Suquster/moonbit-pathfinding",
+            "version": "0.0.4",
+            "readme": "README.md",
+            "repository": "https://github.com/Suquster/moonbit-pathfinding",
+            "license": "Apache-2.0",
+            "keywords": ["pathfinding", "graph", "algorithms", "dijkstra", "astar", "bfs", "jps", "runtime-contracts", "executable-docs", "osc-2026"],
+            "description": "A MoonBit pathfinding and graph algorithms library with executable documentation, runtime-checked proof predicates, and multi-backend verification gates. Built for OSC 2026."
+          }
+          EOF
+          moon doc
+          rm -f moon.mod.json
 
       # 缺失 Doc_Comment 审计脚本 (task 18.3 降级方案)
       # 扫描所有 `pub fn/struct/enum/trait/impl/let/type`,

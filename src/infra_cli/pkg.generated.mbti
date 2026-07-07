@@ -1,0 +1,59 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_cli"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn flag_spec(String, String, String) -> ArgSpec
+
+pub fn help_text(Command) -> String
+
+pub fn parse(Command, Array[String]) -> Result[ParsedArgs, CliError]
+
+pub fn value_spec(String, String, String, String?) -> ArgSpec
+
+// Errors
+
+// Types and methods
+pub(all) enum ArgKind {
+  Flag
+  Value
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ArgSpec {
+  name : String
+  short : String
+  kind : ArgKind
+  help : String
+  default : String?
+} derive(Eq, @debug.Debug)
+
+pub(all) enum CliError {
+  UnknownFlag(String)
+  MissingValue(String)
+  DuplicateSpec(String)
+} derive(Eq, @debug.Debug)
+pub impl Show for CliError
+
+pub(all) struct Command {
+  name : String
+  about : String
+  specs : Array[ArgSpec]
+  subcommands : Array[Command]
+} derive(@debug.Debug)
+
+pub(all) struct ParsedArgs {
+  command_path : Array[String]
+  flags : Array[String]
+  values : Array[(String, String)]
+  positionals : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn ParsedArgs::has_flag(Self, String) -> Bool
+pub fn ParsedArgs::value_of(Self, String) -> String?
+
+// Type aliases
+
+// Traits
+

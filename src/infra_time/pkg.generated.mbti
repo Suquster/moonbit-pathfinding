@@ -26,7 +26,11 @@ pub fn format_rfc3339_with_offset(DateTime, Int) -> String
 
 pub fn is_leap_year(Int) -> Bool
 
+pub fn parse_duration(String) -> Duration?
+
 pub fn parse_iso8601(String) -> DateTime?
+
+pub fn strftime(DateTime, String) -> String
 
 pub fn weekday_from_days(Int64) -> Int
 

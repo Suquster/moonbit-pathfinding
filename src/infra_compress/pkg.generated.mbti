@@ -4,7 +4,11 @@ package "Suquster/moonbit-pathfinding/src/infra_compress"
 // Values
 pub fn deflate(Array[Int]) -> Array[Int]
 
+pub fn deflate_auto(Array[Int]) -> Array[Int]
+
 pub fn deflate_dynamic(Array[Int]) -> Array[Int]
+
+pub fn deflate_stored(Array[Int]) -> Array[Int]
 
 pub fn gzip_compress(Array[Int]) -> Array[Int]
 

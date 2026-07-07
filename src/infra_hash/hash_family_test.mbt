@@ -150,3 +150,49 @@ test "hash family handles multibyte utf8 deterministically" {
   assert_true(adler32(bytes) == adler32(bytes))
   assert_true(xxhash32(bytes, 42U) == xxhash32(bytes, 42U))
 }
+
+///|
+/// SHA-224 NIST 官方向量（FIPS 180-4 附录示例）。
+test "sha224 known vectors" {
+  assert_true(
+    sha224_hex("") == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f",
+  )
+  assert_true(
+    sha224_hex("abc") ==
+    "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7",
+  )
+  assert_true(
+    sha224_hex("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq") ==
+    "75388b16512776cc5dba5da1fd890150b0c6455cb4f58b1952522525",
+  )
+}
+
+///|
+/// SHA-384 NIST 官方向量（FIPS 180-4 附录示例）。
+test "sha384 known vectors" {
+  assert_true(
+    sha384_hex("") ==
+    "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b",
+  )
+  assert_true(
+    sha384_hex("abc") ==
+    "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7",
+  )
+}
+
+///|
+/// CRC-64/XZ 官方检验值：check("123456789") = 0x995DC9BBDF1939FA。
+test "crc64 xz check value" {
+  assert_true(crc64_xz(utf8_bytes("123456789")) == 0x995DC9BBDF1939FAUL)
+  assert_true(crc64_xz([]) == 0UL)
+}
+
+///|
+/// MurmurHash3 x86_32 参考实现向量（SMHasher/维基百科公开向量）。
+test "murmur3 32 reference vectors" {
+  assert_true(murmur3_32([], 0U) == 0U)
+  assert_true(murmur3_32([], 1U) == 0x514E28B7U)
+  assert_true(murmur3_32(utf8_bytes("test"), 0U) == 0xBA6BD213U)
+  assert_true(murmur3_32(utf8_bytes("Hello, world!"), 1234U) == 0xFAF6CDB3U)
+  assert_true(murmur3_32(utf8_bytes("aaaa"), 0x9747B28CU) == 0x5A97808AU)
+}

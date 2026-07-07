@@ -135,3 +135,77 @@ test "prop dynamic deflate roundtrip on random inputs" {
     }
   }
 }
+
+///|
+/// stored 块：roundtrip + 不可压数据无膨胀（仅 5 字节/片开销）。
+test "deflate stored roundtrip and overhead" {
+  // 伪随机不可压字节串。
+  let mut seed = 7U
+  let data : Array[Int] = []
+  for _ in 0..<1000 {
+    seed = seed * 1664525U + 1013904223U
+    data.push(((seed >> 16) & 0xFFU).reinterpret_as_int())
+  }
+  let enc = deflate_stored(data)
+  assert_true(inflate(enc) == Some(data))
+  assert_true(enc.length() == data.length() + 5) // 单片 5 字节头
+  // 空输入也要产出合法 final 空块。
+  assert_true(inflate(deflate_stored([])) == Some([]))
+}
+
+///|
+/// stored 块：超过 65535 字节自动分片。
+test "deflate stored multi fragment" {
+  let data : Array[Int] = Array::make(70000, 0x41)
+  let enc = deflate_stored(data)
+  assert_true(inflate(enc) == Some(data))
+  assert_true(enc.length() == 70000 + 10) // 两片 × 5 字节头
+}
+
+///|
+/// deflate_auto：可压文本选 Huffman、随机数据不膨胀、恒可解码。
+test "deflate auto picks best block type" {
+  // 高冗余文本 → 必须显著小于原文。
+  let text : Array[Int] = []
+  for _ in 0..<200 {
+    for b in [0x61, 0x62, 0x61, 0x61] {
+      text.push(b)
+    }
+  }
+  let enc_text = deflate_auto(text)
+  assert_true(inflate(enc_text) == Some(text))
+  assert_true(enc_text.length() * 4 < text.length())
+  // 伪随机数据 → 不得比 stored 差。
+  let mut seed = 99U
+  let rnd : Array[Int] = []
+  for _ in 0..<500 {
+    seed = seed * 1664525U + 1013904223U
+    rnd.push(((seed >> 16) & 0xFFU).reinterpret_as_int())
+  }
+  let enc_rnd = deflate_auto(rnd)
+  assert_true(inflate(enc_rnd) == Some(rnd))
+  assert_true(enc_rnd.length() <= rnd.length() + 5)
+}
+
+///|
+/// deflate_auto PBT：任意输入恒可解码且不劣于三种单编码（120 迭代）。
+test "deflate auto pbt never worse than any single coder" {
+  let mut seed = 2026U
+  let next = fn() -> UInt {
+    seed = seed * 1664525U + 1013904223U
+    seed
+  }
+  for _ in 0..<120 {
+    let n = (next() % 300U).reinterpret_as_int()
+    let data : Array[Int] = []
+    for i in 0..<n {
+      data.push(((next() >> 16) % 5U).reinterpret_as_int() * 40)
+      ignore(i)
+    }
+    let auto = deflate_auto(data)
+    assert_true(inflate(auto) == Some(data))
+    assert_true(auto.length() <= deflate_stored(data).length())
+    assert_true(auto.length() <= deflate(data).length())
+    assert_true(auto.length() <= deflate_dynamic(data).length())
+  }
+}

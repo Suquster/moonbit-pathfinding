@@ -288,3 +288,122 @@ pub fn expand_bundled_shorts(
   }
   out
 }
+
+// ─────────────────── 环境变量回退与多级取值（clap `env` 语义） ───────────
+
+///|
+/// 多级取值：命令行值 → 环境变量 → 默认值（clap `Arg::env` +
+/// `default_value` 的分层回退语义）。`env` 以 `(名, 值)` 表传入，
+/// 保持纯函数与三后端一致（宿主负责注入真实环境表）。
+pub fn ParsedArgs::value_or_env(
+  self : ParsedArgs,
+  name : String,
+  env_key : String,
+  env : Array[(String, String)],
+  default? : String? = None,
+) -> String? {
+  match self.value_of(name) {
+    Some(v) => Some(v)
+    None => {
+      for kv in env {
+        if kv.0 == env_key {
+          return Some(kv.1)
+        }
+      }
+      default
+    }
+  }
+}
+
+// ───────────────── `--no-` 布尔否定前缀（GNU/clap 风格） ─────────────────
+
+///|
+/// 三态布尔解析：`--name` 出现 → Some(true)；`--no-name` 出现 →
+/// Some(false)；都未出现 → None（GNU coreutils / clap
+/// `ArgAction::SetFalse` 的否定前缀惯例）。同时出现时后者以
+/// flags 中先 `--no-` 后正名的顺序无关语义处理：正名优先。
+pub fn ParsedArgs::flag_tristate(self : ParsedArgs, name : String) -> Bool? {
+  if self.has_flag(name) {
+    Some(true)
+  } else if self.has_flag("no-" + name) {
+    Some(false)
+  } else {
+    None
+  }
+}
+
+// ───────────────────────── 相似选项建议（did-you-mean） ──────────────────
+
+///|
+/// Damerau–Levenshtein 编辑距离（含相邻换位；clap/git 建议用同族度量）。
+pub fn dl_distance(a : String, b : String) -> Int {
+  let n = a.length()
+  let m = b.length()
+  if n == 0 {
+    return m
+  }
+  if m == 0 {
+    return n
+  }
+  // (n+1)×(m+1) DP 表。
+  let dp : Array[Array[Int]] = []
+  for i in 0..<(n + 1) {
+    let row : Array[Int] = Array::make(m + 1, 0)
+    row[0] = i
+    dp.push(row)
+  }
+  for j in 0..<(m + 1) {
+    dp[0][j] = j
+  }
+  for i in 1..<(n + 1) {
+    for j in 1..<(m + 1) {
+      let cost = if a.get_char(i - 1).unwrap() == b.get_char(j - 1).unwrap() {
+        0
+      } else {
+        1
+      }
+      let mut best = dp[i - 1][j] + 1 // 删除
+      if dp[i][j - 1] + 1 < best {
+        best = dp[i][j - 1] + 1 // 插入
+      }
+      if dp[i - 1][j - 1] + cost < best {
+        best = dp[i - 1][j - 1] + cost // 替换
+      }
+      if i > 1 &&
+        j > 1 &&
+        a.get_char(i - 1).unwrap() == b.get_char(j - 2).unwrap() &&
+        a.get_char(i - 2).unwrap() == b.get_char(j - 1).unwrap() {
+        if dp[i - 2][j - 2] + 1 < best {
+          best = dp[i - 2][j - 2] + 1 // 相邻换位
+        }
+      }
+      dp[i][j] = best
+    }
+  }
+  dp[n][m]
+}
+
+///|
+/// 未知选项的 did-you-mean 建议（git/clap 同款体验）：
+/// 返回编辑距离最小且 ≤ `max_distance` 的候选；并列取字典序最小。
+pub fn suggest_option(
+  unknown : String,
+  candidates : Array[String],
+  max_distance? : Int = 2,
+) -> String? {
+  let mut best : String? = None
+  let mut best_d = max_distance + 1
+  for c in candidates {
+    let d = dl_distance(unknown, c)
+    if d < best_d {
+      best_d = d
+      best = Some(c)
+    } else if d == best_d {
+      match best {
+        Some(cur) => if c < cur { best = Some(c) }
+        None => best = Some(c)
+      }
+    }
+  }
+  best
+}

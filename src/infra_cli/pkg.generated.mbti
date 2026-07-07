@@ -6,6 +6,8 @@ import {
 }
 
 // Values
+pub fn dl_distance(String, String) -> Int
+
 pub fn expand_bundled_shorts(Array[String], Array[ArgSpec]) -> Array[String]
 
 pub fn flag_spec(String, String, String) -> ArgSpec
@@ -15,6 +17,8 @@ pub fn help_text(Command) -> String
 pub fn parse(Command, Array[String]) -> Result[ParsedArgs, CliError]
 
 pub fn rule(String, required? : Bool, vtype? : ValueType, choices? : Array[String]) -> ValueRule
+
+pub fn suggest_option(String, Array[String], max_distance? : Int) -> String?
 
 pub fn validate_rules(ParsedArgs, Array[ValueRule]) -> Array[TypedError]
 
@@ -57,10 +61,12 @@ pub(all) struct ParsedArgs {
   positionals : Array[String]
 } derive(Eq, @debug.Debug)
 pub fn ParsedArgs::bool_of(Self, String) -> Result[Bool, TypedError]
+pub fn ParsedArgs::flag_tristate(Self, String) -> Bool?
 pub fn ParsedArgs::float_of(Self, String) -> Result[Double, TypedError]
 pub fn ParsedArgs::has_flag(Self, String) -> Bool
 pub fn ParsedArgs::int_of(Self, String) -> Result[Int64, TypedError]
 pub fn ParsedArgs::value_of(Self, String) -> String?
+pub fn ParsedArgs::value_or_env(Self, String, String, Array[(String, String)], default? : String?) -> String?
 
 pub(all) enum TypedError {
   NotPresent(String)

@@ -79,3 +79,35 @@ test "aimd additive increase multiplicative decrease" {
   l2.on_overload()
   assert_true(l2.current_limit() == 25)
 }
+
+///|
+/// RateBreaker：样本不足不熔断；达阈值即熔断；窗口滑动后恢复。
+test "rate breaker sliding window semantics" {
+  let br = RateBreaker::create(10, 5, 500) // 窗口10、最少5样本、错误率≥50%
+  // 4 次失败仍不满最少样本 → 不熔断。
+  for _ in 0..<4 {
+    ignore(br.record(true))
+  }
+  assert_true(!br.is_open())
+  // 第 5 个样本（成功）：5 样本中 4 失败 = 800‰ ≥ 500‰ → 熔断。
+  assert_true(br.record(false))
+  assert_true(br.failure_rate() == 800)
+  // 连续成功把失败挤出窗口 → 恢复。
+  for _ in 0..<10 {
+    ignore(br.record(false))
+  }
+  assert_true(!br.is_open())
+  assert_true(br.failure_rate() == 0)
+}
+
+///|
+/// RateBreaker：环形覆盖正确维护失败计数（窗口=3）。
+test "rate breaker ring overwrite" {
+  let br = RateBreaker::create(3, 3, 500)
+  ignore(br.record(true))
+  ignore(br.record(true))
+  assert_true(!br.is_open()) // 样本不足
+  assert_true(br.record(false)) // 2/3 = 666‰ ≥ 500‰ → 熔断
+  assert_true(br.record(false) == false) // 覆盖最旧 true → 1/3 = 333‰
+  assert_true(br.failure_rate() == 333)
+}

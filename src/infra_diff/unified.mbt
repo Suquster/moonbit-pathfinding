@@ -315,3 +315,200 @@ pub fn apply_unified(
   }
   Some(out)
 }
+
+// ───────────────────────────── diff3 三方合并 ────────────────────────────
+
+///|
+/// 三方合并块：稳定段（三方一致）或冲突段（双方各自修改）。
+pub(all) enum MergeChunk {
+  Stable(Array[String]) // 三方一致（或单侧修改被采纳）
+  Conflict(Array[String], Array[String], Array[String]) // (ours, base, theirs)
+} derive(Eq, Debug)
+
+///|
+/// 把 Myers 编辑脚本转为 base 行号 → 目标行的映射片段：
+/// 返回 (base_start, base_end, replacement) 列表（半开区间）。
+fn diff_to_regions(
+  base : Array[String],
+  target : Array[String],
+) -> Array[(Int, Int, Array[String])] {
+  let ops = diff_lines(base, target)
+  let out : Array[(Int, Int, Array[String])] = []
+  let mut bi = 0
+  let mut pend_start = -1
+  let pend_repl : Array[String] = []
+  for op in ops {
+    match op {
+      Keep(_) => {
+        if pend_start >= 0 {
+          out.push((pend_start, bi, pend_repl.copy()))
+          pend_repl.clear()
+          pend_start = -1
+        }
+        bi = bi + 1
+      }
+      Delete(_) => {
+        if pend_start < 0 {
+          pend_start = bi
+        }
+        bi = bi + 1
+      }
+      Insert(s) => {
+        if pend_start < 0 {
+          pend_start = bi
+        }
+        pend_repl.push(s)
+      }
+    }
+  }
+  if pend_start >= 0 {
+    out.push((pend_start, bi, pend_repl.copy()))
+  }
+  out
+}
+
+///|
+/// diff3 三方合并（Smith 1988 / git merge-file 语义）：
+/// 以 `base` 为公共祖先，把 `ours` 与 `theirs` 的修改合并；
+/// 双方修改互不重叠时自动合并，重叠且不一致时产出 Conflict 块。
+pub fn diff3_merge(
+  base : Array[String],
+  ours : Array[String],
+  theirs : Array[String],
+) -> Array[MergeChunk] {
+  let ra = diff_to_regions(base, ours)
+  let rb = diff_to_regions(base, theirs)
+  let chunks : Array[MergeChunk] = []
+  let stable : Array[String] = []
+  let mut pos = 0
+  let mut ia = 0
+  let mut ib = 0
+  while ia < ra.length() || ib < rb.length() {
+    // 取下一个变更区（按 base 起点排序）。
+    let next_a = if ia < ra.length() { ra[ia].0 } else { base.length() + 1 }
+    let next_b = if ib < rb.length() { rb[ib].0 } else { base.length() + 1 }
+    let start = if next_a < next_b { next_a } else { next_b }
+    // 输出稳定前缀。
+    while pos < start && pos < base.length() {
+      stable.push(base[pos])
+      pos = pos + 1
+    }
+    // 聚合所有与 [start, end) 重叠的双方变更区（传递闭包）。
+    let mut end = start
+    let mut ja = ia
+    let mut jb = ib
+    let mut changed = true
+    while changed {
+      changed = false
+      while ja < ra.length() && ra[ja].0 <= end {
+        let e = ra[ja].1
+        let e2 = if e == ra[ja].0 { e } else { e } // 半开区间终点
+        if e2 > end {
+          end = e2
+          changed = true
+        }
+        ja = ja + 1
+      }
+      while jb < rb.length() && rb[jb].0 <= end {
+        let e = rb[jb].1
+        if e > end {
+          end = e
+          changed = true
+        }
+        jb = jb + 1
+      }
+    }
+    let a_touched = ja > ia
+    let b_touched = jb > ib
+    // 构造双方在 [start, end) 上的结果行。
+    let side = fn(
+      regions : Array[(Int, Int, Array[String])],
+      lo : Int,
+      hi : Int,
+    ) -> Array[String] {
+      let out : Array[String] = []
+      let mut p = start
+      for k in lo..<hi {
+        let (rs, re, repl) = regions[k]
+        while p < rs {
+          out.push(base[p])
+          p = p + 1
+        }
+        for s in repl {
+          out.push(s)
+        }
+        p = re
+      }
+      while p < end {
+        out.push(base[p])
+        p = p + 1
+      }
+      out
+    }
+    let ours_seg = side(ra, ia, ja)
+    let theirs_seg = side(rb, ib, jb)
+    let base_seg : Array[String] = []
+    for k in start..<end {
+      base_seg.push(base[k])
+    }
+    if a_touched && b_touched && ours_seg != theirs_seg {
+      // 双方都改且不一致 → 冲突；先冲刷稳定段。
+      if stable.length() > 0 {
+        chunks.push(Stable(stable.copy()))
+        stable.clear()
+      }
+      chunks.push(Conflict(ours_seg, base_seg, theirs_seg))
+    } else {
+      // 单侧修改或双方一致 → 采纳变更侧。
+      let winner = if a_touched { ours_seg } else { theirs_seg }
+      for s in winner {
+        stable.push(s)
+      }
+    }
+    pos = end
+    ia = ja
+    ib = jb
+  }
+  while pos < base.length() {
+    stable.push(base[pos])
+    pos = pos + 1
+  }
+  if stable.length() > 0 {
+    chunks.push(Stable(stable.copy()))
+  }
+  chunks
+}
+
+///|
+/// 把合并块渲染为最终文本行：冲突段使用 git 风格标记
+/// `<<<<<<< ours` / `|||||||` / `=======` / `>>>>>>> theirs`
+/// （diff3 冲突样式，含 base 段）。
+pub fn render_merge(chunks : Array[MergeChunk]) -> (Array[String], Bool) {
+  let out : Array[String] = []
+  let mut conflicted = false
+  for ch in chunks {
+    match ch {
+      Stable(lines) =>
+        for s in lines {
+          out.push(s)
+        }
+      Conflict(ours, base, theirs) => {
+        conflicted = true
+        out.push("<<<<<<< ours")
+        for s in ours {
+          out.push(s)
+        }
+        out.push("||||||| base")
+        for s in base {
+          out.push(s)
+        }
+        out.push("=======")
+        for s in theirs {
+          out.push(s)
+        }
+        out.push(">>>>>>> theirs")
+      }
+    }
+  }
+  (out, conflicted)
+}

@@ -1,0 +1,15 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_resilience
+//
+// 韧性（resilience）基础设施（B6）：指数退避重试策略、熔断器
+// （Closed/Open/HalfOpen 状态机）、令牌桶限流、滑动窗口限流。
+// 全部以显式时钟参数驱动（确定性、可与 DST/actor 联动测试），
+// 无真实时间依赖，三后端逐位一致。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

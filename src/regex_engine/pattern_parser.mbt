@@ -255,6 +255,17 @@ fn p_escape(
     Some('B') => Ok((Assert(NotWordBoundary), after_bs.advance()))
     Some('A') => Ok((Assert(TextStart), after_bs.advance()))
     Some('z') => Ok((Assert(TextEnd), after_bs.advance()))
+    // Unicode 字符类 `\p{Name}` / `\P{Name}`（通用类别，如 L/Nd/Lu）。
+    Some('p') =>
+      match p_unicode_prop(after_bs.advance(), bs, false) {
+        Ok((set, rest)) => Ok((Set(set), rest))
+        Err(e) => Err(e)
+      }
+    Some('P') =>
+      match p_unicode_prop(after_bs.advance(), bs, true) {
+        Ok((set, rest)) => Ok((Set(set), rest))
+        Err(e) => Err(e)
+      }
     // 反向引用 \1..\9 不支持（需回溯、破坏线性保证）→ 显式报错（R5.6/R10.6）。
     Some(c) =>
       if c >= '1' && c <= '9' {
@@ -586,10 +597,57 @@ fn read_class_token(
         Some('W') => Ok((ClassSet(predef_non_word()), after.advance()))
         Some('s') => Ok((ClassSet(predef_space()), after.advance()))
         Some('S') => Ok((ClassSet(predef_non_space()), after.advance()))
+        Some('p') =>
+          match p_unicode_prop(after.advance(), open, false) {
+            Ok((set, rest)) => Ok((ClassSet(set), rest))
+            Err(e) => Err(e)
+          }
+        Some('P') =>
+          match p_unicode_prop(after.advance(), open, true) {
+            Ok((set, rest)) => Ok((ClassSet(set), rest))
+            Err(e) => Err(e)
+          }
         Some(c) => Ok((ClassChar(c), after.advance()))
       }
     }
     Some(c) => Ok((ClassChar(c), input.advance()))
+  }
+}
+
+///|
+/// 解析 `\p` / `\P` 后的 `{Name}` 部分：`input` 位于 `p`/`P` 之后。
+/// `negate` 为真时（`\P`）对类别集合取补。名不可识别 / 缺花括号 → 报错。
+fn p_unicode_prop(
+  input : @pc.Input,
+  open : Int,
+  negate : Bool,
+) -> Result[(CharSet, @pc.Input), ParseError] {
+  match input.peek() {
+    Some('{') => {
+      let mut cur = input.advance()
+      let name_chars : Array[Char] = []
+      for ;; {
+        match cur.peek() {
+          None => return Err(Unbalanced(pos=open, what="\\p{"))
+          Some('}') => {
+            cur = cur.advance()
+            break
+          }
+          Some(c) => {
+            name_chars.push(c)
+            cur = cur.advance()
+          }
+        }
+      }
+      match charset_of_class_name(String::from_array(name_chars)) {
+        Some(set) => {
+          let result = if negate { set.complement() } else { set }
+          Ok((result, cur))
+        }
+        None => Err(Unexpected(pos=open, expected=["known unicode class name"]))
+      }
+    }
+    _ => Err(Unexpected(pos=open, expected=["{ after \\p"]))
   }
 }
 

@@ -18,6 +18,10 @@ pub fn bits_to_float(UInt) -> Float
 
 pub fn canonicalize_wire(Message) -> Bytes
 
+pub fn check_message_evolution(ProtoMessage, ProtoMessage) -> Array[BreakingChange]
+
+pub fn check_schema_evolution(ProtoSchema, ProtoSchema) -> Array[BreakingChange]
+
 pub fn decode(Bytes, Schema) -> Result[Message, DecodeError]
 
 pub fn decode_any(Bytes) -> Result[AnyValue, DecodeError]
@@ -94,6 +98,11 @@ pub fn zigzag_encode_64(Int64) -> UInt64
 pub struct AnyValue {
   type_url : String
   value : Bytes
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BreakingChange {
+  field_number : Int
+  reason : String
 } derive(Eq, @debug.Debug)
 
 pub struct ByteSink {

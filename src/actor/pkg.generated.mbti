@@ -16,6 +16,8 @@ pub fn affected_children(SupervisionStrategy, Int, Int) -> Array[Int]
 
 pub fn[S, M, R] ask(ActorSystem[S, M], AskBroker[R], ActorRef[M], (CorrelationId) -> M, Int) -> AskResult[R]
 
+pub fn[S, M, R] ask_future(ActorSystem[S, M], AskBroker[R], ActorRef[M], (CorrelationId) -> M) -> Future[R]
+
 pub fn[S, M] behavior_stack_depth(Array[Behavior[S, M]]) -> Int
 
 pub fn[S, M] behavior_stack_new(Behavior[S, M]) -> Array[Behavior[S, M]]
@@ -176,6 +178,17 @@ pub(all) enum Directive {
   Stop
   Escalate
 } derive(Eq, @debug.Debug)
+
+pub struct Future[R] {
+  resolve : () -> AskResult[R]
+  mut cached : AskResult[R]?
+}
+pub fn[R, T] Future::and_then(Self[R], (R) -> Self[T]) -> Self[T]
+pub fn[S, M, R] Future::await_within(Self[R], ActorSystem[S, M], Int) -> AskResult[R]
+pub fn[R] Future::is_ready(Self[R]) -> Bool
+pub fn[R, T] Future::map(Self[R], (R) -> T) -> Self[T]
+pub fn[R] Future::poll_result(Self[R]) -> AskResult[R]
+pub fn[R] Future::ready(R) -> Self[R]
 
 pub(all) struct LifecycleHooks[S] {
   pre_start : (S) -> S

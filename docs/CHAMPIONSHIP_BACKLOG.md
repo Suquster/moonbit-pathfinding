@@ -122,6 +122,42 @@
       "不劣于任何单编码"120 迭代 PBT）。19 测试绿。
 - 全量口径：2332 测试全绿、acceptance 4 门禁全过。
 
+### F. 补深第四轮 —— 生产级 SOTA 对标（2026-07-07 晚）
+
+- [x] F1 `infra_hash`：SHA-3 全家族（FIPS 202：Keccak-f[1600] 24 轮
+      θ/ρ/π/χ/ι + 海绵结构 + 0x06/0x80 padding，SHA3-224/256/384/512
+      NIST 官方向量 + 跨 rate 多块吸收 CPython 对拍）、BLAKE2b
+      （RFC 7693：12 轮 G 函数 + SIGMA 调度 + 参数块 + keyed-MAC +
+      变长输出，附录 A 向量 + hashlib 对拍）、CRC-32C（Castagnoli，
+      iSCSI/LevelDB/gRPC 同款，check 0xE3069283）、xxHash64
+      （Collet 规范，python-xxhash 对拍）（`sha3.mbt`/`blake2b.mbt`）。
+      31 测试绿。
+- [x] F2 `infra_compress`：LZ4 块格式（lz4.org Block Format：token/
+      literals/小端 offset/255 级联长度 + overlap copy + end-of-block
+      约束；贪心 4KiB 哈希表压缩器 + 防炸弹 max_out 解压器；
+      python-lz4 黄金压缩流可解 + 250 迭代 roundtrip PBT）（`lz4.mbt`）。
+      25 测试绿。
+- [x] F3 `infra_time`：POSIX TZ 规则（POSIX.1-2017 §8.3：
+      `std offset[dst[offset][,start,end]]` + `M月.周.日/时刻` 切换点、
+      西正→ISO 东正转换、glibc 两阶段 localtime 折算；美东/中欧/悉尼
+      南半球跨年 DST 边界向量）+ RFC 2822 日期格式化（`timezone.mbt`）。
+      41 测试绿。
+- [x] F4 `infra_diff`：patience diff（Cohen/bzr：唯一公共行锚点 +
+      O(n log n) 牌堆 LIS + 递归分治，无锚回退 Myers）+ histogram diff
+      （JGit：最低频公共行分割锚），输出与 Myers 同构、与 unified/
+      patch 管线完全兼容 + 250 迭代三算法 patch 等价 PBT
+      （`histogram.mbt`）。23 测试绿。
+- [x] F5 `infra_cli`：bash 补全脚本生成（programmable completion：
+      complete -F + COMP_WORDS/compgen + 子命令 case 分派）+ zsh 补全
+      （#compdef + _arguments 互斥组 + _describe 子命令状态机），
+      clap_complete/cobra 生成器同构（`completion.mbt`）。18 测试绿。
+- [x] F6 `infra_resilience`：TIME_BASED 时间型滑动窗口错误率熔断
+      （resilience4j/Hystrix rolling window：秒级桶 + 纪元过期）+
+      重试预算 RetryBudget（Twitter Finagle：比例存款 20% + 保底
+      10/s + ttl 封顶 + tryWithdraw，防重试风暴；重试占比不变式测试）
+      （`resilience_ext.mbt`）。18 测试绿。
+- 全量口径：2369 测试全绿、acceptance 4 门禁全过。
+
 ### 冲刺优先级（截止 2026-07-12 前）
 
 A1 → A2 → B1 → B2 → A5，其余按余量推进。

@@ -41,9 +41,28 @@
 
 ### C. 补深旗舰 —— 做好一个即答辩亮点
 
-- [ ] C1 `regex_engine`：Unicode 字符类 + 惰性 DFA（对标 Rust regex 核心卖点）。
-- [ ] C2 `actor`：async/await 风格 API 或 mailbox 持久化。
-- [ ] C3 `serialization`：schema 演进 / 版本兼容。
+- [x] C1 `regex_engine`：Unicode 字符类 + 惰性 DFA（对标 Rust regex 核心卖点）。
+  - 证据：惰性 DFA（`lazy_dfa.mbt`，on-the-fly 子集构造 + 预算护栏）与通用类别表
+    （`unicode_gc.mbt`）此前已落地；本轮把 `\p{Name}` / `\P{Name}` 记法接入
+    `pattern_parser.mbt`（顶层转义 + 字符类内元素 + 否定类），畸形记法
+    （缺花括号 / 未闭合 / 未知类别名）显式报错。端到端测试
+    `unicode_class_syntax_test.mbt`（`Pattern::compile` 全链路匹配含非 ASCII）。
+    2026-07-07，`moon test -p src/regex_engine` 204/204 绿。
+- [x] C2 `actor`：async/await 风格 API 或 mailbox 持久化。
+  - 证据：`future.mbt` —— `Future[R]` 句柄（`ask_future` 发起立即返回、
+    `await_within` 确定性驱动等待、`poll_result`/`is_ready` 非阻塞轮询、
+    `ready`/`map`/`and_then` 组合子），发起与等待解耦支持多请求并发在飞；
+    幂等重复 await（结果缓存，不二次消费）。`future_test.mbt` 5 测试；
+    2026-07-07，`moon test -p src/actor` 264/264 绿。mailbox 确定性重放此前
+    已由 `deterministic.mbt`（`replay_consistent`）覆盖。
+- [x] C3 `serialization`：schema 演进 / 版本兼容。
+  - 证据：`schema_evolution.mbt` —— wire 级破坏性变更检查器（对标 protobuf
+    官方 Updating A Message Type 规则与 Buf breaking 检查）：varint /
+    zigzag / I32 / I64 / Len 兼容组、删除必须 reserve、reserved 号名复用、
+    singular↔repeated、oneof 归属变化、消息删除，输出结构化
+    `BreakingChange` 列表供 CI 门禁。`schema_evolution_test.mbt` 7 测试；
+    2026-07-07，`moon test -p src/serialization` 118/118 绿。unknown 字段
+    保留重编码（旧读者透传新字段）此前已由 `unknown_reencode_test.mbt` 覆盖。
 
 ### 冲刺优先级（截止 2026-07-12 前）
 

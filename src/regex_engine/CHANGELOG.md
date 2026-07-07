@@ -18,6 +18,11 @@
 ## [Unreleased]
 
 ### Added
+- **Unicode 字符类记法 `\p{Name}` / `\P{Name}`（C1，2026-07-07）**：接入
+  `pattern_parser.mbt`——顶层转义与字符类内元素（含否定类 `[^\p{Nd}]`）均支持；
+  类别名支持单字母大类（L/N/P/Z/C）与两字母子类（Lu/Ll/Nd 等），复用
+  `unicode_gc.mbt` 通用类别表；畸形记法（缺花括号 / 未闭合 / 未知类别名）
+  显式报错。端到端测试 `unicode_class_syntax_test.mbt`。
 - **字面量预过滤（literal prefilter，T2.1，对标 Rust `regex` / RE2）**：新增
   `Prefilter` 枚举、`compute_prefilter`、`Prefilter::next_candidate`，以及
   `Program::without_prefilter` / `Pattern::without_prefilter`（差分/基准用）。

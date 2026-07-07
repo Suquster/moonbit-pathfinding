@@ -6,11 +6,17 @@ import {
 }
 
 // Values
+pub fn expand_bundled_shorts(Array[String], Array[ArgSpec]) -> Array[String]
+
 pub fn flag_spec(String, String, String) -> ArgSpec
 
 pub fn help_text(Command) -> String
 
 pub fn parse(Command, Array[String]) -> Result[ParsedArgs, CliError]
+
+pub fn rule(String, required? : Bool, vtype? : ValueType, choices? : Array[String]) -> ValueRule
+
+pub fn validate_rules(ParsedArgs, Array[ValueRule]) -> Array[TypedError]
 
 pub fn value_spec(String, String, String, String?) -> ArgSpec
 
@@ -50,8 +56,34 @@ pub(all) struct ParsedArgs {
   values : Array[(String, String)]
   positionals : Array[String]
 } derive(Eq, @debug.Debug)
+pub fn ParsedArgs::bool_of(Self, String) -> Result[Bool, TypedError]
+pub fn ParsedArgs::float_of(Self, String) -> Result[Double, TypedError]
 pub fn ParsedArgs::has_flag(Self, String) -> Bool
+pub fn ParsedArgs::int_of(Self, String) -> Result[Int64, TypedError]
 pub fn ParsedArgs::value_of(Self, String) -> String?
+
+pub(all) enum TypedError {
+  NotPresent(String)
+  BadInt(String, String)
+  BadFloat(String, String)
+  BadBool(String, String)
+  NotInChoices(String, String)
+} derive(Eq, @debug.Debug)
+pub impl Show for TypedError
+
+pub(all) struct ValueRule {
+  name : String
+  required : Bool
+  vtype : ValueType
+  choices : Array[String]
+} derive(Eq, @debug.Debug)
+
+pub(all) enum ValueType {
+  VString
+  VInt
+  VFloat
+  VBool
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

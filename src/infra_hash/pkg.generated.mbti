@@ -2,6 +2,8 @@
 package "Suquster/moonbit-pathfinding/src/infra_hash"
 
 // Values
+pub fn adler32(Array[Int]) -> UInt
+
 pub fn crc32(Array[Int]) -> UInt
 
 pub fn digest_hex(Array[Int]) -> String
@@ -10,13 +12,33 @@ pub fn fnv1a_32(Array[Int]) -> UInt
 
 pub fn fnv1a_64(Array[Int]) -> UInt64
 
+pub fn hmac_sha1(Array[Int], Array[Int]) -> Array[Int]
+
 pub fn hmac_sha256(Array[Int], Array[Int]) -> Array[Int]
+
+pub fn hmac_sha512(Array[Int], Array[Int]) -> Array[Int]
+
+pub fn md5(Array[Int]) -> Array[Int]
+
+pub fn md5_hex(String) -> String
+
+pub fn sha1(Array[Int]) -> Array[Int]
+
+pub fn sha1_hex(String) -> String
 
 pub fn sha256(Array[Int]) -> Array[Int]
 
 pub fn sha256_hex(String) -> String
 
+pub fn sha512(Array[Int]) -> Array[Int]
+
+pub fn sha512_hex(String) -> String
+
+pub fn siphash24(Array[Int], UInt64, UInt64) -> UInt64
+
 pub fn utf8_bytes(String) -> Array[Int]
+
+pub fn xxhash32(Array[Int], UInt) -> UInt
 
 // Errors
 

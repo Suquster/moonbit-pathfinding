@@ -10,16 +10,52 @@ pub fn backoff_delay(BackoffPolicy, Int) -> Int
 
 pub fn backoff_delay_jittered(BackoffPolicy, Int, Int) -> Int
 
+pub fn hedge_outcome(HedgePolicy, Array[Int]) -> (Int, Int, Int)
+
+pub fn hedge_schedule(HedgePolicy) -> Array[Int]
+
 pub fn retry_run(BackoffPolicy, (Int) -> Bool) -> (Bool, Int)
 
 // Errors
 
 // Types and methods
+pub(all) enum Admission {
+  Admitted
+  Enqueued
+  Rejected
+} derive(Eq, @debug.Debug)
+
+pub struct AimdLimiter {
+  min_limit : Int
+  max_limit : Int
+  additive : Int
+  decrease_permille : Int
+  mut limit : Int
+}
+pub fn AimdLimiter::create(Int, Int, Int, additive? : Int, decrease_permille? : Int) -> Self
+pub fn AimdLimiter::current_limit(Self) -> Int
+pub fn AimdLimiter::on_overload(Self) -> Unit
+pub fn AimdLimiter::on_success(Self) -> Unit
+
 pub(all) struct BackoffPolicy {
   base_ms : Int
   cap_ms : Int
   max_retries : Int
 } derive(Eq, @debug.Debug)
+
+pub struct Bulkhead {
+  max_concurrent : Int
+  max_queue : Int
+  mut in_flight : Int
+  mut queued : Int
+  mut rejected_total : Int
+}
+pub fn Bulkhead::create(Int, Int) -> Self
+pub fn Bulkhead::in_flight_count(Self) -> Int
+pub fn Bulkhead::queued_count(Self) -> Int
+pub fn Bulkhead::rejected_count(Self) -> Int
+pub fn Bulkhead::release(Self) -> Bool
+pub fn Bulkhead::try_acquire(Self) -> Admission
 
 pub struct CircuitBreaker {
   failure_threshold : Int
@@ -40,6 +76,11 @@ pub(all) enum CircuitState {
   HalfOpen
 } derive(Eq, @debug.Debug)
 pub impl Show for CircuitState
+
+pub(all) struct HedgePolicy {
+  hedge_after_ms : Int
+  max_hedges : Int
+} derive(Eq, @debug.Debug)
 
 pub struct SlidingWindowLimiter {
   window_ms : Int

@@ -6,9 +6,17 @@ import {
 }
 
 // Values
+pub fn apply_unified(Array[String], Array[Hunk]) -> Array[String]?
+
 pub fn diff_lines(Array[String], Array[String]) -> Array[DiffOp]
 
 pub fn edit_distance(Array[DiffOp]) -> Int
+
+pub fn format_unified(Array[String], Array[String], context? : Int) -> String
+
+pub fn hunks_of(Array[DiffOp], context? : Int) -> Array[Hunk]
+
+pub fn parse_unified(String) -> Array[Hunk]?
 
 pub fn patch_apply(Array[String], Array[DiffOp]) -> Array[String]?
 
@@ -27,6 +35,14 @@ pub(all) enum DiffOp {
   Insert(String)
 } derive(Eq, @debug.Debug)
 pub impl Show for DiffOp
+
+pub(all) struct Hunk {
+  old_start : Int
+  old_count : Int
+  new_start : Int
+  new_count : Int
+  lines : Array[DiffOp]
+} derive(Eq, @debug.Debug)
 
 pub(all) struct SemVer {
   major : Int

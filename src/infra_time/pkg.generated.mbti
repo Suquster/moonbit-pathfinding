@@ -8,6 +8,8 @@ import {
 // Values
 pub fn civil_from_days(Int64) -> (Int, Int, Int)
 
+pub fn date_from_day_of_year(Int, Int) -> DateTime?
+
 pub fn datetime_from_epoch_seconds(Int64) -> DateTime
 
 pub fn days_from_civil(Int, Int, Int) -> Int64
@@ -17,6 +19,10 @@ pub fn days_in_month(Int, Int) -> Int
 pub fn format_iso8601(DateTime) -> String
 
 pub fn format_iso_date(DateTime) -> String
+
+pub fn format_iso_week_date(DateTime) -> String
+
+pub fn format_rfc3339_with_offset(DateTime, Int) -> String
 
 pub fn is_leap_year(Int) -> Bool
 
@@ -37,12 +43,39 @@ pub(all) struct DateTime {
   millis : Int
 } derive(Eq, @debug.Debug)
 pub fn DateTime::add_days(Self, Int) -> Self
+pub fn DateTime::add_duration(Self, Duration) -> Self
+pub fn DateTime::add_months(Self, Int) -> Self
 pub fn DateTime::add_seconds(Self, Int64) -> Self
+pub fn DateTime::add_years(Self, Int) -> Self
+pub fn DateTime::compare_to(Self, Self) -> Int
+pub fn DateTime::day_of_year(Self) -> Int
 pub fn DateTime::diff_seconds(Self, Self) -> Int64
+pub fn DateTime::is_after(Self, Self) -> Bool
+pub fn DateTime::is_before(Self, Self) -> Bool
 pub fn DateTime::is_valid(Self) -> Bool
+pub fn DateTime::iso_week_date(Self) -> (Int, Int, Int)
+pub fn DateTime::since(Self, Self) -> Duration
 pub fn DateTime::to_epoch_seconds(Self) -> Int64
 pub fn DateTime::weekday(Self) -> Int
 pub impl Show for DateTime
+
+pub(all) struct Duration {
+  millis : Int64
+} derive(Eq, @debug.Debug)
+pub fn Duration::abs(Self) -> Self
+pub fn Duration::add(Self, Self) -> Self
+pub fn Duration::neg(Self) -> Self
+pub fn Duration::of_days(Int64) -> Self
+pub fn Duration::of_hours(Int64) -> Self
+pub fn Duration::of_millis(Int64) -> Self
+pub fn Duration::of_minutes(Int64) -> Self
+pub fn Duration::of_seconds(Int64) -> Self
+pub fn Duration::sub(Self, Self) -> Self
+pub fn Duration::to_string(Self) -> String
+pub fn Duration::total_days(Self) -> Int64
+pub fn Duration::total_hours(Self) -> Int64
+pub fn Duration::total_minutes(Self) -> Int64
+pub fn Duration::total_seconds(Self) -> Int64
 
 // Type aliases
 

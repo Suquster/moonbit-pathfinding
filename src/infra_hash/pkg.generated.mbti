@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_hash"
+
+// Values
+pub fn crc32(Array[Int]) -> UInt
+
+pub fn digest_hex(Array[Int]) -> String
+
+pub fn fnv1a_32(Array[Int]) -> UInt
+
+pub fn fnv1a_64(Array[Int]) -> UInt64
+
+pub fn hmac_sha256(Array[Int], Array[Int]) -> Array[Int]
+
+pub fn sha256(Array[Int]) -> Array[Int]
+
+pub fn sha256_hex(String) -> String
+
+pub fn utf8_bytes(String) -> Array[Int]
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

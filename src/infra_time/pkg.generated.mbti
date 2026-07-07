@@ -1,0 +1,50 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_time"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn civil_from_days(Int64) -> (Int, Int, Int)
+
+pub fn datetime_from_epoch_seconds(Int64) -> DateTime
+
+pub fn days_from_civil(Int, Int, Int) -> Int64
+
+pub fn days_in_month(Int, Int) -> Int
+
+pub fn format_iso8601(DateTime) -> String
+
+pub fn format_iso_date(DateTime) -> String
+
+pub fn is_leap_year(Int) -> Bool
+
+pub fn parse_iso8601(String) -> DateTime?
+
+pub fn weekday_from_days(Int64) -> Int
+
+// Errors
+
+// Types and methods
+pub(all) struct DateTime {
+  year : Int
+  month : Int
+  day : Int
+  hour : Int
+  minute : Int
+  second : Int
+  millis : Int
+} derive(Eq, @debug.Debug)
+pub fn DateTime::add_days(Self, Int) -> Self
+pub fn DateTime::add_seconds(Self, Int64) -> Self
+pub fn DateTime::diff_seconds(Self, Self) -> Int64
+pub fn DateTime::is_valid(Self) -> Bool
+pub fn DateTime::to_epoch_seconds(Self) -> Int64
+pub fn DateTime::weekday(Self) -> Int
+pub impl Show for DateTime
+
+// Type aliases
+
+// Traits
+

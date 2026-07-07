@@ -368,7 +368,16 @@ pub fn semver_compare(a : SemVer, b : SemVer) -> Int {
     if yd {
       return 1
     }
-    return if x < y { -1 } else { 1 }
+    // 字母段按 ASCII 逐字符比较（不依赖 String 内建序）。
+    let xs = x.iter().to_array()
+    let ys = y.iter().to_array()
+    let m = if xs.length() < ys.length() { xs.length() } else { ys.length() }
+    for j in 0..<m {
+      if xs[j] != ys[j] {
+        return if xs[j] < ys[j] { -1 } else { 1 }
+      }
+    }
+    return if xs.length() < ys.length() { -1 } else { 1 }
   }
   // 前缀相同，段多者优先级高。
   if a.prerelease.length() == b.prerelease.length() {

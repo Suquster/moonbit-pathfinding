@@ -773,3 +773,117 @@ pub fn sha224_hex(s : String) -> String {
 pub fn sha384_hex(s : String) -> String {
   digest_hex(sha384(utf8_bytes(s)))
 }
+
+// ───────────────────────────── CRC-32C（Castagnoli） ─────────────────────
+
+///|
+/// CRC-32C 查找表（反射多项式 0x82F63B78，Castagnoli；iSCSI/ext4/
+/// LevelDB/gRPC 同款）。
+let crc32c_table : Array[UInt] = crc32c_make_table()
+
+///|
+/// 构建 CRC-32C 表。
+fn crc32c_make_table() -> Array[UInt] {
+  let table : Array[UInt] = Array::make(256, 0U)
+  for n in 0..<256 {
+    let mut c = n.reinterpret_as_uint()
+    for _ in 0..<8 {
+      if (c & 1U) != 0U {
+        c = 0x82F63B78U ^ (c >> 1)
+      } else {
+        c = c >> 1
+      }
+    }
+    table[n] = c
+  }
+  table
+}
+
+///|
+/// CRC-32C（Castagnoli 多项式，RFC 3720 iSCSI）：初值/终值取反、反射。
+/// check("123456789") = 0xE3069283。
+pub fn crc32c(data : Array[Int]) -> UInt {
+  let mut c = 0xFFFFFFFFU
+  for b in data {
+    let idx = ((c ^ (b & 0xFF).reinterpret_as_uint()) & 0xFFU).reinterpret_as_int()
+    c = crc32c_table[idx] ^ (c >> 8)
+  }
+  c ^ 0xFFFFFFFFU
+}
+
+// ───────────────────────────── xxHash64 ──────────────────────────────────
+
+///|
+/// 读取小端 64 位。
+fn xxh_read64(data : Array[Int], off : Int) -> UInt64 {
+  let mut v = 0UL
+  for j in 0..<8 {
+    v = v | ((data[off + j] & 0xFF).to_uint64() << (j * 8))
+  }
+  v
+}
+
+///|
+/// 64 位循环左移。
+fn xxh_rotl64(x : UInt64, n : Int) -> UInt64 {
+  (x << n) | (x >> (64 - n))
+}
+
+///|
+/// xxHash64（Collet，xxhash.com 规范）：v0.8 参考实现同款常量与流程，
+/// 生产级非加密哈希（LZ4/zstd 校验、数据库分片同款家族）。
+pub fn xxhash64(data : Array[Int], seed : UInt64) -> UInt64 {
+  let p1 = 0x9E3779B185EBCA87UL
+  let p2 = 0xC2B2AE3D27D4EB4FUL
+  let p3 = 0x165667B19E3779F9UL
+  let p4 = 0x85EBCA77C2B2AE63UL
+  let p5 = 0x27D4EB2F165667C5UL
+  let n = data.length()
+  let mut off = 0
+  let mut h : UInt64 = 0UL
+  if n >= 32 {
+    let mut v1 = seed + p1 + p2
+    let mut v2 = seed + p2
+    let mut v3 = seed
+    let mut v4 = seed - p1
+    while n - off >= 32 {
+      v1 = xxh_rotl64(v1 + xxh_read64(data, off) * p2, 31) * p1
+      v2 = xxh_rotl64(v2 + xxh_read64(data, off + 8) * p2, 31) * p1
+      v3 = xxh_rotl64(v3 + xxh_read64(data, off + 16) * p2, 31) * p1
+      v4 = xxh_rotl64(v4 + xxh_read64(data, off + 24) * p2, 31) * p1
+      off = off + 32
+    }
+    h = xxh_rotl64(v1, 1) +
+      xxh_rotl64(v2, 7) +
+      xxh_rotl64(v3, 12) +
+      xxh_rotl64(v4, 18)
+    let merge = fn(acc : UInt64, v : UInt64) -> UInt64 {
+      (acc ^ (xxh_rotl64(v * p2, 31) * p1)) * p1 + p4
+    }
+    h = merge(h, v1)
+    h = merge(h, v2)
+    h = merge(h, v3)
+    h = merge(h, v4)
+  } else {
+    h = seed + p5
+  }
+  h = h + n.to_uint64()
+  while n - off >= 8 {
+    let k = xxh_rotl64(xxh_read64(data, off) * p2, 31) * p1
+    h = xxh_rotl64(h ^ k, 27) * p1 + p4
+    off = off + 8
+  }
+  if n - off >= 4 {
+    let k = xxh_read32(data, off).to_uint64()
+    h = xxh_rotl64(h ^ (k * p1), 23) * p2 + p3
+    off = off + 4
+  }
+  while off < n {
+    h = xxh_rotl64(h ^ ((data[off] & 0xFF).to_uint64() * p5), 11) * p1
+    off = off + 1
+  }
+  h = (h ^ (h >> 33)) * p2
+  h = (h ^ (h >> 29)) * p3
+  h = h ^ (h >> 32)
+  h
+}

@@ -97,6 +97,18 @@ pub fn RateBreaker::failure_rate(Self) -> Int
 pub fn RateBreaker::is_open(Self) -> Bool
 pub fn RateBreaker::record(Self, Bool) -> Bool
 
+pub struct RetryBudget {
+  retry_percent_permille : Int
+  min_deposit_per_sec : Int
+  ttl_seconds : Int
+  mut micro_tokens : Int64
+  mut last_tick_sec : Int64
+}
+pub fn RetryBudget::balance(Self, Int64) -> Int
+pub fn RetryBudget::create(retry_percent_permille? : Int, min_deposit_per_sec? : Int, ttl_seconds? : Int) -> Self
+pub fn RetryBudget::deposit(Self, Int64) -> Unit
+pub fn RetryBudget::try_withdraw(Self, Int64) -> Bool
+
 pub struct SlidingWindowLimiter {
   window_ms : Int
   max_events : Int
@@ -106,6 +118,19 @@ pub struct SlidingWindowLimiter {
 pub fn SlidingWindowLimiter::create(Int, Int) -> Self
 pub fn SlidingWindowLimiter::in_flight(Self, Int64) -> Int
 pub fn SlidingWindowLimiter::try_acquire(Self, Int64) -> Bool
+
+pub struct TimeRateBreaker {
+  window_seconds : Int
+  minimum_calls : Int
+  failure_rate_permille : Int
+  bucket_calls : Array[Int]
+  bucket_failures : Array[Int]
+  bucket_epoch : Array[Int64]
+  mut open : Bool
+}
+pub fn TimeRateBreaker::create(Int, Int, Int) -> Self
+pub fn TimeRateBreaker::is_open(Self, Int64) -> Bool
+pub fn TimeRateBreaker::record(Self, Int64, Bool) -> Bool
 
 pub struct TokenBucket {
   capacity : Int

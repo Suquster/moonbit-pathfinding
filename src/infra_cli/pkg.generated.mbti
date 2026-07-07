@@ -6,6 +6,10 @@ import {
 }
 
 // Values
+pub fn completion_bash(Command) -> String
+
+pub fn completion_zsh(Command) -> String
+
 pub fn dl_distance(String, String) -> Int
 
 pub fn expand_bundled_shorts(Array[String], Array[ArgSpec]) -> Array[String]

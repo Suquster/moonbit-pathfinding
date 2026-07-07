@@ -1,0 +1,15 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_compress
+//
+// 压缩基础设施（B4，填补 MoonBit 生态空白）：
+// DEFLATE（RFC 1951：stored/fixed/dynamic Huffman 解码，
+// LZ77 哈希链 + fixed Huffman 编码）与 gzip（RFC 1952：
+// 头部解析、CRC-32 与 ISIZE 校验）。纯计算、三后端逐位一致。
+//
+// 生产代码仅依赖 @infra_hash（CRC-32）；PBT 仅测试期依赖 @infra_pbt。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_hash",
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

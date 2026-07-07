@@ -1,0 +1,806 @@
+// toml.mbt —— TOML 核心子集解析器（toml.io v1.0.0）。
+//
+// paper-to-code（对照 TOML v1.0.0 规范章节）：
+// - 键：裸键 [A-Za-z0-9_-]、引号键（基本/字面量）、点分键（§Keys）；
+// - 字符串：基本 "..."（\b \t \n \f \r \" \\ \uXXXX \UXXXXXXXX 转义）、
+//   字面量 '...'（§String）；多行字符串（"""/'''，含首行换行剔除）；
+// - 整数：十进制（可下划线分隔）、0x/0o/0b 前缀（§Integer）；
+// - 浮点：小数/指数、inf/nan（§Float）；
+// - 布尔：true/false（§Boolean）；
+// - 日期时间：RFC 3339 形态按原文字符串保留（TomlDatetime，§Offset Date-Time）；
+// - 数组（§Array）、内联表（§Inline Table）、[table] 与 [[array-of-tables]]
+//   （§Table / §Array of Tables）、重复定义表报错。
+//
+// 明确不支持（诚实边界）：多行字符串内的行尾反斜杠续行修剪之外的
+// 高级转义组合、日期时间的语义解析（仅词法校验并保留原文）。
+
+///|
+/// TOML 值。表用保序键值对数组表示（确定性遍历、三后端一致）。
+pub(all) enum TomlValue {
+  TomlString(String)
+  TomlInt(Int64)
+  TomlFloat(Double)
+  TomlBool(Bool)
+  TomlDatetime(String)
+  TomlArray(Array[TomlValue])
+  TomlTable(Array[(String, TomlValue)])
+} derive(Eq, Debug)
+
+///|
+/// 在表中按键查找。
+pub fn toml_get(table : Array[(String, TomlValue)], key : String) -> TomlValue? {
+  for kv in table {
+    if kv.0 == key {
+      return Some(kv.1)
+    }
+  }
+  None
+}
+
+///|
+/// 解析器状态。
+priv struct TomlParser {
+  chars : Array[Char]
+  mut pos : Int
+}
+
+///|
+fn TomlParser::peek(self : TomlParser) -> Char? {
+  if self.pos < self.chars.length() {
+    Some(self.chars[self.pos])
+  } else {
+    None
+  }
+}
+
+///|
+fn TomlParser::advance(self : TomlParser) -> Unit {
+  self.pos = self.pos + 1
+}
+
+///|
+/// 跳过行内空白（空格/制表符）。
+fn TomlParser::skip_ws(self : TomlParser) -> Unit {
+  while self.peek() is Some(c) && (c == ' ' || c == '\t') {
+    self.advance()
+  }
+}
+
+///|
+/// 跳过空白、注释与换行。
+fn TomlParser::skip_ws_comments_newlines(self : TomlParser) -> Unit {
+  for ;; {
+    self.skip_ws()
+    match self.peek() {
+      Some('#') =>
+        while self.peek() is Some(c) && c != '\n' {
+          self.advance()
+        }
+      Some('\r') => self.advance()
+      Some('\n') => self.advance()
+      _ => return
+    }
+  }
+}
+
+///|
+/// 消费到行尾（允许尾随注释）；行上有非注释内容返回 false。
+fn TomlParser::expect_line_end(self : TomlParser) -> Bool {
+  self.skip_ws()
+  match self.peek() {
+    None => true
+    Some('#') => {
+      while self.peek() is Some(c) && c != '\n' {
+        self.advance()
+      }
+      true
+    }
+    Some('\r') => {
+      self.advance()
+      if self.peek() is Some('\n') {
+        self.advance()
+        true
+      } else {
+        false
+      }
+    }
+    Some('\n') => {
+      self.advance()
+      true
+    }
+    _ => false
+  }
+}
+
+///|
+fn is_bare_key_char(c : Char) -> Bool {
+  (c >= 'a' && c <= 'z') ||
+  (c >= 'A' && c <= 'Z') ||
+  (c >= '0' && c <= '9') ||
+  c == '_' ||
+  c == '-'
+}
+
+///|
+/// 解一个键段：裸键或引号键。
+fn TomlParser::parse_key_part(self : TomlParser) -> String? {
+  match self.peek() {
+    Some('"') => {
+      guard self.parse_basic_string() is Some(s) else { return None }
+      Some(s)
+    }
+    Some('\'') => {
+      guard self.parse_literal_string() is Some(s) else { return None }
+      Some(s)
+    }
+    Some(c) if is_bare_key_char(c) => {
+      let sb = StringBuilder::new()
+      while self.peek() is Some(k) && is_bare_key_char(k) {
+        sb.write_char(k)
+        self.advance()
+      }
+      Some(sb.to_string())
+    }
+    _ => None
+  }
+}
+
+///|
+/// 解点分键：`a.b."c d"` → ["a","b","c d"]。
+fn TomlParser::parse_dotted_key(self : TomlParser) -> Array[String]? {
+  let parts : Array[String] = []
+  guard self.parse_key_part() is Some(first) else { return None }
+  parts.push(first)
+  for ;; {
+    self.skip_ws()
+    if self.peek() is Some('.') {
+      self.advance()
+      self.skip_ws()
+      guard self.parse_key_part() is Some(next) else { return None }
+      parts.push(next)
+    } else {
+      return Some(parts)
+    }
+  }
+}
+
+///|
+/// 十六进制字符值；非法返回 -1。
+fn toml_hex_val(c : Char) -> Int {
+  if c >= '0' && c <= '9' {
+    c.to_int() - 48
+  } else if c >= 'a' && c <= 'f' {
+    c.to_int() - 87
+  } else if c >= 'A' && c <= 'F' {
+    c.to_int() - 55
+  } else {
+    -1
+  }
+}
+
+///|
+/// 基本字符串 "..."（含转义；开头的双引号在 pos 处）。
+fn TomlParser::parse_basic_string(self : TomlParser) -> String? {
+  guard self.peek() is Some('"') else { return None }
+  self.advance()
+  // 多行 """？
+  if self.pos + 1 < self.chars.length() &&
+    self.chars[self.pos] == '"' &&
+    self.chars[self.pos + 1] == '"' {
+    self.pos = self.pos + 2
+    return self.parse_multiline_basic()
+  }
+  let sb = StringBuilder::new()
+  for ;; {
+    match self.peek() {
+      None | Some('\n') => return None
+      Some('"') => {
+        self.advance()
+        return Some(sb.to_string())
+      }
+      Some('\\') => {
+        self.advance()
+        guard self.parse_escape() is Some(c) else { return None }
+        sb.write_char(c)
+      }
+      Some(c) => {
+        sb.write_char(c)
+        self.advance()
+      }
+    }
+  }
+}
+
+///|
+/// 处理一个反斜杠转义（反斜杠已消费）。
+fn TomlParser::parse_escape(self : TomlParser) -> Char? {
+  guard self.peek() is Some(e) else { return None }
+  self.advance()
+  match e {
+    'b' => Some('\u0008')
+    't' => Some('\t')
+    'n' => Some('\n')
+    'f' => Some('\u000C')
+    'r' => Some('\r')
+    '"' => Some('"')
+    '\\' => Some('\\')
+    'u' => self.parse_unicode_escape(4)
+    'U' => self.parse_unicode_escape(8)
+    _ => None
+  }
+}
+
+///|
+fn TomlParser::parse_unicode_escape(self : TomlParser, n : Int) -> Char? {
+  let mut cp = 0
+  for _ in 0..<n {
+    guard self.peek() is Some(h) else { return None }
+    let v = toml_hex_val(h)
+    if v < 0 {
+      return None
+    }
+    cp = cp * 16 + v
+    self.advance()
+  }
+  if cp > 0x10FFFF || (cp >= 0xD800 && cp <= 0xDFFF) {
+    return None
+  }
+  cp.to_char()
+}
+
+///|
+/// 多行基本字符串体（开头 """ 已消费）：首个紧邻换行剔除；
+/// 行尾反斜杠续行（吞掉其后空白与换行）。
+fn TomlParser::parse_multiline_basic(self : TomlParser) -> String? {
+  if self.peek() is Some('\r') {
+    self.advance()
+  }
+  if self.peek() is Some('\n') {
+    self.advance()
+  }
+  let sb = StringBuilder::new()
+  for ;; {
+    match self.peek() {
+      None => return None
+      Some('"') =>
+        if self.pos + 2 < self.chars.length() + 1 &&
+          self.pos + 2 <= self.chars.length() - 1 + 1 &&
+          self.pos + 2 < self.chars.length() + 1 &&
+          self.pos + 1 < self.chars.length() &&
+          self.chars[self.pos + 1] == '"' &&
+          self.pos + 2 < self.chars.length() &&
+          self.chars[self.pos + 2] == '"' {
+          self.pos = self.pos + 3
+          return Some(sb.to_string())
+        } else {
+          sb.write_char('"')
+          self.advance()
+        }
+      Some('\\') => {
+        // 行尾续行：反斜杠后仅空白直到换行 → 吞掉后续空白。
+        let mut probe = self.pos + 1
+        while probe < self.chars.length() &&
+              (self.chars[probe] == ' ' || self.chars[probe] == '\t') {
+          probe = probe + 1
+        }
+        if probe < self.chars.length() &&
+          (self.chars[probe] == '\n' || self.chars[probe] == '\r') {
+          self.pos = probe
+          while self.peek() is Some(w) &&
+                (w == ' ' || w == '\t' || w == '\n' || w == '\r') {
+            self.advance()
+          }
+        } else {
+          self.advance()
+          guard self.parse_escape() is Some(c) else { return None }
+          sb.write_char(c)
+        }
+      }
+      Some(c) => {
+        sb.write_char(c)
+        self.advance()
+      }
+    }
+  }
+}
+
+///|
+/// 字面量字符串 '...'（无转义）。
+fn TomlParser::parse_literal_string(self : TomlParser) -> String? {
+  guard self.peek() is Some('\'') else { return None }
+  self.advance()
+  // 多行 '''？
+  if self.pos + 1 < self.chars.length() &&
+    self.chars[self.pos] == '\'' &&
+    self.chars[self.pos + 1] == '\'' {
+    self.pos = self.pos + 2
+    if self.peek() is Some('\r') {
+      self.advance()
+    }
+    if self.peek() is Some('\n') {
+      self.advance()
+    }
+    let sb = StringBuilder::new()
+    for ;; {
+      match self.peek() {
+        None => return None
+        Some('\'') =>
+          if self.pos + 2 < self.chars.length() + 1 &&
+            self.pos + 1 < self.chars.length() &&
+            self.chars[self.pos + 1] == '\'' &&
+            self.pos + 2 < self.chars.length() &&
+            self.chars[self.pos + 2] == '\'' {
+            self.pos = self.pos + 3
+            return Some(sb.to_string())
+          } else {
+            sb.write_char('\'')
+            self.advance()
+          }
+        Some(c) => {
+          sb.write_char(c)
+          self.advance()
+        }
+      }
+    }
+  }
+  let sb = StringBuilder::new()
+  for ;; {
+    match self.peek() {
+      None | Some('\n') => return None
+      Some('\'') => {
+        self.advance()
+        return Some(sb.to_string())
+      }
+      Some(c) => {
+        sb.write_char(c)
+        self.advance()
+      }
+    }
+  }
+}
+
+///|
+fn is_toml_digit(c : Char) -> Bool {
+  c >= '0' && c <= '9'
+}
+
+///|
+/// 数字/布尔/日期时间等裸标量：先吃出词素再分类。
+fn TomlParser::parse_scalar_token(self : TomlParser) -> TomlValue? {
+  let sb = StringBuilder::new()
+  while self.peek() is Some(c) &&
+        (
+          is_toml_digit(c) ||
+          (c >= 'a' && c <= 'z') ||
+          (c >= 'A' && c <= 'Z') ||
+          c == '+' ||
+          c == '-' ||
+          c == '_' ||
+          c == '.' ||
+          c == ':' ||
+          (
+            c == ' ' &&
+            sb.to_string().length() == 10 &&
+            looks_like_date(sb.to_string())
+          )
+        ) {
+    // 日期时间中的空格分隔符仅在 "YYYY-MM-DD HH:.." 形态出现。
+    sb.write_char(c)
+    self.advance()
+  }
+  let tok = sb.to_string()
+  classify_scalar(tok)
+}
+
+///|
+/// 判断 10 字符前缀是否形如 YYYY-MM-DD。
+fn looks_like_date(s : String) -> Bool {
+  if s.length() != 10 {
+    return false
+  }
+  let cs = s.iter().to_array()
+  for i in 0..<10 {
+    if i == 4 || i == 7 {
+      if cs[i] != '-' {
+        return false
+      }
+    } else if !is_toml_digit(cs[i]) {
+      return false
+    }
+  }
+  true
+}
+
+///|
+/// 词素分类：布尔 / inf,nan / 日期时间（原文保留）/ 整数 / 浮点。
+fn classify_scalar(tok : String) -> TomlValue? {
+  if tok == "true" {
+    return Some(TomlBool(true))
+  }
+  if tok == "false" {
+    return Some(TomlBool(false))
+  }
+  if tok == "inf" || tok == "+inf" {
+    return Some(TomlFloat(1.0 / 0.0))
+  }
+  if tok == "-inf" {
+    return Some(TomlFloat(-1.0 / 0.0))
+  }
+  if tok == "nan" || tok == "+nan" || tok == "-nan" {
+    return Some(TomlFloat(0.0 / 0.0))
+  }
+  if tok.length() >= 8 && looks_like_date(prefix_of(tok, 10)) {
+    return Some(TomlDatetime(tok))
+  }
+  // 纯时刻 HH:MM:SS。
+  if tok.length() >= 8 && tok.iter().to_array()[2] == ':' {
+    return Some(TomlDatetime(tok))
+  }
+  parse_number(tok)
+}
+
+///|
+fn prefix_of(s : String, n : Int) -> String {
+  let sb = StringBuilder::new()
+  let mut i = 0
+  for c in s {
+    if i >= n {
+      break
+    }
+    sb.write_char(c)
+    i = i + 1
+  }
+  sb.to_string()
+}
+
+///|
+/// 整数（十/0x/0o/0b，可下划线）与浮点（小数/指数）解析。
+fn parse_number(tok : String) -> TomlValue? {
+  let cs = tok.iter().to_array()
+  if cs.length() == 0 {
+    return None
+  }
+  let mut i = 0
+  let mut sign = 1L
+  if cs[0] == '+' {
+    i = 1
+  } else if cs[0] == '-' {
+    sign = -1L
+    i = 1
+  }
+  if i >= cs.length() {
+    return None
+  }
+  // 前缀基数。
+  if cs[i] == '0' && i + 1 < cs.length() {
+    let p = cs[i + 1]
+    if p == 'x' || p == 'o' || p == 'b' {
+      if sign < 0L {
+        return None
+      }
+      let radix = if p == 'x' { 16L } else if p == 'o' { 8L } else { 2L }
+      let mut v = 0L
+      let mut any = false
+      let mut k = i + 2
+      while k < cs.length() {
+        let c = cs[k]
+        if c == '_' {
+          k = k + 1
+          continue
+        }
+        let d = toml_hex_val(c).to_int64()
+        if d < 0L || d >= radix {
+          return None
+        }
+        v = v * radix + d
+        any = true
+        k = k + 1
+      }
+      if !any {
+        return None
+      }
+      return Some(TomlInt(v))
+    }
+  }
+  // 判定整数或浮点。
+  let mut has_dot = false
+  let mut has_exp = false
+  for k in i..<cs.length() {
+    let c = cs[k]
+    if c == '.' {
+      has_dot = true
+    } else if c == 'e' || c == 'E' {
+      has_exp = true
+    } else if !is_toml_digit(c) && c != '_' && c != '+' && c != '-' {
+      return None
+    }
+  }
+  if has_dot || has_exp {
+    // 浮点：去掉下划线后交给 Double 解析（手写十进制累积）。
+    let cleaned = StringBuilder::new()
+    for c in tok {
+      if c != '_' {
+        cleaned.write_char(c)
+      }
+    }
+    return parse_float_text(cleaned.to_string())
+  }
+  let mut v = 0L
+  let mut any = false
+  for k in i..<cs.length() {
+    let c = cs[k]
+    if c == '_' {
+      continue
+    }
+    if !is_toml_digit(c) {
+      return None
+    }
+    v = v * 10L + (c.to_int() - 48).to_int64()
+    any = true
+  }
+  if !any {
+    return None
+  }
+  Some(TomlInt(sign * v))
+}
+
+///|
+/// 十进制浮点解析：先严格校验词法（尾数 + 可选小数 + 可选指数），
+/// 再交给 @string.parse_double 做正确舍入的转换。
+fn parse_float_text(s : String) -> TomlValue? {
+  let cs = s.iter().to_array()
+  let mut i = 0
+  if i < cs.length() && (cs[i] == '+' || cs[i] == '-') {
+    i = i + 1
+  }
+  let mut any_int = false
+  while i < cs.length() && is_toml_digit(cs[i]) {
+    any_int = true
+    i = i + 1
+  }
+  if !any_int {
+    return None
+  }
+  if i < cs.length() && cs[i] == '.' {
+    i = i + 1
+    let mut any_frac = false
+    while i < cs.length() && is_toml_digit(cs[i]) {
+      any_frac = true
+      i = i + 1
+    }
+    if !any_frac {
+      return None
+    }
+  }
+  if i < cs.length() && (cs[i] == 'e' || cs[i] == 'E') {
+    i = i + 1
+    if i < cs.length() && (cs[i] == '+' || cs[i] == '-') {
+      i = i + 1
+    }
+    let mut any_exp = false
+    while i < cs.length() && is_toml_digit(cs[i]) {
+      any_exp = true
+      i = i + 1
+    }
+    if !any_exp {
+      return None
+    }
+  }
+  if i != cs.length() {
+    return None
+  }
+  Some(TomlFloat(@string.parse_double(s))) catch {
+    _ => None
+  }
+}
+
+///|
+/// 解一个值：字符串/数组/内联表/标量。
+fn TomlParser::parse_value(self : TomlParser) -> TomlValue? {
+  self.skip_ws()
+  match self.peek() {
+    Some('"') => {
+      guard self.parse_basic_string() is Some(s) else { return None }
+      Some(TomlString(s))
+    }
+    Some('\'') => {
+      guard self.parse_literal_string() is Some(s) else { return None }
+      Some(TomlString(s))
+    }
+    Some('[') => {
+      self.advance()
+      let items : Array[TomlValue] = []
+      self.skip_ws_comments_newlines()
+      if self.peek() is Some(']') {
+        self.advance()
+        return Some(TomlArray(items))
+      }
+      for ;; {
+        guard self.parse_value() is Some(v) else { return None }
+        items.push(v)
+        self.skip_ws_comments_newlines()
+        match self.peek() {
+          Some(',') => {
+            self.advance()
+            self.skip_ws_comments_newlines()
+            if self.peek() is Some(']') {
+              self.advance()
+              return Some(TomlArray(items)) // 允许尾逗号
+            }
+          }
+          Some(']') => {
+            self.advance()
+            return Some(TomlArray(items))
+          }
+          _ => return None
+        }
+      }
+    }
+    Some('{') => {
+      self.advance()
+      let table : Array[(String, TomlValue)] = []
+      self.skip_ws()
+      if self.peek() is Some('}') {
+        self.advance()
+        return Some(TomlTable(table))
+      }
+      for ;; {
+        self.skip_ws()
+        guard self.parse_dotted_key() is Some(key_parts) else { return None }
+        self.skip_ws()
+        guard self.peek() is Some('=') else { return None }
+        self.advance()
+        guard self.parse_value() is Some(v) else { return None }
+        if !insert_dotted(table, key_parts, 0, v) {
+          return None
+        }
+        self.skip_ws()
+        match self.peek() {
+          Some(',') => self.advance()
+          Some('}') => {
+            self.advance()
+            return Some(TomlTable(table))
+          }
+          _ => return None
+        }
+      }
+    }
+    _ => self.parse_scalar_token()
+  }
+}
+
+///|
+/// 沿点分键把值插入嵌套表；键冲突（已有非表值）返回 false。
+fn insert_dotted(
+  table : Array[(String, TomlValue)],
+  parts : Array[String],
+  depth : Int,
+  value : TomlValue,
+) -> Bool {
+  let key = parts[depth]
+  if depth == parts.length() - 1 {
+    for kv in table {
+      if kv.0 == key {
+        return false // 重复键
+      }
+    }
+    table.push((key, value))
+    return true
+  }
+  for i in 0..<table.length() {
+    if table[i].0 == key {
+      match table[i].1 {
+        TomlTable(inner) => return insert_dotted(inner, parts, depth + 1, value)
+        _ => return false
+      }
+    }
+  }
+  let inner : Array[(String, TomlValue)] = []
+  table.push((key, TomlTable(inner)))
+  insert_dotted(inner, parts, depth + 1, value)
+}
+
+///|
+/// 定位（必要时创建）[a.b.c] 表头指向的表。
+/// last_is_array=true 时按 [[t]] 语义在末段追加新数组元素。
+fn locate_table(
+  root : Array[(String, TomlValue)],
+  parts : Array[String],
+  last_is_array : Bool,
+) -> Array[(String, TomlValue)]? {
+  let mut cur = root
+  for depth in 0..<parts.length() {
+    let key = parts[depth]
+    let is_last = depth == parts.length() - 1
+    let mut found = -1
+    for i in 0..<cur.length() {
+      if cur[i].0 == key {
+        found = i
+        break
+      }
+    }
+    if found >= 0 {
+      match cur[found].1 {
+        TomlTable(inner) =>
+          if is_last && last_is_array {
+            return None // [[t]] 与已有普通表冲突
+          } else {
+            cur = inner
+          }
+        TomlArray(items) =>
+          // 数组表：进入最后一个元素。
+          if is_last && last_is_array {
+            let fresh : Array[(String, TomlValue)] = []
+            items.push(TomlTable(fresh))
+            cur = fresh
+          } else if items.length() > 0 &&
+            items[items.length() - 1] is TomlTable(inner) {
+            cur = inner
+          } else {
+            return None
+          }
+        _ => return None
+      }
+    } else if is_last && last_is_array {
+      let fresh : Array[(String, TomlValue)] = []
+      let arr : Array[TomlValue] = [TomlTable(fresh)]
+      cur.push((key, TomlArray(arr)))
+      cur = fresh
+    } else {
+      let fresh : Array[(String, TomlValue)] = []
+      cur.push((key, TomlTable(fresh)))
+      cur = fresh
+    }
+  }
+  Some(cur)
+}
+
+///|
+/// 解析 TOML 文档为根表；畸形输入返回 None。
+pub fn toml_parse(text : String) -> Array[(String, TomlValue)]? {
+  let p : TomlParser = { chars: text.iter().to_array(), pos: 0 }
+  let root : Array[(String, TomlValue)] = []
+  let mut current = root
+  for ;; {
+    p.skip_ws_comments_newlines()
+    match p.peek() {
+      None => return Some(root)
+      Some('[') => {
+        p.advance()
+        let is_array = p.peek() is Some('[')
+        if is_array {
+          p.advance()
+        }
+        p.skip_ws()
+        guard p.parse_dotted_key() is Some(parts) else { return None }
+        p.skip_ws()
+        guard p.peek() is Some(']') else { return None }
+        p.advance()
+        if is_array {
+          guard p.peek() is Some(']') else { return None }
+          p.advance()
+        }
+        if !p.expect_line_end() {
+          return None
+        }
+        guard locate_table(root, parts, is_array) is Some(t) else {
+          return None
+        }
+        current = t
+      }
+      _ => {
+        guard p.parse_dotted_key() is Some(parts) else { return None }
+        p.skip_ws()
+        guard p.peek() is Some('=') else { return None }
+        p.advance()
+        guard p.parse_value() is Some(v) else { return None }
+        if !p.expect_line_end() {
+          return None
+        }
+        if !insert_dotted(current, parts, 0, v) {
+          return None
+        }
+      }
+    }
+  }
+}

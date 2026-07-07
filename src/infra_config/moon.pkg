@@ -1,0 +1,14 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_config
+//
+// 配置解析基础设施（B5，填补 MoonBit 生态空白）：
+// TOML 核心子集（toml.io v1.0.0：基本/字面量字符串、整数
+// 十/十六/八/二进制、浮点、布尔、日期时间原文保留、数组、
+// 内联表、[table]/[[array-of-tables]]、点分键、注释、转义）
+// 与 INI（节/键值/;# 注释）。解析总体函数不 panic，
+// 畸形输入返回 None。叶子包：生产代码零依赖。
+import {
+  "moonbitlang/core/string",
+}
+
+import {
+} for "test"

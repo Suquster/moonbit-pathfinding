@@ -1,0 +1,33 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_config"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn ini_get(Array[(String, Array[(String, String)])], String, String) -> String?
+
+pub fn ini_parse(String) -> Array[(String, Array[(String, String)])]?
+
+pub fn toml_get(Array[(String, TomlValue)], String) -> TomlValue?
+
+pub fn toml_parse(String) -> Array[(String, TomlValue)]?
+
+// Errors
+
+// Types and methods
+pub(all) enum TomlValue {
+  TomlString(String)
+  TomlInt(Int64)
+  TomlFloat(Double)
+  TomlBool(Bool)
+  TomlDatetime(String)
+  TomlArray(Array[TomlValue])
+  TomlTable(Array[(String, TomlValue)])
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+

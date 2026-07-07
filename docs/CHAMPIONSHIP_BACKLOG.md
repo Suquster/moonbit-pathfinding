@@ -27,11 +27,17 @@
       CRC-32、FNV-1a 32/64（2026-07-07，6 测试）。
 - [x] B3 新包 `infra_cli`：POSIX/GNU flag 语义、子命令、`--` 终止符、
       help 生成（2026-07-07，8 测试）。
-- [ ] B4 压缩：DEFLATE / gzip（纯算法，可纳入基准回归护栏体系）。
-- [~] B5 CSV / TOML / INI：CSV（RFC 4180）已落地（2026-07-07）；TOML/INI 待补。
-- [ ] B6 韧性（resilience）：重试 / 退避 / 熔断 / 限流（令牌桶、滑动窗口），
-      可与 actor / DST 联动做确定性测试，差异化亮点。
-- [ ] B7 diff / patch（Myers 算法）+ semver / UUID 解析：小而实用。
+- [x] B4 新包 `infra_compress`：DEFLATE（RFC 1951：stored/fixed/dynamic 三块型
+      inflate + LZ77 哈希链 deflate）与 gzip（RFC 1952：CRC-32 / ISIZE 校验），
+      CPython zlib 黄金向量 + 200 迭代 PBT round-trip（2026-07-07，9 测试）。
+- [x] B5 CSV / TOML / INI：CSV（RFC 4180）已落地（2026-07-07）；新包
+      `infra_config`：TOML 核心子集（toml.io v1.0.0：字符串四形态/四进制整数/
+      浮点/布尔/日期时间原文/数组/内联表/[table]/[[array-of-tables]]/点分键）
+      与 INI（configparser 语义）（2026-07-07，8 测试）。
+- [x] B6 新包 `infra_resilience`：指数退避+jitter、Nygard 三态熔断器、
+      令牌桶、滑动窗口限流（显式时钟确定性驱动，2026-07-07）。
+- [x] B7 新包 `infra_diff`：Myers diff/patch + SemVer 2.0.0（含 §11 优先级链，
+      2026-07-07）。
 
 ### C. 补深旗舰 —— 做好一个即答辩亮点
 

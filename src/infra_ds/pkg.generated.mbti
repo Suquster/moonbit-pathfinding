@@ -60,7 +60,7 @@ pub struct LruCache[K, V] {
   free : Array[Int]
 }
 pub fn[K, V] LruCache::cap(Self[K, V]) -> Int
-pub fn[K, V] LruCache::create(Int) -> Self[K, V]
+pub fn[K : Eq + Hash, V] LruCache::create(Int) -> Self[K, V]
 pub fn[K : Eq + Hash, V] LruCache::get(Self[K, V], K) -> V?
 pub fn[K : Eq + Hash, V] LruCache::put(Self[K, V], K, V) -> Unit
 pub fn[K, V] LruCache::size(Self[K, V]) -> Int

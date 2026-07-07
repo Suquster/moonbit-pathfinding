@@ -116,7 +116,7 @@ pub struct LruCache[K, V] {
 
 ///|
 /// 按容量构造（capacity ≥ 1）。
-pub fn[K, V] LruCache::create(capacity : Int) -> LruCache[K, V] {
+pub fn[K : Eq + Hash, V] LruCache::create(capacity : Int) -> LruCache[K, V] {
   let cap = if capacity < 1 { 1 } else { capacity }
   let free : Array[Int] = []
   for i in 0..<cap {

@@ -20,46 +20,55 @@ pub(all) struct Duration {
 } derive(Eq, Debug)
 
 ///|
+/// 由毫秒构造。
 pub fn Duration::of_millis(ms : Int64) -> Duration {
   { millis: ms }
 }
 
 ///|
+/// 由秒构造。
 pub fn Duration::of_seconds(s : Int64) -> Duration {
   { millis: s * 1000L }
 }
 
 ///|
+/// 由分钟构造。
 pub fn Duration::of_minutes(m : Int64) -> Duration {
   { millis: m * 60_000L }
 }
 
 ///|
+/// 由小时构造。
 pub fn Duration::of_hours(h : Int64) -> Duration {
   { millis: h * 3_600_000L }
 }
 
 ///|
+/// 由天构造。
 pub fn Duration::of_days(d : Int64) -> Duration {
   { millis: d * 86_400_000L }
 }
 
 ///|
+/// 时长相加。
 pub fn Duration::add(self : Duration, other : Duration) -> Duration {
   { millis: self.millis + other.millis }
 }
 
 ///|
+/// 时长相减。
 pub fn Duration::sub(self : Duration, other : Duration) -> Duration {
   { millis: self.millis - other.millis }
 }
 
 ///|
+/// 取反。
 pub fn Duration::neg(self : Duration) -> Duration {
   { millis: -self.millis }
 }
 
 ///|
+/// 绝对值。
 pub fn Duration::abs(self : Duration) -> Duration {
   if self.millis < 0L {
     { millis: -self.millis }
@@ -75,16 +84,19 @@ pub fn Duration::total_seconds(self : Duration) -> Int64 {
 }
 
 ///|
+/// 总分钟数（向零截断）。
 pub fn Duration::total_minutes(self : Duration) -> Int64 {
   self.millis / 60_000L
 }
 
 ///|
+/// 总小时数（向零截断）。
 pub fn Duration::total_hours(self : Duration) -> Int64 {
   self.millis / 3_600_000L
 }
 
 ///|
+/// 总天数（向零截断）。
 pub fn Duration::total_days(self : Duration) -> Int64 {
   self.millis / 86_400_000L
 }
@@ -167,11 +179,13 @@ pub fn DateTime::compare_to(self : DateTime, other : DateTime) -> Int {
 }
 
 ///|
+/// 时间先后比较：早于。
 pub fn DateTime::is_before(self : DateTime, other : DateTime) -> Bool {
   self.compare_to(other) < 0
 }
 
 ///|
+/// 时间先后比较：晚于。
 pub fn DateTime::is_after(self : DateTime, other : DateTime) -> Bool {
   self.compare_to(other) > 0
 }

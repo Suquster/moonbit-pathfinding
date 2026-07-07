@@ -27,6 +27,7 @@ pub struct Bulkhead {
 }
 
 ///|
+/// 新建舱壁：并发上限 + 等待队列上限。
 pub fn Bulkhead::create(max_concurrent : Int, max_queue : Int) -> Bulkhead {
   { max_concurrent, max_queue, in_flight: 0, queued: 0, rejected_total: 0 }
 }
@@ -70,16 +71,19 @@ pub fn Bulkhead::release(self : Bulkhead) -> Bool {
 }
 
 ///|
+/// 当前在飞数。
 pub fn Bulkhead::in_flight_count(self : Bulkhead) -> Int {
   self.in_flight
 }
 
 ///|
+/// 当前排队数。
 pub fn Bulkhead::queued_count(self : Bulkhead) -> Int {
   self.queued
 }
 
 ///|
+/// 累计拒绝数。
 pub fn Bulkhead::rejected_count(self : Bulkhead) -> Int {
   self.rejected_total
 }
@@ -153,6 +157,7 @@ pub struct AimdLimiter {
 }
 
 ///|
+/// 新建 AIMD 限流器（初始限额 + 上下界 + 增减参数）。
 pub fn AimdLimiter::create(
   initial : Int,
   min_limit : Int,
@@ -164,6 +169,7 @@ pub fn AimdLimiter::create(
 }
 
 ///|
+/// 当前限额。
 pub fn AimdLimiter::current_limit(self : AimdLimiter) -> Int {
   self.limit
 }

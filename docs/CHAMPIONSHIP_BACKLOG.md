@@ -8,25 +8,27 @@
 
 ### A. 补深 —— 现有包太浅，优先充实（自家短板）
 
-- [ ] A1 `infra_codec`（现 611 行）：完整 JSON（转义 / 浮点边界 / 深度限制）、
-      base64 / hex、varint、CBOR 或 msgpack 二进制编解码。**最迫切**。
-- [ ] A2 `infra_text`（现 1187 行）：UTF-8 严格校验、码点 / 字素簇切分、
-      显示宽度计算、大小写折叠等 Unicode 硬功夫。
-- [ ] A3 `infra_ds`（现 1551 行）：持久化（immutable）Map / Vector、B 树、
-      跳表、BloomFilter、LRU 缓存。
-- [ ] A4 `infra_metrics` / `infra_timer` / `infra_alloc`（各 ~500 行）：
-      直方图分位数（HDR）、层级时间轮、池化策略对比基准。
-- [ ] A5 清理减分项：`backend_cli`（50 行 0 测试）要么充实要么合并删除；
-      `core`（测试仅 44 行）补测试。
+- [x] A1 `infra_codec`：CBOR（RFC 8949，含深度限制 / 规范编码）、hex
+      （RFC 4648）、严格 UTF-8（RFC 3629）已落地（2026-07-07，31 测试）。
+- [x] A2 `infra_text`：字素簇（UAX #29 子集）、显示宽度（wcwidth/UAX #11）、
+      大小写折叠已落地（2026-07-07，32 测试）。
+- [x] A3 `infra_ds`：B 树 / 跳表 / HAMT / Roaring 已有；BloomFilter（K-M 双
+      哈希）+ LRU（O(1) 槽位链表，参考模型 PBT）已补（2026-07-07，25 测试）。
+- [x] A4 复盘：`infra_metrics` 已有 HDR 直方图 + DDSketch + span tracer，
+      无需重复建设（审计确认 2026-07-07）。
+- [x] A5 清理：`backend_cli` 补管线冒烟测试（2）；`core` 补 DSU/PQueue/
+      Weight/PBT 测试（12）（2026-07-07）。
 
 ### B. 补广 —— 生态空白新包（每个都是别的语言"装个包就有"）
 
-- [ ] B1 日期时间：ISO-8601 解析 / 格式化、时长运算、日历换算（完全空白，
-      缺口最大）。
-- [ ] B2 哈希 / 校验：SHA-256、CRC32、FNV、HMAC（纯计算、三后端天然可跑）。
-- [ ] B3 CLI 参数解析（clap 类）：子命令 / flag / help 自动生成。
+- [x] B1 新包 `infra_time`：Hinnant 公历算法双射、ISO-8601/RFC 3339 解析
+      （含偏移归一化）、时长运算、星期（2026-07-07，9 测试）。
+- [x] B2 新包 `infra_hash`：SHA-256（FIPS 180-4）、HMAC（RFC 4231 向量）、
+      CRC-32、FNV-1a 32/64（2026-07-07，6 测试）。
+- [x] B3 新包 `infra_cli`：POSIX/GNU flag 语义、子命令、`--` 终止符、
+      help 生成（2026-07-07，8 测试）。
 - [ ] B4 压缩：DEFLATE / gzip（纯算法，可纳入基准回归护栏体系）。
-- [ ] B5 CSV / TOML / INI 解析：基于现成 `parser_combinator`，成本低实用性高。
+- [~] B5 CSV / TOML / INI：CSV（RFC 4180）已落地（2026-07-07）；TOML/INI 待补。
 - [ ] B6 韧性（resilience）：重试 / 退避 / 熔断 / 限流（令牌桶、滑动窗口），
       可与 actor / DST 联动做确定性测试，差异化亮点。
 - [ ] B7 diff / patch（Myers 算法）+ semver / UUID 解析：小而实用。

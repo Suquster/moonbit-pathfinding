@@ -3,5 +3,6 @@ import {
 }
 
 import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
   "moonbitlang/core/test",
 } for "test"

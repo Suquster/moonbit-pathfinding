@@ -1,7 +1,26 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "Suquster/moonbit-pathfinding/src/infra_codec"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
+pub fn cbor_decode(Array[Int]) -> CborValue?
+
+pub fn cbor_encode(CborValue) -> Array[Int]
+
+pub fn cbor_encode_into(ByteWriter, CborValue) -> Unit
+
+pub let cbor_max_depth : Int
+
+pub fn hex_decode(String) -> Array[Int]?
+
+pub fn hex_encode(Array[Int]) -> String
+
+pub fn string_of_utf8_bytes(Array[Int]) -> String?
+
+pub fn utf8_bytes_of_string(String) -> Array[Int]
 
 // Errors
 
@@ -32,6 +51,19 @@ pub fn ByteWriter::write_u32(Self, UInt) -> Unit
 pub fn ByteWriter::write_u64(Self, UInt64) -> Unit
 pub fn ByteWriter::write_varint(Self, UInt64) -> Unit
 pub fn ByteWriter::write_zigzag(Self, Int64) -> Unit
+
+pub(all) enum CborValue {
+  CborUInt(UInt64)
+  CborNInt(UInt64)
+  CborBytes(Array[Int])
+  CborText(String)
+  CborArray(Array[CborValue])
+  CborMap(Array[(CborValue, CborValue)])
+  CborBool(Bool)
+  CborNull
+  CborFloat(Double)
+} derive(Eq, @debug.Debug)
+pub impl Show for CborValue
 
 pub struct FieldWriter {
   w : ByteWriter

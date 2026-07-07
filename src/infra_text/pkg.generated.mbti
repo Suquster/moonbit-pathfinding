@@ -6,11 +6,29 @@ import {
 }
 
 // Values
+pub fn case_fold(String) -> String
+
+pub fn codepoint_width(Int) -> Int
+
 pub fn diff_apply(Array[DiffOp]) -> String
 
 pub fn diff_edit_cost(Array[DiffOp]) -> Int
 
 pub fn diff_source(Array[DiffOp]) -> String
+
+pub fn display_width(String) -> Int
+
+pub fn eq_fold(String, String) -> Bool
+
+pub fn fold_codepoint(Int) -> Int
+
+pub fn grapheme_clusters(String) -> Array[String]
+
+pub fn grapheme_count(String) -> Int
+
+pub fn is_east_asian_wide(Int) -> Bool
+
+pub fn is_zero_width_extend(Int) -> Bool
 
 pub fn lcs_dp_cost(String, String) -> Int
 

@@ -1,0 +1,14 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_hash
+//
+// 哈希与校验基础设施（B2，填补 MoonBit 生态空白）：
+// SHA-256（FIPS 180-4）、HMAC-SHA256（RFC 2104）、CRC-32（IEEE 802.3
+// 反射多项式）、FNV-1a（32/64 位）。纯计算、三后端逐位一致。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

@@ -18,6 +18,11 @@
 ## [Unreleased]
 
 ### Added
+- **async/await 风格 ask API `Future[R]`（C2，2026-07-07）**：`future.mbt` 旁路
+  新增——`ask_future` 发起立即返回句柄（发起与等待解耦，支持多请求并发在飞），
+  `await_within` 确定性驱动等待（无墙钟），`poll_result`/`is_ready` 非阻塞
+  轮询，`ready`/`map`/`and_then` 组合子；重复 await 幂等（结果缓存，不二次
+  消费）。既有 `ask` / `send` 语义零改动。测试 `future_test.mbt`。
 - 高吞吐批量调度驱动 `ActorSystem::run_until_idle_throughput`
   （throughput.mbt，旁路新增、既有 `step` / `run_until_idle` 冻结）：
   轮转批量策略把每消息 O(A) 的就绪扫描摊还为 O(A×轮数+消息数)，

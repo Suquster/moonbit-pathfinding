@@ -17,6 +17,15 @@
 
 ## [Unreleased]
 
+### Added
+- **schema 演进 / 版本兼容检查器（C3，2026-07-07）**：`schema_evolution.mbt`
+  旁路新增——wire 级破坏性变更静态判定（对标 protobuf 官方 Updating A
+  Message Type 规则与 Buf breaking 检查）：varint / zigzag / I32 / I64 / Len
+  兼容组、删除字段必须 reserve 号与名、reserved 复用、singular↔repeated、
+  oneof 归属变化、消息删除；输出结构化 `BreakingChange` 列表（空即兼容），
+  可作 CI 门禁。`check_message_evolution` / `check_schema_evolution` 纯函数、
+  无 panic。测试 `schema_evolution_test.mbt`。
+
 ## [0.2.0] - 2026-06-12
 
 旗舰深化（🟣 档位 3「业界顶尖」）：在冻结的 `0.1.0` 骨架之上做**严格向后兼容**的

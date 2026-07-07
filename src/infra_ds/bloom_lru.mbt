@@ -124,7 +124,7 @@ pub fn[K, V] LruCache::create(capacity : Int) -> LruCache[K, V] {
   }
   {
     capacity: cap,
-    index: Map::new(),
+    index: {},
     keys: Array::make(cap, None),
     values: Array::make(cap, None),
     prev: Array::make(cap, -1),
@@ -218,7 +218,7 @@ pub fn[K : Eq + Hash, V] LruCache::put(
 ///|
 /// 当前条目数。
 pub fn[K, V] LruCache::size(self : LruCache[K, V]) -> Int {
-  self.index.size()
+  self.index.length()
 }
 
 ///|

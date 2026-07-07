@@ -10,7 +10,11 @@ pub fn apply_unified(Array[String], Array[Hunk]) -> Array[String]?
 
 pub fn diff3_merge(Array[String], Array[String], Array[String]) -> Array[MergeChunk]
 
+pub fn diff_histogram(Array[String], Array[String]) -> Array[DiffOp]
+
 pub fn diff_lines(Array[String], Array[String]) -> Array[DiffOp]
+
+pub fn diff_patience(Array[String], Array[String]) -> Array[DiffOp]
 
 pub fn edit_distance(Array[DiffOp]) -> Int
 

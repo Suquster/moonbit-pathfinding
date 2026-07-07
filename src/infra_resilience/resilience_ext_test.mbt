@@ -111,3 +111,92 @@ test "rate breaker ring overwrite" {
   assert_true(br.record(false) == false) // 覆盖最旧 true → 1/3 = 333‰
   assert_true(br.failure_rate() == 333)
 }
+
+///|
+/// TimeRateBreaker：错误率超阈值熔断、窗口滑动后过期桶退出统计恢复。
+test "time rate breaker opens and recovers with sliding window" {
+  // 10 秒窗、最少 4 样本、50% 阈值。
+  let b = TimeRateBreaker::create(10, 4, 500)
+  // t=0..3s：4 次失败 → 100% ≥ 50% → 熔断。
+  assert_true(b.record(0L, true) == false) // 样本不足
+  assert_true(b.record(1000L, true) == false)
+  assert_true(b.record(2000L, true) == false)
+  assert_true(b.record(3000L, true) == true) // 满 4 样本触发
+  // t=5s：成功 1 次 → 4/5 = 80% 仍熔断。
+  assert_true(b.record(5000L, false) == true)
+  // t=15s：旧失败桶（0..3s）已滑出 10s 窗 → 仅剩 5s 的成功 + 新样本。
+  assert_true(b.record(15000L, false) == false)
+  assert_true(b.is_open(15000L) == false)
+}
+
+///|
+/// TimeRateBreaker：同秒多样本聚合到同一桶。
+test "time rate breaker aggregates within second" {
+  let b = TimeRateBreaker::create(5, 10, 500)
+  // 同一秒内 10 个样本、6 失败 = 60% ≥ 50%。
+  let mut last = false
+  for i in 0..<10 {
+    last = b.record(500L, i < 6)
+  }
+  assert_true(last == true)
+}
+
+///|
+/// RetryBudget：Finagle 语义——保底初始预算、比例存款、余额封顶。
+test "retry budget deposit withdraw and cap" {
+  // 20%、保底 10/s、ttl 10s → 初始 100 次重试预算、封顶 200。
+  let rb = RetryBudget::create()
+  assert_true(rb.balance(0L) == 100)
+  // 消费 100 次全部成功，第 101 次拒绝。
+  let mut ok = 0
+  for _ in 0..<101 {
+    if rb.try_withdraw(0L) {
+      ok = ok + 1
+    }
+  }
+  assert_true(ok == 100)
+  // 1000 次正常请求 × 20% = 200 次重试存款，但封顶 200。
+  for _ in 0..<2000 {
+    rb.deposit(0L)
+  }
+  assert_true(rb.balance(0L) == 200)
+}
+
+///|
+/// RetryBudget：时间推进补足保底存款（低流量仍可重试）。
+test "retry budget min deposit over time" {
+  let rb = RetryBudget::create(
+    retry_percent_permille=0, // 无比例存款（纯保底）
+    min_deposit_per_sec=2,
+    ttl_seconds=5,
+  )
+  // 初始 = 2×5 = 10。
+  assert_true(rb.balance(0L) == 10)
+  for _ in 0..<10 {
+    assert_true(rb.try_withdraw(0L))
+  }
+  assert_true(rb.try_withdraw(0L) == false) // 耗尽
+  // 3 秒后补足 2×3 = 6 次。
+  assert_true(rb.balance(3000L) == 6)
+  assert_true(rb.try_withdraw(3000L))
+}
+
+///|
+/// RetryBudget：重试占比不变式——长期看重试数 ≤ 正常请求数 × 20% + 保底。
+test "retry budget bounds retry ratio invariant" {
+  let rb = RetryBudget::create(min_deposit_per_sec=0, ttl_seconds=10)
+  // 无保底：初始 0 预算。
+  assert_true(rb.balance(0L) == 0)
+  let mut retries = 0
+  for i in 0..<5000 {
+    rb.deposit(0L)
+    // 每次请求后都尝试重试。
+    if rb.try_withdraw(0L) {
+      retries = retries + 1
+    }
+    ignore(i)
+  }
+  // 重试数 ≤ 5000 × 20% = 1000。
+  assert_true(retries <= 1000)
+  assert_true(retries >= 900) // 且确实接近预算上限（非饿死）
+}

@@ -260,3 +260,175 @@ pub fn RateBreaker::failure_rate(self : RateBreaker) -> Int {
     self.failures * 1000 / self.count
   }
 }
+
+// ───────────────────── 时间型滑动窗口错误率熔断（TIME_BASED） ─────────────
+
+///|
+/// 时间型滑动窗口错误率熔断器（resilience4j `TIME_BASED` 语义）：
+/// 以秒为桶聚合最近 `window_seconds` 秒的调用结果，样本满
+/// `minimum_calls` 且错误率 ≥ `failure_rate_permille` 时熔断；
+/// 窗口随时间滑动，过期桶整体退出统计（Hystrix rolling window 同族）。
+pub struct TimeRateBreaker {
+  window_seconds : Int
+  minimum_calls : Int
+  failure_rate_permille : Int
+  bucket_calls : Array[Int] // 每秒桶：调用数
+  bucket_failures : Array[Int] // 每秒桶：失败数
+  bucket_epoch : Array[Int64] // 桶归属的秒纪元（-1 = 空）
+  mut open : Bool
+}
+
+///|
+/// 新建时间型错误率熔断器。
+pub fn TimeRateBreaker::create(
+  window_seconds : Int,
+  minimum_calls : Int,
+  failure_rate_permille : Int,
+) -> TimeRateBreaker {
+  {
+    window_seconds,
+    minimum_calls,
+    failure_rate_permille,
+    bucket_calls: Array::make(window_seconds, 0),
+    bucket_failures: Array::make(window_seconds, 0),
+    bucket_epoch: Array::make(window_seconds, -1L),
+    open: false,
+  }
+}
+
+///|
+/// 记录一次调用结果（`now_ms` 为单调毫秒时钟）并重估状态；
+/// 返回记录后是否处于熔断态。
+pub fn TimeRateBreaker::record(
+  self : TimeRateBreaker,
+  now_ms : Int64,
+  failed : Bool,
+) -> Bool {
+  let sec = now_ms / 1000L
+  let idx = (sec % self.window_seconds.to_int64()).to_int()
+  // 桶过期（属于旧一轮窗口）→ 清零复用。
+  if self.bucket_epoch[idx] != sec {
+    self.bucket_epoch[idx] = sec
+    self.bucket_calls[idx] = 0
+    self.bucket_failures[idx] = 0
+  }
+  self.bucket_calls[idx] = self.bucket_calls[idx] + 1
+  if failed {
+    self.bucket_failures[idx] = self.bucket_failures[idx] + 1
+  }
+  self.evaluate(sec)
+}
+
+///|
+/// 按当前秒纪元统计窗口内样本并重估熔断态。
+fn TimeRateBreaker::evaluate(self : TimeRateBreaker, now_sec : Int64) -> Bool {
+  let mut calls = 0
+  let mut failures = 0
+  for i in 0..<self.window_seconds {
+    let e = self.bucket_epoch[i]
+    if e >= 0L && now_sec - e < self.window_seconds.to_int64() {
+      calls = calls + self.bucket_calls[i]
+      failures = failures + self.bucket_failures[i]
+    }
+  }
+  self.open = calls >= self.minimum_calls &&
+    failures * 1000 >= self.failure_rate_permille * calls
+  self.open
+}
+
+///|
+/// 查询指定时刻的熔断态（不记录新样本，仅按窗口重估）。
+pub fn TimeRateBreaker::is_open(self : TimeRateBreaker, now_ms : Int64) -> Bool {
+  self.evaluate(now_ms / 1000L)
+}
+
+// ───────────────────────── 重试预算（Finagle RetryBudget） ────────────────
+
+///|
+/// 重试预算（Twitter Finagle `RetryBudget` 语义）：防重试风暴——
+/// 每次正常请求向预算桶存入 `retry_percent_permille`‰ 个令牌，
+/// 每次重试消费 1000 个微令牌；另有 `min_retries_per_sec × ttl_seconds`
+/// 的保底存款，保证低流量下仍可少量重试。桶容量以 ttl 窗口内
+/// 存款上限封顶（Finagle 默认：ttl=10s、retryPercent=20%、minRetriesPerSec=10）。
+pub struct RetryBudget {
+  retry_percent_permille : Int // 每千次请求可获得的重试数（‰）
+  min_deposit_per_sec : Int // 保底：每秒固定存入的重试数
+  ttl_seconds : Int
+  mut micro_tokens : Int64 // 微令牌（1 次重试 = 1000）
+  mut last_tick_sec : Int64
+}
+
+///|
+/// 新建重试预算（Finagle 默认参数：20%、10/s 保底、10s ttl）。
+pub fn RetryBudget::create(
+  retry_percent_permille? : Int = 200,
+  min_deposit_per_sec? : Int = 10,
+  ttl_seconds? : Int = 10,
+) -> RetryBudget {
+  {
+    retry_percent_permille,
+    min_deposit_per_sec,
+    ttl_seconds,
+    // 初始预算 = 一个 ttl 窗口的保底存款。
+    micro_tokens: (min_deposit_per_sec * ttl_seconds).to_int64() * 1000L,
+    last_tick_sec: 0L,
+  }
+}
+
+///|
+/// 预算上限（微令牌）：一个 ttl 窗口内保底存款的封顶值 ×2
+/// （Finagle 实现的滑动窗口近似）；下限保证纯比例模式（无保底）
+/// 仍可积累至少 10 次重试的余量。
+fn RetryBudget::cap(self : RetryBudget) -> Int64 {
+  let base = (self.min_deposit_per_sec * self.ttl_seconds).to_int64() * 2000L
+  if base < 10000L {
+    10000L
+  } else {
+    base
+  }
+}
+
+///|
+/// 时间推进：补足保底存款（按经过秒数），并封顶。
+fn RetryBudget::tick(self : RetryBudget, now_ms : Int64) -> Unit {
+  let sec = now_ms / 1000L
+  if sec > self.last_tick_sec {
+    let elapsed = sec - self.last_tick_sec
+    self.micro_tokens = self.micro_tokens +
+      elapsed * self.min_deposit_per_sec.to_int64() * 1000L
+    self.last_tick_sec = sec
+  }
+  if self.micro_tokens > self.cap() {
+    self.micro_tokens = self.cap()
+  }
+}
+
+///|
+/// 记录一次正常请求：按 retry_percent 比例存入微令牌。
+pub fn RetryBudget::deposit(self : RetryBudget, now_ms : Int64) -> Unit {
+  self.tick(now_ms)
+  self.micro_tokens = self.micro_tokens + self.retry_percent_permille.to_int64()
+  if self.micro_tokens > self.cap() {
+    self.micro_tokens = self.cap()
+  }
+}
+
+///|
+/// 尝试消费一次重试额度：预算足够（≥1000 微令牌）返回 true 并扣减，
+/// 否则 false（调用方应放弃重试，Finagle `tryWithdraw` 语义）。
+pub fn RetryBudget::try_withdraw(self : RetryBudget, now_ms : Int64) -> Bool {
+  self.tick(now_ms)
+  if self.micro_tokens >= 1000L {
+    self.micro_tokens = self.micro_tokens - 1000L
+    true
+  } else {
+    false
+  }
+}
+
+///|
+/// 当前可用重试次数（向下取整，观测用）。
+pub fn RetryBudget::balance(self : RetryBudget, now_ms : Int64) -> Int {
+  self.tick(now_ms)
+  (self.micro_tokens / 1000L).to_int()
+}

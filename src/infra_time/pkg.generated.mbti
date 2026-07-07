@@ -22,7 +22,11 @@ pub fn format_iso_date(DateTime) -> String
 
 pub fn format_iso_week_date(DateTime) -> String
 
+pub fn format_rfc2822(DateTime, Int) -> String
+
 pub fn format_rfc3339_with_offset(DateTime, Int) -> String
+
+pub fn is_dst(TzRule, DateTime) -> Bool
 
 pub fn is_leap_year(Int) -> Bool
 
@@ -30,7 +34,15 @@ pub fn parse_duration(String) -> Duration?
 
 pub fn parse_iso8601(String) -> DateTime?
 
+pub fn parse_posix_tz(String) -> TzRule?
+
 pub fn strftime(DateTime, String) -> String
+
+pub fn transition_day(Int, TzTransition) -> Int
+
+pub fn tz_offset_at(TzRule, DateTime) -> (Int, String)
+
+pub fn utc_to_local(TzRule, DateTime) -> DateTime
 
 pub fn weekday_from_days(Int64) -> Int
 
@@ -80,6 +92,22 @@ pub fn Duration::total_days(Self) -> Int64
 pub fn Duration::total_hours(Self) -> Int64
 pub fn Duration::total_minutes(Self) -> Int64
 pub fn Duration::total_seconds(Self) -> Int64
+
+pub(all) struct TzRule {
+  std_name : String
+  std_offset : Int
+  dst_name : String
+  dst_offset : Int
+  dst_start : TzTransition?
+  dst_end : TzTransition?
+} derive(Eq, @debug.Debug)
+
+pub(all) struct TzTransition {
+  month : Int
+  week : Int
+  weekday : Int
+  at_seconds : Int
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

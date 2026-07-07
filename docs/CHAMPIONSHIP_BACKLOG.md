@@ -1,5 +1,48 @@
 # Championship Backlog
 
+## INFRA Gap Backlog（2026-07-07 严厉审视 · 补全 / 补广 / 补深）
+
+> 对标 Rust/Go 一线生态的缺口分析。原则：先补深自家最浅的包（最易被评委戳穿），
+> 再补高感知度的生态空白；不撒新包摊薄质量。
+> 完成标准与本文档一致：仓库内存在代码 + 测试 + 文档 / CI 证据才算完成。
+
+### A. 补深 —— 现有包太浅，优先充实（自家短板）
+
+- [ ] A1 `infra_codec`（现 611 行）：完整 JSON（转义 / 浮点边界 / 深度限制）、
+      base64 / hex、varint、CBOR 或 msgpack 二进制编解码。**最迫切**。
+- [ ] A2 `infra_text`（现 1187 行）：UTF-8 严格校验、码点 / 字素簇切分、
+      显示宽度计算、大小写折叠等 Unicode 硬功夫。
+- [ ] A3 `infra_ds`（现 1551 行）：持久化（immutable）Map / Vector、B 树、
+      跳表、BloomFilter、LRU 缓存。
+- [ ] A4 `infra_metrics` / `infra_timer` / `infra_alloc`（各 ~500 行）：
+      直方图分位数（HDR）、层级时间轮、池化策略对比基准。
+- [ ] A5 清理减分项：`backend_cli`（50 行 0 测试）要么充实要么合并删除；
+      `core`（测试仅 44 行）补测试。
+
+### B. 补广 —— 生态空白新包（每个都是别的语言"装个包就有"）
+
+- [ ] B1 日期时间：ISO-8601 解析 / 格式化、时长运算、日历换算（完全空白，
+      缺口最大）。
+- [ ] B2 哈希 / 校验：SHA-256、CRC32、FNV、HMAC（纯计算、三后端天然可跑）。
+- [ ] B3 CLI 参数解析（clap 类）：子命令 / flag / help 自动生成。
+- [ ] B4 压缩：DEFLATE / gzip（纯算法，可纳入基准回归护栏体系）。
+- [ ] B5 CSV / TOML / INI 解析：基于现成 `parser_combinator`，成本低实用性高。
+- [ ] B6 韧性（resilience）：重试 / 退避 / 熔断 / 限流（令牌桶、滑动窗口），
+      可与 actor / DST 联动做确定性测试，差异化亮点。
+- [ ] B7 diff / patch（Myers 算法）+ semver / UUID 解析：小而实用。
+
+### C. 补深旗舰 —— 做好一个即答辩亮点
+
+- [ ] C1 `regex_engine`：Unicode 字符类 + 惰性 DFA（对标 Rust regex 核心卖点）。
+- [ ] C2 `actor`：async/await 风格 API 或 mailbox 持久化。
+- [ ] C3 `serialization`：schema 演进 / 版本兼容。
+
+### 冲刺优先级（截止 2026-07-12 前）
+
+A1 → A2 → B1 → B2 → A5，其余按余量推进。
+
+---
+
 > Search time: 2026-05-31 17:00:00 Asia/Shanghai
 > Freshness: realtime-level official contest information, crawled from the 2026 MoonBit Software Synthesis Challenge page.
 > Scope: `Suquster/moonbit-pathfinding`

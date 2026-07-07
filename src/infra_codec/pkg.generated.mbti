@@ -14,6 +14,12 @@ pub fn cbor_encode_into(ByteWriter, CborValue) -> Unit
 
 pub let cbor_max_depth : Int
 
+pub fn csv_decode(String) -> Array[Array[String]]?
+
+pub fn csv_encode(Array[Array[String]]) -> String
+
+pub fn csv_encode_row(Array[String]) -> String
+
 pub fn hex_decode(String) -> Array[Int]?
 
 pub fn hex_encode(Array[Int]) -> String

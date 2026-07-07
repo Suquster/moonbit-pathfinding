@@ -187,3 +187,76 @@ pub fn AimdLimiter::on_overload(self : AimdLimiter) -> Unit {
   let next = self.limit * self.decrease_permille / 1000
   self.limit = if next < self.min_limit { self.min_limit } else { next }
 }
+
+// ───────────────────── 滑动窗口错误率熔断（resilience4j COUNT_BASED） ────
+
+///|
+/// 计数型滑动窗口错误率熔断器（resilience4j `COUNT_BASED` 语义）：
+/// 环形记录最近 `window_size` 次调用结果，样本满 `minimum_calls`
+/// 且错误率 ≥ `failure_rate_permille`（千分比）时熔断。
+pub struct RateBreaker {
+  window_size : Int
+  minimum_calls : Int
+  failure_rate_permille : Int
+  ring : Array[Bool] // true = 失败
+  mut count : Int // 已记录样本数（≤ window_size）
+  mut head : Int // 下一写入位置
+  mut failures : Int // 窗口内失败数
+  mut open : Bool
+}
+
+///|
+/// 新建计数型错误率熔断器。
+pub fn RateBreaker::create(
+  window_size : Int,
+  minimum_calls : Int,
+  failure_rate_permille : Int,
+) -> RateBreaker {
+  {
+    window_size,
+    minimum_calls,
+    failure_rate_permille,
+    ring: Array::make(window_size, false),
+    count: 0,
+    head: 0,
+    failures: 0,
+    open: false,
+  }
+}
+
+///|
+/// 记录一次调用结果并重估状态；返回记录后是否处于熔断态。
+pub fn RateBreaker::record(self : RateBreaker, failed : Bool) -> Bool {
+  if self.count == self.window_size {
+    // 覆盖最旧样本。
+    if self.ring[self.head] {
+      self.failures = self.failures - 1
+    }
+  } else {
+    self.count = self.count + 1
+  }
+  self.ring[self.head] = failed
+  if failed {
+    self.failures = self.failures + 1
+  }
+  self.head = (self.head + 1) % self.window_size
+  self.open = self.count >= self.minimum_calls &&
+    self.failures * 1000 >= self.failure_rate_permille * self.count
+  self.open
+}
+
+///|
+/// 当前是否熔断。
+pub fn RateBreaker::is_open(self : RateBreaker) -> Bool {
+  self.open
+}
+
+///|
+/// 窗口内当前错误率（千分比；样本为空返回 0）。
+pub fn RateBreaker::failure_rate(self : RateBreaker) -> Int {
+  if self.count == 0 {
+    0
+  } else {
+    self.failures * 1000 / self.count
+  }
+}

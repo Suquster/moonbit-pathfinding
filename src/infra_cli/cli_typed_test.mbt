@@ -103,3 +103,70 @@ test "expand_bundled_shorts posix guideline 5" {
     Err(_) => fail("expected parse ok")
   }
 }
+
+///|
+/// value_or_env：命令行 → 环境变量 → 默认值分层回退。
+test "value_or_env layered fallback" {
+  let parsed : ParsedArgs = {
+    command_path: [],
+    flags: [],
+    values: [("output", "cli.txt")],
+    positionals: [],
+  }
+  let env = [("APP_OUTPUT", "env.txt"), ("APP_LEVEL", "debug")]
+  assert_true(
+    parsed.value_or_env("output", "APP_OUTPUT", env) == Some("cli.txt"),
+  )
+  assert_true(parsed.value_or_env("level", "APP_LEVEL", env) == Some("debug"))
+  assert_true(
+    parsed.value_or_env("mode", "APP_MODE", env, default=Some("fast")) ==
+    Some("fast"),
+  )
+  assert_true(parsed.value_or_env("mode", "APP_MODE", env) is None)
+}
+
+///|
+/// flag_tristate：`--name` / `--no-name` / 缺省 三态。
+test "flag tristate negation prefix" {
+  let on : ParsedArgs = {
+    command_path: [],
+    flags: ["color"],
+    values: [],
+    positionals: [],
+  }
+  let off : ParsedArgs = {
+    command_path: [],
+    flags: ["no-color"],
+    values: [],
+    positionals: [],
+  }
+  let unset : ParsedArgs = {
+    command_path: [],
+    flags: [],
+    values: [],
+    positionals: [],
+  }
+  assert_true(on.flag_tristate("color") == Some(true))
+  assert_true(off.flag_tristate("color") == Some(false))
+  assert_true(unset.flag_tristate("color") is None)
+}
+
+///|
+/// Damerau–Levenshtein：含相邻换位的距离。
+test "dl distance with transposition" {
+  assert_true(dl_distance("", "abc") == 3)
+  assert_true(dl_distance("abc", "abc") == 0)
+  assert_true(dl_distance("ca", "ac") == 1) // 换位
+  assert_true(dl_distance("verbose", "verbos") == 1)
+  assert_true(dl_distance("kitten", "sitting") == 3)
+}
+
+///|
+/// did-you-mean：距离 ≤2 才建议、并列取字典序最小。
+test "suggest option did you mean" {
+  let cands = ["verbose", "version", "output", "color"]
+  assert_true(suggest_option("verbos", cands) == Some("verbose"))
+  assert_true(suggest_option("versio", cands) == Some("version"))
+  assert_true(suggest_option("zzzzzz", cands) is None)
+  assert_true(suggest_option("outpot", cands) == Some("output"))
+}

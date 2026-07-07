@@ -286,3 +286,207 @@ pub fn format_rfc3339_with_offset(
     body + sign + hp + hh.to_string() + ":" + mp + mm.to_string()
   }
 }
+
+// ───────────────────────────── Duration 解析 ─────────────────────────────
+
+///|
+/// 解析人类可读时长（Go `time.ParseDuration` 风格子集）：
+/// `-?(\d+d)?(\d+h)?(\d+m)?(\d+(\.\d{1,3})?s)?(\d+ms)?`，
+/// 单位须按 d>h>m>s>ms 递减出现、至少一个分量；畸形返回 None。
+/// 与 `Duration::to_string` 互逆（roundtrip）。
+pub fn parse_duration(text : String) -> Duration? {
+  if text.length() == 0 {
+    return None
+  }
+  let mut i = 0
+  let mut neg = false
+  if text.get_char(0).unwrap() == '-' {
+    neg = true
+    i = 1
+  }
+  if text == "0s" || text == "-0s" {
+    return Some(Duration::of_millis(0L))
+  }
+  let mut total = 0L
+  let mut seen = false
+  let mut last_rank = 0 // 已消费的最大单位等级（d=1 h=2 m=3 s=4 ms=5）
+  while i < text.length() {
+    // 读整数。
+    let start = i
+    let mut num = 0L
+    while i < text.length() {
+      let c = text.get_char(i).unwrap()
+      if c >= '0' && c <= '9' {
+        num = num * 10L + (c.to_int() - 48).to_int64()
+        i = i + 1
+      } else {
+        break
+      }
+    }
+    if i == start || i >= text.length() {
+      return None
+    }
+    let c = text.get_char(i).unwrap()
+    if c == 'd' {
+      if last_rank >= 1 {
+        return None
+      }
+      total = total + num * 86_400_000L
+      last_rank = 1
+      i = i + 1
+    } else if c == 'h' {
+      if last_rank >= 2 {
+        return None
+      }
+      total = total + num * 3_600_000L
+      last_rank = 2
+      i = i + 1
+    } else if c == 'm' {
+      // 'm' 或 'ms'。
+      if i + 1 < text.length() && text.get_char(i + 1).unwrap() == 's' {
+        if last_rank >= 5 {
+          return None
+        }
+        total = total + num
+        last_rank = 5
+        i = i + 2
+      } else {
+        if last_rank >= 3 {
+          return None
+        }
+        total = total + num * 60_000L
+        last_rank = 3
+        i = i + 1
+      }
+    } else if c == '.' {
+      // 小数秒：num.frac s（毫秒精度，1..3 位）。
+      if last_rank >= 4 {
+        return None
+      }
+      i = i + 1
+      let fstart = i
+      let mut frac = 0
+      while i < text.length() {
+        let fc = text.get_char(i).unwrap()
+        if fc >= '0' && fc <= '9' {
+          frac = frac * 10 + (fc.to_int() - 48)
+          i = i + 1
+        } else {
+          break
+        }
+      }
+      let digits = i - fstart
+      if digits < 1 || digits > 3 || i >= text.length() {
+        return None
+      }
+      if text.get_char(i).unwrap() != 's' {
+        return None
+      }
+      let mut ms = frac
+      for _ in digits..<3 {
+        ms = ms * 10
+      }
+      total = total + num * 1000L + ms.to_int64()
+      last_rank = 4
+      i = i + 1
+    } else if c == 's' {
+      if last_rank >= 4 {
+        return None
+      }
+      total = total + num * 1000L
+      last_rank = 4
+      i = i + 1
+    } else {
+      return None
+    }
+    seen = true
+  }
+  if !seen {
+    return None
+  }
+  Some(Duration::of_millis(if neg { -total } else { total }))
+}
+
+// ───────────────────────────── 格式化模式 ────────────────────────────────
+
+///|
+/// strftime 风格格式化（POSIX 常用子集）：
+/// `%Y` 四位年、`%m` 两位月、`%d` 两位日、`%H` 两位时、`%M` 两位分、
+/// `%S` 两位秒、`%j` 三位年积日、`%a` 英文星期缩写、`%b` 英文月份缩写、
+/// `%e` 无前导零日、`%%` 字面 `%`；未知指示符原样保留。
+pub fn strftime(dt : DateTime, pattern : String) -> String {
+  let sb = StringBuilder::new()
+  let pad2 = fn(v : Int) -> String {
+    if v < 10 {
+      "0" + v.to_string()
+    } else {
+      v.to_string()
+    }
+  }
+  let wd_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  let mon_names = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
+    "Dec",
+  ]
+  let mut i = 0
+  while i < pattern.length() {
+    let c = pattern.get_char(i).unwrap()
+    if c != '%' || i + 1 >= pattern.length() {
+      sb.write_char(c)
+      i = i + 1
+      continue
+    }
+    let d = pattern.get_char(i + 1).unwrap()
+    match d {
+      'Y' => {
+        let y = dt.year
+        if y < 10 {
+          sb.write_string("000" + y.to_string())
+        } else if y < 100 {
+          sb.write_string("00" + y.to_string())
+        } else if y < 1000 {
+          sb.write_string("0" + y.to_string())
+        } else {
+          sb.write_string(y.to_string())
+        }
+      }
+      'm' => sb.write_string(pad2(dt.month))
+      'd' => sb.write_string(pad2(dt.day))
+      'H' => sb.write_string(pad2(dt.hour))
+      'M' => sb.write_string(pad2(dt.minute))
+      'S' => sb.write_string(pad2(dt.second))
+      'j' => {
+        let doy = dt.day_of_year()
+        if doy < 10 {
+          sb.write_string("00" + doy.to_string())
+        } else if doy < 100 {
+          sb.write_string("0" + doy.to_string())
+        } else {
+          sb.write_string(doy.to_string())
+        }
+      }
+      'a' => {
+        // weekday(): 0=Sunday..6=Saturday（time.mbt 语义）→ 转 ISO 下标。
+        let wd = dt.weekday()
+        let iso = if wd == 0 { 6 } else { wd - 1 }
+        sb.write_string(wd_names[iso])
+      }
+      'b' => sb.write_string(mon_names[dt.month - 1])
+      'e' =>
+        sb.write_string(
+          if dt.day < 10 {
+            " " + dt.day.to_string()
+          } else {
+            dt.day.to_string()
+          },
+        )
+      '%' => sb.write_string("%")
+      _ => {
+        sb.write_char('%')
+        sb.write_char(d)
+      }
+    }
+    i = i + 2
+  }
+  sb.to_string()
+}

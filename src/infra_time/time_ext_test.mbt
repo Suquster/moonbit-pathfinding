@@ -135,3 +135,67 @@ test "offset output parses back to same utc instant" {
     }
   }
 }
+
+///|
+/// parse_duration 与 to_string 互逆 + Go 风格分量组合。
+test "parse_duration accepts go style spans" {
+  assert_true(parse_duration("1h30m") == Some(Duration::of_minutes(90L)))
+  assert_true(parse_duration("2d") == Some(Duration::of_days(2L)))
+  assert_true(
+    parse_duration("1d2h3m4.500s") ==
+    Some(
+      Duration::of_days(1L)
+      .add(Duration::of_hours(2L))
+      .add(Duration::of_minutes(3L))
+      .add(Duration::of_seconds(4L))
+      .add(Duration::of_millis(500L)),
+    ),
+  )
+  assert_true(parse_duration("-90m") == Some(Duration::of_minutes(-90L)))
+  assert_true(parse_duration("250ms") == Some(Duration::of_millis(250L)))
+  assert_true(parse_duration("0s") == Some(Duration::of_millis(0L)))
+  assert_true(parse_duration("1.5s") == Some(Duration::of_millis(1500L)))
+}
+
+///|
+/// parse_duration 拒绝畸形与乱序单位。
+test "parse_duration rejects malformed input" {
+  assert_true(parse_duration("") is None)
+  assert_true(parse_duration("abc") is None)
+  assert_true(parse_duration("5") is None) // 缺单位
+  assert_true(parse_duration("1m2h") is None) // 单位乱序
+  assert_true(parse_duration("1.5000s") is None) // 小数超 3 位
+  assert_true(parse_duration("1h1h") is None) // 单位重复
+}
+
+///|
+/// to_string → parse_duration roundtrip（含负值与零）。
+test "duration string roundtrip" {
+  let cases = [
+    Duration::of_millis(0L),
+    Duration::of_minutes(90L),
+    Duration::of_days(1L)
+    .add(Duration::of_hours(2L))
+    .add(Duration::of_minutes(3L))
+    .add(Duration::of_seconds(4L))
+    .add(Duration::of_millis(500L)),
+    Duration::of_minutes(-90L),
+    Duration::of_millis(250L),
+  ]
+  for d in cases {
+    assert_true(parse_duration(d.to_string()) == Some(d))
+  }
+}
+
+///|
+/// strftime POSIX 常用指示符。
+test "strftime posix subset" {
+  let d = dt(2026, 7, 7, 15, 30, 5)
+  assert_true(strftime(d, "%Y-%m-%d %H:%M:%S") == "2026-07-07 15:30:05")
+  assert_true(strftime(d, "%a %b %e") == "Tue Jul  7")
+  assert_true(strftime(d, "%j") == "188")
+  assert_true(strftime(d, "100%%") == "100%")
+  assert_true(strftime(d, "%q") == "%q") // 未知指示符原样保留
+  let nye = dt(999, 1, 9, 0, 0, 0)
+  assert_true(strftime(nye, "%Y-%m-%d") == "0999-01-09")
+}

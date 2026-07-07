@@ -8,6 +8,8 @@ import {
 // Values
 pub fn apply_unified(Array[String], Array[Hunk]) -> Array[String]?
 
+pub fn diff3_merge(Array[String], Array[String], Array[String]) -> Array[MergeChunk]
+
 pub fn diff_lines(Array[String], Array[String]) -> Array[DiffOp]
 
 pub fn edit_distance(Array[DiffOp]) -> Int
@@ -21,6 +23,8 @@ pub fn parse_unified(String) -> Array[Hunk]?
 pub fn patch_apply(Array[String], Array[DiffOp]) -> Array[String]?
 
 pub fn patch_revert(Array[String], Array[DiffOp]) -> Array[String]?
+
+pub fn render_merge(Array[MergeChunk]) -> (Array[String], Bool)
 
 pub fn semver_compare(SemVer, SemVer) -> Int
 
@@ -42,6 +46,11 @@ pub(all) struct Hunk {
   new_start : Int
   new_count : Int
   lines : Array[DiffOp]
+} derive(Eq, @debug.Debug)
+
+pub(all) enum MergeChunk {
+  Stable(Array[String])
+  Conflict(Array[String], Array[String], Array[String])
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SemVer {

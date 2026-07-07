@@ -6,6 +6,8 @@ pub fn adler32(Array[Int]) -> UInt
 
 pub fn crc32(Array[Int]) -> UInt
 
+pub fn crc64_xz(Array[Int]) -> UInt64
+
 pub fn digest_hex(Array[Int]) -> String
 
 pub fn fnv1a_32(Array[Int]) -> UInt
@@ -28,15 +30,25 @@ pub fn md5(Array[Int]) -> Array[Int]
 
 pub fn md5_hex(String) -> String
 
+pub fn murmur3_32(Array[Int], UInt) -> UInt
+
 pub fn pbkdf2_hmac_sha256(Array[Int], Array[Int], Int, Int) -> Array[Int]?
 
 pub fn sha1(Array[Int]) -> Array[Int]
 
 pub fn sha1_hex(String) -> String
 
+pub fn sha224(Array[Int]) -> Array[Int]
+
+pub fn sha224_hex(String) -> String
+
 pub fn sha256(Array[Int]) -> Array[Int]
 
 pub fn sha256_hex(String) -> String
+
+pub fn sha384(Array[Int]) -> Array[Int]
+
+pub fn sha384_hex(String) -> String
 
 pub fn sha512(Array[Int]) -> Array[Int]
 

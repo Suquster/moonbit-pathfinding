@@ -82,6 +82,21 @@ pub(all) struct HedgePolicy {
   max_hedges : Int
 } derive(Eq, @debug.Debug)
 
+pub struct RateBreaker {
+  window_size : Int
+  minimum_calls : Int
+  failure_rate_permille : Int
+  ring : Array[Bool]
+  mut count : Int
+  mut head : Int
+  mut failures : Int
+  mut open : Bool
+}
+pub fn RateBreaker::create(Int, Int, Int) -> Self
+pub fn RateBreaker::failure_rate(Self) -> Int
+pub fn RateBreaker::is_open(Self) -> Bool
+pub fn RateBreaker::record(Self, Bool) -> Bool
+
 pub struct SlidingWindowLimiter {
   window_ms : Int
   max_events : Int

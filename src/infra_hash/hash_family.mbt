@@ -511,3 +511,265 @@ pub fn sha512_hex(s : String) -> String {
 pub fn md5_hex(s : String) -> String {
   digest_hex(md5(utf8_bytes(s)))
 }
+
+// ───────────────────────────── SHA-224（FIPS 180-4 §6.3） ────────────────
+
+///|
+/// SHA-224（FIPS 180-4）：与 SHA-256 同一压缩函数、不同初始向量
+/// （第 9..16 个素数平方根小数部分的次 32 位），输出截断为 28 字节。
+pub fn sha224(data : Array[Int]) -> Array[Int] {
+  let msg : Array[Int] = []
+  for b in data {
+    msg.push(b & 0xFF)
+  }
+  let bit_len = data.length().to_int64() * 8L
+  msg.push(0x80)
+  while msg.length() % 64 != 56 {
+    msg.push(0x00)
+  }
+  for shift in [56, 48, 40, 32, 24, 16, 8, 0] {
+    msg.push(((bit_len >> shift) & 0xFFL).to_int())
+  }
+  let h : Array[UInt] = [
+    0xc1059ed8U, 0x367cd507U, 0x3070dd17U, 0xf70e5939U, 0xffc00b31U, 0x68581511U,
+    0x64f98fa7U, 0xbefa4fa4U,
+  ]
+  let w : Array[UInt] = Array::make(64, 0U)
+  let mut off = 0
+  while off < msg.length() {
+    for t in 0..<16 {
+      let base = off + t * 4
+      w[t] = (msg[base].reinterpret_as_uint() << 24) |
+        (msg[base + 1].reinterpret_as_uint() << 16) |
+        (msg[base + 2].reinterpret_as_uint() << 8) |
+        msg[base + 3].reinterpret_as_uint()
+    }
+    for t in 16..<64 {
+      let s0 = rotr(w[t - 15], 7) ^ rotr(w[t - 15], 18) ^ (w[t - 15] >> 3)
+      let s1 = rotr(w[t - 2], 17) ^ rotr(w[t - 2], 19) ^ (w[t - 2] >> 10)
+      w[t] = w[t - 16] + s0 + w[t - 7] + s1
+    }
+    let mut a = h[0]
+    let mut b = h[1]
+    let mut c = h[2]
+    let mut d = h[3]
+    let mut e = h[4]
+    let mut f = h[5]
+    let mut g = h[6]
+    let mut hh = h[7]
+    for t in 0..<64 {
+      let big_s1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)
+      let ch = (e & f) ^ (e.lnot() & g)
+      let t1 = hh + big_s1 + ch + sha256_k[t] + w[t]
+      let big_s0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)
+      let maj = (a & b) ^ (a & c) ^ (b & c)
+      let t2 = big_s0 + maj
+      hh = g
+      g = f
+      f = e
+      e = d + t1
+      d = c
+      c = b
+      b = a
+      a = t1 + t2
+    }
+    h[0] = h[0] + a
+    h[1] = h[1] + b
+    h[2] = h[2] + c
+    h[3] = h[3] + d
+    h[4] = h[4] + e
+    h[5] = h[5] + f
+    h[6] = h[6] + g
+    h[7] = h[7] + hh
+    off = off + 64
+  }
+  let out : Array[Int] = []
+  for k in 0..<7 {
+    for shift in [24, 16, 8, 0] {
+      out.push(((h[k] >> shift) & 0xFFU).reinterpret_as_int())
+    }
+  }
+  out
+}
+
+// ───────────────────────────── SHA-384（FIPS 180-4 §6.5） ────────────────
+
+///|
+/// SHA-384（FIPS 180-4）：与 SHA-512 同一压缩函数、不同初始向量
+/// （第 9..16 个素数平方根小数部分），输出截断为 48 字节。
+pub fn sha384(data : Array[Int]) -> Array[Int] {
+  let msg : Array[Int] = []
+  for b in data {
+    msg.push(b & 0xFF)
+  }
+  let bit_len = data.length().to_int64() * 8L
+  msg.push(0x80)
+  while msg.length() % 128 != 112 {
+    msg.push(0x00)
+  }
+  for _ in 0..<8 {
+    msg.push(0x00)
+  }
+  for shift in [56, 48, 40, 32, 24, 16, 8, 0] {
+    msg.push(((bit_len >> shift) & 0xFFL).to_int())
+  }
+  let h : Array[UInt64] = [
+    0xcbbb9d5dc1059ed8UL, 0x629a292a367cd507UL, 0x9159015a3070dd17UL, 0x152fecd8f70e5939UL,
+    0x67332667ffc00b31UL, 0x8eb44a8768581511UL, 0xdb0c2e0d64f98fa7UL, 0x47b5481dbefa4fa4UL,
+  ]
+  let w : Array[UInt64] = Array::make(80, 0UL)
+  let mut off = 0
+  while off < msg.length() {
+    for t in 0..<16 {
+      let base = off + t * 8
+      let mut v = 0UL
+      for j in 0..<8 {
+        v = (v << 8) | (msg[base + j] & 0xFF).to_uint64()
+      }
+      w[t] = v
+    }
+    for t in 16..<80 {
+      let s0 = rotr64(w[t - 15], 1) ^ rotr64(w[t - 15], 8) ^ (w[t - 15] >> 7)
+      let s1 = rotr64(w[t - 2], 19) ^ rotr64(w[t - 2], 61) ^ (w[t - 2] >> 6)
+      w[t] = w[t - 16] + s0 + w[t - 7] + s1
+    }
+    let mut a = h[0]
+    let mut b = h[1]
+    let mut c = h[2]
+    let mut d = h[3]
+    let mut e = h[4]
+    let mut f = h[5]
+    let mut g = h[6]
+    let mut hh = h[7]
+    for t in 0..<80 {
+      let big_s1 = rotr64(e, 14) ^ rotr64(e, 18) ^ rotr64(e, 41)
+      let ch = (e & f) ^ (e.lnot() & g)
+      let t1 = hh + big_s1 + ch + sha512_k[t] + w[t]
+      let big_s0 = rotr64(a, 28) ^ rotr64(a, 34) ^ rotr64(a, 39)
+      let maj = (a & b) ^ (a & c) ^ (b & c)
+      let t2 = big_s0 + maj
+      hh = g
+      g = f
+      f = e
+      e = d + t1
+      d = c
+      c = b
+      b = a
+      a = t1 + t2
+    }
+    h[0] = h[0] + a
+    h[1] = h[1] + b
+    h[2] = h[2] + c
+    h[3] = h[3] + d
+    h[4] = h[4] + e
+    h[5] = h[5] + f
+    h[6] = h[6] + g
+    h[7] = h[7] + hh
+    off = off + 128
+  }
+  let out : Array[Int] = []
+  for k in 0..<6 {
+    for shift in [56, 48, 40, 32, 24, 16, 8, 0] {
+      out.push(((h[k] >> shift) & 0xFFUL).to_int())
+    }
+  }
+  out
+}
+
+// ───────────────────────────── CRC-64/XZ（ECMA-182 反射） ────────────────
+
+///|
+/// CRC-64/XZ 查找表（反射多项式 0xC96C5795D7870F42，惰性一次构建）。
+let crc64_table : Array[UInt64] = crc64_make_table()
+
+///|
+/// 构建 CRC-64/XZ 表。
+fn crc64_make_table() -> Array[UInt64] {
+  let table : Array[UInt64] = Array::make(256, 0UL)
+  for n in 0..<256 {
+    let mut c = n.to_uint64()
+    for _ in 0..<8 {
+      if (c & 1UL) != 0UL {
+        c = 0xC96C5795D7870F42UL ^ (c >> 1)
+      } else {
+        c = c >> 1
+      }
+    }
+    table[n] = c
+  }
+  table
+}
+
+///|
+/// CRC-64/XZ（GO-ECMA；xz-utils / Go hash/crc64 ECMA 同款）：
+/// 初值/终值取反、反射输入输出。
+pub fn crc64_xz(data : Array[Int]) -> UInt64 {
+  let mut c = 0xFFFFFFFFFFFFFFFFUL
+  for b in data {
+    let idx = ((c ^ (b & 0xFF).to_uint64()) & 0xFFUL).to_int()
+    c = crc64_table[idx] ^ (c >> 8)
+  }
+  c ^ 0xFFFFFFFFFFFFFFFFUL
+}
+
+// ───────────────────────────── MurmurHash3 x86_32 ────────────────────────
+
+///|
+/// MurmurHash3 x86_32（Appleby 2011 参考实现）：非加密、快速、
+/// 广泛用于布隆过滤器与分片（Cassandra/Kafka 同款家族）。
+pub fn murmur3_32(data : Array[Int], seed : UInt) -> UInt {
+  let c1 = 0xcc9e2d51U
+  let c2 = 0x1b873593U
+  let n = data.length()
+  let nblocks = n / 4
+  let mut h = seed
+  for i in 0..<nblocks {
+    let base = i * 4
+    let mut k = (data[base] & 0xFF).reinterpret_as_uint() |
+      ((data[base + 1] & 0xFF).reinterpret_as_uint() << 8) |
+      ((data[base + 2] & 0xFF).reinterpret_as_uint() << 16) |
+      ((data[base + 3] & 0xFF).reinterpret_as_uint() << 24)
+    k = k * c1
+    k = rotl32(k, 15)
+    k = k * c2
+    h = h ^ k
+    h = rotl32(h, 13)
+    h = h * 5U + 0xe6546b64U
+  }
+  // 尾部 1..3 字节。
+  let tail = nblocks * 4
+  let mut k1 = 0U
+  if n % 4 >= 3 {
+    k1 = k1 ^ ((data[tail + 2] & 0xFF).reinterpret_as_uint() << 16)
+  }
+  if n % 4 >= 2 {
+    k1 = k1 ^ ((data[tail + 1] & 0xFF).reinterpret_as_uint() << 8)
+  }
+  if n % 4 >= 1 {
+    k1 = k1 ^ (data[tail] & 0xFF).reinterpret_as_uint()
+    k1 = k1 * c1
+    k1 = rotl32(k1, 15)
+    k1 = k1 * c2
+    h = h ^ k1
+  }
+  // 终混（fmix32）。
+  h = h ^ n.reinterpret_as_uint()
+  h = h ^ (h >> 16)
+  h = h * 0x85ebca6bU
+  h = h ^ (h >> 13)
+  h = h * 0xc2b2ae35U
+  h = h ^ (h >> 16)
+  h
+}
+
+///|
+/// SHA-224 of UTF-8 字符串，十六进制输出。
+pub fn sha224_hex(s : String) -> String {
+  digest_hex(sha224(utf8_bytes(s)))
+}
+
+///|
+/// SHA-384 of UTF-8 字符串，十六进制输出。
+pub fn sha384_hex(s : String) -> String {
+  digest_hex(sha384(utf8_bytes(s)))
+}

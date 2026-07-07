@@ -440,3 +440,50 @@ pub fn zlib_decompress(data : Array[Int]) -> Array[Int]? {
   }
   Some(raw)
 }
+
+// ─────────────── 存储块与块型自动决策（zlib 编码器策略） ────────────────
+
+///|
+/// DEFLATE 存储块编码（RFC 1951 §3.2.4 BTYPE=00）：
+/// 不压缩、按 65535 字节分片，片头为 LEN/NLEN（小端、互补校验）。
+/// 不可压数据（已压缩/加密/随机）用它避免负压缩。
+pub fn deflate_stored(data : Array[Int]) -> Array[Int] {
+  let out : Array[Int] = []
+  let n = data.length()
+  let mut off = 0
+  let mut first = true
+  while off < n || first {
+    first = false
+    let len = if n - off > 65535 { 65535 } else { n - off }
+    let final_ = if off + len >= n { 1 } else { 0 }
+    // BFINAL + BTYPE=00，随后字节对齐。
+    out.push(final_)
+    out.push(len & 0xFF)
+    out.push((len >> 8) & 0xFF)
+    out.push(len.lnot() & 0xFF)
+    out.push((len.lnot() >> 8) & 0xFF)
+    for i in 0..<len {
+      out.push(data[off + i] & 0xFF)
+    }
+    off = off + len
+  }
+  out
+}
+
+///|
+/// 块型自动决策（zlib `deflate` 编码器同款策略的整流化版本）：
+/// 分别产出 stored / fixed-Huffman / dynamic-Huffman 三种编码，
+/// 取字节数最小者（平票偏向解码更快的次序 stored > fixed > dynamic）。
+pub fn deflate_auto(data : Array[Int]) -> Array[Int] {
+  let stored = deflate_stored(data)
+  let fixed = deflate(data)
+  let dyn_ = deflate_dynamic(data)
+  let mut best = stored
+  if fixed.length() < best.length() {
+    best = fixed
+  }
+  if dyn_.length() < best.length() {
+    best = dyn_
+  }
+  best
+}

@@ -119,3 +119,80 @@ test "prop unified roundtrip on random line arrays" {
     }
   }
 }
+
+///|
+/// diff3：互不重叠的双方修改自动合并。
+test "diff3 merges non overlapping edits" {
+  let base = ["a", "b", "c", "d", "e"]
+  let ours = ["A", "b", "c", "d", "e"] // 改第 1 行
+  let theirs = ["a", "b", "c", "d", "E"] // 改第 5 行
+  let (merged, conflicted) = render_merge(diff3_merge(base, ours, theirs))
+  assert_true(!conflicted)
+  assert_true(merged == ["A", "b", "c", "d", "E"])
+}
+
+///|
+/// diff3：同一区域双方不同修改产出 git 风格冲突标记。
+test "diff3 emits conflict markers on overlap" {
+  let base = ["a", "b", "c"]
+  let ours = ["a", "OURS", "c"]
+  let theirs = ["a", "THEIRS", "c"]
+  let (merged, conflicted) = render_merge(diff3_merge(base, ours, theirs))
+  assert_true(conflicted)
+  assert_true(
+    merged ==
+    [
+      "a", "<<<<<<< ours", "OURS", "||||||| base", "b", "=======", "THEIRS", ">>>>>>> theirs",
+      "c",
+    ],
+  )
+}
+
+///|
+/// diff3：双方做出相同修改不算冲突。
+test "diff3 identical edits are stable" {
+  let base = ["x", "y"]
+  let ours = ["x", "z"]
+  let theirs = ["x", "z"]
+  let (merged, conflicted) = render_merge(diff3_merge(base, ours, theirs))
+  assert_true(!conflicted)
+  assert_true(merged == ["x", "z"])
+}
+
+///|
+/// diff3：单侧插入/删除自动采纳。
+test "diff3 one sided insert and delete" {
+  let base = ["1", "2", "3"]
+  let ours = ["1", "2", "3", "4"] // 尾部插入
+  let theirs = ["2", "3"] // 头部删除
+  let (merged, conflicted) = render_merge(diff3_merge(base, ours, theirs))
+  assert_true(!conflicted)
+  assert_true(merged == ["2", "3", "4"])
+}
+
+///|
+/// diff3 PBT：ours == base 时结果恒等 theirs（200 迭代）。
+test "diff3 pbt ours unchanged yields theirs" {
+  let mut seed = 42U
+  let next = fn() -> UInt {
+    seed = seed * 1664525U + 1013904223U
+    seed
+  }
+  for _ in 0..<200 {
+    let base : Array[String] = []
+    let n = (next() % 8U).reinterpret_as_int()
+    for i in 0..<n {
+      base.push((next() % 4U).reinterpret_as_int().to_string())
+      ignore(i)
+    }
+    let theirs : Array[String] = []
+    let m = (next() % 8U).reinterpret_as_int()
+    for i in 0..<m {
+      theirs.push((next() % 4U).reinterpret_as_int().to_string())
+      ignore(i)
+    }
+    let (merged, conflicted) = render_merge(diff3_merge(base, base, theirs))
+    assert_true(!conflicted)
+    assert_true(merged == theirs)
+  }
+}

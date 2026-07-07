@@ -64,6 +64,37 @@
     2026-07-07，`moon test -p src/serialization` 118/118 绿。unknown 字段
     保留重编码（旧读者透传新字段）此前已由 `unknown_reencode_test.mbt` 覆盖。
 
+### D. 补深第二轮 —— 六包体量倍增（2026-07-07 晚，回应"包太薄"审视）
+
+- [x] D1 `infra_hash`：SHA-1（RFC 3174）/ SHA-512（FIPS 180-4）/ MD5
+      （RFC 1321 附录 A.5 全套向量）/ xxHash32 / Adler-32（RFC 1950）/
+      SipHash-2-4（参考实现向量）/ HMAC-SHA1/512（`hash_family.mbt`）+
+      HKDF（RFC 5869 附录 A.1–A.3 官方向量）与 PBKDF2-HMAC-SHA256
+      （RFC 7914 §11 向量，80000 迭代）（`kdf.mbt`）。19 测试绿。
+- [x] D2 `infra_time`：`Duration`（Go time.Duration 语义：构造/算术/分量/
+      `1d2h3m4.500s` 格式化）、`add_months`/`add_years`（java.time 月末
+      钳制语义）、ISO 8601 周历（`iso_week_date` 边界年向量）、
+      RFC 3339 任意偏移格式化（`time_ext.mbt`）。29 测试绿。
+- [x] D3 `infra_cli`：类型化取值 `int_of`/`bool_of`/`float_of`（总体函数）、
+      声明式校验 `ValueRule`（required/类型/choices，违例不短路全量汇总，
+      clap 风格）、组合短 flag 展开（POSIX guideline 5）（`cli_typed.mbt`）。
+      11 测试绿。
+- [x] D4 `infra_compress`：动态 Huffman **编码**（RFC 1951 §3.2.7：两遍
+      LZ77 频率统计 + 限长(≤15)霍夫曼 + 码长 RLE 16/17/18 + 码长码头）、
+      zlib 封装（RFC 1950：CMF/FLG/FCHECK + Adler-32 大端尾，CPython
+      黄金向量）（`deflate_dynamic.mbt`）；偏斜数据动态 < fixed 体积见证 +
+      200 迭代 PBT。15 测试绿。
+- [x] D5 `infra_diff`：unified diff（GNU diff -u hunk 头/上下文合并语义）
+      输出、`parse_unified` 解析（畸形显式拒绝）、`apply_unified` 上下文
+      校验应用（patch reject 语义）（`unified.mbt`）+ 200 迭代
+      format→parse→apply 恒等 PBT。11 测试绿。
+- [x] D6 `infra_resilience`：Bulkhead（resilience4j 并发上限+有界队列+
+      快速失败）、Hedged requests（Dean & Barroso *The Tail at Scale*：
+      发射时刻表/胜者判定/取消语义 + "对冲不慢于单发"不变式 PBT）、
+      AIMD 自适应限流（Chiu & Jain 1989）（`resilience_ext.mbt`）。
+      11 测试绿。
+- 全量口径：2309 测试全绿、acceptance 4 门禁全过（dda95e8 / 1c11d60）。
+
 ### 冲刺优先级（截止 2026-07-12 前）
 
 A1 → A2 → B1 → B2 → A5，其余按余量推进。

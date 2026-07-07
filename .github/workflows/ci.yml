@@ -66,10 +66,13 @@ jobs:
       - name: moon check (${{ matrix.backend }})
         run: moon check --target ${{ matrix.backend }}
 
-      # ─── 关卡 2: moon fmt --check (后端无关,只跑一次节省时间) ─
-      - name: moon fmt --check
+      # ─── 关卡 2: moon fmt --deny-warn (后端无关,只跑一次节省时间) ─
+      #   验收要求的 deny-warn 过程: 新版工具链已移除 fmt/info 的
+      #   --deny-warn 参数, scripts/acceptance.sh 探测后以等价语义执行
+      #   (fmt --check / info + mbti 无漂移), 并叠加 moon check --deny-warn。
+      - name: moon fmt --deny-warn · moon info --deny-warn · moon check --deny-warn
         if: matrix.backend == 'wasm-gc'
-        run: moon fmt --check
+        run: bash scripts/acceptance.sh
 
       # ─── 关卡 3: moon test ────────────────────────────────────
       - name: moon test (${{ matrix.backend }})
@@ -103,9 +106,11 @@ jobs:
           done
 
       # ─── 辅助: moon info 生成 mbti,确保 API 可见性无回归 ──────
-      - name: moon info
+      - name: moon info (interface drift gate)
         if: matrix.backend == 'wasm-gc'
-        run: moon info
+        run: |
+          moon info
+          git diff --exit-code -- ':(glob)**/*.mbti'
 
   # ─────────────────────────────────────────────────────────────
   # Job 2 · 覆盖率报告 + 85% 硬门禁 (关卡 4, 对应 design.md §15.3)

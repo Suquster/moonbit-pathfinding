@@ -96,6 +96,7 @@ pub struct ActorSystem[S, M] {
   mut clock : Int
   mut rng : @infra_pbt.Rng?
   mut next_id : Int
+  mut cross_dirty : Bool
 }
 pub fn[S, M] ActorSystem::is_running(Self[S, M], ActorRef[M]) -> Bool
 pub fn[S, M] ActorSystem::new() -> Self[S, M]

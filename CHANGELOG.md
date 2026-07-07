@@ -30,6 +30,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — Pre-acceptance feedback（预验收反馈整改）
+
+- perf(actor): `run_until_idle` unseeded fast path — advance-cursor scheduling
+  replaces the per-step full-table scan (`settle_stops` + `pick_ready`), making
+  message processing amortised O(1) per message while preserving the exact
+  processing order of the step-by-step semantics; cross-cell events
+  (Terminated delivery / supervision handling) set `cross_dirty` and rescan
+  from index 0 (无种子 `run_until_idle` 推进游标快路径：每消息摊销 O(1)，与逐
+  `step` 处理序列完全一致；修复 `massive_actor_scheduling` 基准 27× 回归——
+  native 109.9ms → 2.5ms，回归 guard 恢复 PASS)
+- fix(build): remove the deprecated `moon.mod.json` (superseded by `moon.mod`),
+  eliminating the "Both moon.mod.json and moon.mod exist" warning
+  (删除废弃 `moon.mod.json`，消除新工具链重复配置告警)
+- ci: add the required deny-warn acceptance gates via `scripts/acceptance.sh` —
+  probes toolchain support for `moon fmt --deny-warn` / `moon info --deny-warn`
+  and falls back to equivalent semantics (`moon fmt --check`, `moon info` +
+  `.mbti` drift gate) plus `moon check --deny-warn` on newer toolchains where
+  the flag moved to check/test (CI 纳入验收要求的 deny-warn 两个过程，跨工具链
+  版本兼容执行，并叠加接口无漂移门禁)
+
 ### Fixed — Playground goes live（Playground 上线）
 
 - fix(playground): declare the parent library as a `path` dependency in

@@ -45,6 +45,7 @@ pub struct ActorSystem[S, M] {
   mut clock : Int // 逻辑时钟（处理一条消息加一）
   mut rng : @infra_pbt.Rng? // 种子驱动调度；None 时退化为登记顺序
   mut next_id : Int
+  mut cross_dirty : Bool // 跨单元事件标记（Terminated 投递 / 监督处置），驱动有序快路径回扫
 }
 
 ///|
@@ -60,6 +61,7 @@ pub fn[S, M] ActorSystem::new() -> ActorSystem[S, M] {
     clock: 0,
     rng: None,
     next_id: 0,
+    cross_dirty: false,
   }
 }
 
@@ -273,6 +275,7 @@ fn[S, M] ActorSystem::enqueue_msg(
     Some(c) =>
       if c.status is Running && !c.mailbox.is_closed() {
         c.mailbox.enqueue(msg)
+        self.cross_dirty = true
       }
     None => ()
   }
@@ -456,6 +459,7 @@ fn[S, M] ActorSystem::on_child_failed(
   cell : SupervisedCell[S, M],
   reason : String,
 ) -> Unit {
+  self.cross_dirty = true
   match self.parents.get(cell.id.value) {
     None =>
       // 无 supervisor：终态 Failed（错误隔离）。
@@ -614,9 +618,43 @@ pub fn[S, M] ActorSystem::step(self : ActorSystem[S, M]) -> Bool {
 
 ///|
 /// 反复 `step` 直至空闲（无 Running 且有待处理消息者，R10.5）。
+///
+/// 无种子时就绪选取恒为「登记序最小的就绪 actor」，且纯 `Updated` 处理不会向
+/// 其它 actor 注入消息，故最小就绪下标单调不减——用推进游标把每步的全表扫描
+/// 摊销为 O(1)；任何跨单元事件（Terminated 投递、监督处置）置 `cross_dirty`，
+/// 游标回零并重新结算停止，保证与逐 `step` 完全一致的处理序列。
 pub fn[S, M] ActorSystem::run_until_idle(self : ActorSystem[S, M]) -> Unit {
-  while self.step() {
+  match self.rng {
+    Some(_) =>
+      while self.step() {
 
+      }
+    None => self.run_until_idle_ordered()
+  }
+}
+
+///|
+/// 无种子（登记序）快路径：游标扫描代替逐步全表扫描，处理序列与逐 `step`
+/// 一致（见 `run_until_idle` 注释）。
+fn[S, M] ActorSystem::run_until_idle_ordered(self : ActorSystem[S, M]) -> Unit {
+  ignore(self.settle_stops())
+  self.cross_dirty = false
+  let mut i = 0
+  while i < self.cells.length() {
+    let cell = self.cells[i]
+    if cell.status is Running && !cell.mailbox.is_closed() {
+      self.sync_bounded(cell)
+      if self.cell_pending(cell) > 0 {
+        self.process_one(cell)
+        if self.cross_dirty {
+          ignore(self.settle_stops())
+          self.cross_dirty = false
+          i = 0
+        }
+        continue
+      }
+    }
+    i = i + 1
   }
 }
 

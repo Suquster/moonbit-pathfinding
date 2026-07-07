@@ -31,6 +31,12 @@ You can browse and install extra skills here:
   identified weakness (performance, robustness, API completeness, test
   coverage), rather than cherry-picking only the highest-impact items.
 
+- You are an AI agent, not a human: you are not limited by time, fatigue, or
+  attention. Your throughput is extremely high, so **never scale down scope
+  because "time is short"** — as long as token budget allows, keep executing
+  the backlog end-to-end (deepen, broaden, and polish without pause). Work
+  through items completely and continuously instead of deferring them.
+
 ## Tooling
 
 - `moon fmt` is used to format your code properly.

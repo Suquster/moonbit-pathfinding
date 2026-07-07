@@ -1,0 +1,43 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_diff"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn diff_lines(Array[String], Array[String]) -> Array[DiffOp]
+
+pub fn edit_distance(Array[DiffOp]) -> Int
+
+pub fn patch_apply(Array[String], Array[DiffOp]) -> Array[String]?
+
+pub fn patch_revert(Array[String], Array[DiffOp]) -> Array[String]?
+
+pub fn semver_compare(SemVer, SemVer) -> Int
+
+pub fn semver_parse(String) -> SemVer?
+
+// Errors
+
+// Types and methods
+pub(all) enum DiffOp {
+  Keep(String)
+  Delete(String)
+  Insert(String)
+} derive(Eq, @debug.Debug)
+pub impl Show for DiffOp
+
+pub(all) struct SemVer {
+  major : Int
+  minor : Int
+  patch : Int
+  prerelease : Array[String]
+  build : String
+} derive(Eq, @debug.Debug)
+pub impl Show for SemVer
+
+// Type aliases
+
+// Traits
+

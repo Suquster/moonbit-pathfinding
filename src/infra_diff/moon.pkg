@@ -1,0 +1,13 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_diff
+//
+// diff / patch 与版本解析基础设施（B7）：Myers O(ND) 行级 diff、
+// patch 正反向应用、SemVer 2.0.0 解析与优先级比较。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

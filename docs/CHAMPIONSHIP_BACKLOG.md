@@ -95,6 +95,33 @@
       11 测试绿。
 - 全量口径：2309 测试全绿、acceptance 4 门禁全过（dda95e8 / 1c11d60）。
 
+### E. 补深第三轮 —— 单文件成熟度（2026-07-07 晚，回应"成熟文件应千行级"）
+
+- [x] E1 `infra_hash`：SHA-224 / SHA-384（FIPS 180-4 §6.3/§6.5 官方向量，
+      各自独立 IV + 截断输出）、CRC-64/XZ（ECMA-182 反射多项式，
+      check 值 0x995DC9BBDF1939FA）、MurmurHash3 x86_32（SMHasher
+      参考向量）。23 测试绿。
+- [x] E2 `infra_time`：`parse_duration`（Go ParseDuration 风格子集：
+      d/h/m/s/ms 递减单位 + 毫秒级小数秒，畸形/乱序/重复显式拒绝，
+      与 `Duration::to_string` roundtrip）、`strftime`（POSIX 常用子集
+      %Y%m%d%H%M%S%j%a%b%e%%，未知指示符原样保留）。33 测试绿。
+- [x] E3 `infra_cli`：`value_or_env` 分层回退（clap `Arg::env` 语义：
+      命令行→环境变量→默认值）、`flag_tristate`（GNU `--no-` 否定前缀
+      三态）、Damerau–Levenshtein + `suggest_option` did-you-mean
+      （git/clap 同款体验）。15 测试绿。
+- [x] E4 `infra_diff`：diff3 三方合并（Smith 1988 / git merge-file 语义：
+      非重叠自动合并、重叠不一致产出 git 风格冲突标记含 base 段、
+      相同修改不算冲突）+ `render_merge` + "ours==base ⇒ 结果==theirs"
+      不变式 200 迭代 PBT。16 测试绿。
+- [x] E5 `infra_resilience`：计数型滑动窗口错误率熔断 `RateBreaker`
+      （resilience4j COUNT_BASED：环形窗口、最少样本数、千分比阈值、
+      窗口滑动自动恢复）。13 测试绿。
+- [x] E6 `infra_compress`：`deflate_stored`（RFC 1951 §3.2.4 存储块，
+      65535 分片 + LEN/NLEN 互补校验，不可压数据零膨胀）、
+      `deflate_auto` 块型自动决策（stored/fixed/dynamic 三选一取最小，
+      "不劣于任何单编码"120 迭代 PBT）。19 测试绿。
+- 全量口径：2332 测试全绿、acceptance 4 门禁全过。
+
 ### 冲刺优先级（截止 2026-07-12 前）
 
 A1 → A2 → B1 → B2 → A5，其余按余量推进。

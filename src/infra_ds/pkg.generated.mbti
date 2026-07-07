@@ -21,6 +21,17 @@ pub fn[K : Compare, V] BTreeMap::remove(Self[K, V], K) -> V?
 pub fn[K, V] BTreeMap::size(Self[K, V]) -> Int
 pub fn[K, V] BTreeMap::to_array(Self[K, V]) -> Array[(K, V)]
 
+pub struct BloomFilter {
+  bits : Array[UInt64]
+  m : Int
+  k : Int
+  mut n : Int
+}
+pub fn BloomFilter::contains(Self, String) -> Bool
+pub fn BloomFilter::count(Self) -> Int
+pub fn BloomFilter::create(Int, Int) -> Self
+pub fn BloomFilter::insert(Self, String) -> Unit
+
 type Container
 
 type HNode[K, V]
@@ -36,6 +47,23 @@ pub fn[K, V] HamtMap::length(Self[K, V]) -> Int
 pub fn[K, V] HamtMap::new() -> Self[K, V]
 pub fn[K : Eq + Hash, V] HamtMap::remove(Self[K, V], K) -> Self[K, V]
 pub fn[K, V] HamtMap::to_array(Self[K, V]) -> Array[(K, V)]
+
+pub struct LruCache[K, V] {
+  capacity : Int
+  index : Map[K, Int]
+  keys : Array[K?]
+  values : Array[V?]
+  prev : Array[Int]
+  next : Array[Int]
+  mut head : Int
+  mut tail : Int
+  free : Array[Int]
+}
+pub fn[K, V] LruCache::cap(Self[K, V]) -> Int
+pub fn[K, V] LruCache::create(Int) -> Self[K, V]
+pub fn[K : Eq + Hash, V] LruCache::get(Self[K, V], K) -> V?
+pub fn[K : Eq + Hash, V] LruCache::put(Self[K, V], K, V) -> Unit
+pub fn[K, V] LruCache::size(Self[K, V]) -> Int
 
 pub struct RoaringBitmap {
   chunk_keys : Array[Int]

@@ -1,0 +1,15 @@
+// 包：Suquster/moonbit-pathfinding/src/infra_cli
+//
+// CLI 参数解析基础设施（B3，填补 MoonBit 生态空白，对标 Rust clap /
+// Go flag 的核心子集）：长/短 flag、带值选项、位置参数、子命令、
+// `--` 终止符、自动 help 文本生成。纯计算、总体函数（畸形输入返回
+// 结构化错误而非崩溃）。
+//
+// 叶子基础设施包：生产代码零依赖；PBT 仅测试期依赖 @infra_pbt。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "moonbitlang/core/test",
+} for "test"

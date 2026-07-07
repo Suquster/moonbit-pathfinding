@@ -12,6 +12,12 @@ pub fn fnv1a_32(Array[Int]) -> UInt
 
 pub fn fnv1a_64(Array[Int]) -> UInt64
 
+pub fn hkdf(Array[Int], Array[Int], Array[Int], Int) -> Array[Int]?
+
+pub fn hkdf_expand(Array[Int], Array[Int], Int) -> Array[Int]?
+
+pub fn hkdf_extract(Array[Int], Array[Int]) -> Array[Int]
+
 pub fn hmac_sha1(Array[Int], Array[Int]) -> Array[Int]
 
 pub fn hmac_sha256(Array[Int], Array[Int]) -> Array[Int]
@@ -21,6 +27,8 @@ pub fn hmac_sha512(Array[Int], Array[Int]) -> Array[Int]
 pub fn md5(Array[Int]) -> Array[Int]
 
 pub fn md5_hex(String) -> String
+
+pub fn pbkdf2_hmac_sha256(Array[Int], Array[Int], Int, Int) -> Array[Int]?
 
 pub fn sha1(Array[Int]) -> Array[Int]
 

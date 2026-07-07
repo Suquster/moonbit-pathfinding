@@ -1,0 +1,67 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/infra_resilience"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn backoff_delay(BackoffPolicy, Int) -> Int
+
+pub fn backoff_delay_jittered(BackoffPolicy, Int, Int) -> Int
+
+pub fn retry_run(BackoffPolicy, (Int) -> Bool) -> (Bool, Int)
+
+// Errors
+
+// Types and methods
+pub(all) struct BackoffPolicy {
+  base_ms : Int
+  cap_ms : Int
+  max_retries : Int
+} derive(Eq, @debug.Debug)
+
+pub struct CircuitBreaker {
+  failure_threshold : Int
+  cooldown_ms : Int
+  mut state : CircuitState
+  mut consecutive_failures : Int
+  mut opened_at_ms : Int64
+}
+pub fn CircuitBreaker::allow(Self, Int64) -> Bool
+pub fn CircuitBreaker::create(Int, Int) -> Self
+pub fn CircuitBreaker::record_failure(Self, Int64) -> Unit
+pub fn CircuitBreaker::record_success(Self) -> Unit
+pub fn CircuitBreaker::state_of(Self) -> CircuitState
+
+pub(all) enum CircuitState {
+  Closed
+  Open
+  HalfOpen
+} derive(Eq, @debug.Debug)
+pub impl Show for CircuitState
+
+pub struct SlidingWindowLimiter {
+  window_ms : Int
+  max_events : Int
+  stamps : Array[Int64]
+  mut head : Int
+}
+pub fn SlidingWindowLimiter::create(Int, Int) -> Self
+pub fn SlidingWindowLimiter::in_flight(Self, Int64) -> Int
+pub fn SlidingWindowLimiter::try_acquire(Self, Int64) -> Bool
+
+pub struct TokenBucket {
+  capacity : Int
+  refill_per_sec : Int
+  mut tokens_milli : Int64
+  mut last_ms : Int64
+}
+pub fn TokenBucket::available(Self, Int64) -> Int
+pub fn TokenBucket::create(Int, Int) -> Self
+pub fn TokenBucket::try_acquire(Self, Int64) -> Bool
+
+// Type aliases
+
+// Traits
+

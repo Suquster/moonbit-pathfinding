@@ -29,6 +29,8 @@ pub fn bridges_post(Int, Array[(Int, Int)], Array[(Int, Int)]) -> Bool
 
 pub fn build_order_respects_deps(Array[Int], Array[(Int, Int)]) -> Bool
 
+pub fn bytes_round_trip_eq(Array[Int], Array[Int]) -> Bool
+
 pub fn[N, W : @core.Weight] check_cost_matches_path((Array[N], W)?, (N, N) -> W?) -> Bool
 
 pub fn[N : Eq] check_edges_valid(Array[N]?, N, (N) -> Array[N]) -> Bool
@@ -78,6 +80,8 @@ pub fn fail_does_not_consume(Bool, Int, Int) -> Bool
 pub fn fifo_order_preserved(Array[Int], Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] floyd_warshall_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn has_magic_prefix(Array[Int], Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] ida_star_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
@@ -135,11 +139,17 @@ pub fn[T : Eq] seq_eq(Array[T], Array[T]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] shortest_path_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
+pub fn spans_agree((Int, Int)?, (Int, Int)?) -> Bool
+
 pub fn ssa_single_assignment(Array[Int]) -> Bool
 
 pub fn ssa_single_assignment_counts(Array[Int]) -> Bool
 
+pub fn streaming_matches_oneshot(Array[Int], Array[Int]) -> Bool
+
 pub fn topo_order_post(Array[Int], Array[(Int, Int)]) -> Bool
+
+pub fn within_budget(Int, Int) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] yen_post(Array[(Array[N], W)], N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 

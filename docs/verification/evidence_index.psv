@@ -42,3 +42,9 @@ infra_time 覆盖盲区收口（Duration 总量换算/abs/毫秒补零渲染）|
 infra_ds 覆盖盲区收口（roaring trailing_zeros/popcount64/位图容器重复路径）|src/infra_ds::coverage_gaps2_wbtest.mbt|643a6f1
 lsp_binding 覆盖盲区收口（JSON 数字/转义边界拒绝、\/ 转义）|src/lsp_binding::coverage_gaps2_test.mbt|643a6f1
 build_tool 覆盖盲区收口（变量展开未闭合、模式匹配边界、GrammarError Show）|src/build_tool::coverage_gaps2_wbtest.mbt|643a6f1
+graph 覆盖盲区收口（OSM 记号边界、短表头放行、无向边构建）|src/graph::coverage_gaps2_wbtest.mbt|cab915b
+infra_text 覆盖盲区收口（piece_table 删除钳制、NUL 宽度、空串切叶）|src/infra_text::coverage_gaps2_wbtest.mbt|cab915b
+infra_diff 覆盖盲区收口（DiffOp/SemVer Show、patch_apply 负例）|src/infra_diff::coverage_gaps2_wbtest.mbt|cab915b
+infra_metrics 覆盖盲区收口（分位/百分位/精度位钳制、越界 id 防御）|src/infra_metrics::coverage_gaps2_test.mbt|cab915b
+infra_resilience 覆盖盲区收口（退避/抖动钳制、CircuitState Show、对冲截断）|src/infra_resilience::coverage_gaps2_test.mbt|cab915b
+infra_cli 覆盖盲区收口（CliError/TypedError Show、整数记号边界）|src/infra_cli::coverage_gaps2_wbtest.mbt|cab915b

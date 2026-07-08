@@ -49,6 +49,10 @@
 4. **AI-agent-friendly successor-function APIs** and graph input guides that
    keep callers free from a forced graph data structure.
 
+See [docs/ECOSYSTEM_COMPARISON.md](docs/ECOSYSTEM_COMPARISON.md) for a
+per-domain comparison with existing MoonBit ecosystem packages (pathfinding,
+hash, compress, TOML, diff, etc.) and the tradeoffs behind each choice.
+
 ---
 
 ## Quick Start

@@ -37,6 +37,10 @@ MIT OR Apache-2.0 双许可）。核心借鉴：
 3. **三后端一致性** — wasm-gc / native / js 差分测试作为 CI 硬门禁
 4. **AI Agent 友好的后继函数 API**：不强制绑定图结构，便于生成、组合和验证调用代码
 
+与 MoonBit 生态内已有同类包（寻路、hash、compress、TOML、diff 等）的
+逐领域对照与取舍说明，见
+[docs/ECOSYSTEM_COMPARISON.md](docs/ECOSYSTEM_COMPARISON.md)。
+
 ---
 
 ## 快速开始

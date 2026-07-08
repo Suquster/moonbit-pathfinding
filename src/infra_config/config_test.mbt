@@ -265,3 +265,20 @@ test "INI：畸形输入拒绝与边界" {
   guard @infra_config.ini_parse("[s]\r\nk = v\r\n") is Some(s)
   assert_true(@infra_config.ini_get(s, "s", "k") == Some("v"))
 }
+
+///|
+/// TOML CRLF 行尾与畸形键：\r\n 行尾、裸 \r 拒绝、空键名拒绝。
+test "TOML：CRLF 行尾与畸形键拒绝" {
+  // CRLF 文档整体可解析。
+  let doc = "a = 1\r\nb = \"x\"\r\n\r\n[t]\r\nc = true\r\n"
+  match @infra_config.toml_parse(doc) {
+    None => abort("CRLF 文档解析失败")
+    Some(kvs) => assert_true(kvs.length() >= 3)
+  }
+  // 裸 \r（无随后 \n）非法行尾。
+  assert_true(@infra_config.toml_parse("a = 1\rb = 2") is None)
+  // 空键名（"= 1"）拒绝。
+  assert_true(@infra_config.toml_parse("= 1") is None)
+  // 键后缺 = 拒绝。
+  assert_true(@infra_config.toml_parse("only_key") is None)
+}

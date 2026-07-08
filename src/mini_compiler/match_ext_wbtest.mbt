@@ -128,3 +128,24 @@ test "match_ext: tuple pattern against int scrutinee reports TypeMismatch" {
     }
   }
 }
+
+///|
+/// 手写 Show 渲染器全构造子覆盖：Pattern / TyX 的 to_string 输出稳定。
+test "match_ext Show：Pattern 与 TyX 全构造子渲染" {
+  let p : Pattern = PTuple([
+    PWild,
+    PVar("x"),
+    PInt(42),
+    PBool(true),
+    PCons(PInt(1), PNil),
+  ])
+  assert_eq(
+    p.to_string(),
+    "PTuple([PWild, PVar(x), PInt(42), PBool(true), PCons(PInt(1), PNil)])",
+  )
+  let t : TyX = TXTuple([TXInt, TXBool, TXList(TXInt), TXFun(TXInt, TXBool)])
+  assert_eq(
+    t.to_string(),
+    "TXTuple([TXInt, TXBool, TXList(TXInt), TXFun(TXInt, TXBool)])",
+  )
+}

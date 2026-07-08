@@ -96,3 +96,31 @@ test "decode_json reports error on malformed JSON" {
     Err(_) => assert_true(true)
   }
 }
+
+///|
+/// base64 解码边界：'+'/'/' 字符表、空白跳过、非法字符与孤字节拒绝。
+test "base64 解码：字符表边界与畸形输入" {
+  // '+' (62) 与 '/' (63)：0xFB 0xEF -> "++/v" 前缀段。
+  match base64_decode("+/+/") {
+    None => abort("+/ 解码失败")
+    Some(b) => assert_eq(b.length(), 3)
+  }
+  // 空白（换行/回车/空格/制表）应被跳过。
+  match base64_decode("QU\nJD\r RA\t==") {
+    None => abort("含空白 base64 解码失败")
+    Some(b) => {
+      assert_eq(b.length(), 4)
+      assert_eq(b[0].to_int(), 'A'.to_int())
+      assert_eq(b[3].to_int(), 'D'.to_int())
+    }
+  }
+  // 非法字符拒绝。
+  assert_true(base64_decode("QUJ*") is None)
+  // 余 1 字节（信息不足）拒绝。
+  assert_true(base64_decode("Q") is None)
+  // 余 3 字节合法（解出 2 字节）。
+  match base64_decode("QUJ") {
+    None => abort("余 3 解码失败")
+    Some(b) => assert_eq(b.length(), 2)
+  }
+}

@@ -143,9 +143,9 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\release_guard.ps1
 当前已落地 **30 种经典图 / 路径算法** 与 **8 种前沿算法**。
 CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）
 并附真实 OSM 路网基准证据（北京驾车网：CH 相对双向 Dijkstra
-**46×**，HL 距离查询 **0.44 µs（14304×）**，PHAST 一到全 SSSP
-相对全量 Dijkstra **6.15×**，many-to-many 64×64 距离表相对逐对
-CH **16–25×**，RPHAST 目标子集限定再提 **6.9–9.8×**，见
+**46.7×**，HL 距离查询 **0.47 µs（13279×）**，PHAST 一到全 SSSP
+相对全量 Dijkstra **6.27×**，many-to-many 64×64 距离表相对逐对
+CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见
 `benches/results/osm-real-networks-ch-native-2026-07-08.md`）。HL 支持路径还原
 （`query_via` / `query_path`）：
 
@@ -181,13 +181,13 @@ CH **16–25×**，RPHAST 目标子集限定再提 **6.9–9.8×**，见
 | 28 | Hopcroft-Karp 匹配 | `src/undirected/hopcroft_karp.mbt` | ✅ | Hopcroft & Karp 1973 |
 | 29 | 欧拉路径（Hierholzer） | `src/directed/eulerian.mbt` | ✅ | Hierholzer 1873 |
 | 30 | SCC 缩点 DAG | `src/directed/condensation.mbt` | ✅ | Tarjan 1972 |
-| 31 | 🔥 Contraction Hierarchies | `src/advanced/ch.mbt` · 生产级 `src/directed/ch.mbt` | ✅ OSM 实测 46× | Geisberger 2008 |
+| 31 | 🔥 Contraction Hierarchies | `src/advanced/ch.mbt` · 生产级 `src/directed/ch.mbt` | ✅ OSM 实测 46.7× | Geisberger 2008 |
 | 32 | 🔥 Jump Point Search | `src/advanced/jps.mbt` | 🧪 experimental | Harabor & Grastien 2011 |
-| 33 | 🔥 ALT (A\* + Landmarks) | `src/advanced/alt.mbt` · 生产级 `src/directed/alt.mbt` | ✅ OSM 实测 6.6× | Goldberg & Harrelson 2005 |
-| 34 | 🔥 Hub Labeling (2-hop) | `src/directed/hub_labels.mbt` | ✅ OSM 实测 14304× | Abraham, Delling, Goldberg & Werneck 2011 |
-| 35 | 🔥 PHAST（一到全 SSSP） | `src/directed/phast.mbt` | ✅ OSM 实测 6.15× | Delling, Goldberg, Nowatzyk & Werneck 2011 |
-| 36 | 🔥 Many-to-many 距离表 | `src/directed/many_to_many.mbt` | ✅ OSM 实测 16–25× | Knopp, Sanders, Schultes, Schulz & Wagner 2007 |
-| 37 | 🔥 RPHAST（目标子集限定） | `src/directed/rphast.mbt` | ✅ OSM 实测 6.9–9.8× | Delling, Goldberg, Nowatzyk & Werneck 2011 |
+| 33 | 🔥 ALT (A\* + Landmarks) | `src/advanced/alt.mbt` · 生产级 `src/directed/alt.mbt` | ✅ OSM 实测 6.5× | Goldberg & Harrelson 2005 |
+| 34 | 🔥 Hub Labeling (2-hop) | `src/directed/hub_labels.mbt` | ✅ OSM 实测 13279× | Abraham, Delling, Goldberg & Werneck 2011 |
+| 35 | 🔥 PHAST（一到全 SSSP） | `src/directed/phast.mbt` | ✅ OSM 实测 6.27× | Delling, Goldberg, Nowatzyk & Werneck 2011 |
+| 36 | 🔥 Many-to-many 距离表 | `src/directed/many_to_many.mbt` | ✅ OSM 实测 16–27× | Knopp, Sanders, Schultes, Schulz & Wagner 2007 |
+| 37 | 🔥 RPHAST（目标子集限定） | `src/directed/rphast.mbt` | ✅ OSM 实测 7.2–9.4× | Delling, Goldberg, Nowatzyk & Werneck 2011 |
 | 38 | 🔥 Customizable CH（CCH） | `src/directed/cch.mbt` | ✅ OSM 实测换权 13–19× | Dibbelt, Strasser & Wagner 2014 |
 
 > 🔥 = **Rust `pathfinding` crate 未实现的独家算法**
@@ -281,10 +281,10 @@ median `moon bench` mean timing，并生成
 smoke artifact 用于端到端包执行守卫。
 
 真实 OSM 路网基准已落库（北京 / 厦门驾车网，osmnx 提取）：四档
-点到点谱系（双向 Dijkstra → ALT 6.6× → CH 46× → HL 14304×）与批量
+点到点谱系（双向 Dijkstra → ALT 6.5× → CH 46.7× → HL 13279×）与批量
 谱系（PHAST / RPHAST / many-to-many）全部附全量对拍一致性校验与
 差分 PBT 守卫，证据见 [`benches/results/osm-real-networks-ch-native-2026-07-08.md`](./benches/results/osm-real-networks-ch-native-2026-07-08.md)
-与 [`benches/results/alt-indexed-osm-20260705.md`](./benches/results/alt-indexed-osm-20260705.md)。
+与 [`benches/results/osm-alt-hl-native-2026-07-08.md`](./benches/results/osm-alt-hl-native-2026-07-08.md)。
 
 ---
 

@@ -1,0 +1,13 @@
+// 包：Suquster/moonbit-pathfinding/src/mooncakes_audit
+//
+// mooncakes.io 包索引审计引擎（G-A3 + H-1，L6 生态平台层）：
+// 解析 scripts/mooncakes_audit.ps1 抓取的索引快照（psv 行格式），
+// 按能力域关键词分类统计、生成生态缺口报告与 ECOSYSTEM_COMPARISON
+// 可自动刷新的 markdown 摘要。纯计算、三后端一致；
+// 网络抓取留在脚本层，引擎保持离线可测。
+import {
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

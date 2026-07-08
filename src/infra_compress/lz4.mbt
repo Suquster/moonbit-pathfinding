@@ -16,10 +16,25 @@
 /// 畸形输入（越界 offset、截断序列、超限输出）返回 None。
 pub fn lz4_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
   let out : Array[Int] = []
+  if lz4_decompress_into(data, out, max_out) {
+    Some(out)
+  } else {
+    None
+  }
+}
+
+///|
+/// LZ4 块解压到既有输出缓冲（`out` 中已有内容充当匹配历史，
+/// 供帧格式 block-linked 模式使用）。成功返回 true。
+fn lz4_decompress_into(
+  data : Array[Int],
+  out : Array[Int],
+  max_out : Int,
+) -> Bool {
   let n = data.length()
   let mut i = 0
   if n == 0 {
-    return Some([])
+    return true
   }
   while i < n {
     let token = data[i] & 0xFF
@@ -37,7 +52,7 @@ pub fn lz4_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       }
     }
     if i + lit_len > n || out.length() + lit_len > max_out {
-      return None
+      return false
     }
     for k in 0..<lit_len {
       out.push(data[i + k] & 0xFF)
@@ -48,12 +63,12 @@ pub fn lz4_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       break
     }
     if i + 2 > n {
-      return None
+      return false
     }
     let offset = (data[i] & 0xFF) | ((data[i + 1] & 0xFF) << 8)
     i = i + 2
     if offset == 0 || offset > out.length() {
-      return None
+      return false
     }
     let mut match_len = (token & 0x0F) + 4
     if (token & 0x0F) == 15 {
@@ -67,7 +82,7 @@ pub fn lz4_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       }
     }
     if out.length() + match_len > max_out {
-      return None
+      return false
     }
     // overlap copy 语义：逐字节自引用复制。
     let base = out.length() - offset
@@ -75,7 +90,7 @@ pub fn lz4_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       out.push(out[base + k])
     }
   }
-  Some(out)
+  true
 }
 
 ///|

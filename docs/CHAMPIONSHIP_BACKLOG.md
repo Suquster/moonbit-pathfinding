@@ -192,7 +192,7 @@
 纵轴元层级落地任务（L6/L7 可在赛期内做出实体证据；L8/L9 为答辩方法论输出）：
 
 - [x] H-1（L6 生态平台）mooncakes 全量索引审计工具化：`scripts/
-      mooncakes_audit.ps1` 抓取 1494 包全量索引→psv 快照工件
+      mooncakes_audit.ps1` 抓取全量索引（快照 2026-07-08 为 1497 包）→psv 快照工件
       （`docs/verification/mooncakes_index.psv`），`src/mooncakes_audit`
       纯引擎做能力域关键词归类、缺口报告与 markdown 渲染。commit 66a2784。
 - [x] H-2（L6 生态平台）依赖健康审计：存在性（下架/改名）/版本时效

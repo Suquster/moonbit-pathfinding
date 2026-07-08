@@ -88,6 +88,16 @@ pub fn AltLandmarks::h_from_closure(Self, Int) -> (Int) -> Int
 pub fn AltLandmarks::h_to(Self, Int, Int) -> Int
 pub fn AltLandmarks::h_to_closure(Self, Int) -> (Int) -> Int
 
+pub struct CompressedHubLabels {
+  n : Int
+  f_off : Array[Int]
+  f_bytes : Array[Int]
+  b_off : Array[Int]
+  b_bytes : Array[Int]
+}
+pub fn CompressedHubLabels::label_bytes(Self) -> Int
+pub fn CompressedHubLabels::query(Self, Int, Int) -> Int64?
+
 pub struct Condensation[N] {
   components : Array[Array[N]]
   component_of : Map[N, Int]
@@ -169,6 +179,7 @@ pub struct HubLabels {
 }
 pub fn HubLabels::avg_label_size(Self) -> Double
 pub fn HubLabels::build(ContractionHierarchy) -> Self
+pub fn HubLabels::compress(Self) -> CompressedHubLabels
 pub fn HubLabels::query(Self, Int, Int) -> Int64?
 pub fn HubLabels::query_path(Self, ContractionHierarchy, Int, Int) -> (Array[Int], Int64)?
 pub fn HubLabels::query_via(Self, Int, Int) -> (Int64, Int)?

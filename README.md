@@ -51,7 +51,10 @@
 
 See [docs/ECOSYSTEM_COMPARISON.md](docs/ECOSYSTEM_COMPARISON.md) for a
 per-domain comparison with existing MoonBit ecosystem packages (pathfinding,
-hash, compress, TOML, diff, etc.) and the tradeoffs behind each choice.
+hash, compress, TOML, diff, etc.) and the tradeoffs behind each choice, and
+[docs/STRATEGY_CLOSURE.md](docs/STRATEGY_CLOSURE.md) for the project's
+six-layer closure positioning (pathfinding ⊂ graph algorithms ⊂ verification
+infra ⊂ general infra ⊂ language tooling ⊂ AI-native software factory).
 
 ---
 

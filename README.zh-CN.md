@@ -39,7 +39,10 @@ MIT OR Apache-2.0 双许可）。核心借鉴：
 
 与 MoonBit 生态内已有同类包（寻路、hash、compress、TOML、diff 等）的
 逐领域对照与取舍说明，见
-[docs/ECOSYSTEM_COMPARISON.md](docs/ECOSYSTEM_COMPARISON.md)。
+[docs/ECOSYSTEM_COMPARISON.md](docs/ECOSYSTEM_COMPARISON.md)；
+项目整体的"六层集合闭包"定位（寻路 ⊂ 图算法 ⊂ 验证基础设施 ⊂ 通用
+基础软件 ⊂ 语言工程工具链 ⊂ AI 原生软件工厂），见
+[docs/STRATEGY_CLOSURE.md](docs/STRATEGY_CLOSURE.md)。
 
 ---
 

@@ -158,9 +158,28 @@
       （`resilience_ext.mbt`）。18 测试绿。
 - 全量口径：2369 测试全绿、acceptance 4 门禁全过。
 
+### G. 闭包扩张 —— 集合层级战略（2026-07-08，总纲见 `docs/STRATEGY_CLOSURE.md`）
+
+项目定位升级：不再以"官方推荐清单里的单点"自居，而是以 L0⊂L1⊂…⊂L5
+六层集合闭包链参赛（寻路→图算法→验证基础设施→通用基础软件→语言工程
+工具链→AI 原生软件工厂方法论）。下一级闭包候选三条线（专精一条做完再下一条）：
+
+- [ ] G-A 宽度闭包：多包工作区编排
+  - [ ] G-A1 build_tool 多包工作区模型（依赖图求解 + 增量构建计划，对拍 moon 语义）
+  - [ ] G-A2 release_aggregate 生态级发布流水线（semver 兼容性 diff，复用自家 schema 演进检查器）
+  - [ ] G-A3 mooncakes 包索引抓取/依赖审计工具（让 ECOSYSTEM_COMPARISON 可自动刷新）
+- [ ] G-B 深度闭包：性能/形式化前沿
+  - [ ] G-B1 hash/compress 流式增量 API（Go hash.Hash / zlib z_stream 状态机语义）
+  - [ ] G-B2 zstd 帧格式解码（RFC 8878 子集）
+  - [ ] G-B3 regex 惰性 DFA + bounded backtracking（Rust regex hybrid 引擎）
+  - [ ] G-B4 moon prove 静态证据全量接入
+- [ ] G-C 广度闭包：端到端系统切片
+  - [ ] G-C1 路网服务样例（OSM 解析→CH→CLI→metrics/logging→resilience→playground 全链组装）
+  - [ ] G-C2 软件工厂自述：docgen+diff+hash 生成"声明→测试→commit"可校验证据索引
+
 ### 冲刺优先级（截止 2026-07-12 前）
 
-A1 → A2 → B1 → B2 → A5，其余按余量推进。
+A1 → A2 → B1 → B2 → A5 已收官；当前按 G 区闭包扩张推进（待用户下令选择 G-A/B/C 起点）。
 
 ---
 

@@ -629,11 +629,12 @@ fn zstd_pick_seq_table(
 priv struct ZstdSeq {
   ll : Int
   ml : Int
-  offset : Int // 真实偏移（编码为 offset+3，不用重复偏移历史）
+  offset : Int // 真实偏移（编码时优先尝试重复偏移历史）
 }
 
 ///|
-/// 贪心 LZ77 匹配（4 字节哈希链，链长 ≤ 32，最小匹配 4）：
+/// 贪心 + 一步惰性 LZ77 匹配（4 字节哈希链，链长 ≤ 32，最小匹配 4；
+/// 若 pos+1 处存在更长匹配则先放行一个字面量）：
 /// 返回 (sequences, 尾部字面量起点)；字面量即 data[..] 中未被
 /// 序列覆盖的区段，由调用方按 ll 切分。
 fn zstd_find_sequences(
@@ -651,34 +652,56 @@ fn zstd_find_sequences(
     ((data[start + p + 3] & 0xFF) << 24)
   }
 
-  let mut pos = 0
-  let mut lit_run = 0
-  while pos + 4 <= len {
-    let h = hash4(pos)
+  fn probe(p : Int) -> (Int, Int) {
     let mut best_len = 0
     let mut best_off = 0
-    match heads.get(h) {
+    match heads.get(hash4(p)) {
       Some(chain) => {
         let mut tried = 0
         let mut ci = chain.length() - 1
         while ci >= 0 && tried < 32 {
           let cand = chain[ci]
           let mut m = 0
-          while pos + m < len && data[start + cand + m] == data[start + pos + m] {
+          while p + m < len && data[start + cand + m] == data[start + p + m] {
             m = m + 1
           }
           if m >= 4 && m > best_len {
             best_len = m
-            best_off = pos - cand
+            best_off = p - cand
           }
           ci = ci - 1
           tried = tried + 1
         }
-        chain.push(pos)
       }
-      None => heads.set(h, [pos])
+      None => ()
     }
+    (best_len, best_off)
+  }
+
+  fn insert(p : Int) {
+    let h = hash4(p)
+    match heads.get(h) {
+      Some(chain) => chain.push(p)
+      None => heads.set(h, [p])
+    }
+  }
+
+  let mut pos = 0
+  let mut lit_run = 0
+  while pos + 4 <= len {
+    let (best_len, best_off) = probe(pos)
+    insert(pos)
     if best_len >= 4 {
+      // 一步惰性：下一位若有严格更长匹配，先放行当前字节。
+      if pos + 5 <= len {
+        let (next_len, _) = probe(pos + 1)
+        if next_len > best_len + 1 {
+          lits.push(data[start + pos] & 0xFF)
+          lit_run = lit_run + 1
+          pos = pos + 1
+          continue
+        }
+      }
       seqs.push({ ll: lit_run, ml: best_len, offset: best_off })
       lit_run = 0
       // 跳过匹配区（不为区内位置建链，贪心足够）。
@@ -700,9 +723,15 @@ fn zstd_find_sequences(
 }
 
 ///|
-/// 编码一个 Compressed 块内容（Huffman/Raw 字面量 + 预定义 FSE 序列）；
-/// 无收益（产物不小于 Raw 块）返回 None。
-fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
+/// 编码一个 Compressed 块内容（Huffman/Raw 字面量 + FSE 序列，
+/// 重复偏移历史 rep 帧内跨块延续）；无收益（产物不小于 Raw 块）
+/// 返回 None 且不动 rep。
+fn zstd_encode_block(
+  data : Array[Int],
+  start : Int,
+  len : Int,
+  rep : Array[Int],
+) -> Array[Int]? {
   let (seqs, lits) = zstd_find_sequences(data, start, len)
   if seqs.length() >= 0x7F00 {
     return None
@@ -751,10 +780,50 @@ fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
   let ll_col : Array[Int] = []
   let of_col : Array[Int] = []
   let ml_col : Array[Int] = []
+  // 重复偏移历史（§3.1.1.5，编码端与解码端同步演算；提交前用本地副本）。
+  let mut r0 = rep[0]
+  let mut r1 = rep[1]
+  let mut r2 = rep[2]
   for sq in seqs {
     let (llc, llb, llv) = zstd_ll_encode(sq.ll)
     let (mlc, mlb, mlv) = zstd_ml_encode(sq.ml)
-    let ofv = sq.offset + 3
+    let off = sq.offset
+    let ofv = if sq.ll != 0 {
+      if off == r0 {
+        1
+      } else if off == r1 {
+        2
+      } else if off == r2 {
+        3
+      } else {
+        off + 3
+      }
+    } else if off == r1 {
+      1
+    } else if off == r2 {
+      2
+    } else if off == r0 - 1 && off > 0 {
+      3
+    } else {
+      off + 3
+    }
+    // 历史更新（与解码端逐条一致）。
+    if ofv > 3 {
+      r2 = r1
+      r1 = r0
+      r0 = off
+    } else {
+      let idx = if sq.ll == 0 { ofv } else { ofv - 1 }
+      if idx == 1 {
+        r1 = r0
+        r0 = off
+      } else if idx >= 2 {
+        r2 = r1
+        r1 = r0
+        r0 = off
+      }
+      // idx == 0：rep1 复用，历史不变。
+    }
     let ofc = zstd_highbit(ofv)
     let ofx = ofv - (1 << ofc)
     if ofc > 28 {
@@ -832,6 +901,9 @@ fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
   if out.length() >= len {
     return None // 无收益，回退 Raw。
   }
+  rep[0] = r0
+  rep[1] = r1
+  rep[2] = r2
   Some(out)
 }
 
@@ -869,6 +941,7 @@ pub fn zstd_compress_entropy(
     zstd_write_block_header(out, true, 0, 0)
   } else {
     let chunk = 65536
+    let rep : Array[Int] = [1, 4, 8] // 帧级重复偏移历史（跨块延续）。
     let mut pos = 0
     while pos < n {
       let len = if n - pos < chunk { n - pos } else { chunk }
@@ -884,7 +957,7 @@ pub fn zstd_compress_entropy(
         zstd_write_block_header(out, last, 1, len)
         out.push(data[pos] & 0xFF)
       } else {
-        match zstd_encode_block(data, pos, len) {
+        match zstd_encode_block(data, pos, len, rep) {
           Some(blk) => {
             zstd_write_block_header(out, last, 2, blk.length())
             for b in blk {

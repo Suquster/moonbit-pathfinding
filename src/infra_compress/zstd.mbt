@@ -8,11 +8,11 @@
 // - RLE 块内容 1 字节、Block_Size 为再生长度；
 // - 跳过帧：魔数 0x184D2A50..0x184D2A5F + 4 字节小端长度，解码器直接跳过。
 //
-// 范围声明（诚实边界）：本实现覆盖帧格式全链 + Raw/RLE 块 + XXH64 校验 +
-// 跳过帧 + 多帧级联；Compressed 块（FSE/Huffman 熵编码，RFC 8878 §4）
-// 不在本层范围，遇到显式返回 None（不静默出错数据）。压缩侧输出为
-// Raw/RLE 块的合法 zstd 帧，任何符合 RFC 8878 的解码器（含参考 zstd
-// CLI / python-zstandard）均可无损还原，已作外部互通对拍。
+// 范围声明（诚实边界）：解码侧覆盖帧格式全链 + Raw/RLE/Compressed
+// 全部三类块（Compressed 块 FSE/Huffman 熵解码见 zstd_block.mbt）+
+// XXH64 校验 + 跳过帧 + 多帧级联；字典帧不在范围，显式返回 None。
+// 压缩侧输出为 Raw/RLE 块的合法 zstd 帧，任何符合 RFC 8878 的解码器
+// （含参考 zstd CLI / python-zstandard）均可无损还原，已作外部互通对拍。
 //
 // 测试：roundtrip PBT + python-zstandard 黄金帧解码 + 畸形拒绝 +
 // 解压炸弹上限 + 跳过帧/多帧级联。
@@ -124,6 +124,8 @@ fn zstd_decode_blocks(
   start : Int,
   out : Array[Int],
   max_out : Int,
+  ctx : ZstdBlockCtx,
+  frame_start : Int,
 ) -> Int? {
   let n = data.length()
   let mut pos = start
@@ -156,8 +158,17 @@ fn zstd_decode_blocks(
           for _k in 0..<size {
             out.push(b)
           }
+        } else if block_type == 2 {
+          // Compressed 块：FSE/Huffman 熵解码（zstd_block.mbt）。
+          if pos + size > n ||
+            !zstd_decode_compressed_block(
+              data, pos, size, out, frame_start, max_out, ctx,
+            ) {
+            return None
+          }
+          pos = pos + size
         } else {
-          // Compressed（范围外）与 Reserved 一律显式拒绝。
+          // Reserved 块显式拒绝。
           return None
         }
       }
@@ -167,10 +178,10 @@ fn zstd_decode_blocks(
 }
 
 ///|
-/// Zstandard 解压（RFC 8878 帧格式，Raw/RLE 块）：支持多帧级联与
-/// 跳过帧，校验帧存在时验证 XXH64 低 32 位；`max_out` 为输出上限
-/// （防解压炸弹）。Compressed/Reserved 块、字典帧、保留位、
-/// FCS 不符、校验失败、截断输入一律返回 None。
+/// Zstandard 解压（RFC 8878 帧格式，Raw/RLE/Compressed 全块型）：
+/// 支持多帧级联与跳过帧，校验帧存在时验证 XXH64 低 32 位；
+/// `max_out` 为输出上限（防解压炸弹）。Reserved 块、字典帧、保留位、
+/// FCS 不符、熵流损坏、校验失败、截断输入一律返回 None。
 pub fn zstd_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
   let n = data.length()
   let out : Array[Int] = []
@@ -251,7 +262,8 @@ pub fn zstd_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       pos = pos + fcs_width
     }
     let frame_start = out.length()
-    match zstd_decode_blocks(data, pos, out, max_out) {
+    let ctx = zstd_block_ctx()
+    match zstd_decode_blocks(data, pos, out, max_out, ctx, frame_start) {
       None => return None
       Some(next) => pos = next
     }

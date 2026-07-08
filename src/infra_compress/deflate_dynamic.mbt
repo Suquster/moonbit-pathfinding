@@ -23,30 +23,30 @@ priv enum LzToken {
 }
 
 ///|
-/// 与既有 `deflate` 相同的哈希链贪心匹配，但产出 token 序列（两遍编码需要
-/// 先统计频率再定码）。
+/// 与既有 `deflate` 相同的哈希链匹配 + zlib 式一步惰性求值
+/// （下一位存在更长匹配时先放行字面量），产出 token 序列
+/// （两遍编码需要先统计频率再定码）。
 fn lz77_tokenize(data : Array[Int]) -> Array[LzToken] {
   let tokens : Array[LzToken] = []
   let n = data.length()
   let head : Array[Int] = Array::make(0x8000, -1)
   let prev : Array[Int] = Array::make(lz_window, -1)
-  let mut i = 0
-  while i < n {
+  fn probe(p : Int) -> (Int, Int) {
     let mut best_len = 0
     let mut best_dist = 0
-    if i + lz_min_match <= n {
-      let h = lz_hash(data, i)
+    if p + lz_min_match <= n {
+      let h = lz_hash(data, p)
       let mut cand = head[h]
       let mut chain = 0
-      let limit = if n - i < lz_max_match { n - i } else { lz_max_match }
-      while cand >= 0 && i - cand <= lz_window && chain < lz_max_chain {
+      let limit = if n - p < lz_max_match { n - p } else { lz_max_match }
+      while cand >= 0 && p - cand <= lz_window && chain < lz_max_chain {
         let mut l = 0
-        while l < limit && (data[cand + l] & 0xFF) == (data[i + l] & 0xFF) {
+        while l < limit && (data[cand + l] & 0xFF) == (data[p + l] & 0xFF) {
           l = l + 1
         }
         if l > best_len {
           best_len = l
-          best_dist = i - cand
+          best_dist = p - cand
           if l == limit {
             break
           }
@@ -55,24 +55,49 @@ fn lz77_tokenize(data : Array[Int]) -> Array[LzToken] {
         chain = chain + 1
       }
     }
+    (best_len, best_dist)
+  }
+
+  fn insert(p : Int) {
+    if p + lz_min_match <= n {
+      let h = lz_hash(data, p)
+      prev[p & (lz_window - 1)] = head[h]
+      head[h] = p
+    }
+  }
+
+  let mut i = 0
+  while i < n {
+    let (best_len, best_dist) = probe(i)
     if best_len >= lz_min_match {
+      // 一步惰性（zlib deflate_slow 同思路）：下一位若有严格更长
+      // 匹配，则当前位置降级为字面量。
+      if best_len < lz_max_match && i + 1 + lz_min_match <= n {
+        insert(i)
+        let (next_len, _) = probe(i + 1)
+        if next_len > best_len {
+          tokens.push(Lit(data[i] & 0xFF))
+          i = i + 1
+          continue
+        }
+        tokens.push(Match(best_len, best_dist))
+        let end = i + best_len
+        i = i + 1 // i 已入链。
+        while i < end {
+          insert(i)
+          i = i + 1
+        }
+        continue
+      }
       tokens.push(Match(best_len, best_dist))
       let end = i + best_len
       while i < end {
-        if i + lz_min_match <= n {
-          let h = lz_hash(data, i)
-          prev[i & (lz_window - 1)] = head[h]
-          head[h] = i
-        }
+        insert(i)
         i = i + 1
       }
     } else {
       tokens.push(Lit(data[i] & 0xFF))
-      if i + lz_min_match <= n {
-        let h = lz_hash(data, i)
-        prev[i & (lz_window - 1)] = head[h]
-        head[h] = i
-      }
+      insert(i)
       i = i + 1
     }
   }

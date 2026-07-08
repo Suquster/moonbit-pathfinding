@@ -178,3 +178,30 @@ test "Feature: championship-v1-upgrade, Property 16: proof report round-trips fi
   let gen = @infra_pbt.Gen::new(fn(rng) { pr16_scenario(rng) })
   assert_true(@infra_pbt.holds_for_all(gen, fn(ok) { ok }, iters=100))
 }
+
+///|
+/// 换行/回车转义往返 + 畸形 JSON 拒绝（PJParser 错误分支）。
+test "ProofReport：换行回车转义与畸形 JSON 拒绝" {
+  let r : ProofReport = {
+    backends: ["native"],
+    moon_version: "v1\n2\r3",
+    generated_at: "2026-07-08T00:00:00Z",
+    entries: [
+      { algorithm: "A\nB", property: "p\rq", passed: true, evidence: "e" },
+    ],
+  }
+  match ProofReport::from_json(r.to_json()) {
+    Err(_) => abort("含换行/回车报告往返失败")
+    Ok(r2) => assert_true(r2 == r)
+  }
+  let bad = [
+    "", "  ", "{", "tru", "nul", "{\"backends\":}", "1e", "-", "\"open", "{\"backends\":[]} tail",
+    "[",
+  ]
+  for s in bad {
+    assert_true(ProofReport::from_json(s) is Err(_))
+    assert_true(parse_proof_report(s) is None)
+  }
+  assert_true(ProofReport::from_json("true") is Err(_))
+  assert_true(ProofReport::from_json("{\"backends\":[1]}") is Err(_))
+}

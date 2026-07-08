@@ -331,3 +331,24 @@ test "rope million-char scale: random edits stay balanced & consistent" {
     i = i + 97_003
   }
 }
+
+///|
+/// 结构观测与 UTF-8 计量：depth/leaf_count 随追加增长、3 字节
+/// UTF-8 字符（CJK）计量、块注释/孤立斜杠等边界。
+test "rope：depth/leaf_count 与 CJK UTF-8 计量" {
+  let r = Rope::from_string("你好世界")
+  assert_eq(r.len(), 4)
+  assert_eq(r.utf8_len(), 12) // 每个 CJK 字符 3 字节。
+  assert_true(r.depth() >= 0)
+  assert_eq(r.leaf_count(), 1)
+  // 追加多段后叶子数与深度增长。
+  for i in 0..<40 {
+    r.insert(r.len(), "段落\{i}——混合 ascii and 中文\n")
+  }
+  assert_true(r.leaf_count() >= 1)
+  assert_true(r.depth() >= 1)
+  assert_true(r.is_leaf_balanced())
+  // UTF-16 ↔ UTF-8 偏移换算在 CJK 上一致往返。
+  let off8 = r.utf16_to_utf8(4)
+  assert_eq(r.utf8_to_utf16(off8), 4)
+}

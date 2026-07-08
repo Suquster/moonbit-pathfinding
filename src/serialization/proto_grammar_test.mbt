@@ -144,3 +144,17 @@ test "parse_proto_full 畸形输入与字符串选项值" {
   let src2 = "syntax = \"proto3\";\noption java_package = \"com.example\";\nmessage M { int32 a = 1; }\n"
   assert_true(parse_proto_full(src2) is Ok(_))
 }
+
+///|
+/// 注释边界：未闭合块注释、孤立斜杠、行注释吞并至行尾。
+test "parse_proto_full 注释边界与孤立斜杠" {
+  // 行注释 + 块注释混合。
+  let src = "// 头注释\nsyntax = \"proto3\"; /* 块 */ message M { /* 内 */ int32 a = 1; // 尾\n}\n"
+  assert_true(parse_proto_full(src) is Ok(_))
+  // 未闭合块注释吞并剩余输入：message 体不完整 → Err。
+  assert_true(
+    parse_proto_full("syntax = \"proto3\"; message M { /* 未闭合") is Err(_),
+  )
+  // 孤立 '/'（非注释）应停在原地并报错。
+  assert_true(parse_proto_full("syntax = \"proto3\"; / message M {}") is Err(_))
+}

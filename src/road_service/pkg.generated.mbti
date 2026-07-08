@@ -1,0 +1,46 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/road_service"
+
+import {
+  "Suquster/moonbit-pathfinding/src/advanced",
+  "Suquster/moonbit-pathfinding/src/infra_cli",
+  "Suquster/moonbit-pathfinding/src/infra_metrics",
+  "Suquster/moonbit-pathfinding/src/infra_resilience",
+}
+
+// Values
+pub fn parse_road_network(Array[String]) -> (RoadNetwork, Array[String])
+
+pub fn route_command() -> @infra_cli.Command
+
+pub fn run_cli(RoadService, Array[String], Int64, Int64) -> String
+
+// Errors
+
+// Types and methods
+pub struct RoadNetwork {
+  nodes : Array[String]
+  adjacency : Map[String, Array[(String, Int)]]
+}
+
+pub struct RoadService {
+  ch : @advanced.CHGraph[String, Int]
+  latency : @infra_metrics.HdrHistogram
+  breaker : @infra_resilience.CircuitBreaker
+  mut queries : Int
+  mut rejected : Int
+}
+pub fn RoadService::build(RoadNetwork) -> Self
+pub fn RoadService::metrics_snapshot(Self) -> (Int, Int, Int64, Int64)
+pub fn RoadService::route(Self, String, String, Int64, Int64) -> RouteOutcome
+
+pub(all) enum RouteOutcome {
+  RouteFound(Array[String], Int)
+  RouteNotFound
+  RouteRejected
+} derive(Eq)
+
+// Type aliases
+
+// Traits
+

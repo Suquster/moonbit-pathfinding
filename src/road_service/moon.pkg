@@ -1,0 +1,19 @@
+// 包：Suquster/moonbit-pathfinding/src/road_service
+//
+// 端到端路网服务样例切片（G-C1，L5 应用组装层）：
+// 「体系差异」的实体证据——单一仓库内用自家 INFRA 组件组装完整服务：
+//   边表文本解析（自家解析约定）→ CH 预处理/查询（advanced）
+//   → CLI 参数解析（infra_cli）→ 延迟指标 HdrHistogram（infra_metrics）
+//   → 熔断器护航（infra_resilience）。
+// 纯计算、三后端一致；时钟以毫秒参数注入（不依赖宿主时间）。
+import {
+  "Suquster/moonbit-pathfinding/src/core",
+  "Suquster/moonbit-pathfinding/src/advanced",
+  "Suquster/moonbit-pathfinding/src/infra_cli",
+  "Suquster/moonbit-pathfinding/src/infra_metrics",
+  "Suquster/moonbit-pathfinding/src/infra_resilience",
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

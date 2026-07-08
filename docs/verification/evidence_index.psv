@@ -37,3 +37,8 @@ infra_config 覆盖盲区收口（TOML 转义/\U 码点/多行字符串续行与
 infra_bench 覆盖盲区收口（report JSON 字符串转义/hex 边界拒绝）|src/infra_bench::coverage_gaps2_test.mbt|476f614
 infra_codec 覆盖盲区收口（CborValue Show 全构造子、info=27 8 字节头往返）|src/infra_codec::coverage_gaps2_wbtest.mbt|476f614
 actor 覆盖盲区收口（有界邮箱 spawn、同监督者多子注册）|src/actor::coverage_gaps2_test.mbt|476f614
+parser_combinator 覆盖盲区收口（JSON 小写 hex/负指数/尾随输入/非整数打印）|src/parser_combinator::coverage_gaps2_wbtest.mbt|643a6f1
+infra_time 覆盖盲区收口（Duration 总量换算/abs/毫秒补零渲染）|src/infra_time::coverage_gaps2_test.mbt|643a6f1
+infra_ds 覆盖盲区收口（roaring trailing_zeros/popcount64/位图容器重复路径）|src/infra_ds::coverage_gaps2_wbtest.mbt|643a6f1
+lsp_binding 覆盖盲区收口（JSON 数字/转义边界拒绝、\/ 转义）|src/lsp_binding::coverage_gaps2_test.mbt|643a6f1
+build_tool 覆盖盲区收口（变量展开未闭合、模式匹配边界、GrammarError Show）|src/build_tool::coverage_gaps2_wbtest.mbt|643a6f1

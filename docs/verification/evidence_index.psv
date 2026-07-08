@@ -33,3 +33,7 @@ proofs 覆盖盲区收口（max_flow/min_cut/MST/分量后置条件负例、Proo
 lsp_server 覆盖盲区收口（rope 旋转/拼接叶子路径、FrameError Show、demo JSON 辅助分支）|src/lsp_server::coverage_gaps_wbtest.mbt|b3aa930
 dst 覆盖盲区收口（trace_codec 整数记号边界拒绝、截断反序列化）|src/dst::coverage_gaps_wbtest.mbt|b3aa930
 logging 覆盖盲区收口（parse_json_log 顶层键类型不符/未知级别/嵌套字段）|src/logging::coverage_gaps2_test.mbt|b3aa930
+infra_config 覆盖盲区收口（TOML 转义/\U 码点/多行字符串续行与未闭合）|src/infra_config::coverage_gaps2_test.mbt|476f614
+infra_bench 覆盖盲区收口（report JSON 字符串转义/hex 边界拒绝）|src/infra_bench::coverage_gaps2_test.mbt|476f614
+infra_codec 覆盖盲区收口（CborValue Show 全构造子、info=27 8 字节头往返）|src/infra_codec::coverage_gaps2_wbtest.mbt|476f614
+actor 覆盖盲区收口（有界邮箱 spawn、同监督者多子注册）|src/actor::coverage_gaps2_test.mbt|476f614

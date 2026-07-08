@@ -18,3 +18,4 @@ gzip 多成员流（RFC 1952 §2.2 拼接成员、python gzip 黄金向量、尾
 覆盖率加固两轮（7+4 模块畸形输入/边界/结构观测拒绝路径）|src/*::coverage hardening|0fa7a57
 CompressedHubLabels 序列化持久化（自校验字节流：magic/FNV-1a/边界校验，无损往返+翻位拒绝）|src/directed::hub labels serde roundtrip|03fd6fd
 mooncakes 索引快照刷新（2026-07-08，1497 包）|docs/verification::mooncakes_index.psv refresh|03fd6fd
+HL serde 解码加固（varint 体长上界、伪造 n 预拒绝、结构级畸形全路径覆盖）|src/directed::hub labels serde structural rejection|c385367

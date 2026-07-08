@@ -1,0 +1,16 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/h6-luhn/luhn"
+
+// Values
+pub fn luhn_check_digit(String) -> Int?
+
+pub fn luhn_valid(String) -> Bool?
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

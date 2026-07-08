@@ -4,3 +4,4 @@ _build/
 .moonagent/
 playground/web/playground.wasm
 playground/web/playground.js
+case-studies/h6-fixed-point/_build/

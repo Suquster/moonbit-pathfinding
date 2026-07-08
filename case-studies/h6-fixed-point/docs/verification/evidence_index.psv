@@ -1,0 +1,2 @@
+Luhn 判定/校验位与 ISO/IEC 7812-1 参考实现一致（9 向量）|src/luhn::golden vectors|296a0df
+主体+校验位必然通过且校验位唯一（0..999 全量）|src/luhn::check digit uniqueness|296a0df

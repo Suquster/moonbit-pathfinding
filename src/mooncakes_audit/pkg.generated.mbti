@@ -1,0 +1,39 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/mooncakes_audit"
+
+// Values
+pub fn domain_coverage(IndexSnapshot, CapabilityDomain) -> Array[String]
+
+pub fn gap_report(IndexSnapshot, Array[CapabilityDomain], Int) -> Array[(String, Int, Bool)]
+
+pub fn license_histogram(IndexSnapshot) -> Array[(String, Int)]
+
+pub fn parse_index(Array[String]) -> IndexSnapshot
+
+pub fn render_coverage_markdown(IndexSnapshot, Array[CapabilityDomain], Int) -> String
+
+// Errors
+
+// Types and methods
+pub struct CapabilityDomain {
+  domain : String
+  keywords : Array[String]
+}
+pub fn CapabilityDomain::new(String, Array[String]) -> Self
+
+pub struct IndexEntry {
+  name : String
+  version : String
+  license : String
+  description : String
+}
+
+pub struct IndexSnapshot {
+  entries : Array[IndexEntry]
+  malformed : Int
+}
+
+// Type aliases
+
+// Traits
+

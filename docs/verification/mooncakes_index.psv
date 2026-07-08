@@ -1,0 +1,1494 @@
+0Ayachi0/elk|0.1.0|Apache-2.0|ELK graph auto-layout implementation in Moonbit, supporting layered/fixed/force algorithms.
+0Ayachi0/GB18030|0.1.0|Apache-2.0|A comprehensive GB18030 encoding/decoding library for MoonBit
+0Ayachi0/math|0.1.0|Apache-2.0|数学计算工具库，包含几何算法与组合数学函数
+0Ayachi0/SwissTable|0.1.0|Apache-2.0|High performance implementation of SwissTable hash table
+0xA672/moonbit_version_cli|0.10.0|Apache-2.0|CI-native MoonBit version detection tool. JSON output, semver constraint checking via environment variables. Designed for CI pipelines and automation scripts.
+0xA672/moonver|0.1.0|Apache-2.0|A MoonBit CLI tool that probes and displays the MoonBit toolchain version using C FFI
+0xA672/moonwasm_probe|0.10.0|Apache-2.0|CI-native WASM runtime environment probe. JSON output, env-var-driven checks. Designed for CI pipelines and automation scripts.
+0xA672/mwp|0.1.0|Apache-2.0|WASM runtime environment detection tool. Probes installed WASM runtimes (wasmtime, wasmer, wazero, node, etc.) and MoonBit WASM compilation target info.
+0xA672/strip|0.1.2|Apache-2.0|Recursively strip empty/null/zero values from JSON-like structures
+1123Javayanglei/moonbit_claude_proxy|0.1.0|MIT|Claude Code Proxy - translate Claude API requests to OpenAI-compatible API calls
+123123213weqw/moon_proto|0.1.0|MIT|A MoonBit protobuf ecosystem lab for dynamic schema validation, compatibility testing, and AI code verification.
+202306123/lib_mbt|0.1.0|Apache-2.0|
+2459822546/fwshz|0.1.0|Apache-2.0|
+2515050242/cbor|0.1.0|Apache-2.0|A high-performance, standard-compliant CBOR (RFC 8949) serialization library for MoonBit.
+2515050243qyf/moon_bencode|0.1.0|Apache-2.0|A fast and compliant Bencode encoder and decoder for MoonBit.
+A-23187/encoding|0.1.0|Apache-2.0|
+AdUhTkJm/assembler|0.1.1|GPL-3.0-or-later|
+AdUhTkJm/bitviewer|0.1.10|GPL-3.0-or-later|A binary parser.
+AdUhTkJm/moonc|0.2.16|GPL-3.0-or-later|A frontend of Moonbit language itself.
+AdUhTkJm/nummoon|0.2.3|GPL-3.0-or-later|A high-speed native numerical library.
+AdUhTkJm/sat-solver|0.1.2|GPL-3.0-or-later|An SAT solver for Moonbit.
+AdUhTkJm/u8str|0.1.5|GPL-3.0-or-later|UTF-8 String and its functionalities.
+AdUhTkJm/wasmtools|0.1.0|GPL-3.0-or-later|A tool to convert between WebAssembly and WAT.
+AlexenderSokolov/moonflowgraph|0.1.0|Apache-2.0|A MoonBit task graph and provenance trace library for reproducible research and agent workflows.
+allain/mongodb|0.1.1|Apache-2.0|MongoDB binary wire protocol driver for MoonBit
+allwefantasy/readline.mbt|0.1.0|MIT|A complete Node.js readline-compatible library for MoonBit
+amor2025/biginteger|0.2.0|Apache-2.0|一个MoonBit 综合大整数库，支持算术运算、幂运算、平方根等更多功能
+amor2025/convert|0.3.2|Apache-2.0|这是一个用 Moonbit 编写的类型转换库，提供了将字符串转换为整数、浮点数和布尔值等功能。
+amor2025/fraction|0.2.1|Apache-2.0|一个用于处理和操作数学分数 Moonbit 库。
+amor2025/moonNum|0.1.0|Apache-2.0|NumPy 的 Moonbit 移植 —— 多维数组、线性代数、FFT、随机数
+amor2025/pad|0.1.3|Apache-2.0|用于填充字符串的Moonbit包。
+angela/srt|0.1.1|Apache-2.0|
+angela/vcf|0.0.5|Apache-2.0|Parse vCard strings
+Anxiu0101/yuegui|0.1.3|Apache-2.0|A MoonBit-native static site generator for technical publishing.
+applejag/firefly|0.2.0|MIT|A port of the SDK for Firefly Zero, a modern handheld game console using WebAssembly
+applejag/micromath|0.3.0|MIT|Embedded math arithmetic, optimized for small code size at the cost of precision
+Arcelyth/aitne|0.4.9|MIT|A lightweight and high-performance reactive web framework.
+Arcelyth/html_escape|0.3.3|MIT|Escaping/unescaping HTML entities.
+ash1day/sql|0.1.0|MIT|Type-safe SQL query builder for MoonBit
+Asterless/MoonCoc|0.1.0|Apache-2.0|Minimal Calculus of Constructions core and prefix-style REPL implemented in MoonBit
+Asterless/MoonPtime|0.1.2|Apache-2.0|A POSIX time library for MoonBit with picosecond precision, inspired by OCaml's ptime library. Provides immutable time representation, RFC 3339 formatting, and comprehensive time arithmetic operations.
+Asterless/MoonQOI|0.1.3|Apache-2.0|QOI (Quite OK Image Format) encoder/decoder library for MoonBit
+aurasuisui/indexmap|0.2.1|Apache-2.0|A hash map that preserves insertion order - MoonBit port of Rust's indexmap
+AXiX-official/binaryPrimitives|0.1.2|Apache-2.0|BinaryPrimitives for MoonBit.
+AXiX-official/xxhash|0.1.0|Apache-2.0|xxHash implementation in MoonBit.
+baka-gourd/quickxorhash|0.1.0|MPL-2.0|QuickXorHash on moonbit
+baobolong/hello|0.1.0|Apache-2.0|
+bellesz0611/moon-mustache|0.1.0|MIT|
+Bemly/cstdio-ffi|0.1.0|Apache-2.0|standard C library I/O FFI binding.  对C标准库中stdio的绑定
+beso1225/tour|0.1.0|Apache-2.0|
+Betterlol/moon_zod|0.7.5|Apache-2.0|A runtime JSON schema validation library for MoonBit, inspired by Zod and Pydantic
+BigOrangeQWQ/Bits|0.1.0|Apache-2.0|Moonbit implementations for binary-related data structures, algorithms, and constant collections.
+BigOrangeQWQ/fmt|0.2.0|Apache-2.0|A simple and efficient string formatting library for MoonBit.
+BigOrangeQWQ/ImmuntableMultiSet|0.1.0|Apache-2.0|data structure for immutable multiset
+BigOrangeQWQ/immunt_multiset|0.1.2|Apache-2.0|data structure for immutable multiset
+BigOrangeQWQ/immut_multiset|0.1.5|Apache-2.0|data structure for immutable multiset (bag).
+BigOrangeQWQ/ryu|0.1.1|Apache-2.0|Base Standard Library for Ryu Double to String Conversion
+BigOrangeQWQ/unification_table|0.1.2|Apache-2.0|A module for unification table operations in data structures and algorithms.
+BigOrangeQWQ/uri|0.1.0|Apache-2.0|URI parser for Moonbit
+BigOrangeQWQ/wasi-cli|0.2.6|Apache-2.0|
+BigOrangeQWQ/wasi-clocks|0.2.6|Apache-2.0|
+BigOrangeQWQ/wasi-filesystem|0.2.6|Apache-2.0|
+BigOrangeQWQ/wasi-io|0.2.6|Apache-2.0|
+BigOrangeQWQ/wasi-random|0.2.6|Apache-2.0|
+BigOrangeQWQ/wasi-sockets|0.2.6|Apache-2.0|
+BigOrangeQWQ/wit-ffi|0.1.0|Apache-2.0|A WIT FFI for the Moon programming language
+BigOrangeQWQ/wit-wasi-clocks|0.2.6|Apache-2.0|
+BigOrangeQWQ/wit-wasi-io|0.2.6|Apache-2.0|
+BigOrangeQWQ/wit-wasi-random|0.2.6|Apache-2.0|
+BigThree33/find_min|0.1.0|Apache-2.0|
+bikallem/blit|0.2.2|Apache-2.0|Fast byte-level blit, fill, match, and uninit allocation for MoonBit
+bikallem/chai|0.1.0|MIT|Chai is TEA (The Elm Architecture) framework for MoonBit
+bikallem/compress|0.3.4|Apache-2.0|Compression library for MoonBit: flate, gzip, zlib, lzw, bzip2, snappy, lz4, zstd, brotli
+bikallem/freetype|0.5.3|Apache-2.0|Pure MoonBit FreeType-compatible font engine
+bikallem/image|0.1.0|Apache-2.0|
+bikallem/mariadb|0.0.1|Apache-2.0|MariaDB/MySQL client library for Moonbit
+bikallem/reactive|0.2.0|MPL-2.0|A reactive programming library for Moonbit
+bikallem/rsignal|0.3.0|MPL-2.0|rsignal - A reactive web programming library for Moonbit
+bikallem/webapi|0.5.0|Apache-2.0|Moonbit browser WebApi - dom, fetch, html, xhr, url, svg, uievents and more
+black-duck666/moontxnkit|0.3.0|Apache-2.0|Deterministic atomic state transitions, MVCC transactions and logical recovery for MoonBit.
+bnyu2/channel|0.1.1|Apache-2.0|
+bob/aegis|0.1.0|MIT|AEGIS cipher implementation in Moonbit
+bob/hashbrown|0.1.0|Apache-2.0|MoonBit port of Google's SwissTable hash map - a high-performance drop-in replacement for standard hash maps
+bob/lexer|0.1.0|Apache-2.0|A generic lexer library for handwritten lexers in MoonBit
+bob/toml|0.1.6|Apache-2.0|A TOML parser implementation in MoonBit
+bobzhang/bap|0.2.2|Apache-2.0|
+bobzhang/beautiful_mermaid|0.1.5|MIT|MoonBit port of beautiful-mermaid: render Mermaid diagrams to SVG and ASCII/Unicode text.
+bobzhang/blog-app|0.3.2|Apache-2.0|
+bobzhang/codex_workflow|0.1.1|Apache-2.0|Multi-agent workflow runner for Codex.
+bobzhang/colors|0.8.1|MIT|A pure MoonBit library for manipulating colors in different color spaces (RGB, LinearRGB, XYZ, LUV)
+bobzhang/compose-demo|0.1.0|Apache-2.0|
+bobzhang/contacts|0.3.2|Apache-2.0|
+bobzhang/crescent|0.10.0|Apache-2.0|Crescent: A web framework for MoonBit.
+bobzhang/crescent-benchmarks|0.0.1|Apache-2.0|Benchmarks for the Crescent web framework.
+bobzhang/crescent-examples|0.0.1|Apache-2.0|Example applications for the Crescent web framework.
+bobzhang/docx2html|0.1.42|Apache-2.0|Native MoonBit DOCX to HTML/Markdown converter ported from Mammoth
+bobzhang/finapp|0.1.0|Apache-2.0|
+bobzhang/flowgraph|0.1.1|Apache-2.0|A lightweight MoonBit library for building directed graphs and exporting to Graphviz DOT or Mermaid flowcharts.
+bobzhang/fuzzyscore|0.1.1|Apache-2.0|
+bobzhang/gallery|0.2.2|Apache-2.0|
+bobzhang/games|0.9.33|MIT|
+bobzhang/hol|0.1.1|MIT|HOL theorem prover in MoonBit
+bobzhang/holm|0.1.1|MIT|Step-by-step MoonBit port of make-a-hol
+bobzhang/html_parser|0.1.7|Apache-2.0|MoonBit HTML parser and sanitizer ported from JustHTML.
+bobzhang/html_parser_examples|0.1.0|Apache-2.0|Runnable examples and documentation for bobzhang/html_parser.
+bobzhang/ipaddr|0.1.1|ISC|A library for manipulation of IP (IPv4/IPv6) and MAC address representations
+bobzhang/issues|0.1.5|Apache-2.0|SQLite-backed DAG issue tracker with a MoonBit CLI and Rabbit Tea dashboard.
+bobzhang/jsonl|0.2.0|Apache-2.0|Async reader for JSON Lines (newline-delimited JSON) streams.
+bobzhang/kanban|0.3.2|Apache-2.0|
+bobzhang/kimicc|0.1.243|Apache-2.0|
+bobzhang/lexer|0.2.0|Apache-2.0|A generic lexer library for handwritten lexers in MoonBit
+bobzhang/liquid|0.1.0|Apache-2.0|
+bobzhang/lisp_interpreter|0.1.1|Apache-2.0|
+bobzhang/loop_invariants|0.8.0|Apache-2.0|Comprehensive collection of algorithms and data structures with well-documented loop invariants for correctness reasoning
+bobzhang/loop_invariants_data_structures|0.11.0|Apache-2.0|Data structures with loop-invariant explanations
+bobzhang/loop_invariants_dp|0.14.0|Apache-2.0|Dynamic programming algorithms with loop-invariant explanations
+bobzhang/loop_invariants_geometry|0.13.0|Apache-2.0|Computational geometry algorithms with loop-invariant explanations
+bobzhang/loop_invariants_graph|0.17.0|Apache-2.0|Graph and tree algorithms with loop-invariant explanations
+bobzhang/loop_invariants_math|0.16.0|Apache-2.0|Mathematical algorithms with loop-invariant explanations
+bobzhang/loop_invariants_persistent|0.8.0|Apache-2.0|Persistent data structure examples with loop-invariant explanations
+bobzhang/loop_invariants_string|0.14.0|Apache-2.0|String algorithms with loop-invariant explanations
+bobzhang/loop_invariants_techniques|0.17.0|Apache-2.0|General algorithmic techniques with loop-invariant explanations
+bobzhang/loop_invariants_verified|0.8.0|Apache-2.0|Verified loop-invariant examples
+bobzhang/mbtexcel|0.1.7|Apache-2.0|A MoonBit port of the Go excelize library for reading and writing XLSX (Excel) spreadsheets.
+bobzhang/mbtpdf|0.1.2|Apache-2.0|
+bobzhang/moonjq|0.1.0|Apache-2.0|A jq implementation in MoonBit
+bobzhang/nodegraph|0.1.0|Apache-2.0|
+bobzhang/noteapp|0.3.2|Apache-2.0|
+bobzhang/openseek|0.2.2|Apache-2.0|DeepSeek-backed MoonBit coding agent
+bobzhang/pdflite|0.1.40|Apache-2.0|Byte-oriented PDF reading, writing, and manipulation toolkit for MoonBit.
+bobzhang/pollapp|0.3.2|Apache-2.0|
+bobzhang/portable_cli|0.1.11|Apache-2.0|Portable MoonBit CLI examples that compile to WASIp1 and run across WASM runtimes.
+bobzhang/prove|0.0.2|Apache-2.0|
+bobzhang/qrc|0.1.1|ISC|QR code encoder for MoonBit - port of dbuenzli/qrc
+bobzhang/scheme-r6rs|0.1.0|MIT|R6RS Scheme interpreter in MoonBit
+bobzhang/sexp|0.1.2|Apache-2.0|
+bobzhang/splitwise|0.3.2|Apache-2.0|
+bobzhang/spreadsheet|0.1.1|Apache-2.0|
+bobzhang/tar|0.1.1|ISC|Pure MoonBit library to read and write tar files with streaming support
+bobzhang/taskflow|0.3.2|Apache-2.0|
+bobzhang/testa|0.1.0||
+bobzhang/testb|0.1.0||
+bobzhang/todo-list|0.3.2|Apache-2.0|
+bobzhang/toml|0.4.1|Apache-2.0|A TOML parser implementation in MoonBit
+bobzhang/unmarshal|0.3.0|Apache-2.0|unmarshal ocaml marshalled data
+bobzhang/uri|0.1.0|Apache-2.0|RFC3986 compliant URI parsing library for MoonBit
+bobzhang/uuidm|0.1.2|ISC|Universally unique identifiers (UUIDs) for MoonBit - supports UUID versions 3, 4, 5, 7, and 8 according to RFC 9562
+bobzhang/vg|0.3.0|ISC|Declarative 2D vector graphics library for MoonBit
+bobzhang/zip|0.1.0|Apache-2.0|
+bobzhang/zipc|0.1.1|ISC|ZIP archive and deflate codec for MoonBit - ported from OCaml zipc library
+brickfrog/moontrace|0.13.0|Apache-2.0|Structured tracing for MoonBit with spans, structured fields, pluggable subscribers.
+brickfrog/pippa|0.1.0|Apache-2.0|A terminal UI framework for MoonBit, inspired by bubbletea (Go) and Elm architecture. Provides a Model-Update-View pattern with typed messages, ANSI rendering, and composable components.
+brickfrog/tempo|0.8.0|Apache-2.0|UTC date/time library — RFC 3339 parsing, Unix timestamps, arithmetic
+brother-666/moonwheelkit|0.2.1|Apache-2.0|A deterministic hierarchical timing wheel and virtual-time scheduler for MoonBit.
+buggg-hfc/hello|0.1.1|Apache-2.0|A easy lower_bound function
+bzy-debug/cowsay|0.1.0||
+bzy-debug/cowsay_lib|0.1.0||
+bzy-debug/hello|0.1.20240510+81e045f4e|Apache-2.0|
+bzy-debug/json_parser|0.1.0|Apache-2.0|A complete JSON parser implementation in MoonBit supporting all JSON data types with comprehensive error handling
+bzy-debug/string_zipper|0.1.3|Apache-2.0|A production-ready text editing data structure with efficient cursor navigation and proper Unicode handling
+bzy-debug/text_document|0.1.0|Apache-2.0|A high-performance text document library for MoonBit that provides LSP-compatible text editing operations. This library is a port of the OCaml LSP text document implementation and is designed for production use in language servers and text editors.
+caassien/jsonpath|0.1.0|Apache-2.0|A High-Performance JSONPath Engine for MoonBit ecosystem
+caassien/moonbio|0.1.0|MIT|
+CAIMEOX/alg-pattern|0.1.0|Apache-2.0|The algebra of patterns
+CAIMEOX/box|0.1.3|Apache-2.0|Combinators for creating and manipulating two-dimensional rectangular text layouts
+CAIMEOX/cairoon|0.1.0|LGPL-2.1-only OR MPL-1.1|MoonBit native bindings for the Cairo graphics library.
+CAIMEOX/color|0.1.0|Apache-2.0|A library for color space conversions in MoonBit
+CAIMEOX/csmith_wrapper|0.1.0|Apache-2.0|
+CAIMEOX/diet|0.1.3|Apache-2.0|Discrete Interval Encoding Trees
+CAIMEOX/evmasm|0.1.0|Apache-2.0|Fork-aware Ethereum EVM assembler/disassembler library for MoonBit
+CAIMEOX/feat-moon|0.2.0|MIT|Functional enumeration of algebraic types
+CAIMEOX/fenwick|0.1.1|Apache-2.0|Fenwick tree implementation in MoonBit
+CAIMEOX/functor|0.1.1|Apache-2.0|Naive functor implementation using virtual packages
+CAIMEOX/graph-algebra|0.1.5|Apache-2.0|A minimalistic and elegant approach to working algebraically with graphs
+CAIMEOX/lazy|0.1.0|Apache-2.0|Lazy Initialized Value
+CAIMEOX/lazy-list|0.1.2|MIT|Lazy list in MoonBit
+CAIMEOX/list|0.1.0|MIT|
+CAIMEOX/midi|0.1.0|Apache-2.0|A MIDI file parser and writer in MoonBit
+CAIMEOX/moon_egg|0.1.0|Apache-2.0|E-graph implementation in MoonBit
+CAIMEOX/moon_floating|0.3.0|Apache-2.0|A MoonBit library for real and complex floating-point arithmetic with arbitrary precision
+CAIMEOX/Motiva|0.1.0|Apache-2.0|A MoonBit animation engine inspired by Manim.
+CAIMEOX/qc_pyext|0.1.1|Apache-2.0|QuickCheck and reference testing extension for Python programs
+CAIMEOX/quickcheck|0.6.9|Apache-2.0|Automatic testing of MoonBit programs
+CAIMEOX/reed_solomon|0.1.0|Apache-2.0|Reed Solomon error correction implementation in Moonbit
+CAIMEOX/rss_reader|0.1.0|MIT|RSS reader built with Moonbit
+CAIMEOX/state|0.1.1|MIT|An implementation of State Monad in Moonbit
+CAIMEOX/svg|0.1.2|Apache-2.0|MoonBit SVG eDSL
+CAIMEOX/symbit|0.5.10|Apache-2.0|A symbolic mathematics library for Moonbit.
+CAIMEOX/t|0.1.0|MIT|
+CAIMEOX/vlq|0.1.0|Apache-2.0|MoonBit library for encoding and decoding Variable Length Quantities
+CAIMEOX/zipper|0.1.0|Apache-2.0|The zipper data structure
+CAIMEOX/原来可以发中文包|0.1.1|Apache-2.0|
+calacaly/moon_log|0.1.11|Apache-2.0|让人不懵逼的日志库，目前还是愚蠢的实现，以后会进行优化（也许）。
+caozhanhao/qrcode|0.1.1|Apache-2.0|QR Code Generator for MoonBit
+cauchyQ/moon-sketch-kit|0.1.0|Apache-2.0|MoonBit streaming sketch toolkit for approximate analytics, drift checks, and compact data reports.
+CCllff-jpg/MoonLogTrace|0.1.1|Apache-2.0|纯 MoonBit 结构化日志与追踪库，支持5级过滤、11种格式化器、Span追踪、RequestContext、Pipeline中间件、批量日志、Counter/Timer/Histogram统计、EventMeter/RateLimiter、Syslog/GELF格式、日志分流路由，零依赖
+CGaaaaaa/MoonProgress|0.1.0|Apache-2.0|A configurable command-line progress bar library for MoonBit
+CGaaaaaa/reactivex|0.1.0|MIT|Reactive Extensions for MoonBit - 响应式编程库
+CGaaaaaa/signal|0.1.2|MIT|高效的函数式响应编程库 - MoonBit Signal 实现
+cgx027/test_moon|0.1.0|Apache-2.0|
+cg-zhou/bezier-easing|0.3.3|MIT|[DEPRECATED] Use cg-zhou/bezier_easing instead. MoonBit port of bezier-easing
+cg-zhou/bezier_easing|0.4.0|MIT|MoonBit port of bezier-easing
+cg-zhou/drawille|0.1.2|MIT|MoonBit port of drawille for terminal graphics with Unicode Braille characters
+cg-zhou/moon_lottie|0.3.0|MIT|MoonBit 原生高性能 Lottie 动画引擎 | High-performance Lottie animation engine in native MoonBit
+chaijie2018/bloom|0.1.3|MIT|Bloom Filter
+chaijie2018/bloom-filter|0.1.4|MIT|bloom filter
+chawyehsu/punycode|0.0.5|Apache-2.0 OR Unlicense|Punycode encoding and decoding in MoonBit
+chawyehsu/stringprep|0.0.1|Apache-2.0 OR Unlicense|Preparation of Internationalized Strings (stringprep) in MoonBit
+chensuiyi/t1|0.0.2|Apache-2.0|
+chensuiyi/t22|0.1.0|Apache-2.0|
+chgttyyr/MoonSpectrum|0.1.0|Apache-2.0|MoonBit-native scientific signal processing toolkit with FFT, spectra, windows, convolution, FIR filters, and CLI analysis.
+chhnb/algorithm|0.1.0|Apache-2.0|
+chnlkw/moonxi-net|0.1.1|MIT|A deep learning training framework built with MoonBit, featuring tape-based autograd and PyTorch-like API (CPU backend)
+chnlkw/moonxi-net-gpu|0.1.1|MIT|GPU backend: CUDA/cuDNN tensor operations and training for moonxi-net
+chronostesis/check_prime|0.1.0|Apache-2.0|
+clhhhhh/moon-csv-lite|0.1.0|MIT|A MoonBit CSV quality toolkit for auditing, contracts, gates, and chart previews.
+CMoonBack/Binary-Exponentiation|0.1.0|Apache-2.0|Binary Exponentiation in moonbit
+CMoonBack/computational-geometry|0.2.3|Apache-2.0|computational geometry library in moonbit
+CMoonBack/string-Algorithm|0.1.0|Apache-2.0|
+cn-cheems/moonnavkit|0.3.0|Apache-2.0|Weighted path planning, multi-goal flow fields, and search visualization for MoonBit.
+cn-wn/moonsignalkit|0.2.1|Apache-2.0|Streaming telemetry statistics and change detection for MoonBit.
+cn-xjr/moongeokit|0.2.1|Apache-2.0|Robust 2D geometry and observable spatial indexing for MoonBit.
+cn-ybm/MoonHashKit|0.2.0|Apache-2.0|Content-defined chunking, rolling fingerprints, and deduplication for MoonBit.
+co63oc/moonbit_promptkit|0.1.2|Apache-2.0|The MoonBit-implemented AI model SDK supports OpenAI compatible interfaces and is compatible with multiple platforms.
+codeworm96/magpiedb|0.2.0|Apache-2.0|vibe coded lightweight OLAP database
+cogna-dev/hello|0.1.0|MIT|Hello World example for moonbit-actions
+cogna-dev/mapi|0.1.1|Apache-2.0|
+cogna-dev/mcp-sdk|0.1.0|MIT|MoonBit implementation of the Model Context Protocol (MCP)
+cogna-dev/parkit|0.1.1|Apache-2.0|A nom-like parser combinator framework for MoonBit
+cogna-dev/sbom|0.1.1|MIT|Software Composition Analysis - SBOM generation and dependency management
+cogna-dev/x|0.1.2|MIT|The experimental monorepo for real-world MoonBit packages
+colmugx/jieba|0.1.1|Apache-2.0|Chinese word segmentation based on jieba
+colmugx/mcp|0.14.0|Apache-2.0|Type-safe MCP SDK in MoonBit with server/client support and dual transport (STDIO/HTTP)
+colmugx/posoco|0.4.1|Apache-2.0|Zero-dependency LLM Agent framework with hexagonal (ports-and-adapters) architecture. Defines 7 traits + Agent loop.
+colmugx/reader|0.3.0|Apache-2.0|An implementation of Reader Monad in Moonbit
+colmugx/sqlite3|0.2.0|Apache-2.0|A lightweight, low-level SQLite3 binding for MoonBit, providing a thin interface over the SQLite3 C API.
+colmugx/sqlite-vec|0.2.4|Apache-2.0|SQLite3 binding with sqlite-vec vector search extension.
+conglinyizhi/better-edit-tools-mcp|0.1.0|Apache-2.0|
+conglinyizhi/moon-embed|0.1.2|MIT|Embed static files into MoonBit binaries
+connect0459/starlark|0.4.0|Apache-2.0|The Starlark configuration language, implemented in Moonbit
+connect0459/urllib|0.4.2|Apache-2.0|WHATWG-compliant URL and URLPattern library for MoonBit
+CorvusCinereus/miniaudio|0.4.0|Apache-2.0|miniaudio的moonbit封装
+cosettese/moonchartkit|0.2.0|Apache-2.0|Accessible SVG and Markdown report artifacts for MoonBit.
+cou723/html-parser|0.1.0|MIT|Lightweight and practical HTML parser for MoonBit
+cxh04/cron_mbt|0.1.0|Apache-2.0|A cron expression parser and scheduler for MoonBit.
+cybershang/agent-o11y-demo|0.1.1|MulanPSL-2.0|
+cybershang/agent-telemetry|0.1.6|MulanPSL-2.0|
+cyhforlight/moonbit-hello-card|0.1.0|Apache-2.0|
+DawnMagnet/sparse-table|0.1.1|MIT|
+DC-Z-lab/moonllm|0.1.0|Apache-2.0|Type-safe, OpenAI-compatible LLM client for MoonBit: chat completions, streaming (SSE), tool calling, and multimodal input.
+Demonmasterlqx/box2d_ffi|0.2.7|Apache-2.0|moonbit ffi box2d
+Demonmasterlqx/moonbit_stickman_map_loader|0.0.9|Apache-2.0|
+Demonmasterlqx/MoonP5|0.0.8|Apache-2.0|
+dgmxjj/moonplot|0.1.0|MIT|
+didiLjf/moonorbit|0.1.0|Apache-2.0|A lightweight, high-performance Actor concurrency framework for MoonBit
+dijdzv/moon-release|0.3.2|MIT|Automated release management tool for MoonBit
+dijdzv/websys|0.3.0|MIT|MoonBit bindings for Web APIs (DOM, HTML, Canvas, WebGL, etc.)
+djisnj/djisnj|0.1.0|Apache-2.0|
+dongyvxuan/dongyx|0.1.1|Apache-2.0|
+dowdiness/alga|0.4.0|Apache-2.0|Algebraic graphs for MoonBit — directed graph trait and algorithm library inspired by Haskell's alga
+dowdiness/btree|0.1.0|Apache-2.0|Generic counted B-tree with O(log n) indexed access, insert, delete, and range operations
+dowdiness/event-graph-walker|0.3.0|Apache-2.0|Implementation of the eg-walker CRDT algorithm with FugueMax sequence CRDT
+dowdiness/ffi_c|0.1.1|Apache-2.0|
+dowdiness/graphviz|0.1.0|Apache-2.0|Parser, layout engine, and SVG renderer for Graphviz DOT graphs
+dowdiness/incr|0.14.0|Apache-2.0|Salsa-inspired incremental recomputation library with automatic dependency tracking, backdating, and durability-based verification skipping
+dowdiness/js_engine|0.4.0|Apache-2.0|JavaScript interpreter in MoonBit
+dowdiness/margs|0.1.2|Apache-2.0|A simple command-line argument parser for MoonBit.
+dowdiness/moondsp|0.5.1|Apache-2.0|MoonBit DSP audio engine
+dowdiness/order-tree|0.1.1|Apache-2.0|Order-statistic B-tree with O(log n) position-indexed operations
+dowdiness/rle|0.2.3|Apache-2.0|Generic run-length encoded sequence with O(log n) position lookup
+dowdiness/svg-dsl|0.1.0|Apache-2.0|SVG DSL for programmatic SVG generation in MoonBit
+Duan-lang-dev/moonproto|0.1.0|MIT|A pure-runtime Protocol Buffers wire format encoder/decoder in MoonBit
+dxh8888/moonleasekit|0.1.0|Apache-2.0|Deterministic leases, fencing tokens and leader election primitives for MoonBit.
+Dz-6666/moonshardkit|0.2.0|Apache-2.0|Deterministic shard placement, replica isolation and migration planning for MoonBit.
+DzmingLi/clap|0.2.8|MIT|Command Line Argument Parser
+DzmingLi/decimal|0.2.2|Apache-2.0|[DEPRECATED] Moved to moonbit-community/decimal
+DzmingLi/rapidhash|0.1.4|MIT|rapidhash V3 — a very fast, high-quality, non-cryptographic hash. Faithful MoonBit port of the reference C.
+eanzhao/pi-moonbit|0.1.5|MIT|AI coding agent toolkit in MoonBit. Ships the `pimbt` CLI with 7 LLM providers (OpenAI / Anthropic / Gemini / Mistral / Bedrock / Vertex / Azure), a unified streaming abstraction, an agent loop with tool calls and compaction, a session-tree coding agent with built-in tools, three CLI modes (interactive / print / RPC), and one-command NyxID integration for credential-brokered LLM access.
+eanzhao/vibe-map|0.7.2|MIT|DAG-based progress visualization for vibe coding — Lean 4 region map style
+eczn/eczn-utils|0.2.0|Apache-2.0|
+edragain2nd/biblatex|0.1.1|Apache-2.0|A moonbit cake for parsing and writing BibTeX and BibLaTeX files.
+edragain2nd/compose|0.1.0|Apache-2.0|Composes two Unicode characters into a single precomposed character if possible.
+edragain2nd/unscanny|0.1.2|Apache-2.0|Painless string scanning.
+eisem/moon_graphql|0.1.0|Apache-2.0|A GraphQL parser and toolkit for MoonBit
+elzup/peeler|0.1.2|MIT|Bracket parser for MoonBit - parse nested bracket structures into tree nodes
+emadurandal/examine|0.1.0|Apache-2.0|
+emadurandal/rhodonite|0.1.8|Apache-2.0|Public facade over RhodoniteMBT modules with high-level app/runtime helpers.
+emadurandal/rhodonite_app_sdl3|0.1.8|Apache-2.0|SDL3 native app runtime helpers for RhodoniteMBT.
+emadurandal/rhodonite_core|0.1.8|Apache-2.0|Core utilities: vector math, JS bridge helpers, and little-endian binary writes into buffers for RhodoniteMBT.
+emadurandal/rhodonite_webgpu|0.1.8|Apache-2.0|WebGPU abstraction for browser and native targets (RhodoniteMBT).
+emadurandal/sdl3|0.1.2|Apache-2.0|SDL3 MoonBit binding fork with native stub build flag fixes.
+emptist/ibmoonc|0.1.0|Apache-2.0|MoonBit wrapper for Interactive Brokers TWS/Gateway API with C/Native FFI socket implementation
+emptist/ibmoonjs|0.2.7|Apache-2.0|JavaScript/Node.js target of ibmoon - MoonBit wrapper for IB TWS/Gateway API with JavaScript FFI socket implementation
+emptist/ibmoonwa|0.1.0|Apache-2.0|MoonBit wrapper for Interactive Brokers TWS/Gateway API with WebAssembly FFI socket implementation
+enanandesu/icc|0.1.1|Apache-2.0|MoonBit module to parse International Color Consortium (ICC) profiles.
+enanandesu/special-mathematical-functions|0.1.2|Apache-2.0|
+enjoecn/easy|0.1.0|Apache-2.0|
+enjoecn/gb|0.1.1|Apache-2.0|
+Erolaffy/easy-io|0.1.0|Apache-2.0|
+Erolaffy/easyio|0.2.1|Apache-2.0|A simple file operation module
+Estrella-11/moondockit|0.1.0|Apache-2.0|A MoonBit-first documentation site toolkit for package authors.
+Eunoiay/Eunoiay|0.1.0|Apache-2.0|
+extism/moonbit-pdk|0.47.12|Apache-2.0|Extism MoonBit PDK: This library can be used to write Extism Plug-ins in MoonBit.
+f4ah6o/aletheia|0.6.0|Apache-2.0|
+f4ah6o/direct_sdk|0.11.1|Apache-2.0|MoonBit SDK for Direct4B WebSocket API with MessagePack RPC
+f4ah6o/dslx|0.1.2|Apache-2.0|DSL generation meta-framework for MoonBit
+f4ah6o/duckdb|0.6.3|Apache-2.0|
+f4ah6o/encoding_sjis|0.1.0|Apache-2.0|encoding_rs準拠のShift_JISデコーダー for MoonBit
+f4ah6o/encoding_sjis_mbt|0.1.0|Apache-2.0|encoding_rs準拠のShift_JISデコーダー for MoonBit
+f4ah6o/htmx|0.2.0|Apache-2.0|
+f4ah6o/http11|0.1.1|Apache-2.0|
+f4ah6o/jww_parser|0.202601.9|AGPL-3.0|
+f4ah6o/mhx|0.1.1|Apache-2.0|MoonBit Hypermedia X - A type-safe HDA library for MoonBit/Wasm
+f4ah6o/mhx-spec|0.1.1|Apache-2.0|
+f4ah6o/moonchat|0.2.0|Apache-2.0|Hypermedia Driven Chat UI using Engenis HDA framework (JS target)
+f4ah6o/papyr|0.1.0|Apache-2.0|MoonBit document platform – Document model, Markdown rendering, and page generation
+f4ah6o/simple-webauthn|0.1.0|Apache-2.0|WebAuthn (FIDO2) implementation for MoonBit - ported from SimpleWebAuthn
+f4ah6o/sse|0.3.0|Apache-2.0|Server-Sent Events (SSE) support for MoonBit (JS client + Native server)
+f4ah6o/tmpx|0.4.0|Apache-2.0|Typed functional HTML template DSL for MoonBit
+f4ah6o/uuidm|0.2.0|ISC|forked from bobzhang/uuim / Universally unique identifiers (UUIDs) for MoonBit - supports UUID versions 3, 4, 5, 7, and 8 according to RFC 9562
+fangyinc/net|0.1.1-rc1|Apache-2.0|Cross-target network abstractions (TcpStream, TcpListener, UdpSocket) unifying WASM, JS, and native targets for MoonBit.
+fangyinc/socket|0.1.2-rc2|Apache-2.0|A socket binding for MoonBit
+fantix/mmhttp|0.3.0|MulanPSL-2.0|MoonBit 的 HTTP 工具包
+fantix/muts|0.5.4|MulanPSL-2.0|非函数式的常用数据结构合集
+felix-schultz/flow-like-wasm-sdk|0.1.0|MIT|SDK for building Flow-Like WASM nodes in MoonBit
+fgeygfe/dom_api|0.1.0|Apache-2.0|
+firefly/firefly|0.9.0|MIT|MoonBit SDK for making Firefly Zero games
+five-nuts/coreutils|0.1.3|Apache-2.0|
+FlyCloudC/autodiff|0.1.2|MIT|tape-based automatic differentiation
+FlyCloudC/GJK|0.1.1|Apache-2.0|GJK (Gilbert–Johnson–Keerthi) collision detection algorithm
+FlyCloudC/mgraph|0.1.4|MIT|Graph traversal without creating additional data structures
+FlyCloudC/miniKanren|0.1.8|Apache-2.0|A Domain Specific Languages for logic programming
+FlyCloudC/scheme|0.6.0|Apache-2.0|A Scheme interpreter implemented in Moonbit for teaching purposes
+FlyCloudC/symbol|0.3.0|MIT|A unique symbolic identifier providing O(1) equality, comparison, and hashing.
+Frank-III/onebit-tui|0.1.3|Apache-2.0|Modern terminal UI library with Yoga flexbox layout and native performance
+Frank-III/onebit-yoga|0.2.6|MIT|MoonBit bindings for Yoga Layout Engine
+FreeFoots/mooncake_hello|0.1.0|Apache-2.0|
+Freesia666/moonjsonpath|0.1.0|Apache-2.0|JSON Pointer and JSONPath query utilities for MoonBit
+FrenchPicnic/threejs|0.0.7|Apache-2.0|
+FrenchPicnic/which|0.1.3|Apache-2.0|A Moonbit equivalent of Unix command "which". Locate installed executable in cross platforms.
+FrozenLemonTee/formulas-calculator|0.1.2|Apache-2.0|A small LunarFormulas-powered formula calculation CLI.
+FrozenLemonTee/formulas-calculator-web|0.1.2|Apache-2.0|A lightweight MoonBit-powered web interface for formulas-calculator.
+FrozenLemonTee/LunarEvent|0.1.1|Apache-2.0|MoonBit terminal event API backed by TerminalEvent C FFI
+FrozenLemonTee/LunarFormulas|0.3.1|Apache-2.0|Unit-checked engineering formula objects built on LunarUnits.
+FrozenLemonTee/LunarTUI|0.1.0|Apache-2.0|A TUIs package written in MoonBit
+FrozenLemonTee/LunarUncertainty|0.1.1|Apache-2.0|Unit-aware measured values and standard uncertainty propagation for MoonBit.
+FrozenLemonTee/LunarUnits|0.1.8|Apache-2.0|A runtime dimension-checked physical quantity and unit system for MoonBit.
+FrozenLemonTee/TerminalEvent|0.1.0|Apache-2.0|C++ terminal event backend with a stable C FFI surface
+FrozenLemonTee/TextEditor|0.1.1|Apache-2.0|Demo app for LunarEvent and LunarTUI event loop integration
+FrozenLemonTee/units-converter|0.1.0|Apache-2.0|A small LunarUnits-powered unit conversion CLI.
+FrozenLemonTee/units-converter-web|0.1.0|Apache-2.0|A lightweight MoonBit-powered web interface for units-converter.
+fundon/emoji|0.3.0|MIT|Unicode Emoji Segmentation — MoonBit implementation of UTS #51 v17.0.0
+furesoft/moos-sdk|0.1.43|Apache-2.0|
+fuwasegu/moonbitap|0.1.0|MIT|Bitap (Shift-Or) algorithm for fuzzy string matching with full Unicode support
+GeneWang1226/tqdmoon|0.1.2|MIT|
+gepheum/skir-client|0.1.1|MIT|SkirRPC integration for MoonBit
+gepheum/skir-client-async|0.1.1|MIT|SkirRPC integration for MoonBit
+GMH233/moonpassword|0.1.0|Apache-2.0|Check the strength of your password. Generate some strong passwords of your own---with many options.
+gmlewis/b2|0.34.30|Apache-2.0|MoonBit b2 client: This library can be used to communicate with Backblaze B2.
+gmlewis/base64|0.16.10|Apache-2.0|MoonBit base64: provide simple base64 operations.
+gmlewis/blender|0.2.0|Apache-2.0|MoonBit SDK for the Blender MCP server
+gmlewis/crc32|0.8.17|Apache-2.0|MoonBit crc32: provide simple crc32 hash algorithm.
+gmlewis/flate|0.36.9|Apache-2.0|MoonBit flate: provide simplified flate (LZW) compression algorithm.
+gmlewis/fonts|0.19.11|Apache-2.0|Experimental package to manipulate open source font data.
+gmlewis/fonts-a|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'a'.
+gmlewis/fonts-b|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'b'.
+gmlewis/fonts-c|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'c'.
+gmlewis/fonts-d|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'd'.
+gmlewis/fonts-e|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'e'.
+gmlewis/fonts-f|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'f'.
+gmlewis/fonts-g|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'g'.
+gmlewis/fonts-h|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'h'.
+gmlewis/fonts-i|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'i'.
+gmlewis/fonts-j|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'j'.
+gmlewis/fonts-k|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'k'.
+gmlewis/fonts-l|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'l'.
+gmlewis/fonts-m|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'm'.
+gmlewis/fonts-n|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'n'.
+gmlewis/fonts-o|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'o'.
+gmlewis/fonts-p|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'p'.
+gmlewis/fonts-q|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'q'.
+gmlewis/fonts-r|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'r'.
+gmlewis/fonts-s|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 's'.
+gmlewis/fonts-t|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 't'.
+gmlewis/fonts-u|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'u'.
+gmlewis/fonts-v|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'v'.
+gmlewis/fonts-w|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'w'.
+gmlewis/fonts-y|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'y'.
+gmlewis/fonts-z|0.19.11|Apache-2.0|A collection of hard-coded font data in MoonBit with font names starting with 'z'.
+gmlewis/gzip|0.34.9|Apache-2.0|MoonBit gzip: provide simple gzip and gunzip algorithms.
+gmlewis/hash|0.20.9|Apache-2.0|MoonBit hash: provide hash functions similar to Go.
+gmlewis/image|0.17.9|Apache-2.0|MoonBit image: simple image representation.
+gmlewis/io|0.23.12|Apache-2.0|MoonBit io: provide simplified I/O abstractions similar to Go.
+gmlewis/json|0.15.0|MIT|simple json parser
+gmlewis/jsonrpc2|0.0.32|Apache-2.0|MoonBit jsonrpc2: provide simple JSON-RPC 2.0 abstractions.
+gmlewis/jsonutil|0.24.0|MIT|DEPRECATED AND ARCHIVED - USE STANDARD LIBRARY INSTEAD
+gmlewis/md5|0.19.33|Apache-2.0|MoonBit md5: provide simple md5 hash algorithm.
+gmlewis/modus|0.16.5|Apache-2.0|Experimental Modus SDK for the MoonBit programming language.
+gmlewis/moonbit-pdk|0.47.27|Apache-2.0|Extism MoonBit PDK: This library can be used to write Extism Plug-ins in MoonBit.
+gmlewis/picogk|0.2.0|Apache-2.0|MoonBit SDK for the PicoGK MCP geometry kernel server
+gmlewis/picogkffi|0.2.0|Apache-2.0|MoonBit FFI binding to the PicoGK native library
+gmlewis/picogkshapes|0.2.0|Apache-2.0|Higher-level shape construction helpers for the PicoGK geometry kernel
+gmlewis/sha1|0.12.9|Apache-2.0|MoonBit sha1: provide simple sha1 hash algorithm.
+gmlewis/sha256|0.17.31|Apache-2.0|MoonBit sha256: provide simple sha256 hash algorithm.
+gmlewis/spin-moonbit-sdk|0.54.14|Apache-2.0|Experimental Spin SDK for the MoonBit programming language.
+gmlewis/step|0.1.14|Apache-2.0|Port of https://github.com/tscircuit/stepts to MoonBit
+gmlewis/zlib|0.21.9|Apache-2.0|MoonBit zlib: provide simplified zlib format compressed data.
+golemcloud/golem_sdk|0.5.2|Apache-2.0|Golem SDK for MoonBit — build durable, fault-tolerant agents on the Golem platform
+golemcloud/golem_sdk_tools|0.5.2|Apache-2.0|Code generation tools for the Golem SDK for MoonBit
+grandEarshot/anthropic-sdk-moonbit|0.1.0|MIT|Anthropic SDK for MoonBit on native target.
+grandEarshot/moon_switch|0.1.2|Apache-2.0|MoonBit native CLI for switching Codex and Claude providers.
+grandEarshot/tui|0.1.0|Apache-2.0|A terminal user interface library for MoonBit inspired by Bubble Tea.
+GreyIcesea/isprime|0.1.0|Apache-2.0|A lightweight prime number detection library for MoonBit
+Guest0x0/dregex|0.2.5||
+Guest0x0/HAMT|0.2.1||
+hachi/hello|0.1.0|Apache-2.0|
+hachi/sort|0.1.12|Apache-2.0|
+hackwaly/bcrypt|0.1.0|Apache-2.0|
+hackwaly/common|0.1.24|Apache-2.0|
+hackwaly/easing|0.1.0|BSD-3-Clause|Easing functions for smooth animation.
+hackwaly/fastcc|0.1.0|LGPL-2.1-or-later|
+hackwaly/find_cluster_break|0.1.2|MIT|Find the position of grapheme cluster breaks in a string
+hackwaly/lexbuf|0.1.0|Apache-2.0|
+hackwaly/moonback|0.7.0|Apache-2.0|A web backend framework for MoonBit
+hackwaly/moonyacc|0.3.1|Apache-2.0|
+hackwaly/msgpack|0.1.0|MIT|
+hackwaly/pem|0.1.2|MIT|PEM (Privacy-Enhanced Mail) encoding and decoding library for MoonBit
+hackwaly/querystring|0.1.2|Apache-2.0|A small MoonBit library for parsing query strings and reading typed values.
+hackwaly/redis|0.1.1|Apache-2.0|Async Redis client for MoonBit, built on `moonbitlang/async`.
+hackwaly/regex|0.0.1|Apache-2.0|
+hackwaly/s3|0.1.0|Apache-2.0|
+hackwaly/wordcount|0.2.1|Apache-2.0|A simple word count program written in Moonbit aims to demostrate the usage of Moonbit's lexscan feature.
+hanbings/fluorescence|0.1.1|MIT|✨ Fluorescence - A library for dominant color extraction and fuzzy graphics processing.
+hanstechnow/ctf_tools|0.1.0|Apache-2.0|CTF toolkit with morsecode encode/decode.
+Han-Wentao/moonbench|0.2.0|MIT|A lightweight stopwatch, benchmark reporting, and baseline comparison toolkit for MoonBit projects.
+Haoxincode/moonbash|0.1.0|Apache-2.0|Zero-dependency pure-memory POSIX Shell sandbox
+hbh112233abc/examine|0.1.1|Apache-2.0|
+HCHogan/btree|0.2.1|Apache-2.0|An ordered map backed by a B-tree
+HeChTo/rope|0.1.0|Apache-2.0|
+helios-house/aho-corasick|0.4.0|Apache-2.0|Aho-Corasick multi-pattern string matching algorithm for MoonBit
+helios-house/valence|0.2.1|MIT|MoonBit UI where every component is readable by humans and AI equally
+hevienz/moonbit_libbpf|0.10.0|GPL-3.0|moonbit libbpf bindings
+Hhsqoo/moon-collections|0.1.0|Apache-2.0|High-performance collection data structures for MoonBit, including IndexMap, IndexSet, and BitSet.
+himeno/mopress|0.1.0|GPL-3.0-or-later|A modern documentation and static site generator for the MoonBit ecosystem, inspired by mdBook and Hakyll
+himeno/reactive|0.1.2|GPL-3.0-or-later|A reactive programming library, including signals, event emitters, and streams observer.
+hiroyannnn/sketch|0.1.0|Apache-2.0|MoonBit probabilistic data structures library (HyperLogLog, Count-Min Sketch, Cuckoo Filter)
+hiroyannnn/strsim|0.2.0|Apache-2.0|String similarity and distance algorithms for MoonBit (Hamming, Levenshtein, Jaro, Jaro-Winkler, OSA, Damerau-Levenshtein, Sørensen-Dice, LCS)
+horideicom/encoding_sjis|0.1.1|Apache-2.0|encoding_rs-compliant Shift_JIS decoder for MoonBit
+horideicom/jww_parser|0.202602.0|AGPL-3.0|
+Howardzhangdqs/md5|0.9.3|Apache-2.0|MD5 的 MoonBit 实现
+howtomakeaname/tokenizers-moonbit|0.1.0|Apache-2.0|A MoonBit port of HuggingFace tokenizers. Loads tokenizer.json and runs BPE / byte-level BPE / WordPiece / Unigram tokenization across all backends.
+hua1104/moonpress|0.1.0|MIT|A MoonBit-first static site and documentation generator for reusable project docs.
+hustcer/ed25519|0.5.0|Apache-2.0|A pure MoonBit Ed25519 signing and verification package.
+hustcer/fbr|0.8.0|Apache-2.0|Pure MoonBit Brotli (.br) encoder and decoder with split encode/decode packages
+hustcer/fzip|0.8.5|Apache-2.0|High-performance compression library for MoonBit, ported from fflate. (DEFLATE/GZIP/Zlib/ZIP) 🚀
+hustcer/html2md|0.1.0|Apache-2.0|Convert HTML to Markdown (CommonMark), a MoonBit port of JohannesKaufmann/html-to-markdown v2.
+hustcer/nanoid|0.6.0|MIT|A MoonBit port of the NanoID library
+hustcer/tabular|0.5.2|Apache-2.0|A MoonBit library for pretty-printing tables in terminal. Ported from Rust tabled.
+hzc-666-ai/moonpathfinding|0.1.1|MIT|A pure MoonBit pathfinding library with 7 algorithms, grid/graph support, and ASCII/HTML visualization
+hzqdf/aoko|0.0.20250321|MIT|A MoonBit extension library.
+hzqdf/sum-calc|0.0.20250321|Apache-2.0|A CLI sum calc.
+I3eg1nner/petgraph|0.1.0|MIT OR Apache-2.0|A MoonBit port of petgraph: graph data structures and algorithms.
+i5ting/chokidar|0.1.0|Apache-2.0|Cross-platform file watching library for MoonBit native target. Port of chokidar v5 with kqueue (macOS/FreeBSD) and inotify (Linux) backends.
+i5ting/glob-watcher|0.1.0|Apache-2.0|Glob-pattern file watcher for MoonBit native — debounced, queue-aware, chokidar-backed.
+i5ting/gulp|0.1.0|MIT|
+i5ting/readdirp|0.1.3|Apache-2.0|Directory walking for MoonBit native/LLVM targets.
+iceBear67/bytebuf|0.4.1|Apache-2.0|A byte buffer for moonbit, supports LE/BE r/w of integers and floats.
+iceBear67/classfile|0.2.0|Apache-2.0|Experimental JVMS ch.4(classfile) and ch.6(bytecode) parser implementation in MoonBit.
+iceBear67/mnbt|0.3.3|Apache-2.0|A NBT Parser for MoonBit language
+iceBear67/time|0.1.2|Apache-2.0|A date-time library in MoonBit, including zone offsets and clocks that support JS and Native backend.
+ihb2032/MoonFrame|0.5.7|Apache-2.0|A lightweight DataFrame and tabular-data library for MoonBit
+illusory0x0/🐫|0.1.0|Apache-2.0|
+illusory0x0/adapton|0.1.4|Apache-2.0|Moonbit classic adapton implementation
+illusory0x0/base|0.2.1|Apache-2.0|empty repo
+illusory0x0/case_conv|0.1.0|Apache-2.0|A comprehensive MoonBit library for converting between different case styles including camelCase, snake_case, kebab-case, PascalCase, SHOUTY_SNAKE_CASE, Title Case, and more. Features bidirectional conversion, type-safe enums, and zero dependencies.
+illusory0x0/clang|0.1.1|Apache-2.0|clang-c native bindings
+illusory0x0/clone|0.1.0|Apache-2.0|Clone trait for multi-threaded programming.
+illusory0x0/coerce|0.1.1|Apache-2.0|empty repo
+illusory0x0/color|0.2.3|Apache-2.0|rgb2hsl and hsl2rgb convertor
+illusory0x0/conv|0.1.2|Apache-2.0|empty repo
+illusory0x0/fmt|0.4.1|Apache-2.0|A destination passing style formatting library for MoonBit
+illusory0x0/fun|0.3.0|Apache-2.0|
+illusory0x0/fuzzy_match|0.2.5|Apache-2.0|A library for fuzzy string matching and fuzzy string searching
+illusory0x0/graphviz|0.1.2|Apache-2.0|
+illusory0x0/immut_deque|0.3.4|Apache-2.0|immutable double ended queue
+illusory0x0/inspect|0.1.1|Apache-2.0|A powerful quotation meta programming library that hacks MoonBit's snapshot test system, allowing you to customize `moon test` behavior with automatic source file updates and enhanced testing capabilities.
+illusory0x0/intrinsic|0.1.0|Apache-2.0|export intrinsic type
+illusory0x0/jcore|0.1.1|Apache-2.0|JavaScript core library' s wasm binding
+illusory0x0/lazy|0.1.4|Apache-2.0|a lazy library support recursion
+illusory0x0/lexer|0.2.0|Apache-2.0|A MoonBit tokenization library for parsing Token payloads from strings and bytes. Provides efficient tokenization functionality for integers, decimals, booleans and other data types with support for multiple numeric bases, comprehensive error handling, and convenient helper functions for token processing.
+illusory0x0/memory|0.1.2|Apache-2.0|Low-level memory operation library providing typed views over raw byte buffers with support for various integer types and endianness control
+illusory0x0/moonbit-wasm-nodejs-ts-template|0.1.0|Apache-2.0|moonbit node.js wasm app template
+illusory0x0/moonbit-wasm-vite-ts-template|0.1.0|Apache-2.0|moonbit vite template
+illusory0x0/native|0.2.1|Apache-2.0|native FFI utility
+illusory0x0/parserc|0.1.5|Apache-2.0|A simple parser combinator
+illusory0x0/path|0.2.0|Apache-2.0|A cross-platform path manipulation library for MoonBit that provides robust handling of both Unix and Windows file system paths with automatic format detection and type-safe path operations.
+illusory0x0/posix|0.2.2|Apache-2.0|a simple posix API FFI library
+illusory0x0/prettyprinter|0.1.1|Apache-2.0|A pretty printer library for MoonBit using immutable deque implementation for efficient document layout and formatting
+illusory0x0/printer|0.1.1|Apache-2.0|A MoonBit AST printer for string serialization of Abstract Syntax Tree nodes from moonbitlang/parser/syntax, designed for code generation and AST visualization workflows.
+illusory0x0/qpainter|0.3.1|Apache-2.0|Moonbit FFI Bindings for Qt's QPainter
+illusory0x0/quote|0.2.0|Apache-2.0|A MoonBit library for handling and manipulating quotations and quoted text
+illusory0x0/rijndael|0.1.0|Apache-2.0|A MoonBit implementation of the Rijndael (AES) encryption algorithm
+illusory0x0/ryu|0.1.1|Apache-2.0|A MoonBit implementation of the Ryu algorithm for fast floating-point to string conversion, compliant with ECMAScript number-to-string specification.
+illusory0x0/simple_parserc|0.2.2|Apache-2.0|Monadic parser combinators
+illusory0x0/string_of_bytes|0.1.0|Apache-2.0|A MoonBit package for converting bytes to strings with efficient memory operations
+ivgtr/moonzip|0.2.4|MIT|A MoonBit compression library compatible with fflate
+jankin_li/Learn_Test1|0.1.0|Apache-2.0|
+jankin_li/new_lib|0.1.0|Apache-2.0|
+jaredzhou/libs|0.1.1|Apache-2.0|
+jaredzhou/mooncedar|0.1.1|Apache-2.0|A Cedar policy engine — parser, evaluator, and authorizer in MoonBit.
+jaredzhou/moonpg|0.2.0|Apache-2.0|A MoonBit client for PostgreSQL, based on libpq.
+jaredzhou/pony|0.1.1|Apache-2.0|
+jaredzhou/x|0.1.0|Apache-2.0|extended packages for web application development
+jedisct1/aegis|0.2.1|MIT|AEGIS cipher implementation in Moonbit
+jhshuai/moonpolicykit|0.2.0|Apache-2.0|A backend-neutral, explainable relationship-based authorization toolkit for MoonBit.
+jinser/json|0.0.1|Apache-2.0|
+JPLovever/fkshz|0.1.0|Apache-2.0|
+jshsj124/moontemplate|0.1.0|MIT|A Handlebars-style template engine in pure MoonBit
+jtenner/sfo|0.1.1|MIT|A fully tested system-f-omega type checker written in moonbit.
+jtenner/telnet|0.1.3|MIT|Transport-independent TELNET protocol library for MoonBit.
+Jtian-t/Deque|0.1.0|Apache-2.0|Double-Ended Queue Library
+jumpping/baby|0.2.0|Apache-2.0|Ordered set based on balanced binary tree
+JunJunTnT/moonchart|0.1.1|Apache-2.0|A statistical chart SVG generation library for MoonBit. Supports bar charts, line charts, scatter plots with error bars and multi-series rendering.
+justjavac/auto_launch|0.1.7|MIT|Cross-platform auto-launch helpers for MoonBit, inspired by Teamwork/node-auto-launch.
+justjavac/btoi|0.1.9|MIT|a utility for converting ASCII bytes to integers
+justjavac/bytesize|0.2.3|MIT|an utility for human-readable bytes representations
+justjavac/cache_padded|0.1.0|MIT|Cache-padded data structures for MoonBit to reduce false sharing
+justjavac/camera|0.1.3|MIT|Native camera discovery and capture-mode helpers.
+justjavac/case|0.2.2|MIT|String case conversion utility for MoonBit
+justjavac/cdp|0.1.8|MIT|MoonBit Chrome DevTools Protocol library
+justjavac/cdp_examples|0.1.4|MIT|Examples for justjavac/cdp
+justjavac/ci|0.1.1|MIT|Native-only CI environment detection for MoonBit.
+justjavac/clipboard|0.1.7|MIT|Cross-platform native clipboard helpers for MoonBit.
+justjavac/core_affinity|0.2.4|MIT|A Moonbit module to manage CPU core affinity.
+justjavac/dialog|0.1.4|MIT|Native-only message dialogs for MoonBit on Windows, macOS, and Linux.
+justjavac/dirs|0.1.2|MIT|Returns user-specific, platform-specific directory paths across Linux, macOS, and Windows.
+justjavac/ffi|0.2.4|MIT|MoonBit Foreign Function Interface.
+justjavac/glob|0.1.8|MIT|A glob library for MoonBit, supporting wildcard pattern matching on file paths.
+justjavac/global_hotkey|0.1.5|MIT|Cross-platform native global hotkey helpers for MoonBit.
+justjavac/itoa|0.2.4|MIT|Fast decimal formatting for signed and unsigned integers
+justjavac/keepawake|0.1.4|MIT|Native keep-awake guards for MoonBit on Windows, Linux, and macOS.
+justjavac/microphone|0.1.3|MIT|Microphone capture device and session helpers.
+justjavac/notification|0.1.4|MIT|Cross-platform native desktop notification helpers for MoonBit.
+justjavac/num_cpus|0.1.9|MIT|Get the number of CPU cores available on the system.
+justjavac/platform|0.1.2|MIT|Minimal native platform detection for MoonBit packages.
+justjavac/proton|0.1.9|MIT|MoonBit bindings for the Proton native desktop runtime.
+justjavac/proton_cli|0.1.5|MIT|Developer CLI and code generation tools for Proton.
+justjavac/proton_config|0.1.4|MIT|Typed config parser for Proton moon.proton and moon.ext files.
+justjavac/proton_ext|0.1.7|MIT|Extensions for proton examples and applications.
+justjavac/quickjs|0.1.4|MIT|MoonBit bindings for the QuickJS JavaScript engine.
+justjavac/replace_self|0.1.4|MIT|Replace or delete the currently running executable on Linux, macOS, and Windows.
+justjavac/screenshots|0.1.2|MIT|Native screenshot command helpers for Windows, Linux, and macOS.
+justjavac/sys_locale|0.1.6|MIT|Native system locale discovery and normalization for MoonBit.
+justjavac/template|0.1.1|MIT|A small and fast precompiled template engine for MoonBit.
+justjavac/template_codegen|0.1.3|MIT|Code generator for precompiled MoonBit templates.
+justjavac/template_examples|0.1.1|MIT|Runnable examples for justjavac/template.
+justjavac/terminal_size|0.1.5|MIT|Cross-platform terminal size helpers for MoonBit.
+justjavac/tray|0.1.7|MIT|Cross-platform native tray helpers for MoonBit.
+justjavac/tray-examples|0.1.1|MIT|Examples for justjavac/tray.
+justjavac/ttl|0.1.1|MIT|A small in-memory TTL cache for MoonBit
+justjavac/walkdir|0.1.7|MIT|A deterministic walkdir library for MoonBit.
+justjavac/wallpaper|0.1.3|MIT|Native wallpaper platform API bindings for desktop apps.
+justjavac/webview|0.1.10|MIT|MoonBit bindings for webview, a tiny library for creating web-based desktop GUIs.
+justjavac/win32_messagebox|0.1.3|MIT|A MoonBit FFI demo for calling the Win32 MessageBoxW API.
+justjavac/windows_subsystem|0.1.4|MIT|Keep the Windows GUI subsystem linker stub alive for MoonBit native executables.
+justjoheinz/complex|0.4.0|Apache-2.0|Complex number arithmetics
+justjoheinz/iso-country|0.1.3|Apache-2.0|A list of country codes and names in ISO 3166 format
+kaashyapan/postgresx|0.1.0|Apache-2.0|Extends moonbitlang/x types for use with moonbit-community/postgres 
+kaashyapan/uri|0.1.2|Apache-2.0|URI parser and builder for Moonbit
+Kaida-Amethyst/either|0.1.0|Apache-2.0|A MoonBit library providing the Either type for representing values with two possible types, inspired by Rust's either and Haskell's either libraries.
+Kaida-Amethyst/godot|0.1.0|Apache-2.0|Moonbit language binding for Godot Game Engine
+Kaida-Amethyst/llvm|0.2.3|Apache-2.0|llvm-c binding for Moonbit with friendly API, keeps the Cpp Style.
+Kaida-Amethyst/math|0.1.21|Apache-2.0|High-precision Math library Implemented By Pure Moonbit
+Kaida-Amethyst/matplotlib|0.1.2|Apache-2.0|Draw scientific plots with matplotlib in moonbit
+Kaida-Amethyst/mbtcc|0.1.0|Apache-2.0|A C Compiler written in MoonBit
+Kaida-Amethyst/mbtsmith|0.1.4|Apache-2.0|Generate MiniMoonBit Programs randomly.
+Kaida-Amethyst/moonbit-math|0.1.14|Apache-2.0|High-precision Math library
+Kaida-Amethyst/MoonLLVM|0.1.16|Apache-2.0|Moonbit version of LLVM, A Tiny, Friendly Companion to LLVM
+Kaida-Amethyst/MoonMIR|0.1.2|Apache-2.0|Machine IR, support compile llvm module (from MoonLLVM) to different architecture machine code.
+Kaida-Amethyst/openblas|0.1.3|Apache-2.0|Use OpenBlas in MoonBit
+Kaida-Amethyst/path|0.1.1|Apache-2.0|A cross-platform file path manipulation library for MoonBit, supporting both Unix and Windows platforms.
+Kaida-Amethyst/python|0.1.7|Apache-2.0|Manipulate Python code in Moonbit
+Kaida-Amethyst/screeps|0.1.0|Apache-2.0|
+Kaida-Amethyst/sdl3|0.1.1|Apache-2.0|Use sdl3 in MoonBit
+Kai-Junhan/moon-ray|0.2.3|Apache-2.0|A Monte Carlo path tracing renderer in pure MoonBit — OSC 2026
+kalculos/miao|0.1.0-M2|Apache-2.0|Another async I/O for moonbit, with libuv served as the default async runtime implementation.
+kawaz/grapheme|0.10.4|MIT|Unicode grapheme cluster segmentation library for MoonBit (UAX #29)
+kawaz/timespec|0.2.4|MIT|CLI-oriented time specification parser for MoonBit
+kawaz/unicodegrapheme|0.9.0|MIT|DEPRECATED: Use kawaz/grapheme instead. This package re-exports kawaz/grapheme for backwards compatibility.
+KCN-judu/calculus-numerical|0.3.1|MIT|This repo is no longer maintaining here, it is maintained by Luna-Flow now.
+KCN-judu/err_marker|0.1.2|Apache-2.0|This is a visualizing tool that locates the source of errors within sequences and outputs formatted results, designed to assist users and developers in quickly identifying input that triggers errors.
+KCN-judu/lambda|0.1.1|Apache-2.0|
+KCN-judu/linear-algebra|0.3.1|MIT|This repo is no longer maintaining here, it is maintained by Luna-Flow now.
+KCN-judu/luna-complex|0.3.1|MIT|This repo is no longer maintaining here, it is maintained by Luna-Flow now.
+KCN-judu/luna-utils|0.3.1|MIT|This repo is no longer maintaining here, it is maintained by Luna-Flow now.
+KCN-judu/type_unification|0.1.3|Apache-2.0|a type unification library written in MoonBit.
+KeqingMoe/qt|0.5.2|Apache-2.0|Qt MoonBit Binding
+KeqingMoe/unicode_xid|0.0.1|MIT|Unicode XID
+kesmeey/BloomierFilter|0.1.0|Apache-2.0|
+kesmeey/fmt|0.1.9|Apache-2.0|simple printf utils
+kesmeey/immut_BitVector|0.1.2|Apache-2.0|An efficient immutable bit vector data structure for compact and efficient storage and manipulation of boolean sequences, supporting bit operations, logical operations, slicing, concatenation and more, while maintaining immutability
+kesmeey/immut_IntervalTree|0.1.0|Apache-2.0|Experimenting with implementing an immutable interval tree in Moonbit
+kesmeey/IndexMap|0.1.9|Apache-2.0|Implementing the IndexMap Data Structure Using MoonBit
+kesmeey/IndexSet|0.1.6|Apache-2.0|Implementing the IndexSet Data Structure Using MoonBit
+kesmeey/IntervalTree|0.1.3|Apache-2.0|Implement IntervalTree using Moonbit
+kesmeey/RoaringBitmap|0.1.0|Apache-2.0|
+kesmeey/tools|0.1.9|Apache-2.0|A utility library similar to Hutool in Java.
+kesmeey/unicodeUtil|0.2.3|Apache-2.0|unicodeUtil is a toolkit for handling Unicode code point attributes. It provides a variety of functions to test the attributes of Unicode code points.
+Kilig/MATH|0.1.1|Apache-2.0|实现加减乘除
+KingBes/raylib|0.0.3|MIT|raylib 跨平台游戏库
+KingBes/webui|0.0.4|MIT|🚀 moon 绑 定 webui 库。
+kinoamyfx/moon-axe-tools|0.0.1-SNAPSHOT|Apache-2.0|
+kokic/i18n-ipsum|0.1.3|AGPL-3.0|Internationalized lorem ipsum
+kokic/momoka|0.4.0|AGPL-3.0|Create a minimal MoonBit module
+kokic/moonbit-chalk|0.6.0|MIT|Terminal string styling support for MoonBit.
+kokic/prime|0.1.8|Apache-2.0|An efficient implementation of primality testing in MoonBit.
+kokic/sexp-html|0.4.0|Apache-2.0|HTML's s-expression representation
+kokic/tim|0.3.0|AGPL-3.0|The CLI tool for tinymark
+kokic/tinymark|0.3.8|AGPL-3.0|The kernel of altsia markup language
+kokic/YHWH|0.2.0|AGPL-3.0|A minimal MoonBit library for sequential base-35 tags with configurable generated length.
+kujirahand/base64|0.1.1|Apache-2.0|Base64 encoding and decoding library
+kujirahand/crc32|0.1.1|MIT|CRC32 checksum implementation
+Lalenture/hello|0.1.0|Apache-2.0|
+Lampese/biblatex|0.1.0|MIT|
+Lampese/lomo|0.0.5|MIT|
+Lampese/MCIL|0.1.1|MIT|C Intermediate Language Implemented with MoonBit
+Lampese/mitest|0.1.1|Apache-2.0|
+Lampese/moonbead|0.1.3|Apache-2.0|Minimal single-machine issue tracker for AI agents, backed by JSONL.
+Lampese/moonbit-chalk|0.5.0|MIT|Terminal string styling support for MoonBit.
+Lampese/mooncakes_protocol|0.1.0|Apache-2.0|Protocol library for accessing mooncakes.io content and package data
+Lampese/moondata|0.2.8|Apache-2.0|
+Lampese/moondata2|0.0.2|Apache-2.0|
+LAOBIAO656/moonreplaykit|0.2.0|Apache-2.0|Deterministic state-machine replay, checkpoint validation and divergence diagnostics for MoonBit.
+ledao/nanoid|0.2.1|Apache-2.0|A tiny, URL-friendly, unique string ID generator for MoonBit.
+lenitain/hcl|0.1.3|MIT|HCL parser, formatter, and serialization library for MoonBit
+lenitain/kdl|0.1.1|Apache-2.0|KDL document language parser, formatter, query engine, and schema validation library for MoonBit
+leopeng1995/examine|0.1.0|Apache-2.0|
+lepus-apps/lepus|0.1.8|Apache-2.0|A modern desktop application framework based on web technologies.
+lepus-apps/webview|0.1.15|Apache-2.0|A modern desktop application framework based on web technologies.
+li/hello|0.1.0|Apache-2.0|
+LI7282/base16|0.1.0|Apache-2.0|Implemented Base16 (hexadecimal) encoding and decoding functionality
+lijunchen/hello|0.1.0|Apache-2.0|
+lijunchen/hello16|0.1.0||
+lijunchen/hello18|0.1.35|MIT|test
+lijunchen/hello19|0.1.2|Apache-2.0|
+lijunchen/hello2|0.1.0|Apache-2.0|
+lijunchen/hello23|0.1.2||
+lijunchen/hello24|0.1.0||
+lijunchen/mooncake|0.1.0||
+lijunchen/test_esp32|0.1.9|Apache-2.0|
+lijunchen/test_postadd|0.1.0|Apache-2.0|
+lijunchen/test_postadd2|0.1.1|Apache-2.0|
+lijunchen/unstable_io|0.1.3|Apache-2.0|Unstable IO package for MoonBit
+littleotherut/digit-insert|0.1.1|Apache-2.0|Insert digit into number at the correct position
+liuhuo23/clickhouse-driver|0.1.1|Apache-2.0|一个ClickHouse的驱动库
+liuly0322/lru_cache|0.1.0|MIT|lru cache for MoonBit
+liuly0322/tch_mbt|0.2.0|Apache-2.0|libtorch FFI bindings(WIP) for MoonBit
+liushiman1222/AgriDroneSwarm|0.1.0|Apache-2.0|A MoonBit algorithm library for agricultural drone swarm coordination, path planning, control, and mission evaluation.
+liuxinbo1984/example|0.1.8|Apache-2.0|test example
+Ljh684/MoonParse|0.1.3|Apache-2.0|MoonBit 解析器组合子库 — 与生态中其他 combinator 不同：(1)内置完整 JSON 解析器（JsonValue 枚举+双向序列化）和 TOML 解析器，开箱即用；(2)支持二进制解析（u8-u64/LEB128/计数字符串），覆盖 Protobuf 等场景；(3)11 种格式化输出（ANSI/Syslog RFC5424/GELF/JSON/XML）；(4)行列号位置追踪+ErrorContext 累积错误上下文。零依赖
+Ljw030710/find_max|0.1.0|Apache-2.0|find the max
+LL124-Arch/stencil|0.1.0|Apache-2.0|A lightweight, high-performance Mustache-style template engine in MoonBit.
+LL728/moonseal|0.1.0|Apache-2.0|MoonBit test adequacy and release quality gate toolkit.
+llgllg/moontrustflow|0.1.0|Apache-2.0|A lightweight MoonBit Policy-as-Code toolkit for trusted flow governance, boundary rules, and explainable compliance reports.
+locing112/hello|0.1.6|Apache-2.0|
+loneoutpost/core-extra|0.0.6|Apache-2.0 OR MIT|experimental extras for `moonbit/core`.
+lucifer1004/mooncake|0.1.0||
+Luna-Flow/arithmetic|0.2.2|Apache-2.0|Arithmetic capability traits and checked analytic operations for LunaFlow numeric types, with default real-valued instances.
+Luna-Flow/autodiff|0.2.0|Apache-2.0|Forward-mode automatic differentiation over Luna Flow algebraic and arithmetic structures.
+Luna-Flow/calculus-numerical|0.3.1|MIT|A numerical calculus library, a part of LunaFlow.
+Luna-Flow/floating|0.3.0|Apache-2.0|Arbitrary-precision binary, decimal, and ball arithmetic for MoonBit, with checked operations and explicit numeric semantics.
+Luna-Flow/geometry3d|0.5.0|Apache-2.0|A small MoonBit 3D geometry foundation with core, view, frontend, TUI, Canvas, and GSAP SVG backend packages built on Luna-Flow/linear-algebra.
+Luna-Flow/linear-algebra|0.4.1|Apache-2.0|Mutable and immutable matrix and vector libraries for MoonBit, with core linear algebra operations and decompositions.
+Luna-Flow/luna-complex|0.2.0|MIT|A complex number library, a part of LunaFlow.
+Luna-Flow/luna-generic|0.3.3|Apache-2.0|Algebraic traits and default numeric instances that define the generic foundation for LunaFlow math packages.
+Luna-Flow/luna-poly|0.2.0|Apache-2.0|Immutable and mutable polynomial libraries for MoonBit with canonical dense, sparse, and context-aware representations.
+Luna-Flow/luna-utils|0.1.1|MIT|A utils library, make operations more efficient and guarded by luna-generic.
+Luna-Flow/mooncake-impact-factor|0.1.1|MIT|A MoonBit package impact-factor prototype for mooncakes.io.
+Luna-Flow/quaternion|0.1.3|Apache-2.0|MoonBit Quaternion Library
+Luna-Flow/stella|0.1.2|Apache-2.0|(WIP) A Moonbit Proof Assistant.
+Luna-Flow/type_theory|0.2.0|Apache-2.0|A formal semantic substrate for Luna-Flow symbolic computation, with binding, substitution, rewriting, evaluation strategies, and lambda/type-theoretic cores.
+luolingkan/find_min_num|0.1.0|Apache-2.0|
+Lxxbv/glob|0.1.1|Apache-2.0|高性能、零依赖的通配符路径匹配与检索库，专为 MoonBit 语言设计并针对 Wasm / Native 双端进行了深度优化。
+lyf597/hello|0.1.0|Apache-2.0|
+Lyhdsba/moonforge|0.1.0|Apache-2.0|A MoonBit-native incremental task runner for small builds, codegen workflows, and local CI orchestration.
+lynzrand/test|0.4.16|Apache-2.0|
+Mairzzcllo/moonbit_sqlc_plugin|0.1.9|Apache-2.0|sqlc WASM plugin ? generate type-safe MoonBit database layer from SQL queries
+MaoDingA/moonpost|0.2.1|Apache-2.0|Pure MoonBit toolkit for subtitles, timecode, creator cleanup, delivery checks, and post-production QC.
+MarchLiu/jse|0.2.4|MIT|
+maria/csv_parser|0.1.0|Apache-2.0|A robust RFC 4180 compliant CSV parser with support for custom delimiters, quoted fields, and serialization
+maria/ini_parser|0.1.0|Apache-2.0|A complete INI file parser for MoonBit with support for sections, multiple data types, comments, and comprehensive error handling
+maria/json_parser|0.1.1|Apache-2.0|Fast and compliant JSON parser and serializer for MoonBit supporting the full JSON specification with strict validation, unicode escapes, pretty printing, and detailed error reporting
+maria/sensor_driver|0.1.0|Apache-2.0|Comprehensive motion sensor driver library with accelerometer, gyroscope, magnetometer support, sensor fusion algorithms (Complementary, Kalman, Madgwick), and gesture recognition for motion control applications
+maria/toml_parser|0.1.0|Apache-2.0|A complete TOML (Tom's Obvious, Minimal Language) parser implementation in MoonBit with support for all basic types, arrays, tables, and nested structures.
+mattn/postgres|0.10.4|MIT|A PostgreSQL client library for MoonBit using libpq.
+megemini/millow|0.3.0|Apache-2.0|A zero-FFI, cross-platform image-processing library for MoonBit.
+meguruli/ds|0.1.0|Apache-2.0|
+Mepy/Laurus|0.2.2|MIT|
+Metalymph/relay|0.5.1|MIT|Distributed message queue with V3 reliability
+Metalymph/valkey|0.5.0|MIT|Native async Valkey/Redis client for MoonBit
+Milky2018/aarch64_target|0.1.0|Apache-2.0|AArch64 ISA target for lowering MilkIR into MachV
+Milky2018/diago|0.2.5|Apache-2.0|A diagram toolkit for MoonBit with Dagre, ELK, and Railway layout engines, rendering SVG, ASCII, and Unicode outputs.
+Milky2018/gamepad|0.4.6|Apache-2.0|
+Milky2018/guardch|0.1.0|Apache-2.0|
+Milky2018/html|0.1.2|Apache-2.0|WHATWG HTML5 spec-compliant parser for MoonBit
+Milky2018/isa_target|0.1.0|Apache-2.0|ISA lowering from MilkIR to MachV
+Milky2018/machv|0.2.0|Apache-2.0|Reusable virtual-register machine IR
+Milky2018/machv_emit|0.2.0|Apache-2.0|Reusable MachV machine-code emitter
+Milky2018/machv_regalloc|0.2.0|Apache-2.0|MachV adapter for the reusable register allocator
+Milky2018/mecs|0.1.0|Apache-2.0|A type-safe ECS library in MoonBit using extensible enums.
+Milky2018/meshopt_mbt|0.1.1|Apache-2.0|MoonBit bindings for meshoptimizer
+Milky2018/metis|0.1.1|Apache-2.0|MoonBit bindings to METIS
+Milky2018/mgstudio|0.2.0|Apache-2.0|
+Milky2018/milkir|0.1.0|Apache-2.0|Reusable Cranelift-like SSA intermediate representation
+Milky2018/milkir_machv|0.2.0|Apache-2.0|MilkIR-to-MachV lowering
+Milky2018/moon_accesskit|0.3.0|Apache-2.0|MoonBit port of Rust accesskit (common + consumer).
+Milky2018/moonchor|0.18.0|Apache-2.0|Choreographic programming library for MoonBit.
+Milky2018/moon_cosmic|0.3.3|Apache-2.0|MoonBit port of cosmic-text (text shaping, layout, and editor primitives) built on moon_swash.
+Milky2018/moon_cpal|0.11.7|Apache-2.0|A MoonBit port (subset) of RustAudio/cpal.
+Milky2018/moon_dagre|0.2.5|Apache-2.0|Dagre layout engine implemented in MoonBit
+Milky2018/moon_elk|0.1.14|Apache-2.0|A MoonBit port of Eclipse Layout Kernel (ELK).
+Milky2018/moonlight|0.1.0|Apache-2.0|
+Milky2018/moonplant|0.3.1|Apache-2.0|A ascii diagram painting library for MoonBit.
+Milky2018/moon_rapier|0.5.1|Apache-2.0|A Physics library in MoonBit.
+Milky2018/moon_rodio|0.3.3|Apache-2.0|Native-only MoonBit port of Rust rodio with playback pipeline, source effects, and WAV/MP3/FLAC/Vorbis/MP4A decoding.
+Milky2018/moon_skrifa|0.1.8|Apache-2.0|MoonBit port of Fontations skrifa (font parsing, metrics, color/bitmap glyph helpers).
+Milky2018/moon_swash|0.1.10|Apache-2.0|
+Milky2018/moon_taffy|0.5.2|Apache-2.0|MoonBit port of the Rust crate taffy (v0.5.x)
+Milky2018/moon_wesl|0.1.2|Apache-2.0|A MoonBit WESL compiler extracted from mgstudio.
+Milky2018/moon_wgsl|0.15.3|Apache-2.0|User-facing facade for WGSL preprocess and composer utilities aligned with naga_oil.
+Milky2018/moon_wgsl_naga|0.15.3|Apache-2.0|Naga compatibility utilities for MoonBit WGSL.
+Milky2018/moon_wgsl_naga_oil|0.15.3|Apache-2.0|naga-oil compatible preprocessing and composition for MoonBit WGSL.
+Milky2018/moon_yazi|0.1.3|Apache-2.0|A small zlib/DEFLATE implementation in MoonBit (ported from yazi).
+Milky2018/moon_zeno|0.1.3|Apache-2.0|A low level 2D rasterization library
+Milky2018/mproc_examples|0.1.0|Apache-2.0|
+Milky2018/mproc_gen|0.1.0|Apache-2.0|
+Milky2018/options|0.1.2|Apache-2.0|Command line argument parser for MoonBit
+Milky2018/pacman|0.1.0|Apache-2.0|Pacman game in MoonBit with Selene engine
+Milky2018/pptz|0.7.0|Apache-2.0|PowerPoint Zero: a portable MoonBit PPTX generator driven by YAML deck and page sources.
+Milky2018/pthread|0.1.0|Apache-2.0|Don't use it in production!
+Milky2018/pug|0.1.1|Apache-2.0|A Pug template engine implementation in MoonBit.
+Milky2018/regalloc|0.1.0|Apache-2.0|Target-independent register allocation algorithm
+Milky2018/selene|0.35.0|Apache-2.0|ECS game engine in MoonBit
+Milky2018/selene-canvas|0.20.1|Apache-2.0|Default backend for Selene game engine.
+Milky2018/selene_editor|0.30.5|Apache-2.0|Browser-based scene editor for Selene
+Milky2018/selene_editor_frontend|0.35.0|Apache-2.0|Browser frontend and preview runtime for Selene Editor
+Milky2018/selene_editor_service|0.35.0|Apache-2.0|Native local daemon for Selene Editor
+Milky2018/selene_editor_shared|0.35.0|Apache-2.0|Shared protocol and bridge types for Selene Editor
+Milky2018/selene_raylib|0.35.0|Apache-2.0|Native raylib backend for Selene.
+Milky2018/selene_tools|0.32.2|Apache-2.0|CLI tools for Selene workflows.
+Milky2018/selene_webgpu|0.35.0|Apache-2.0|Default backend for Selene game engine.
+Milky2018/slotmap|0.1.2|Apache-2.0|Stable-key map containers for MoonBit with slot reuse and self-invalidating secondary maps.
+Milky2018/sqlparser|0.5.0|Apache-2.0|Extensible SQL Lexer and Parser in MoonBit
+Milky2018/sysinfo|0.1.2|Apache-2.0|System metrics and process inspection library.
+Milky2018/toolkit|0.1.4|Apache-2.0|Toolkit library for common use.
+Milky2018/wasm_core|0.1.0|Apache-2.0|Reusable WebAssembly specification model for parsers, validators, and frontends
+Milky2018/wasm_isa_lower|0.2.0|Apache-2.0|WebAssembly MilkIR dialect adapter for MachV lowering
+Milky2018/wasm_milkir|0.1.0|Apache-2.0|WebAssembly dialect adapter for MilkIR extension operations
+Milky2018/wasmoon|0.6.4|Apache-2.0|A slow and insecure runtime for WebAssembly
+Milky2018/wasmoon_jit|0.1.0|Apache-2.0|Wasmoon-specific JIT integration and native runtime glue
+Milky2018/wgpu_mbt|0.14.8|Apache-2.0|This repo contains a MoonBit port of the `wgpu-native` C API (WebGPU)
+Milky2018/wgsl|0.15.3|Apache-2.0|Official WGSL frontend for MoonBit.
+Milky2018/window|0.5.1|Apache-2.0|A MoonBit port of winit with a native macOS event loop and windowing backend.
+Milky2018/x64_target|0.1.0|Apache-2.0|x64 ISA target for lowering MilkIR into MachV
+Milky2018/xml|0.2.0|Apache-2.0|A fast XML parser for MoonBit, inspired by quick-xml
+Milky2018/zstd|0.1.1|Apache-2.0|
+MINGtoMING/bzip2|0.0.0|Apache-2.0 or MIT|libbz2 bindings for MoonBit
+MINGtoMING/datetime|0.1.0|Apache-2.0|Parsing and stringifying datetime values in TOML format
+MINGtoMING/simdstring|0.2.0|MIT|SIMD-accelerated string operations for Moonbit's native backend
+misika727/sqrt|0.1.0|Apache-2.0|
+Mitsuha11zz/MoonChartSVG|0.1.1|Apache-2.0|纯 MoonBit 实现的 SVG 图表生成库，支持柱状图、折线图、饼图、散点图、雷达图、面积图、堆叠柱状图、水平柱状图、环形图共9种图表类型，零依赖，Builder API 设计。
+mizchi/actrun|0.30.1|Apache-2.0|MVP GitHub Actions-compatible push CI runner with bitflow lowering, native execution, and bit workspace materialization.
+mizchi/admiral|0.1.0|MIT|Declarative CLI builder for MoonBit, inspired by gunshi
+mizchi/anim3d|0.2.0|Apache-2.0|3D transform / animation / skeleton primitives for MoonBit: Transform hierarchies, keyframed animations, skeletal rigs and skinning weights. Built on mizchi/geom and mizchi/mesh3d.
+mizchi/ast_printer|0.2.4|Apache-2.0|A pretty printer for MoonBit AST - converts parsed AST back to source code
+mizchi/astra|0.23.1|MIT|Mountable Mars middleware for static site generation
+mizchi/atlas|0.2.0|Apache-2.0|Asset management for MoonBit: image repositories, atlas allocation, source-image bindings, codec wrappers, and a fetcher abstraction (extracted from kagura)
+mizchi/audio|0.1.1|Apache-2.0|audio encoder for wav/ogg
+mizchi/bit|0.42.1|Apache-2.0|Pure MoonBit Git implementation
+mizchi/bitflow|0.4.1|Apache-2.0|Workflow engine core with Starlark-subset parser, DAG execution, and cache planning primitives.
+mizchi/blas|0.1.2|MIT|BLAS bindings for MoonBit (Accelerate/OpenBLAS)
+mizchi/brotli|0.2.0|Apache-2.0|Brotli compression and decompression library for MoonBit
+mizchi/canvas|0.9.0|Apache-2.0|Pure-MoonBit headless 2D canvas rasterizer with PNG output.
+mizchi/cbor|0.1.1|MIT|CBOR (RFC 8949) implementation for MoonBit - Pure and FFI versions
+mizchi/cloudflare|0.1.9|MIT|MoonBit bindings for Cloudflare Workers APIs (KV, D1, R2, Durable Objects, etc.)
+mizchi/codegen|0.2.3|MIT|Generic code generation library with abstract IR
+mizchi/converge|0.1.9|Apache-2.0|CRDT-based local-first sync engine inspired by EG-Walker
+mizchi/crater|0.18.0|Apache-2.0|CSS Layout Engine that implements Box/Flex/Grid
+mizchi/crater-aomx|0.18.0|Apache-2.0|AOM-derived extraction, grounding, and diff helpers for crater
+mizchi/crater-browser|0.18.0|Apache-2.0|Browser engine for crater CSS layout engine
+mizchi/crater-browser-contract|0.17.1|Apache-2.0|Shared browser integration helpers for crater shell and jsbidi
+mizchi/crater-browser-helpers|0.18.0|Apache-2.0|Shared browser integration helpers for crater shell and jsbidi
+mizchi/crater-browser-http|0.18.0|Apache-2.0|HTTP, cache, cookie, and request sandbox helpers for crater browser
+mizchi/crater-browser-http-sqlite|0.17.1|Apache-2.0|Optional SQLite-backed cache backend for crater-browser-http
+mizchi/crater-browser-native|0.18.0|Apache-2.0|Native V8 host adapter for crater browser runtime
+mizchi/crater-browser-runtime|0.18.0|Apache-2.0|Shared browser JS runtime contract and DOM serializer for crater
+mizchi/crater-core|0.18.0|Apache-2.0|Layout output types (Layout, LayoutResult, LayoutContext, MeasureFunc, ...) and Node tree for crater. Depends on mizchi/css for value types.
+mizchi/crater-css|0.17.1|Apache-2.0|CSS parser, selector, cascade, and computed style engine for crater
+mizchi/crater-dom|0.18.0|Apache-2.0|DOM, HTML, AOM, and scheduling packages for crater
+mizchi/crater-html-assets|0.18.0|Apache-2.0|Lightweight HTML asset discovery helpers for crater
+mizchi/crater-js|0.18.0|Apache-2.0|JavaScript bindings and compatibility facade for crater
+mizchi/crater-layout|0.18.0|Apache-2.0|Layout kernel for crater CSS layout engine
+mizchi/crater-network|0.18.0|Apache-2.0|WebDriver BiDi synthetic network state and byte/query encoding helpers for crater adapters
+mizchi/crater-painter|0.18.0|Apache-2.0|Paint tree, image output, and SVG packages for crater
+mizchi/crater-renderer|0.18.0|Apache-2.0|Renderer and VRT packages for crater
+mizchi/crater-terminal-image-cache|0.18.0|Apache-2.0|Terminal image cache entry format and raster normalization helpers for crater
+mizchi/crater-terminal-protocol|0.18.0|Apache-2.0|Terminal graphics protocol encoders for crater
+mizchi/crater-wasm|0.18.0|Apache-2.0|Wasm bindings and WIT-facing facade for crater
+mizchi/crater-webdriver-bidi|0.18.0|Apache-2.0|WebDriver BiDi adapter module for crater browser integration
+mizchi/crater-webvitals|0.18.0|Apache-2.0|Web Vitals metrics helpers for crater
+mizchi/crdt_db|0.1.1|Apache-2.0|EG-Walker inspired Local-First DB Sync Engine
+mizchi/css|0.7.3|Apache-2.0|Standalone CSS parser, selector, cascade and computed-style engine for MoonBit
+mizchi/cst|0.1.7|Apache-2.0|Concrete Syntax Tree library with Red-Green Tree pattern
+mizchi/differencial_ecs|0.1.1|MIT|[DEPRECATED] Renamed to mizchi/differentiable_ecs. Use mizchi/differentiable_ecs instead.
+mizchi/differentiable_ecs|0.2.1|MIT|Game-agnostic parameter optimizer using CMA-ES for balance tuning (experimental)
+mizchi/discord|0.1.2|Apache-2.0|Discord REST API client for Cloudflare-style bots written in MoonBit
+mizchi/experimental_crypto|0.0.2|Apache-2.0|EXPERIMENTAL — pure-MoonBit cryptography / PKI / JOSE building blocks. Educational reference, not production-grade. No warranty.
+mizchi/flaker|0.3.1|MIT|flaker core computation engine
+mizchi/flatbuffers|0.1.3|Apache-2.0|
+mizchi/font|0.7.3|Apache-2.0|TrueType/OTF(CFF)/WOFF/WOFF2 font parser for MoonBit
+mizchi/fswatch|0.2.1|Apache-2.0|Cross-platform filesystem watcher for MoonBit: FSEvents on macOS, inotify on Linux, polling fallback elsewhere.
+mizchi/geom|0.2.0|Apache-2.0|Geometry / spatial math primitives for 2D + 3D games: Vec2 / Vec3 / Vec4, Mat4, Quaternion, 2D Path and Camera2D. Zero dependencies (only moonbitlang/core).
+mizchi/gfx|0.1.0|Apache-2.0|Backend-agnostic GPU command buffer and driver contracts (extracted from kagura)
+mizchi/git|0.2.0|Apache-2.0|Pure MoonBit Git implementation
+mizchi/github|0.1.2|MIT|GitHub REST API client for MoonBit
+mizchi/glfw|0.2.2|Apache-2.0|GLFW MoonBit bindings (native FFI + C stub)
+mizchi/image|0.4.2|Apache-2.0|Image codec primitives for MoonBit with PNG/BMP/JPEG decode+encode, GIF/WebP/ICO/AVIF encode, and resize.
+mizchi/jq|0.2.2|Apache-2.0|A jq clone implemented in MoonBit
+mizchi/js|0.12.1|MIT|js bindings for builtins/web/node/deno/bun (browser APIs split to mizchi/js_browser)
+mizchi/js_browser|0.12.1|MIT|browser-specific js bindings (DOM, canvas, indexeddb, ...)
+mizchi/js_bun|0.12.1|MIT|bun-specific js bindings
+mizchi/js_deno|0.12.1|MIT|deno-specific js bindings
+mizchi/js_io|0.1.1|MIT|
+mizchi/json|0.4.0|MIT|simple json parser
+mizchi/jsonschema|0.8.0|MIT|JSON Schema validator and code generator for MoonBit
+mizchi/js_regexp|0.0.4|MIT|JS RegExp binding
+mizchi/js_webextensions|0.12.1|MIT|WebExtensions / chrome.* / browser.* API bindings
+mizchi/kagura|0.4.0|Apache-2.0|2D-first game engine for MoonBit inspired by Ebiten
+mizchi/kagura_core|0.2.0|Apache-2.0|Core math, camera, input, mesh, animation, and transform contracts for Kagura
+mizchi/kagura_engine|0.2.0|Apache-2.0|Rendering, runtime, platform, asset, audio, and glTF infrastructure for Kagura
+mizchi/kagura_game|0.2.0|Apache-2.0|Gameplay, scene, and game-specific helpers for Kagura
+mizchi/kagura_js_runtime|0.2.0|Apache-2.0|JS-only WebGPU runtime helpers for Kagura
+mizchi/kagura_physics|0.1.0|Apache-2.0|Reusable 2D/3D physics, collision, and pathfinding helpers for Kagura
+mizchi/layout|0.2.0|Apache-2.0|Pure layout computation kernel: alignment, justify, clamp, axis utilities
+mizchi/lib|0.1.2|Apache-2.0|
+mizchi/libgit2|0.1.0|MIT|MoonBit bindings for libgit2 - Git operations from MoonBit
+mizchi/libjit|0.1.1|Apache-2.0|Minimal JIT code buffer and ARM64 encoders for MoonBit
+mizchi/llm|0.3.1|MIT|Pure MoonBit LLM client library
+mizchi/lsp|0.1.2|Apache-2.0|LSP (Language Server Protocol) implementation for MoonBit
+mizchi/luna|0.23.1|MIT|Fine-grained reactive UI library for Moonbit/JS
+mizchi/luna_components|0.23.1|MIT|Headless + styled UI components (WAI-ARIA APG patterns) for Luna UI
+mizchi/markdown|0.6.2|MIT|Incremental Markdown parser and compiler
+mizchi/mars|0.3.11|MIT|Hono-inspired MoonBit web framework with trie routing, middleware, SSE, and mizchi/x HTTP backend for native and Node.js
+mizchi/mbt_rs|0.3.0|MIT|
+mizchi/mbts|0.0.3|MIT|well-typed mbt(i) to d.ts converter and utils
+mizchi/mesh3d|0.2.0|Apache-2.0|Mesh / vertex-format primitives for 3D rendering (extracted from kagura)
+mizchi/mnemo|0.2.2|MIT|Hermes-compatible memory / skills / session / prompt layer for AI agents (MoonBit native + JS)
+mizchi/moomaid|0.1.3|Apache-2.0|Mermaid diagram renderer for MoonBit (ASCII and SVG output)
+mizchi/moon_component|0.5.2|Apache-2.0|
+mizchi/moon-install|0.1.1|Apache-2.0|MoonBit CLI installer
+mizchi/moonix|0.2.0|MIT|[EXPERIMENTAL] Virtual POSIX layer for MoonBit - in-memory filesystem, process emulation, and git-backed versioning for WASM
+mizchi/moonlight|0.1.2|MIT|Lightweight SVG editor by mizchi/luna, like Excalidraw
+mizchi/mwac|0.2.1|Apache-2.0|WAC (WebAssembly Compositions) composer for the Component Model
+mizchi/nn|0.1.3|Apache-2.0|Neural network training library for MoonBit
+mizchi/nom|0.1.3|Apache-2.0|Nom-like parser combinators for MoonBit.
+mizchi/npm_typed|0.1.15|MIT|Typed npm library bindings(40+) for js backend
+mizchi/numbt|0.2.2|Apache-2.0|NumPy-style numerical computing library for MoonBit
+mizchi/oci_wasm|0.5.0|Apache-2.0|WebAssembly package registry client
+mizchi/parquet|0.2.1|Apache-2.0|Parquet reader/writer for MoonBit.
+mizchi/pathfind|0.2.0|Apache-2.0|A* / grid pathfinding helpers on top of mizchi/terrain grids (extracted from kagura)
+mizchi/physics|0.2.0|Apache-2.0|Reusable 2D/3D physics and collision helpers for MoonBit (extracted from kagura)
+mizchi/pixelmatch|0.6.1|Apache-2.0|Fast pixel-level image comparison library for MoonBit/WASM
+mizchi/pkl|0.2.7|Apache-2.0|Pure MoonBit parser, interpreter, and typechecker experiments for Apple's Pkl language.
+mizchi/playwright|0.3.7|Apache-2.0|Playwright-compatible API built on WebDriver BiDi
+mizchi/process_pool|0.1.3|MIT|
+mizchi/protocol|0.0.5|MIT|
+mizchi/renderer2d|0.2.0|Apache-2.0|Comprehensive 2D rendering toolkit: batched-quad RenderFrame, atlas quad geometry, color helpers, debug overlay/profiler, color-matrix transforms.
+mizchi/ripple|0.1.4|MIT|Incremental computation library for MoonBit - changes ripple through the dependency graph
+mizchi/rlm|0.1.0|MIT|
+mizchi/rlm_moonbit|0.1.0|MIT|
+mizchi/s3|0.1.0|Apache-2.0|S3-compatible client for MoonBit
+mizchi/sandbox|0.1.1|Apache-2.0|In-memory sandbox primitives for MoonBit - virtual filesystem, POSIX emulation, shell
+mizchi/semver|0.1.1|Apache-2.0|Semantic Versioning (SemVer 2.0.0) parser and comparator for MoonBit.
+mizchi/signals|0.6.4|MIT|Fine-grained reactive signals for MoonBit (alien-signals inspired)
+mizchi/simd|0.5.0|MIT|SIMD primitives for MoonBit across wasm / wasm-gc / native / js — @simdcore (faster moonbitlang/core equivalents), @simd_buffer, @simdcodec (base64), @simdhash (SHA-256/512/1, MD5 + multi-buffer), @simdimage, @simdjson.
+mizchi/similarity|0.2.1|Apache-2.0|AST similarity caliculator by APTED / Tree Edit Distance
+mizchi/sol|0.23.1|MIT|Thin Mars wrapper for file-based routing, SSR, and asset loading
+mizchi/sol_adapter_cloudflare|0.23.1|MIT|Cloudflare adapter utilities for Sol
+mizchi/sol_adapter_node|0.23.1|MIT|Node.js adapter utilities for Sol
+mizchi/sqlc_gen_moonbit|0.1.2|Apache-2.0|sqlc plugin for MoonBit
+mizchi/sqlite|0.3.1|MIT|libsqlite3 bindings for MoonBit
+mizchi/starlint|0.10.1|Apache-2.0|Opinionated moonbit linter
+mizchi/svg|0.2.1|Apache-2.0|Standalone SVG scene graph and renderer
+mizchi/syntree|0.2.3|MIT|Incremental syntax tree and highlighting toolkit for MoonBit
+mizchi/tempfile|0.1.2|Apache-2.0|Temporary file and directory management for MoonBit
+mizchi/terrain|0.1.1|Apache-2.0|117 procedural dungeon/terrain generation algorithms
+mizchi/text|0.2.0|Apache-2.0|Text rendering helpers (glyph cache, batch builder, font engine) on top of mizchi/gfx and mizchi/font, extracted from kagura
+mizchi/threads|0.1.2|Apache-2.0|Experimental threads
+mizchi/tmgrammar|0.1.0|MIT|TextMate grammar based syntax highlighter for MoonBit
+mizchi/tornado|0.6.1|MIT|Multi-agent development orchestrator with TUI
+mizchi/ts|0.3.0|Apache-2.0|TypeScript <-> MoonBit bridge generator
+mizchi/tui|0.10.0|MIT|Terminal UI library for MoonBit with reactive signals
+mizchi/tui-terminal-buffer|0.1.3|MIT|Terminal character buffer primitives for MoonBit TUI renderers
+mizchi/tui-terminal-protocol|0.1.2|MIT|Terminal graphics protocol encoders for tui.mbt
+mizchi/v8|0.2.0|Apache-2.0|MoonBit bindings for V8 aimed at prototyping MoonBit-first runtimes in the style of Node or Deno.
+mizchi/vfs|0.2.2|Apache-2.0|Cross-platform virtual filesystem with pluggable backends
+mizchi/vivebox|0.1.1|Apache-2.0|Terminal chat UI built with tui.mbt
+mizchi/wacon|0.1.1|Apache-2.0|Minimal OCI container runtime for WASM modules
+mizchi/wasi|0.1.2|MIT|WASIp2 (0.2.9) bindings for MoonBit
+mizchi/wasi_interface|0.3.0|MIT|WASI Preview2/Preview3 contract definitions for host integration boundaries.
+mizchi/wasmtime|0.1.6|Apache-2.0|Wasmtime C API bindings for MoonBit (native target)
+mizchi/wasmx|0.1.1|Apache-2.0|Experimental fork of moonbitlang/wasm5. WebAssembly VM built with pure MoonBit.
+mizchi/webdriver|0.2.6|Apache-2.0|WebDriver BiDi client library for MoonBit
+mizchi/webdriver.mbt|0.1.0|Apache-2.0|WebDriver BiDi client library for MoonBit
+mizchi/whenwords|0.1.3|MIT|A relative time formatting library for MoonBit, following the whenwords specification
+mizchi/whisper|0.3.1|MIT|MoonBit native bindings for whisper.cpp speech-to-text inference
+mizchi/whisper-mbt|0.1.1|MIT|DEPRECATED: Use mizchi/whisper instead. MoonBit native bindings for whisper.cpp.
+mizchi/widget2d|0.2.0|Apache-2.0|UI primitive builders (rounded rects, scissor stack, text layout) on top of mizchi/gfx, mizchi/text, mizchi/font (extracted from kagura)
+mizchi/wit|0.3.1|Apache-2.0|WIT parser and resolver in MoonBit
+mizchi/wite|0.11.0|Apache-2.0|Component-model-aware WebAssembly analyzer, optimizer, and profiler
+mizchi/wit.mbt|0.1.0|Apache-2.0|
+mizchi/x|0.5.1|Apache-2.0|Node.js backend compatibility layer for moonbitlang/async in MoonBit, with native delegation and JS FFI implementations for process, fs, http, gzip, tls, socket, raw_fd, signal, sync primitives, websocket, stdio, pipe, and sys.
+mizchi/zlib|0.4.8|Apache-2.0|Pure MoonBit zlib/deflate implementation.
+mokomoking2501/MoonECAT|0.1.0|LGPL-3.0|A modular EtherCAT master library written in MoonBit
+moonbit-community/casefold|0.1.5|Apache-2.0|Simple Unicode CaseFold Implementation
+moonbit-community/chalk|0.0.1|MIT|Terminal string styling support for MoonBit.
+moonbit-community/charclass|0.1.3|Apache-2.0|Unicode character classification library providing functions to determine character properties such as alphabetic, numeric, whitespace, punctuation, and other Unicode general categories
+moonbit-community/cmark|0.4.4|Apache-2.0|A CommonMark toolkit for MoonBit
+moonbit-community/debug|0.1.3|Apache-2.0|
+moonbit-community/debug_deriving|0.1.1|Apache-2.0|
+moonbit-community/displaytext|0.1.5|Apache-2.0|Grapheme-aware display-cell text boundaries for terminal UIs.
+moonbit-community/dom_sanitizer|0.1.0|Apache-2.0|
+moonbit-community/elf|0.0.1|Apache-2.0|A MoonBit library for reading ELF object files
+moonbit-community/embed|0.1.1|Apache-2.0|Embed files into a generated MoonBit source file.
+moonbit-community/find_cluster_break|0.1.2|MIT|Find the position of grapheme cluster breaks in a string
+moonbit-community/flate|0.2.0|Apache-2.0|Pure-MoonBit, runtime-agnostic DEFLATE (RFC 1951) engine with gzip/zlib wrappers — suspendable and io-free.
+moonbit-community/fuzzy_match|0.2.5|Apache-2.0|A library for fuzzy string matching and fuzzy string searching
+moonbit-community/graphviz|0.1.0|EPL-2.0|Graphviz rewrite in MoonBit
+moonbit-community/harfbuzz|0.1.0|Apache-2.0|MoonBit port of HarfBuzz.
+moonbit-community/html|0.1.2|Apache-2.0|WHATWG HTML5 spec-compliant parser for MoonBit
+moonbit-community/ini|0.2.2|Apache-2.0|High-performance INI parser for MoonBit with nested section support.
+moonbit-community/jade-ui|0.1.0|Apache-2.0|
+moonbit-community/js-ffi|0.4.2|Apache-2.0|
+moonbit-community/jsondiff|0.1.2|Apache-2.0|
+moonbit-community/meta-skill|0.1.0|Apache-2.0|Create minimal MoonBit WASM skill templates.
+moonbit-community/miniio|0.2.1|Apache-2.0|Small, portable WASIp1 I/O SDK for building MoonBit CLI tools and agent skills.
+moonbit-community/moon_cpal|0.11.6|Apache-2.0|A MoonBit port (subset) of RustAudio/cpal.
+moonbit-community/moon_dagre|0.2.5|Apache-2.0|Dagre layout engine implemented in MoonBit
+moonbit-community/moongrep|0.1.12|Apache-2.0|Experimental MoonBit structural search and taint-analysis tool
+moonbit-community/moongrep-skill|0.1.0|Apache-2.0|
+moonbit-community/NyaCSV|0.3.3|Apache-2.0|Purr-fectly parse your CSV files with delightful simplicity!
+moonbit-community/opentelemetry|0.1.4|Apache-2.0|The MoonBit implementation of OpenTelemetry.
+moonbit-community/piediff|0.0.10|Apache-2.0|A MoonBit implementation of Bram Cohen's patience diff algorithm (also provides a basic Myers diff)
+moonbit-community/postgres|0.0.6|Apache-2.0|A secure, easy-to-use PostgreSQL client library for MoonBit with an included connection pool.
+moonbit-community/prettyprinter|0.4.10|Apache-2.0|pretty printer for moonbit
+moonbit-community/pty|0.2.2|Apache-2.0|Cross-platform PTY (pseudo-terminal) spawning for MoonBit native targets, integrated with moonbitlang/async.
+moonbit-community/quickcheck_statemachine|0.0.1|Apache-2.0|
+moonbit-community/rabbita|0.12.4|Apache-2.0|functional Web UI framework for MoonBit
+moonbit-community/rabbita_tui|0.1.0|Apache-2.0|Native terminal UI toolkit built around The Elm Architecture
+moonbit-community/raylib|0.3.1|MIT|MoonBit bindings for raylib
+moonbit-community/sqlite3|0.1.5|Apache-2.0|A lightweight, low-level SQLite3 binding for MoonBit, providing a thin interface over the SQLite3 C API.
+moonbit-community/sqlparser|0.5.0|Apache-2.0|Extensible SQL Lexer and Parser in MoonBit
+moonbit-community/starter|0.2.0|Apache-2.0|
+moonbit-community/tty|0.3.0|Apache-2.0|Low-level terminal primitives for MoonBit native targets, including tty state, platform stdio handles, VT command output, and host input decoding.
+moonbit-community/unicodewidth|0.2.1|Apache-2.0|A simple library for measuring the width of unicode characters and strings.
+moonbit-community/verified|0.0.2|Apache-2.0|
+moonbit-community/warren|0.2.1|Apache-2.0|Tool for discovering and developing Rabbita applications
+moonbit-community/XMLParser|0.2.5|Apache-2.0|An XML parsing library written in MoonBit that converts XML strings into structured data, supporting elements, attributes, comments, CDATA, and processing instructions.
+moonbit-community/yaml|0.0.5|MIT|
+moonbit-community/zipc|0.2.2|Apache-2.0|Typed, in-memory ZIP archive library for MoonBit (deflate via moonbit-community/flate)
+moonbit-courses/minimoonbit-courses|0.1.0|Apache-2.0|
+moonbit-js-ffi/js|0.2.0|Apache-2.0|
+moonbitlang/arduino|0.0.8|GPL-3.0|
+moonbitlang/async|0.20.1|Apache-2.0|Asynchronous programming library for MoonBit
+moonbitlang/core|0.1.20260622+a46be2066|Apache-2.0|
+moonbitlang/dummy_abort|0.2.0|Apache-2.0|
+moonbitlang/esp32|0.1.19|Apache-2.0|MoonBit ESP32 Binding
+moonbitlang/formatter|0.1.6|Apache-2.0|code prettifier for MoonBit
+moonbitlang/json_deriving|0.1.2|Apache-2.0|deriving JSON serialization and deserialization automatically
+moonbitlang/json_deriving_codegen|0.0.2|Apache-2.0|
+moonbitlang/lex|0.3.9|Apache-2.0|
+moonbitlang/lexer|0.3.8|Apache-2.0|Lexer for the MoonBit programming language
+moonbitlang/lex-runtime|0.1.3|Apache-2.0|
+moonbitlang/mbt-lexer|0.0.1|Apache-2.0|
+moonbitlang/mbt_lexer|0.1.13|Apache-2.0|
+moonbitlang/moon_config|0.3.7|Apache-2.0|MoonBit package configuration parser
+moonbitlang/parser|0.3.8|Apache-2.0|AST and parsers for the MoonBit programming language
+moonbitlang/protobuf|0.1.2|Apache-2.0 WITH LLVM-exception|The runtime library for protobuf
+moonbitlang/quickcheck|0.14.0|Apache-2.0|Automatic testing of MoonBit programs
+moonbitlang/regexp|0.3.5|Apache-2.0|A regular expression engine for MoonBit based on VM execution designed for predictable time complexity
+moonbitlang/std|0.1.0|Apache-2.0|
+moonbitlang/ulex|0.3.29|Apache-2.0|Simple lexer generator for MoonBit.
+moonbitlang/ulex-runtime|0.4.3|Apache-2.0|
+moonbitlang/wasm4|0.2.9|Apache-2.0|An opinionated binding for WASM-4, a retro game framework using WebAssembly
+moonbitlang/x|0.4.46|Apache-2.0|experimental packages for moonbitlang/core
+moonbitlang/yacc|0.7.17|GPL-2.0-only|A LR(1) parser generator for MoonBit programming language.
+moonrockz/cucumber-expressions|0.3.2|Apache-2.0|Cucumber Expressions parser and matcher for MoonBit
+moonrockz/cucumber-messages|0.2.0|Apache-2.0|Cucumber Messages protocol types for MoonBit with JSON serialization and NDJSON streaming
+moonrockz/directories|0.1.0|Apache-2.0|Platform-specific config, cache, and data directory paths for MoonBit (XDG on Linux, conventions on macOS/Windows)
+moonrockz/expect|0.1.0|Apache-2.0|A fluent assertion library for MoonBit
+moonrockz/gherkin|0.3.0|Apache-2.0|A Gherkin parser for MoonBit with DOM, visitor, fold, and SAX-style APIs
+moonrockz/mediator|0.1.0|Apache-2.0|In-process mediator for MoonBit with codegen-based handler dispatch
+moonrockz/moonspec|0.5.0|Apache-2.0|BDD test framework for MoonBit with Gherkin and Cucumber Expressions
+moransky/bloom_filter|0.1.0|Apache-2.0|
+morning-start/mbtgraph|0.1.2|MIT|MoonBit 图算法库 - 完整的图数据结构和算法实现
+mst-mkt/clipboard|0.1.1|MIT|
+myfreess/casefold|0.1.3|Apache-2.0|
+myfreess/charclass|0.1.3|Apache-2.0|Unicode character classification library providing functions to determine character properties such as alphabetic, numeric, whitespace, punctuation, and other Unicode general categories
+myfreess/lums|0.1.1|Apache-2.0|
+myfreess/myers-diff|0.1.0|Apache-2.0|Myers diff algorithm
+myfreess/piediff|0.0.4|Apache-2.0|A MoonBit implementation of Bram Cohen's patience diff algorithm (also provides a basic Myers diff)
+myfreess/rope|0.1.1|Apache-2.0|
+myfreess/sqlite3|0.1.1|Apache-2.0|
+myfreess/text|0.1.0|MIT|
+myfreess/unicode_data|0.1.1|MIT|
+myfreess/yaml|0.1.0|MIT|
+my-xn/hello|0.1.0|Apache-2.0|
+Myytsjj/moon-ssg|0.2.0|MIT|
+Nanaloveyuki/BitLogger|0.7.0|MIT|A structured logger for MoonBit.
+nanlingyin/mbt_LIB|0.1.0|Apache-2.0|
+naokikawamoto16/grpc|0.1.0|Apache-2.0|MoonBit bindings for gRPC (Node.js target), built as a third-party library on @grpc/grpc-js
+naokikawamoto16/turn|0.1.0|Apache-2.0|A simple HTTP router for MoonBit
+Near-Jungnune/Near-Jungnune|0.1.0|Apache-2.0|
+NerdyLee/newcake_ls|0.1.1|Apache-2.0|find the maximum value in a list
+nexacodes/email|0.1.0|Apache-2.0|
+nexacodes/moontask|0.1.2|Apache-2.0|A MoonBit task queue library with producer, consumer, admin APIs, and memory/redis backends.
+NiHao124538/examine|0.1.0|Apache-2.0|
+nodex/ssmp|0.1.1|Apache-2.0|
+Noverberrain/moonmodguard|0.1.0|Apache-2.0|A MoonBit project manifest and supply-chain policy auditor.
+npmstudy/readline|0.1.6|Apache-2.0|A readline library for MoonBit
+nuskey8/brainfuck|0.1.2|MIT|A Brainfuck interpreter written in Moonbit
+nuskey8/lisp|0.1.4|MIT|Tiny Lisp interpreter written in MoonBit
+nuskey8/oneshot|0.1.0|MIT|Async oneshot channel for MoonBit
+nysopua/mknip|0.1.0|Apache-2.0|
+Nyuudoukumo/uuidv4|0.2.0|Apache-2.0|A version 4 UUID generator
+oboard/apple_silicon_accelerometer|0.1.0|Apache-2.0|A MoonBit library for accessing accelerometer, gyroscope, and lid sensor data on Apple Silicon devices.
+oboard/assets|0.1.1|Apache-2.0|Asset loader for Moonbit
+oboard/base16384|0.1.4|Apache-2.0|Encode binary file to printable utf16be, and vice versa.
+oboard/eval|0.9.4|Apache-2.0|MoonBit Eval Package
+oboard/jsonx|0.1.0|Apache-2.0|JSON Toolkit
+oboard/mimetype|0.1.9|Apache-2.0|Mime types for MoonBit
+oboard/mio|0.5.2|Apache-2.0|Best async http library for Moonbit
+oboard/mocket|0.7.5|Apache-2.0|A web framework for MoonBit.
+oboard/moonbit-eval|0.8.26|Apache-2.0|MoonBit Eval Package
+oboard/mooncrypto|0.1.8|MIT|MoonBit Crypto Library
+oboard/moonetx|0.1.8|MIT|MoonBit网络分析扩展
+oboard/morm|0.4.0|Apache-2.0|A lightweight MoonBit ORM with typed queries, code generation, and multi-database engines
+oboard/numoon|0.4.1|Apache-2.0|MoonBit Mathematical Operation
+oboard/readline|0.1.6|Apache-2.0|A readline library for MoonBit
+oboard/redis|0.1.5|Apache-2.0|A modern, high performance Redis client for MoonBit.
+oboard/stdout|0.1.1|Apache-2.0|
+oboard/weatherquery|0.1.1|Apache-2.0|
+oilleelssq-wq/moonmarkdown|0.1.2|MIT|A CommonMark spec-compliant Markdown to HTML parser written in pure MoonBit
+OldPigxjk/moon_toolkit|0.1.2|Apache-2.0|MoonBit general graph algorithm toolkit
+orangenin/hello|0.1.0|Apache-2.0|
+pai2shub/alg|0.1.3|Apache-2.0|MoonBit Online Judge Problem Set Solved
+PaiGack/moonbitqrcode|0.1.0|Apache-2.0|Basic QR encoder. MoonBit QR 码生成器。
+PaiGack/ssh_client|0.4.0|Apache-2.0|SSHv2 client library for MoonBit with password and publickey authentication, SFTP v3, and local/remote/SOCKS5 port forwarding. / 使用 MoonBit 实现的 SSHv2 客户端库，支持密码/公钥认证、SFTP v3 文件传输及本地/远程/SOCKS5 端口转发
+paveg/httprouter|0.2.0|Apache-2.0|A high-performance HTTP router for MoonBit, inspired by julienschmidt/httprouter
+paveg/molt|0.1.8|Apache-2.0|Simple HTTP load testing CLI built with MoonBit
+paveg/ulid|0.1.0|Apache-2.0|ULID (Universally Unique Lexicographically Sortable Identifier) implementation for MoonBit
+PegasusPlusUS/hello|0.1.0|Apache-2.0|
+Penguinsltp/examine|0.1.0|Apache-2.0|
+Penguinsltp/gif_decoder|0.1.1|Apache-2.0|
+PerfectPan/agent-finder|0.1.2|GPL-3.0-only|Read-only local code agent discovery for agent-task-loop.
+PerfectPan/base64|0.1.1|MIT|base64 encode/decode library
+peter-jerry-ye/advent_of_code|0.3.1-fix||
+peter-jerry-ye/assertion|0.2.1|Apache-2.0|
+peter-jerry-ye/async|0.2.1|Apache-2.0|Async library: promise, event loop, i/o
+peter-jerry-ye/canvas|0.7.0|Apache-2.0|(WIP) A Canvas binding library that allows you to draw without writing any JS code
+peter-jerry-ye/codex|0.129.0|Apache-2.0|Codex SDK, with some useful tools for building AI applications.
+peter-jerry-ye/hn-brief|0.1.1|Apache-2.0|Hacker News hot-comment briefing demo built with MoonBit async and Wasm
+peter-jerry-ye/io|0.3.4|Apache-2.0|
+peter-jerry-ye/json|0.4.0|Apache-2.0|
+peter-jerry-ye/mcp-server|0.3.5|Apache-2.0|A library for implementing mcp servers in MoonBit.
+peter-jerry-ye/md-outline|0.2.1|Apache-2.0|Markdown outline and section reader CLI for agent workflows
+peter-jerry-ye/memory|0.8.4|Apache-2.0|
+peter-jerry-ye/parse_args|0.1.2|Apache-2.0|A arg parser inspired by minimalist
+peter-jerry-ye/parser-combinator|0.9.1|Apache-2.0|
+peter-jerry-ye/spin-imports|0.1.3|Apache-2.0|Generated interface for spin
+peter-jerry-ye/utils|0.4.3|Apache-2.0|A utility library for Moonbit. Contains some useful functions for encoding, decoding, and crypto.
+peter-jerry-ye/wasi|0.25.0|Apache-2.0|wasip1 implementation + experimental wrapper (async/sync) for Moonbit
+peter-jerry-ye/wasi-imports|0.1.5|Apache-2.0|Binding for WASI HTTP and WASI CLI v0.2.0
+PingGuoMiaoMiao/Autumn_frame|0.1.0|Apache-2.0|
+PingGuoMiaoMiao/hello|0.1.0|Apache-2.0|
+PingGuoMiaoMiao/LunarKeccak256|0.1.3|Apache-2.0|一个使用 MoonBit 语言实现的 Keccak256 哈希算法库。Keccak256 是 SHA-3 标准的一部分，广泛应用于区块链和密码学领域。
+PingGuoMiaoMiao/mooncove|0.1.0|Apache-2.0|
+PingGuoMiaoMiao/MoonVision|0.2.2|MIT|MoonBit-native lightweight image processing and basic computer vision algorithms.
+pocket7878/cog_complex|0.1.0|Apache-2.0|Cognitive Complexity score analyzer for MoonBit source code
+ppyj663/moon-jsonpath|0.1.0|Apache-2.0|A small MoonBit JSONPath parser and evaluator for RFC 9535 core query patterns.
+Project2026-creator/moontemplate|0.2.0|Apache-2.0|A lightweight, flexible, and extensible text template engine designed exclusively for MoonBit.
+python123/moondepsolve|0.3.1|Apache-2.0|A MoonBit semantic version, version range, and dependency resolution library for package ecosystem tooling.
+pzl-love/Introsort|0.1.1|Apache-2.0|
+q0w1ertyuiop/moonflagkit|0.1.0|Apache-2.0|A lightweight MoonBit feature flag and progressive rollout decision engine.
+QZL-max/QZL-max|0.1.0|Apache-2.0|
+R00TK17/hex_editor|0.1.2|Apache-2.0|Terminal hex editor & binary analysis toolkit: 20 format parsers, wildcard search, entropy analysis, steganography detection, Base64/URL/Unicode/Hex codecs. Cross-platform (Windows/Linux), dual-target (Native + Wasm-GC).
+rabbyte/suffix-array|0.1.0|MulanPSL-2.0|Optimal In-Place Suffix Sorting implementation in MoonBit Lang
+RabitLogic/mjwt|0.1.0|MIT|A JWT (JSON Web Token) library for MoonBit with extensible trait-based signers
+rami3l/cmark|0.4.0|Apache-2.0|A CommonMark toolkit for MoonBit
+rami3l/js-ffi|0.4.0|Apache-2.0|
+rami3l/unicodewidth|0.2.0|Apache-2.0|A simple library for measuring the width of unicode characters and strings.
+rami3l/version|0.1.0|MPL-2.0|A MoonBit library for parsing, comparing, and handling semantic versions. Port of hashicorp/go-version.
+Refined_heart/Sort|0.1.0|Apache-2.0|
+remain11/i18n|0.1.0|Apache-2.0|
+rinnein/moonata|0.5.0|Apache-2.0|JSONata rewritten in moonbit.
+robinfang/mold|0.3.0|Apache-2.0|A lightweight template engine for MoonBit.
+Ronlands/moonbit_zstd|0.1.2|Apache-2.0|A pure Moonbit implementation of Zstandard (ZSTD) compression algorithm following RFC 8878
+Ronlands/ttf_parser_moonbit|0.1.1|Apache-2.0|High-performance TrueType font parser with modular architecture, supporting TTF/OTF/Variable/Color fonts
+ruifeng/diff|0.2.1|Apache-2.0|A diff algorithm library for MoonBit
+ruifeng/moondsa|0.2.1|Apache-2.0|moondsa is a MoonBit implementation of Dilithium, a post-quantum signature scheme.
+ruifeng/XMLParser|0.2.6|Apache-2.0|An XML parsing library written in MoonBit that converts XML strings into structured data, supporting elements, attributes, comments, CDATA, and processing instructions.
+RunnerQuan/moonlimit|0.1.1|Apache-2.0|Composable rate limiting algorithms for MoonBit applications
+Rutubet/moon_rsa|0.2.0|Apache-2.0|A Moonbit implementation of RSA cryptographic algorithm, under development.
+ryota0624/circuit_breaker|0.1.3|Apache-2.0|A circuit breaker implementation in Moonbit
+ryota0624/googleapis|0.4.1|Apache-2.0|MoonBit client library for Google REST APIs
+ryota0624/googleauth|0.2.0|Apache-2.0|Google OAuth2 authentication library for MoonBit
+ryota0624/k6|0.4.1|Apache-2.0|A MoonBit module for k6 load testing scripts, providing utilities and abstractions to enhance the development experience of k6 scripts using MoonBit.
+ryota0624/moonbit_cloudevents|0.1.2|Apache-2.0|
+ryota0624/moonbit_otel|0.1.0|Apache-2.0|
+ryota0624/moonbit_test_containers|0.0.5|Apache-2.0|Test containers implementation for MoonBit
+ryota0624/moovalid|0.1.1|MIT|A lightweight validation library for MoonBit that accumulates errors instead of failing fast.
+ryota0624/mustache|0.0.6|Apache-2.0|
+ryota0624/oauth2|0.2.2|Apache-2.0|OAuth2 and OpenID Connect (OIDC) client library for MoonBit with support for Authorization Code Flow, Client Credentials, Password Grant, and PKCE
+ryota0624/opentelemetry_proto_mbt|0.0.2|Apache-2.0|
+Rz-coder8848/moon-fsm|0.1.0|Apache-2.0|A lightweight, type-safe Finite State Machine (FSM) library for MoonBit.
+sacckey/lunaboy|0.1.2|MIT|A Game Boy emulator written in MoonBit
+sacckey/moon8bit|0.1.0|Apache-2.0|A minimal retro 2D game engine for MoonBit with text-first assets, deterministic runtime, and compact APIs for fast human/AI iteration.
+Seedking/SemVer|0.1.0|Apache-2.0|SemVer
+SeisanSoda/hello|0.1.0|Apache-2.0|
+sennenki/2048|0.1.0|Apache-2.0|A MoonBit implementation of the 2048 game on browser.
+sennenki/abort_hook|0.1.0|Apache-2.0|A convenient way to override the built-in abort behavior
+sennenki/clipboard|0.1.1|Apache-2.0|Cross-platform clipboard package for MoonBit with `js` and `native` backends.
+sennenki/console|0.1.3|Apache-2.0|Cross-platform console I/O library
+sennenki/ignore|0.1.0|Apache-2.0|A library for parsing and matching ignore files, such as .gitignore, .dockerignore, etc.
+sennenki/immutable|0.1.4|Apache-2.0|Immutable data structures for MoonBit
+sennenki/js|0.1.2|Apache-2.0|This package is deprecated. https://mooncakes.io/docs/moonbit-community/js-ffi should be preferred.
+sennenki/js-ffi|0.4.2|Apache-2.0|A fork of moonbit-community/js-ffi that does not abort compilation on targets other than js
+sennenki/lens|0.1.1|Apache-2.0|A lens library for functional programming in MoonScript.
+sennenki/lz_string|0.1.0|Apache-2.0|Port of lz-string algorithm to MoonBit
+sennenki/mbtify|0.1.2|Apache-2.0|I love MoonBit multiline string literals
+sennenki/mbt_prompt_services|0.1.2|Apache-2.0|
+sennenki/pkgparser|0.1.0|Apache-2.0|Parses moon.pkg files
+sennenki/pretty_prompt|0.1.2|Apache-2.0|A pretty prompt library for Moonbit, providing an easy way to create interactive command-line interfaces with customizable prompts and input handling.
+sennenki/pretty_prompt_demo|0.1.3|Apache-2.0|pretty_prompt demonstration
+sennenki/process|0.1.0|Apache-2.0|A module for spawning and managing system processes.
+sennenki/rabbitify|0.1.0|Apache-2.0|Convert HTML document to Rabbita VDom functions
+sennenki/reisen|0.3.2|Apache-2.0|A visual novel engine in MoonBit
+sennenki/sexp|0.1.1|Apache-2.0|A simple S-expression parser and serializer for MoonBit.
+sennenki/slugify|0.1.0|Apache-2.0|Utility URL functions for MoonBit
+sennenki/tsparser|0.1.2|Apache-2.0|Yet another TypeScript parser.
+sennenki/ytyj|0.1.1|Apache-2.0|Implementation of YTYJ language in MoonBit. Does not support embedded assembly yet.
+ShellWen/dotenv|0.6.1|Apache-2.0|Yet another dotenv utility for MoonBit.
+ShellWen/dotenv-mbt|0.9.9|Apache-2.0|removed
+ShellWen/lru_cache|0.1.0|Apache-2.0|A high-performance LRU cache implementation in MoonBit with constant-time operations and customizable capacity.
+ShellWen/sw_ini|0.2.0|Apache-2.0|High-performance INI parser for MoonBit with nested section support.
+ShellWen/sw_router|0.2.0|Apache-2.0|A fast and flexible URL router implementation for the MoonBit language.
+ShellWen/sw_socket|0.2.0|Apache-2.0|A experimental *nix socket binding for MoonBit.
+shiguri-01/jsonrpc|0.3.0|Apache-2.0|A small, transport-agnostic JSON-RPC 2.0 endpoint library.
+shiguri-01/markdown|0.1.1|Apache-2.0|Event-driven Markdown parser with CommonMark, GFM, HTML, and AST support.
+shiguri-01/mcp|0.1.0|Apache-2.0|A library for building Model Context Protocol servers and clients.
+shiguri-01/todotxt|0.1.1|Apache-2.0|A small parser for the todo.txt
+shiguri-01/webview|0.1.1|Apache-2.0|Low-level MoonBit bindings to webview/webview
+shiheat/find_max|0.3.0|Apache-2.0|find the maximum value in a list
+shina1024/jqx|0.3.0|Apache-2.0|jq-compatible JSON processor written in MoonBit with a CLI and TypeScript bindings
+shop1111/frontierlab|0.3.0|MIT|A MoonBit algorithm trace protocol and offline HTML/SVG visualization kit.
+Showichiro/jira_cli_mbt|0.1.0|Apache-2.0|
+Showichiro/moon_openapi_cli|0.1.5|Apache-2.0|Agent-friendly OpenAPI extraction CLI
+shu-kitamura/sha256|0.1.1|Apache-2.0|A simple sha256 algorithm implemented in moonbit
+shunge/image|0.1.1|MIT|一个纯 MoonBit 实现的图像解码库，支持 BMP/QOI/TGA/PNG/GIF/JPEG 六种格式，内置完整 DEFLATE 解压器和 LZW/RLE 压缩支持，一行代码即可完成图像解码。
+sjzbxhsj/Calculator|0.1.0|Apache-2.0|
+smallbearrr/NetworkX|0.1.4|Apache-2.0|
+smallbearrr/pandas|0.7.1|Apache-2.0|Provide efficient data manipulation and analysis
+sohaha/zls|0.1.0|Apache-2.0|
+sombozone/moon_expr|0.1.0|Apache-2.0|A high-performance, extensible mathematical and logical expression evaluation engine for MoonBit.
+SouichiroTsujimoto/astrobit|0.1.6|MIT|A thin framework for running MoonBit components as Astro islands
+spectacleCase/dotenv|0.1.0|Apache-2.0|Dotenv for MoonBit - loads environment variables from .env files
+sssssurf/abyssal_chord|0.1.0|Apache-2.0|深渊协奏 (Abyssal Chord) - A MoonBit card battle game engine with CLI demo
+starlittle/MoonEvidence|0.4.0|Apache-2.0|Trusted evidence pack verification library and CLI for MoonBit.
+structuraBlock/MoonStats|0.3.0|MIT|
+suiyunonghen/datetime|0.1.6|Apache-2.0|datetime type of moonbit
+suiyunonghen/linklist|0.1.7|Apache-2.0|Double Linked List 双链表
+suiyunonghen/moonvalue|0.1.14|Apache-2.0|moonbitlang实现的msgpack,bson库
+suiyunonghen/wasmMemManager|0.1.3|Apache-2.0|wasm的线性内存管理
+summer-boythink/moonorm|0.1.0|Apache-2.0|
+SupremeHuaji/FibonacciHeap|0.1.0|Apache-2.0|
+SupremeHuaji/MaxStack|0.1.0|Apache-2.0|
+SupremeHuaji/MoonClmech|0.1.0|Apache-2.0|MoonClmech - A comprehensive classical mechanics calculation library for MoonBit, inspired by SymPy Mechanics. Provides computational functions for particle dynamics, rigid body mechanics, Lagrangian and Hamiltonian formulations, constraint systems, multibody dynamics, and kinematic analysis. Suitable for modeling physical systems, robotics, and engineering applications.
+SupremeHuaji/MoonElec|0.1.0|Apache-2.0|A comprehensive electrical engineering calculation library for circuit analysis and power systems.
+SupremeHuaji/MoonFluid|0.1.0|Apache-2.0|
+SupremeHuaji/MoonGeo|0.1.0|Apache-2.0|
+SupremeHuaji/MoonMech|0.1.0|Apache-2.0|
+SupremeHuaji/MoonMet|0.1.0|Apache-2.0|MoonMet - A comprehensive meteorological calculation library for MoonBit, inspired by MetPy. Provides thermodynamic, kinematic, and basic meteorological calculation functions including temperature, pressure, humidity, wind analysis, convective indices, and atmospheric stability calculations.
+SupremeHuaji/moonsmiles|0.1.1|Apache-2.0|A comprehensive cheminformatics library for processing SMILES notations, analyzing molecular structures, calculating chemical properties, and comparing molecular similarity.
+SupremeHuaji/MoonSteel|0.1.0|Apache-2.0|A toolkit for civil engineering and steel structure design.
+SupremeHuaji/MoonStrMech|0.1.1|Apache-2.0|
+SupremeHuaji/ptime|0.1.0|Apache-2.0|A lightweight time library for MoonBit with picosecond precision
+SupremeHuaji/Quadtree|0.1.0|Apache-2.0|
+SupremeHuaji/VEBTree|0.1.1|Apache-2.0|
+SupremeHuaji/XorLinkedList|0.1.0|Apache-2.0|
+Suquster/moonbit-pathfinding|0.0.5|Apache-2.0|A MoonBit pathfinding and graph algorithms library with executable documentation, runtime-checked proof predicates, and multi-backend verification gates. Built for OSC 2026.
+Sxy11112/moonjournalkit|0.1.0|Apache-2.0|Deterministic transactional write-ahead log framing and crash recovery for MoonBit.
+SyoujyoujiNaiki/chungshan|0.2.0|Apache-2.0|Introduce a list of functions for conversion between UInt64, UInt, Double, Float, Int64, Int and Bytes array.
+SyoujyoujiNaiki/oops|0.3.0|Apache-2.0|Oops, write your any script!
+Teddy-Yangjiale/rope|0.1.0|Apache-2.0|A B-tree rope data structure for efficient text manipulation in MoonBit
+tekihei2317/hello|0.0.3|MIT|Example module
+TheWaWaR/clap|0.2.6|MIT|Command Line Argument Parser
+TheWaWaR/lunar|0.1.0|Apache-2.0|
+Tianci-King/hello|0.2.0|Apache-2.0|median
+Tianci-King/median|0.3.0|Apache-2.0|计算数组的中位数
+TianZaiShuiZhong/hello|0.1.0|Apache-2.0|
+Tigls/mb-chacha|0.1.0|Apache-2.0|ChaCha20 and XChaCha20 stream ciphers for MoonBit (RFC 8439)
+Tigls/mb-getrandom|0.1.0|Apache-2.0|Secure random number generation for MoonBit (OS entropy; native+WASM)
+Tigls/mb-hash|0.1.0|Apache-2.0|Secure hashing for MoonBit (SHA-256, SHA-512; native+WASM)
+Tigls/mb-hmac|0.1.0|Apache-2.0|HMAC message authentication for MoonBit (HMAC-SHA256, HMAC-SHA512; native+WASM)
+Tigls/mb-jwt|0.1.0|Apache-2.0|JWT (JSON Web Tokens) for MoonBit with HS256 signing and verification
+Tigls/mb-p256|0.1.0|Apache-2.0|NIST P-256 elliptic curve (secp256r1) for MoonBit: ECDSA and ECDH
+Tino-hue/depsight|0.5.2|Apache-2.0|Dependency health diagnostic tool for the MoonBit ecosystem
+tiye/caterfoil|0.0.2|Apache-2.0|
+tiye/cirru-edn|0.2.3|Apache-2.0|Extensible Data Notation in Cirru
+tiye/cirru-parser|0.3.0|Apache-2.0|parser for Cirru Syntax
+tiye/dom-ffi|0.2.3|Apache-2.0|A minimal FFI layer for DOM operations, designed for use with Respo.mbt
+tiye/genai|0.0.2|Apache-2.0|MoonBit bindings for the Google GenAI (Gemini) JavaScript SDK
+tiye/json5|0.0.3|Apache-2.0|JSON5 parser and stringifier for MoonBit
+tiye/lexicon-fractional-index|0.0.4|Apache-2.0|an implementation of fractional index for lexicon.
+tiye/preact|0.0.1-a3|Apache-2.0|Type-safe MoonBit bindings for Preact with virtual DOM, hooks, and CSS-in-JS support (early experimental)
+tiye/quaternion|0.1.3|Apache-2.0|Quaternion math library
+tiye/react|0.0.3|Apache-2.0|Type-safe MoonBit bindings for React with virtual DOM, hooks, and CSS-in-JS support (early experimental)
+tiye/recollect|0.2.1|Apache-2.0|Structural JSON diff/patch for MoonBit — compute and apply PatchOp sequences between Json trees
+tiye/redstart|0.1.4|Apache-2.0|Lightweight process manager for local development
+tiye/respo|0.3.4|Apache-2.0|A tiny virtual DOM library
+tiye/respo_css|0.1.6|Apache-2.0|Type-safe CSS styling library for Respo framework with comprehensive property definitions, enumeration values, and functional style composition tools. Provides complete CSS support including layout, typography, colors, transforms, and grid systems with MoonBit type safety.
+tiye/respo-markdown|0.1.3|Apache-2.0|Parse Markdown subset to Respo virtual DOM
+tiye/respo-router|0.0.1|Apache-2.0|
+tiye/thin_ws|0.1.0|Apache-2.0|Thin WebSocket FFI for MoonBit — Node.js server + browser client with typed JSON messaging
+tkancf/feed_gen|0.3.0|Apache-2.0|RSS 2.0 and Atom 1.0 feed generation library
+tmkx/hello|0.0.0|Apache-2.0|
+tonyfettes/amjson|0.1.0|Apache-2.0|A complete JSON parser implementation in MoonBit
+tonyfettes/amtoml|0.1.0|Apache-2.0|A comprehensive TOML (Tom's Obvious, Minimal Language) parser for MoonBit with full support for TOML v1.0.0 specification including tables, arrays, dotted keys, and inline tables.
+tonyfettes/any|0.1.5|Apache-2.0|The `Any` type with dynamic typing and runtime type checks.
+tonyfettes/assert|0.1.0|Apache-2.0|
+tonyfettes/atomics|0.1.0|Apache-2.0|
+tonyfettes/base64|0.1.0|Apache-2.0|
+tonyfettes/c|0.7.8|Apache-2.0|FFI Binding to C
+tonyfettes/create-moonbit-raylib-android-app|0.1.0|Apache-2.0|
+tonyfettes/dl|0.1.1|Apache-2.0|
+tonyfettes/dotenv|0.4.1|Apache-2.0|Yet another dotenv utility for MoonBit.
+tonyfettes/ds4|0.1.1|MIT|MoonBit native bindings for the local DwarfStar 4 engine
+tonyfettes/encoding|0.3.9|Apache-2.0|Encoding package extracted from moonbitlang/x
+tonyfettes/epoxy|0.1.0|MIT|A MoonBit reimplementation of libepoxy: OpenGL function pointer dispatch.
+tonyfettes/gdk|0.1.1|Apache-2.0|MoonBit bindings for GDK4 (Display, Clipboard, Cursor, etc.)
+tonyfettes/ghostty|0.3.0|Apache-2.0|
+tonyfettes/gio|0.1.1|Apache-2.0|MoonBit bindings for GIO (Application, File, D-Bus, streams, sockets, etc.)
+tonyfettes/giraffe|0.1.1|Apache-2.0|Elm-style declarative UI framework for MoonBit, built on GTK4
+tonyfettes/glib|0.1.1|Apache-2.0|MoonBit bindings for GLib non-GObject types (GError, GMainLoop, GVariant, etc.)
+tonyfettes/gobject|0.1.1|Apache-2.0|MoonBit bindings for the GObject base type
+tonyfettes/gtk|0.1.1|Apache-2.0|MoonBit bindings for GTK4 widgets (Window, Button, Box, Label, etc.)
+tonyfettes/insomnia|0.3.2|Apache-2.0|Manipulate native MoonBit object in MoonBit
+tonyfettes/iter|0.1.3|MIT|
+tonyfettes/js|0.2.1|Apache-2.0|
+tonyfettes/json|0.4.2|Apache-2.0|
+tonyfettes/json_parser|0.1.0|Apache-2.0|A complete JSON parser for MoonBit with full spec compliance, error handling, and pretty-printing support
+tonyfettes/json_test_parser|0.1.0|Apache-2.0|A lightweight and efficient JSON parser for MoonBit with support for parsing and stringifying JSON data
+tonyfettes/libghostty-vt|0.1.2|Apache-2.0|MoonBit bindings for Ghostty's libghostty-vt virtual terminal emulator library.
+tonyfettes/lua|0.1.3|Apache-2.0|Bindings for the Lua programming language
+tonyfettes/malloc|0.1.3|Apache-2.0|An simple external allocator
+tonyfettes/maria_json_parser|0.1.0|Apache-2.0|A pure MoonBit JSON parser with comprehensive parsing and serialization capabilities
+tonyfettes/memory|0.2.5|Apache-2.0|Simple memory access and management to be used with WASI FFI
+tonyfettes/moonbit|0.2.0|Apache-2.0|
+tonyfettes/moon-clib|0.1.1|Apache-2.0|A MoonBit CLI tool for downloading, building, caching, and installing C libraries into MOON_HOME.
+tonyfettes/moon-embed|0.0.1|Apache-2.0|Embed files into MoonBit source as String or Bytes bindings.
+tonyfettes/mua|0.1.1|Apache-2.0|High-level Lua bindings for Moonbit
+tonyfettes/narray|0.1.0|Apache-2.0|
+tonyfettes/nat|0.1.1|Apache-2.0|Type-level natural number literals
+tonyfettes/openai|0.1.1|Apache-2.0|
+tonyfettes/openssl|0.2.3|Apache-2.0|
+tonyfettes/ops|0.0.2|MIT|
+tonyfettes/os|0.1.1|Apache-2.0|
+tonyfettes/pango|0.1.1|Apache-2.0|MoonBit bindings for Pango text layout and rendering
+tonyfettes/path|0.2.2|Apache-2.0|
+tonyfettes/pcre2|0.4.5|Apache-2.0|PCRE2 bindings for MoonBit
+tonyfettes/platform|0.1.1|Apache-2.0|
+tonyfettes/pty|0.1.0|Apache-2.0|Cross-platform PTY (pseudo-terminal) spawning for MoonBit native targets, integrated with moonbitlang/async.
+tonyfettes/rabbita_xterm|0.1.2|Apache-2.0|Rabbita-friendly xterm.js bindings for MoonBit
+tonyfettes/raylib|0.4.0|MIT|MoonBit bindings for raylib
+tonyfettes/raylib-examples|0.2.4|Apache-2.0|
+tonyfettes/rc|0.1.1|Apache-2.0|Reference-counted (Rc) and weak reference (Weak) types for MoonBit
+tonyfettes/small|0.1.0|Apache-2.0|
+tonyfettes/socket|0.1.2|Apache-2.0|
+tonyfettes/ssl|0.1.1|Apache-2.0|
+tonyfettes/starlark|0.1.0|Apache-2.0|Embeddable Starlark interpreter written in MoonBit
+tonyfettes/submodule-test|0.1.1|Apache-2.0|
+tonyfettes/telegram-bot|0.1.0|Apache-2.0|MoonBit Telegram Bot API library with async support
+tonyfettes/tiktoken|0.2.1|Apache-2.0|
+tonyfettes/toml_parser|0.1.0|Apache-2.0|A pure MoonBit TOML parser supporting strings, numbers, booleans, arrays, tables, and comments
+tonyfettes/torch|0.2.8|Apache-2.0|PyTorch-like tensor operations implemented in MoonBit
+tonyfettes/tree-sitter|0.1.1|Apache-2.0|
+tonyfettes/tree_sitter|0.4.6|Apache-2.0|A MoonBit binding to the tree-sitter parsing library
+tonyfettes/tree_sitter_bash|0.1.26|MIT|Bash grammar for tree-sitter
+tonyfettes/tree_sitter_c|0.1.26|MIT|C grammar for tree-sitter
+tonyfettes/tree_sitter_cpp|0.1.26|MIT|C++ grammar for tree-sitter
+tonyfettes/tree_sitter_c_sharp|0.1.26|MIT|C# grammar for tree-sitter
+tonyfettes/tree_sitter_css|0.1.26|MIT|CSS grammar for tree-sitter
+tonyfettes/tree_sitter_flow|0.1.24|Apache-2.0|
+tonyfettes/tree_sitter_go|0.1.26|MIT|Go grammar for tree-sitter
+tonyfettes/tree_sitter_html|0.1.26|MIT|HTML grammar for tree-sitter
+tonyfettes/tree_sitter_java|0.1.26|MIT|Java grammar for tree-sitter
+tonyfettes/tree_sitter_javascript|0.1.26|MIT|JavaScript grammar for tree-sitter
+tonyfettes/tree_sitter_json|0.1.26|MIT|JSON grammar for tree-sitter
+tonyfettes/tree_sitter_kotlin|0.1.26|MIT|Tree-sitter grammar for Kotlin
+tonyfettes/tree_sitter_language|0.1.3|Apache-2.0|Tree-sitter language type for MoonBit grammar bindings
+tonyfettes/tree_sitter_lua|0.1.26|MIT|Lua grammar for tree-sitter
+tonyfettes/tree_sitter_markdown|0.1.26|MIT|Markdown grammar for tree-sitter
+tonyfettes/tree_sitter_markdown_inline|0.1.26|MIT|Markdown grammar for tree-sitter
+tonyfettes/tree_sitter_moonbit|0.1.26|Apache-2.0|Moonbit grammar for tree-sitter
+tonyfettes/tree_sitter_moonbit_quotation|0.1.26|Apache-2.0|Moonbit grammar for tree-sitter
+tonyfettes/tree_sitter_ocaml|0.1.26|MIT|OCaml grammar for tree-sitter
+tonyfettes/tree_sitter_ocaml_interface|0.1.26|MIT|OCaml grammar for tree-sitter
+tonyfettes/tree_sitter_ocaml_type|0.1.26|MIT|OCaml grammar for tree-sitter
+tonyfettes/tree_sitter_python|0.1.26|MIT|Python grammar for tree-sitter
+tonyfettes/tree_sitter_query|0.1.26|Apache-2.0|TS query grammar for tree-sitter
+tonyfettes/tree_sitter_rust|0.1.26|MIT|Rust grammar for tree-sitter
+tonyfettes/tree_sitter_sql|0.1.26|MIT|Tree-sitter Grammar for SQL
+tonyfettes/tree_sitter_swift|0.1.26|MIT|A tree-sitter grammar for the Swift programming language.
+tonyfettes/tree_sitter_toml|0.1.26|MIT|TOML grammar for tree-sitter
+tonyfettes/tree_sitter_tsx|0.1.26|MIT|TypeScript and TSX grammars for tree-sitter
+tonyfettes/tree_sitter_typescript|0.1.26|MIT|TypeScript and TSX grammars for tree-sitter
+tonyfettes/tree_sitter_yaml|0.1.26|MIT|YAML grammar for tree-sitter
+tonyfettes/tree_sitter_zig|0.1.26|MIT|Zig grammar for tree-sitter
+tonyfettes/tun-poc-proto|0.2.0|Apache-2.0|
+tonyfettes/tun-poc-server|0.2.0|Apache-2.0|
+tonyfettes/tun-poc-server-cn|0.2.0|Apache-2.0|
+tonyfettes/unicode|0.3.2|Apache-2.0|Unicode in MoonBit
+tonyfettes/uri|0.1.0|Apache-2.0|
+tonyfettes/url|0.3.3|Apache-2.0|WHATWG URL Standard parser implementation in MoonBit
+tonyfettes/utf8|0.2.4|Apache-2.0|
+tonyfettes/uv|0.12.12|Apache-2.0|MoonBit binding to libuv
+tonyfettes/wasm|0.1.3|Apache-2.0|
+tonyfettes/webgpu|0.1.7|Apache-2.0|
+tonyfettes/wtf16|0.1.1|Apache-2.0|
+tonyfettes/wtf8|0.1.2|Apache-2.0|
+tonyfettes/xlog|0.4.0|Apache-2.0|Native structured logging with levels and category-based filtering.
+tonyfettes/xxh64|0.1.0|BSD-2-Clause|XXH64 — a fast, portable, high-quality non-cryptographic hash. Faithful MoonBit port of the reference xxHash.
+totto2727/geo-mbt|0.1.0|Apache-2.0|MoonBit port of georust/geo: 2D planar geospatial primitives and algorithms
+trash33/sudoku|0.1.0|Apache-2.0|A module of sudoku.
+trkbt10/isobmff|0.1.0|Apache-2.0|ISO Base Media File Format parser for extracting duration and track info from MP4, 3GP, 3G2, MJ2, HEIF, F4V, DVB, DCF, M21 containers
+trkbt10/jpeg2000|0.2.0|Apache-2.0|T.800-2015 JPEG 2000 decoder for MoonBit
+trkbt10/llm_interop|0.3.0|Apache-2.0|Unified LLM protocol abstraction for MoonBit — multi-provider support with streaming, tool calling, and protocol translation
+trkbt10/micado_mbt|0.6.1|Apache-2.0|
+trkbt10/osenv|0.1.0|Apache-2.0|OS environment utilities: platform detection, safe path operations, and OS-standard directory resolution (XDG/macOS/Windows) with temp_dir support
+trkbt10/subprocess|0.2.0|Apache-2.0|Node.js child_process-like subprocess management for MoonBit
+trkbt10/vcdb|0.3.0|Apache-2.0|High-performance vector database with multiple ANN algorithms
+ttxiangshang/moonbit-pixelkit|0.1.0|MIT|A MoonBit toolkit for 2D pixel game map parsing and pathfinding.
+t-ujiie-g/moon-pptx|0.6.0|Apache-2.0|Pure-MoonBit library for reading, building, and writing PPTX (OOXML) presentations with a type-safe builder API.
+tuya-me/aegisrun|0.8.0|Apache-2.0|AegisRun - AI Agent Secure Tool Runtime (MoonBit + Wasm)
+tuya-me/flowgate|0.1.0|Apache-2.0|FlowGate - 3D concurrency limiter with event hooks for MoonBit
+tuya-me/fuse|0.1.0|Apache-2.0|Fuse - Circuit breaker with half-open state, exponential backoff, and event hooks for MoonBit
+typinglabs/romaji_typing|0.0.3|MIT|ローマ字タイピングゲーム用の入力判定ライブラリ
+ubugeeei/vapor_moon|0.1.1|MIT|Vapor Moon is a MoonBit-first Single File Component compiler and tooling layer built on top of luna.mbt.
+ushironoko/mdclip|0.4.0|MIT|Preview clipboard markdown as GitHub-styled HTML in browser
+ushironoko/nash-mbt|0.1.1|MIT|Zero-sum two-player matrix game solver in MoonBit: tableau simplex LP, Fictitious Play, Multiplicative Weights Update, KL/L1 divergence, exploitability, NashConv.
+vectie/lepusa|0.1.0|Apache-2.0|MoonBit-native desktop application framework research and implementation.
+vectie/moonbook|0.1.0|Apache-2.0|
+vectie/moonclaw|0.1.2|Apache-2.0|
+vectie/moonlib|0.1.8|Apache-2.0|Shared utility library for the Moon suite
+vivid-oi/moonquotakit|0.2.0|Apache-2.0|A backend-neutral quota, rate limiting, and fairness scheduling toolkit for MoonBit.
+wangjuwudi/line_sort|0.1.0|Apache-2.0|some functions about line sort
+wangmingfa/promptx|0.1.2|Apache-2.0|
+wangmingfa/zipx|0.1.3|Apache-2.0|A pure MoonBit implementation of ZIP archive extraction
+wangweigang/hello|0.1.0|Apache-2.0|A simple hello world module for MoonBit demonstrating basic module structure and publishing to mooncakes.io
+wangziling/hello|0.0.1||
+wccerty/moonfeaturegate|0.1.0|Apache-2.0|MoonBit-native feature flag evaluation, targeting, rollout, and explanation toolkit.
+wedarp/moongraph|0.1.0|MIT|
+WenqiChen3019/sqrt|0.1.4|Apache-2.0|
+wflixu/Halo|0.6.0|MIT|A modern middleware web framework for MoonBit with Koa-style onion model, structured concurrency, and streaming-first response handling.
+wflixu/Orion|0.2.0|MIT|Derive + Codegen ORM for MoonBit. Schema DSL, type-safe CRUD, Query Builder.
+WilliamZ1008/qt-gui|0.1.1|Apache-2.0|
+WilliamZ1008/qtgui|0.1.7|Apache-2.0|
+wjy030522/compare|0.1.0|Apache-2.0|
+wjy030522/hello|0.1.0|Apache-2.0|
+wstreet/moontest|0.1.0|Apache-2.0|
+wwj1203/string2int|0.1.0|Apache-2.0|This is a package that make a string to integer conversion.
+Wyh123456559/moonlexkit|0.2.0|Apache-2.0|A MoonBit lexical scanning and lightweight parsing toolkit.
+wzx2007/moonpath|0.31.0|Apache-2.0|A MoonBit graph algorithms and tile-grid pathfinding library for reusable open-source ecosystem building.
+wzzc-dev/imgui|0.1.0|Apache-2.0|Moonbit binding for Dear ImGui library - A simple GUI example
+wzzc-dev/moui|0.1.5-1|Apache-2.0|MoUI is a multi-platform MoonBit GUI framework
+wzzc-dev/moui_richtext|0.1.1|Apache-2.0|Optional rich text and markdown addon for MoUI
+wzzc-dev/moui_skia|0.1.5|Apache-2.0|MoonBit bindings for the Skia Graphics Library
+wzzc-dev/moui_sun|0.1.1|Apache-2.0|Experimental MoonBit-native CPU raster stack for MoUI
+wzzc-dev/moui_webview|0.1.1|Apache-2.0|WebView platform view addon for MoUI: wraps platform-native WebView backends (WKWebView, WebKitGTK, WebView2) into MoUI's declarative view tree.
+wzzc-dev/skia_mbt|0.1.2|Apache-2.0|MoonBit bindings for the Skia Graphics Library
+wzzc-dev/teager|0.1.0|Apache-2.0|
+wzzc-dev/webview-ffi|0.1.1|Apache-2.0|
+wzzc-dev/webview-mbt-demo|0.1.0|Apache-2.0|
+wzzc-dev/window|0.5.1-0.1.6-1|Apache-2.0|The wzzc-dev fork of moonbit-community/window, adding MoUI-oriented Web, Windows, and Linux support while tracking upstream window 0.5.1.
+xavier865/hello|0.2.2|Apache-2.0|
+XiaoChenxu/msdoc-viewer|0.1.1|Apache-2.0|High-performance MS-DOC (.doc binary Word) parser and renderer for MoonBit, supporting JS, WASM, and WASM-GC backends with Web Worker support
+xing0818/xing0818|0.1.0|Apache-2.0|
+xingwangzhe/files_tree|0.1.3|Apache-2.0|recursively builds and displays directory structures in ASCII tree format.
+xingwangzhe/license_checker|0.2.4|MIT|A MoonBit-based tool for checking and reporting licenses of packages.
+xingwangzhe/style_print|0.1.7|Apache-2.0|ANSI terminal styling: colors & text styles (truecolor).
+Xpeng/mooncharts|0.8.0|Apache-2.0|Lightweight native SVG charting library for MoonBit — bar, line, pie/donut and scatter charts.
+xrr2016/meow|0.12.0|Apache-2.0|A meow library
+xrr2016/rmdir|0.5.0|Apache-2.0|Remove a directory
+xrr2016/tui|0.1.0|Apache-2.0|
+xrr2016/tui-ansi|0.1.2|Apache-2.0|
+xunyoyo/linalg|0.2.7|Apache-2.0|Linear Algebra Library
+xunyoyo/NyaCSV|0.3.3|Apache-2.0|Purr-fectly parse your CSV files with delightful simplicity!
+xunyoyo/NyaSearch|0.1.0|Apache-2.0|NyaSearch: A High-Performance Text Search Library
+xunyoyo/permutation|0.1.3|Apache-2.0|Array permutation.
+xunyoyo/Permutation|0.1.1|Apache-2.0|
+xz-xuezhe/moonblox|0.1.0|Apache-2.0|MoonBit-native programmable site generator with interactive components
+xz-xuezhe/moonblox-cli|0.1.0|Apache-2.0|MoonBlox command-line tool
+yamajik/dapr|0.1.11|Apache-2.0|
+yamajik/wasi|0.1.25|Apache-2.0|
+yamajik/wasi-bindings|0.2.1|Apache-2.0|
+yangqing/hello|0.2.2|MIT|MoonBit package management example file.
+yanyeting/minmax|0.1.0|Apache-2.0|
+yatsuna827/pk-rng-gen3|0.1.0|Apache-2.0|
+yatsuna827/pk-rng-lcg32|0.2.0|MIT|
+yf666888/moonsatkit|0.2.0|Apache-2.0|Backend-neutral SAT modeling with temporary assumptions and explainable minimal conflict cores for MoonBit.
+YHSZ-ONEC/yhsz|0.1.0|Apache-2.0|
+yj-qin/llhttp|0.1.1|MIT|llhttp bindings for MoonBit
+yj-qin/moonlox|0.1.0|MIT|
+yj-qin/regexp|0.3.6|Apache-2.0|A regular expression library based on a backtracking engine.
+Yoorkin/any|0.2.0|Apache-2.0|Type-safe Any for WASM/JS/Native targets, without json/string serialization
+Yoorkin/ArgParser|0.2.1|Apache-2.0|command line argument parser
+Yoorkin/cowsay|0.1.2|Apache-2.0|Portable cowsay CLI for MoonBit WASM.
+Yoorkin/duplix|0.2.8|Apache-2.0|An RC-friendly reactive graph with lazy computation and bounded retention.
+Yoorkin/format|0.1.5|Apache-2.0|simple printf utils
+Yoorkin/fuzzy_search|0.1.1|Apache-2.0|
+Yoorkin/hashtbl|0.1.2|Apache-2.0|
+Yoorkin/hello|0.1.3|Apache-2.0|
+Yoorkin/jmop|0.1.1|Apache-2.0|A safe JavaScript interop tool.
+Yoorkin/logr_moonbit|0.1.0|Apache-2.0|https://github.com/moonbit-community/logr
+Yoorkin/meolix|0.1.0|Apache-2.0|A terminal Helix-like text editor implemented in MoonBit with moonbitlang/async.
+Yoorkin/moonbee|0.1.2|Apache-2.0|
+Yoorkin/prettyprinter|0.4.10|Apache-2.0|pretty printer for moonbit
+Yoorkin/proxy|0.1.0|Apache-2.0|f<Type>(arguments)
+Yoorkin/rabbit-tea|0.10.11|Apache-2.0|TEA web UI framework for MoonBit
+Yoorkin/shiki|0.1.1|Apache-2.0|shiki highlighter for rabbita
+Yoorkin/slotmap|0.2.3|Apache-2.0|A small typed slot map with opaque handles and reusable slots for MoonBit.
+Yoorkin/splice|0.1.2|Apache-2.0|Simple text splicing module for MoonBit
+Yoorkin/stack|0.1.4|Apache-2.0|
+Yoorkin/trace|0.1.0|Apache-2.0|Stop program with a message and source location
+Yoorkin/trie|0.2.10|Apache-2.0|A simple implementation of a Trie data structure
+Yoorkin/uriparse|0.1.0|Apache-2.0|
+Yoorkin/vibecraft|0.1.0|Apache-2.0|A Minecraft-like voxel game generated by codex
+Yoorkin/webgen|0.1.1|Apache-2.0|
+Yoorkin/webidl|0.2.2|Apache-2.0|Whatwg WebIDL parser in MoonBit
+yoshitsugu/parsem|0.0.4|MIT|Parser combinator for Moonbit
+Young-Flash/test|0.2.0|Apache-2.0|
+Young-Flash/test_ignore|0.2.0|Apache-2.0|
+Young-Flash/test_publish|0.2.0|Apache-2.0|
+Young-Flash/try_publish|0.1.6|Apache-2.0|
+yueTc/Binary-Indexed-Tree|0.1.1|Apache-2.0|
+YumeCross/schema|0.4.3|BSD-2-Clause|Json Schema validation for MoonBit.
+YumeXi/error|0.2.2|Apache-2.0|Error handling library for MoonBit
+YumeXi/format|0.3.11|BSD-2-Clause|A formatting library for MoonBit
+YumeXi/iter|0.2.8|BSD-2-Clause|
+yuntian/cube_render|0.0.3|MPL-2.0|Minecraft Bedrock model renderer in MoonBit + WebGL
+yuyi919/shared-lib|0.1.8|MIT|[WIP] Personal Utils
+Yu-zh/codex_worfkow|0.1.0|Apache-2.0|Multi-agent workflow runner for Codex.
+Yu-zh/either|0.1.0||
+Yu-zh/fast|0.1.0|Apache-2.0|
+Yu-zh/iterator|0.1.0|Apache-2.0|A library for internal and external iterators
+Yu-zh/sslist|0.1.0|Apache-2.0|A stack safe list implementation in MoonBit
+Yu-zh/termbit|0.1.1|Apache-2.0|A terminal manipulation library written in MoonBit
+Yu-zh/tracing|0.1.0|Apache-2.0|
+yxsql74/hello|0.1.0|Apache-2.0|
+yyjeqhc/base32|0.1.0|MIT|encode/decode Bytes use base32 to Array[Byte]
+Zcxssxx/moon-actor|0.1.0|Apache-2.0|
+Zcxssxx/moon-ninja|0.1.0|Apache-2.0|
+zdu881/DataProc|0.1.0|Apache-2.0|Some functions for data statistics.
+zdu881/webmocket|0.1.0|MIT|A simple WebSocket client for MoonBit with pure JSON messaging support
+zen314/shadow|0.1.0|Apache-2.0|Simple ORM Framework
+zhaihaozhen/zero_fill|0.1.2|Apache-2.0|很小很小的补零工具
+zhangshun-123/factorial|0.1.0|Apache-2.0|
+zhuguiyuan/eda-router|0.1.3|Apache-2.0|An simple congestion-aware EDA router implemented in MoonBit
+ZijianFeng33/gs|0.1.0|Apache-2.0|a library for graph search algorithms
+ZijianFeng33/range|0.1.0|Apache-2.0|a library used for the efficient management and querying of disjoint integer interval sets. 
+ZijianFeng33/regexp|0.1.0|Apache-2.0|a simple regex matcher in moon
+ZijianFeng33/strongPasswordChecker|0.1.0|Apache-2.0|a library to check if the password strong enough
+zmjknn/moonmark|0.1.0|Apache-2.0|高性能纯 MoonBit Markdown 解析与渲染器
+Zongzuixi114514/mooncollections|0.1.0|MIT|A comprehensive data structure library for MoonBit: IndexMap, OrderedSet, BitSet, BloomFilter, LRU Cache, UnionFind, CountMap — 7 modules, 158 tests, pure MoonBit, zero dependencies
+zploc/loci|0.1.0|Apache-2.0|Deterministic hashing, Merkle tree sealing, FST swarms, and AI inhabitation substrate for the loci runtime
+ZSeanYves/bufferutils|0.24.0|Apache-2.0|Stable byte-buffer utilities for MoonBit with experimental native I/O extensions.
+ZSeanYves/doc_parser|0.1.1|Apache-2.0|MoonBit-native document structure foundation for source-native parsing, inspect, validation, and custom tooling
+ZSeanYves/markitdown|0.5.1|Apache-2.0|A MoonBit-native document-to-Markdown converter with multi-format parsing, metadata, assets, batch conversion, and validation tooling
+ZSeanYves/MoonbitBSON|0.1.0|Apache-2.0|A BSON encoding and decoding library
+ZSeanYves/MoonIDNA|0.1.0|Apache-2.0|
+ZSeanYves/moonjinja|0.1.1|Apache-2.0|
+ZSeanYves/SimplexNoise|0.1.0|Apache-2.0|实现基础的 Simplex Noise 算法
+zxch3n/colored|0.2.0|Apache-2.0|
+zxch3n/expect|0.6.2|Apache-2.0|`expect` is used to create various assertions easily

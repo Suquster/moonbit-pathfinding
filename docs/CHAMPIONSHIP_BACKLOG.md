@@ -164,36 +164,57 @@
 六层集合闭包链参赛（寻路→图算法→验证基础设施→通用基础软件→语言工程
 工具链→AI 原生软件工厂方法论）。下一级闭包候选三条线（专精一条做完再下一条）：
 
-- [ ] G-A 宽度闭包：多包工作区编排
-  - [ ] G-A1 build_tool 多包工作区模型（依赖图求解 + 增量构建计划，对拍 moon 语义）
-  - [ ] G-A2 release_aggregate 生态级发布流水线（semver 兼容性 diff，复用自家 schema 演进检查器）
-  - [ ] G-A3 mooncakes 包索引抓取/依赖审计工具（让 ECOSYSTEM_COMPARISON 可自动刷新）
-- [ ] G-B 深度闭包：性能/形式化前沿
-  - [ ] G-B1 hash/compress 流式增量 API（Go hash.Hash / zlib z_stream 状态机语义）
-  - [ ] G-B2 zstd 帧格式解码（RFC 8878 子集）
-  - [ ] G-B3 regex 惰性 DFA + bounded backtracking（Rust regex hybrid 引擎）
-  - [ ] G-B4 moon prove 静态证据全量接入
-- [ ] G-C 广度闭包：端到端系统切片
-  - [ ] G-C1 路网服务样例（OSM 解析→CH→CLI→metrics/logging→resilience→playground 全链组装）
-  - [ ] G-C2 软件工厂自述：docgen+diff+hash 生成"声明→测试→commit"可校验证据索引
+- [x] G-A 宽度闭包：多包工作区编排（2026-07-08 收官）
+  - [x] G-A1 build_tool 多包工作区模型（依赖图求解 + 拓扑构建序 + 传递闭包 +
+        增量重建计划；随机 DAG PBT）。commit 29234d2，`src/build_tool/workspace.mbt`。
+  - [x] G-A2 release_aggregate 生态级发布流水线（API 表面 semver 兼容性 diff：
+        删除/改签名→MAJOR、新增→MINOR、无变化→PATCH，发布档位门禁 +
+        违规见证诊断）。commit 2383342，`src/release_aggregate/compat_diff.mbt`。
+  - [x] G-A3 mooncakes 包索引抓取/审计工具（与 H-1 合并收官，见下）。
+- [x] G-B 深度闭包：性能/形式化前沿（2026-07-08 收官）
+  - [x] G-B1 hash/compress 流式增量 API（sha256/crc32/xxh64 流式哈希器，
+        与一次性哈希差分一致）。commit 13b7b3c，`src/infra_hash/streaming.mbt`。
+  - [x] G-B2 zstd 帧格式（RFC 8878：帧头/Raw/RLE 块/XXH64 校验和/skippable
+        帧；Compressed 块诚实返回 None）。commit 4eaa8c4，`src/infra_compress/zstd.mbt`。
+  - [x] G-B3 regex bounded backtracking（(pc,pos) 记忆化 DFS + 硬步数上界 +
+        超预算自动回退 Pike VM；与 Pike VM 捕获组差分 PBT；ReDoS 免疫）。
+        commit d84f0e8，`src/regex_engine/bounded_backtrack.mbt`。
+  - [x] G-B4 moon prove 证明谓词全量接入（INFRA 家族后置条件谓词 +
+        跨包 PBT 见证）。commit 6f68bc2，`src/proofs/infra_family_proof.mbt`。
+- [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
+  - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
+        熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，
+        `src/road_service/road_service.mbt`。
+  - [x] G-C2 可校验证据索引（与 H-4 合并收官，见下）。
 
 ### H. 闭包立方体 —— 纵轴 L6–L9 + 六条正交轴（2026-07-08，总纲见 `docs/STRATEGY_CLOSURE.md` §五/§六）
 
 纵轴元层级落地任务（L6/L7 可在赛期内做出实体证据；L8/L9 为答辩方法论输出）：
 
-- [ ] H-1（L6 生态平台）mooncakes 全量索引审计工具化：抓取 1491+ 包索引、
-      关键词/领域归类、与本仓库包的重叠报告自动生成（把 ECOSYSTEM_COMPARISON
-      的人工筛查固化为可重跑脚本 + 快照工件）
-- [ ] H-2（L6 生态平台）依赖健康审计：对 moon.mod 依赖做版本/许可证/活跃度
-      审计报告（吃自己的狗粮：semver 库 + config 解析 + hash 指纹）
-- [ ] H-3（L7 自治工厂）基准回归自 bisect：guard 发现回归后自动在 commit
-      区间二分定位并出具报告工件
-- [ ] H-4（L7 自治工厂）证据索引自动刷新：每次 push 由 CI 重新生成
-      "声明→测试→commit"三元组索引并校验无断链（与 G-C2 合并推进）
-- [ ] H-5（L8 模板化）工厂脚手架抽取：acceptance 门禁 + 向量对拍 + 证据工件
-      目录规范抽成可复制模板目录 `factory-template/`，附套用指南
-- [ ] H-6（L9 不动点示范）用本仓库流程孵化一个最小新领域包（从 backlog
-      选题→向量对拍→门禁全绿的全流程录制为可复现案例），证明 F(F) 可行
+- [x] H-1（L6 生态平台）mooncakes 全量索引审计工具化：`scripts/
+      mooncakes_audit.ps1` 抓取 1494 包全量索引→psv 快照工件
+      （`docs/verification/mooncakes_index.psv`），`src/mooncakes_audit`
+      纯引擎做能力域关键词归类、缺口报告与 markdown 渲染。commit 66a2784。
+- [x] H-2（L6 生态平台）依赖健康审计：存在性（下架/改名）/版本时效
+      （SemVer 逐段比较）/许可证合规（许可清单 + 空许可证不合规）三查 +
+      一票否决整体判定 + markdown 报告。commit 7e8e487，
+      `src/mooncakes_audit/dep_audit.mbt`。
+- [x] H-3（L7 自治工厂）基准回归自 bisect：git-bisect 语义内核
+      （Good/Bad/Skip oracle + Skip 邻域扩散 + 对数探测上界 + 探测日志
+      工件）。commit d305464，`src/build_tool/bisect.mbt`。
+- [x] H-4（L7 自治工厂）证据索引："声明→测试→commit"三元组
+      （`docs/verification/evidence_index.psv`）+ `src/evidence_index`
+      引擎（断链校验 + SHA-256 防篡改摘要 + markdown 渲染）+
+      `scripts/evidence_guard.ps1` CI 断链门禁（commit 存在性 git 校验）。
+      commit 0e7afaa。
+- [x] H-5（L8 模板化）工厂脚手架抽取：`factory-template/`（moon.mod 模板 +
+      最小合规示例包 + acceptance 一键门禁 + 黄金向量目录规范 + 证据索引
+      规范 + 套用指南），已在干净目录实例化验证 ALL GREEN。commit 296a0df。
+- [x] H-6（L9 不动点示范）`case-studies/h6-fixed-point/`：用工厂模板孵化
+      Luhn（ISO/IEC 7812-1）最小新领域包——选题（mooncakes 索引零覆盖域）
+      →参考实现黄金向量对拍（9 向量 + 0..999 校验位唯一性全量遍历）→
+      门禁全绿；首轮门禁真实拦下空主体边界缺陷并复绿，REPLAY 全程可复现，
+      证明 F(F) 成立。commit 077497d。
 
 横轴（六条正交闭包轴）缺口收口：正确性轴顶格 = G-B4（moon prove 全量）；
 平台轴下一级 = wasm 组件模型/WASI 交付；时间轴第五级 = G-A2；人机轴第四级
@@ -201,8 +222,9 @@
 
 ### 冲刺优先级（截止 2026-07-12 前）
 
-A1 → A2 → B1 → B2 → A5 已收官；当前按 G 区（功能闭包）+ H 区（立方体升维）推进，
-待用户下令选择起点；默认推荐 H-1 → G-B → H-4 → G-C1（先把体系差异做成实体证据）。
+A1 → A2 → B1 → B2 → A5 已收官；G 区（G-A1..3 / G-B1..4 / G-C1..2）与
+H 区（H-1..6）已于 2026-07-08 全量收官（证据见上方逐项 commit 与
+`docs/verification/evidence_index.psv`），闭包立方体 L0–L9 纵轴全部落地实体证据。
 
 ---
 

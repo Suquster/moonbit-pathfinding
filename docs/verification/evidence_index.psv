@@ -7,3 +7,5 @@ semver 兼容性 diff 发布门禁（API 表面三档位分类）|src/release_ag
 mooncakes 全量索引审计（1494 包快照、能力域缺口）|src/mooncakes_audit::gap report and markdown|66a2784
 依赖健康审计（存在性/版本时效/许可证合规）|src/mooncakes_audit::dep audit findings|7e8e487
 基准回归自动二分定位（skip 邻域扩散、对数探测上界）|src/build_tool::auto bisect logarithmic probes|d305464
+zstd Compressed 块解码（FSE/Huffman 熵，RFC 8878 §4，python-zstandard 黄金帧）|src/infra_compress::zstd golden frames|ba146ba
+zstd 熵编码侧（LZ77+FSE 序列+Huffman 字面量，外部解码对拍）|src/infra_compress::zstd entropy roundtrip|bf5eb52

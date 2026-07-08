@@ -12,6 +12,8 @@ pub fn action_fingerprint(Recipe) -> String
 
 pub fn add_dynamic_deps(BuildGraph, Target, Array[Target]) -> BuildGraph
 
+pub fn auto_bisect(Int, (Int) -> BisectVerdict) -> BisectReport
+
 pub fn build_parallel_schedule(Array[Action], Array[(String, String)]) -> ParallelSchedule
 
 pub let build_tool_name : String
@@ -107,6 +109,17 @@ pub(all) enum ActionResult {
   Skipped
 } derive(Eq, @debug.Debug)
 pub impl Show for ActionResult
+
+pub struct BisectReport {
+  first_bad : Int?
+  probes : Array[(Int, BisectVerdict)]
+}
+
+pub(all) enum BisectVerdict {
+  BisectGood
+  BisectBad
+  BisectSkip
+} derive(Eq)
 
 pub struct BuildCache {
   recorded_mtimes : Map[String, Int64]

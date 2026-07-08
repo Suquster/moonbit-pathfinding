@@ -197,9 +197,9 @@ The current local guard passes with one environment warning: `moon publish
 当前已落地 **30 种经典图/路径算法** 与 **8 种前沿算法**。
 CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）
 并附真实 OSM 路网基准证据（北京驾车网：CH 相对双向 Dijkstra
-**46×**，HL 距离查询 **0.44 µs（14304×）**，PHAST 一到全 SSSP
-相对全量 Dijkstra **6.15×**，many-to-many 64×64 距离表相对逐对
-CH **16–25×**，RPHAST 目标子集限定再提 **6.9–9.8×**，见
+**46.7×**，HL 距离查询 **0.47 µs（13279×）**，PHAST 一到全 SSSP
+相对全量 Dijkstra **6.27×**，many-to-many 64×64 距离表相对逐对
+CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见
 `benches/results/osm-real-networks-ch-native-2026-07-08.md`、
 `benches/results/osm-alt-hl-native-2026-07-08.md`）。HL 支持路径还原
 （`query_via` / `query_path`）。
@@ -236,13 +236,13 @@ CH **16–25×**，RPHAST 目标子集限定再提 **6.9–9.8×**，见
 | 28 | Hopcroft-Karp Matching         | [`src/undirected/hopcroft_karp.mbt`](./src/undirected/hopcroft_karp.mbt)     | ✅ v0.0.3   | [Hopcroft & Karp 1973](https://doi.org/10.1137/0202019)                                                                      |
 | 29 | Eulerian Path (Hierholzer)     | [`src/directed/eulerian.mbt`](./src/directed/eulerian.mbt)                   | ✅ v0.0.3   | — (Hierholzer 1873)                                                                                                          |
 | 30 | SCC Condensation DAG           | [`src/directed/condensation.mbt`](./src/directed/condensation.mbt)           | ✅ v0.0.3   | [Tarjan 1972](https://doi.org/10.1137/0201010)                                                                               |
-| 31 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt` · 生产级 [`src/directed/ch.mbt`](./src/directed/ch.mbt) | ✅ OSM 实测 46× | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
+| 31 | 🔥 Contraction Hierarchies    | `src/advanced/ch.mbt` · 生产级 [`src/directed/ch.mbt`](./src/directed/ch.mbt) | ✅ OSM 实测 46.7× | [Geisberger, Sanders, Schultes & Delling 2008](https://doi.org/10.1007/978-3-540-68552-4_24)                                 |
 | 32 | 🔥 Jump Point Search          | `src/advanced/jps.mbt`                                                       | 🧪 experimental | [Harabor & Grastien 2011](https://ojs.aaai.org/index.php/AAAI/article/view/7994)                                             |
-| 33 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt` · 生产级 [`src/directed/alt.mbt`](./src/directed/alt.mbt) | ✅ OSM 实测 6.6× | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
-| 34 | 🔥 Hub Labeling (2-hop)       | [`src/directed/hub_labels.mbt`](./src/directed/hub_labels.mbt)               | ✅ OSM 实测 14304× | [Abraham, Delling, Goldberg & Werneck 2011](https://doi.org/10.1007/978-3-642-20662-7_20)                                    |
-| 35 | 🔥 PHAST (一到全 SSSP)        | [`src/directed/phast.mbt`](./src/directed/phast.mbt)                         | ✅ OSM 实测 6.15× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
-| 36 | 🔥 Many-to-many 距离表         | [`src/directed/many_to_many.mbt`](./src/directed/many_to_many.mbt)           | ✅ OSM 实测 16–25× | [Knopp, Sanders, Schultes, Schulz & Wagner 2007](https://doi.org/10.1137/1.9781611972870.4)                        |
-| 37 | 🔥 RPHAST (目标子集限定)      | [`src/directed/rphast.mbt`](./src/directed/rphast.mbt)                       | ✅ OSM 实测 6.9–9.8× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
+| 33 | 🔥 ALT (A\* + Landmarks + Δ)  | `src/advanced/alt.mbt` · 生产级 [`src/directed/alt.mbt`](./src/directed/alt.mbt) | ✅ OSM 实测 6.5× | [Goldberg & Harrelson 2005 (SODA)](https://dl.acm.org/doi/10.5555/1070432.1070455)                                           |
+| 34 | 🔥 Hub Labeling (2-hop)       | [`src/directed/hub_labels.mbt`](./src/directed/hub_labels.mbt)               | ✅ OSM 实测 13279× | [Abraham, Delling, Goldberg & Werneck 2011](https://doi.org/10.1007/978-3-642-20662-7_20)                                    |
+| 35 | 🔥 PHAST (一到全 SSSP)        | [`src/directed/phast.mbt`](./src/directed/phast.mbt)                         | ✅ OSM 实测 6.27× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
+| 36 | 🔥 Many-to-many 距离表         | [`src/directed/many_to_many.mbt`](./src/directed/many_to_many.mbt)           | ✅ OSM 实测 16–27× | [Knopp, Sanders, Schultes, Schulz & Wagner 2007](https://doi.org/10.1137/1.9781611972870.4)                        |
+| 37 | 🔥 RPHAST (目标子集限定)      | [`src/directed/rphast.mbt`](./src/directed/rphast.mbt)                       | ✅ OSM 实测 7.2–9.4× | [Delling, Goldberg, Nowatzyk & Werneck 2011](https://doi.org/10.1109/IPDPS.2011.89)                                          |
 | 38 | 🔥 Customizable CH (CCH)      | [`src/directed/cch.mbt`](./src/directed/cch.mbt)                             | ✅ OSM 实测换权 13–19× | [Dibbelt, Strasser & Wagner 2014](https://doi.org/10.1007/978-3-319-07959-2_24)                                              |
 
 > ✅ v0.0.1 = 源码 + 单元测试 + PBT 已合入主干
@@ -372,8 +372,8 @@ available with a deliberately loose 50% default because it times end-to-end
 
 真实 OSM 路网基准已落地（`benches/advanced_bench/osm_alt_bench.mbt`，
 厦门/北京驾车网）：单向/双向 Dijkstra、ALT 双向 A*、CH 四档同批
-查询对拍 + 计时，证据归档于 `benches/results/alt-indexed-osm-20260705.md`
-与 `benches/results/ch-osm-20260705.md`。任何加速比都必须来自
+查询对拍 + 计时，证据归档于 `benches/results/osm-alt-hl-native-2026-07-08.md`
+与 `benches/results/osm-real-networks-ch-native-2026-07-08.md`（历史：`alt-indexed-osm-20260705.md`、`ch-osm-20260705.md`）。任何加速比都必须来自
 `benches/results/` 中记录的机器、backend、输入和原始计时。
 
 ---

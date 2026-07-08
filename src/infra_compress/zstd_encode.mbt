@@ -427,6 +427,204 @@ fn huf_encode_literals(lits : Array[Int]) -> Array[Int]? {
 }
 
 ///|
+/// 频次 → 正规化计数（和恰为 2^AL；稀有符号记 -1）。
+/// 分布退化（不足 2 个符号）返回 None。
+fn fse_normalize(freq : Array[Int], accuracy_log : Int) -> Array[Int]? {
+  let table_size = 1 << accuracy_log
+  let mut total = 0
+  let mut distinct = 0
+  let mut last = -1
+  for s in 0..<freq.length() {
+    if freq[s] > 0 {
+      total = total + freq[s]
+      distinct = distinct + 1
+      last = s
+    }
+  }
+  if distinct < 2 || total > 0x3FFFFFFF / table_size {
+    return None
+  }
+  let norm : Array[Int] = Array::make(last + 1, 0)
+  let mut used = 0
+  let mut biggest = 0
+  for s in 0..<=last {
+    if freq[s] > 0 {
+      let scaled = freq[s] * table_size / total
+      if scaled == 0 {
+        norm[s] = -1
+        used = used + 1
+      } else {
+        norm[s] = scaled
+        used = used + scaled
+      }
+      if freq[s] > freq[biggest] {
+        biggest = s
+      }
+    }
+  }
+  // 校平：差额记入/扣自最大频次符号（保持 ≥1）。
+  let mut diff = table_size - used
+  if diff > 0 {
+    norm[biggest] = norm[biggest] + diff
+  } else {
+    while diff < 0 {
+      let mut cut = -1
+      for s in 0..<=last {
+        if norm[s] > 1 && (cut < 0 || norm[s] > norm[cut]) {
+          cut = s
+        }
+      }
+      if cut < 0 {
+        return None
+      }
+      norm[cut] = norm[cut] - 1
+      diff = diff + 1
+    }
+  }
+  Some(norm)
+}
+
+///|
+/// 序列化 FSE 计数头（RFC 8878 §4.1.1，正向 LSB-first；
+/// 与 fse_read_ncount 严格互逆）。
+fn fse_write_ncount(norm : Array[Int], accuracy_log : Int) -> Array[Int] {
+  let bits : Array[Int] = []
+  fn put(v : Int, n : Int) {
+    for j in 0..<n {
+      bits.push((v >> j) & 1)
+    }
+  }
+
+  put(accuracy_log - 5, 4)
+  let table_size = 1 << accuracy_log
+  let mut remaining = table_size + 1
+  let mut threshold = table_size
+  let mut nb_bits = accuracy_log + 1
+  let mut s = 0
+  let mut previous0 = false
+  while remaining > 1 && s < norm.length() {
+    if previous0 {
+      // repeat-zero 链：先数出紧随的零串。
+      let mut run = 0
+      while s + run < norm.length() && norm[s + run] == 0 {
+        run = run + 1
+      }
+      let mut left = run
+      while left >= 3 {
+        put(3, 2)
+        left = left - 3
+      }
+      put(left, 2)
+      s = s + run
+      previous0 = false
+      if remaining <= 1 || s >= norm.length() {
+        break
+      }
+    }
+    let prob = norm[s]
+    let max = 2 * threshold - 1 - remaining
+    let mut count = prob + 1 // -1 → 0。
+    remaining = remaining - (if prob < 0 { 1 } else { prob })
+    if count >= threshold {
+      count = count + max
+    }
+    if count < max {
+      put(count, nb_bits - 1)
+    } else {
+      put(count, nb_bits)
+    }
+    previous0 = prob == 0
+    s = s + 1
+    while remaining < threshold && remaining > 1 {
+      nb_bits = nb_bits - 1
+      threshold = threshold >> 1
+    }
+  }
+  // 打包为字节（尾部补零）。
+  while bits.length() % 8 != 0 {
+    bits.push(0)
+  }
+  let out : Array[Int] = []
+  let mut i = 0
+  while i < bits.length() {
+    let mut b = 0
+    for j in 0..<8 {
+      b = b | (bits[i + j] << j)
+    }
+    out.push(b)
+    i = i + 8
+  }
+  out
+}
+
+///|
+/// 一张序列表的编码选择：模式 + 头字节 + 编码表。
+priv struct SeqTableChoice {
+  mode : Int // 0=Predefined / 1=RLE / 2=FSE_Compressed
+  header : Array[Int]
+  table : FseEncTable? // RLE 时 None
+}
+
+///|
+/// 按估算比特成本为一列符号码选表：RLE（列恒定）优先，
+/// 否则比较预定义分布与自适应 FSE_Compressed 分布。
+fn zstd_pick_seq_table(
+  codes : Array[Int],
+  default_norm : Array[Int],
+  default_al : Int,
+  max_al : Int,
+) -> SeqTableChoice {
+  let n = codes.length()
+  let mut constant = true
+  for c in codes {
+    if c != codes[0] {
+      constant = false
+      break
+    }
+  }
+  if constant {
+    return { mode: 1, header: [codes[0]], table: None }
+  }
+  let mut max_code = 0
+  let freq : Array[Int] = Array::make(default_norm.length(), 0)
+  for c in codes {
+    freq[c] = freq[c] + 1
+    if c > max_code {
+      max_code = c
+    }
+  }
+  // 估算：bits(s) ≈ AL - highbit(norm_s)（FSE 上界）。
+  fn est_bits(norm : Array[Int], al : Int) -> Int {
+    let mut sum = 0
+    for s in 0..<norm.length() {
+      if freq.length() > s && freq[s] > 0 {
+        let m = if norm[s] <= 0 { 1 } else { norm[s] }
+        sum = sum + freq[s] * (al - zstd_highbit(m))
+      }
+    }
+    sum
+  }
+
+  let pre_cost = est_bits(default_norm, default_al)
+  let mut al = 5
+  while 1 << al < n && al < max_al {
+    al = al + 1
+  }
+  match fse_normalize(freq, al) {
+    None => { mode: 0, header: [], table: None }
+    Some(norm) => {
+      let header = fse_write_ncount(norm, al)
+      let custom_cost = est_bits(norm, al) + 8 * header.length()
+      if custom_cost < pre_cost {
+        { mode: 2, header, table: Some(fse_build_enc_table(norm, al)) }
+      } else {
+        { mode: 0, header: [], table: None }
+      }
+    }
+  }
+}
+
+///|
 /// 单条 LZ77 序列。
 priv struct ZstdSeq {
   ll : Int
@@ -548,13 +746,11 @@ fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
     out.push(128 + (nb_seq >> 8))
     out.push(nb_seq & 0xFF)
   }
-  out.push(0x00) // 三表全 Predefined。
-  let ll_t = fse_build_enc_table(zstd_ll_default(), 6)
-  let of_t = fse_build_enc_table(zstd_of_default(), 5)
-  let ml_t = fse_build_enc_table(zstd_ml_default(), 6)
-  let bw : ZstdBitWriter = { bits: [] }
   // 预计算每序列码与附加位。
   let codes : Array[(Int, Int, Int, Int, Int, Int, Int, Int, Int)] = []
+  let ll_col : Array[Int] = []
+  let of_col : Array[Int] = []
+  let ml_col : Array[Int] = []
   for sq in seqs {
     let (llc, llb, llv) = zstd_ll_encode(sq.ll)
     let (mlc, mlb, mlv) = zstd_ml_encode(sq.ml)
@@ -565,7 +761,47 @@ fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
       return None // 超出预定义 OF 表符号域（块 ≤64KB 不会发生）。
     }
     codes.push((llc, llb, llv, mlc, mlb, mlv, ofc, ofc, ofx))
+    ll_col.push(llc)
+    of_col.push(ofc)
+    ml_col.push(mlc)
   }
+  // 每列独立选模式：Predefined / RLE / FSE_Compressed。
+  let ll_pick = zstd_pick_seq_table(ll_col, zstd_ll_default(), 6, 9)
+  let of_pick = zstd_pick_seq_table(of_col, zstd_of_default(), 5, 8)
+  let ml_pick = zstd_pick_seq_table(ml_col, zstd_ml_default(), 6, 9)
+  out.push((ll_pick.mode << 6) | (of_pick.mode << 4) | (ml_pick.mode << 2))
+  for pick in [ll_pick, of_pick, ml_pick] {
+    if pick.mode != 0 {
+      for b in pick.header {
+        out.push(b)
+      }
+    }
+  }
+  fn resolve(
+    pick : SeqTableChoice,
+    default_t : () -> FseEncTable,
+  ) -> FseEncTable {
+    match pick.table {
+      Some(t) => t
+      None =>
+        if pick.mode == 1 {
+          // RLE：AL=0 退化表（零比特初始化/迁移/冲刷）。
+          {
+            table_log: 0,
+            state_table: [0],
+            delta_nb_bits: Array::make(64, 0),
+            delta_find_state: Array::make(64, 0),
+          }
+        } else {
+          default_t()
+        }
+    }
+  }
+
+  let ll_t = resolve(ll_pick, fn() { fse_build_enc_table(zstd_ll_default(), 6) })
+  let of_t = resolve(of_pick, fn() { fse_build_enc_table(zstd_of_default(), 5) })
+  let ml_t = resolve(ml_pick, fn() { fse_build_enc_table(zstd_ml_default(), 6) })
+  let bw : ZstdBitWriter = { bits: [] }
   // 末序列：状态初始化 ML → OF → LL，附加位 LL → ML → OF。
   let (llc, llb, llv, mlc, mlb, mlv, ofc, ofbits, ofx) = codes[nb_seq - 1]
   let mut ml_state = ml_t.init_state(mlc)

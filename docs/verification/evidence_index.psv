@@ -9,3 +9,7 @@ mooncakes 全量索引审计（1494 包快照、能力域缺口）|src/mooncakes
 基准回归自动二分定位（skip 邻域扩散、对数探测上界）|src/build_tool::auto bisect logarithmic probes|d305464
 zstd Compressed 块解码（FSE/Huffman 熵，RFC 8878 §4，python-zstandard 黄金帧）|src/infra_compress::zstd golden frames|ba146ba
 zstd 熵编码侧（LZ77+FSE 序列+Huffman 字面量，外部解码对拍）|src/infra_compress::zstd entropy roundtrip|bf5eb52
+zstd 编码器自适应 FSE 序列表（Predefined/RLE/FSE_Compressed 逐列择优）|src/infra_compress::zstd entropy roundtrip|bf5eb52
+HL 标签内存压缩（LEB128 差分字节流、流式归并查询无损等价）|src/directed::CompressedHubLabels parity|20bb4aa
+LZ4 帧格式（描述符/校验/块链接模式，python-lz4 双向互操作）|src/infra_compress::lz4 frame golden|544b3e1
+zstd 编码器重复偏移历史 + 一步惰性匹配（跨块 rep 同步）|src/infra_compress::zstd rep-offset lazy|d89454a

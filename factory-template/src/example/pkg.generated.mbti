@@ -1,0 +1,14 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/factory-template/src/example"
+
+// Values
+pub fn isqrt(Int) -> Int?
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

@@ -89,3 +89,36 @@ test "zstd entropy: 跨 64KB 分块边界（多块帧）无损" {
   let got = @infra_compress.zstd_decompress(frame, 1 << 20)
   assert_true(got == Some(data))
 }
+
+///|
+/// 重复偏移历史 + 一步惰性匹配路径：等距重复记录（offset 恒定 →
+/// rep1 复用）与错位记录（触发惰性放行）混合，own 解码器全量对拍。
+test "zstd entropy: 重复偏移/惰性匹配（等距记录 + 错位混合）" {
+  let data : Array[Int] = []
+  for i in 0..<800 {
+    let s = "sensor=42 temp=19.5 unit=C seq=\{i % 3}\n"
+    for j in 0..<s.length() {
+      data.push(s[j].to_int() & 0xFF)
+    }
+  }
+  // 错位段：制造 pos+1 更长匹配的惰性场景。
+  for i in 0..<200 {
+    data.push(i % 251)
+    let s = "abcdefgh_abcdefgh"
+    for j in 0..<s.length() {
+      data.push(s[j].to_int() & 0xFF)
+    }
+  }
+  let frame = zstd_compress_entropy(data, true)
+  // 收益显著（重复偏移应把 OF 列压成低码）。
+  assert_true(frame.length() * 10 < data.length())
+  match zstd_decompress(frame, 1 << 21) {
+    None => abort("rep-offset 帧解码失败")
+    Some(dec) => {
+      assert_eq(dec.length(), data.length())
+      for k in 0..<data.length() {
+        assert_eq(dec[k], data[k])
+      }
+    }
+  }
+}

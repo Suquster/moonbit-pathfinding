@@ -26,6 +26,8 @@ pub fn zlib_decompress(Array[Int]) -> Array[Int]?
 
 pub fn zstd_compress(Array[Int], Bool) -> Array[Int]
 
+pub fn zstd_compress_entropy(Array[Int], Bool) -> Array[Int]
+
 pub fn zstd_decompress(Array[Int], Int) -> Array[Int]?
 
 // Errors

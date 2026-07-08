@@ -263,7 +263,7 @@ let result = ch_query(graph, source, target)
 | 可执行文档 | crate docs / tests | README.mbt.md 可由 `moon test` 执行 |
 | 合约验证 | 无内建证明链路 | runtime proof predicates 已测试 |
 | 多后端 | Rust native / wasm 需额外链路 | MoonBit wasm-gc / js / native CI 目标 |
-| 前沿算法 | 无 CH/HL/PHAST 等路网 SOTA | 8 种已实现（含 CCH 权重换绑），OSM 实测证据归档（benches/results/ch-osm-20260705.md、cch-osm-20260706.md） |
+| 前沿算法 | 无 CH/HL/PHAST 等路网 SOTA | 8 种已实现（含 CCH 权重换绑），OSM 实测证据归档（benches/results/osm-real-networks-ch-native-2026-07-08.md、cch-osm-20260708.md） |
 
 ---
 

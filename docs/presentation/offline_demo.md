@@ -64,7 +64,7 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\proof_evidence.ps1
 ### 4:20-5:20 · 高级算法状态
 
 > 翻 PPT 的 CH / JPS / ALT 页。
-> 口径：实现与测试已存在，当前 native benchmark artifact 用于回归守卫；真实路网加速比要等 OSM artifact 落库后再讲。
+> 口径：实现与测试已存在，OSM 真实路网实测已归档（2026-07-08 重跑，北京 CH 46.7×、HL 13279×、CCH 换权 13.1×，benches/results/）。
 
 ### 5:20-6:20 · 质量与交付面
 
@@ -77,7 +77,7 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\audit_doc.ps1
 
 ### 6:20-7:00 · 结尾
 
-> 总结下一阶段：补齐负例/边界回归、打磨中英双语答辩口径、深化 CH/JPS/ALT 论文到代码证据、推进真实路网 benchmark，并决定 playground 是否做成真实本地 demo。
+> 总结下一阶段：补齐负例/边界回归、打磨中英双语答辩口径、深化 CH/JPS/ALT 论文到代码证据（真实路网 benchmark 已归档），并决定 playground 是否做成真实本地 demo。
 
 ---
 

@@ -93,7 +93,7 @@ pub fn dijkstra[N, W](start, successors: (N) -> Array[(N, W)], goal) -> (Array[N
 | 图结构 | Kruskal / Connected Components / Tarjan SCC / Topo Sort | 已实现并测试 |
 | 流与匹配 | Edmonds-Karp / Kuhn-Munkres | 已实现并测试 |
 | 组合路径 | Bidirectional BFS / IDA* / Yen | 已实现并测试 |
-| 前沿方向 | CH / JPS / ALT / Hub Labeling / PHAST / RPHAST / many-to-many / CCH | 生产级实现 + OSM 真实路网实测（北京：CH 46×、HL 14304×、CCH 换权 13.4×）+ 论文追踪 |
+| 前沿方向 | CH / JPS / ALT / Hub Labeling / PHAST / RPHAST / many-to-many / CCH | 生产级实现 + OSM 真实路网实测（2026-07-08 重跑，北京：CH 46.7×、HL 13279×、CCH 换权 13.1×）+ 论文追踪 |
 
 ---
 
@@ -156,7 +156,7 @@ let result = jps(grid, (0, 0), (31, 31))
 - 预处理：节点收缩、witness search、shortcut 注入
 - 查询：双向上行图搜索、shortcut 展开
 - 当前策略：正确性优先，收缩顺序仍需继续优化
-- 下一步证据：edge-difference 顺序、真实路网基准、Dijkstra 对照
+- 已归档证据：真实路网基准（2026-07-08 重跑，厦门/北京，Dijkstra 全代价对拍一致）
 
 ```moonbit
 let graph = ch_preprocess(nodes, successors)
@@ -231,7 +231,6 @@ let result = ch_query(graph, source, target)
 待补强：
 
 - mooncakes 发布 token / credentials 配置
-- 真实路网 benchmark artifact
 - playground 是否交付为真实本地 demo
 
 ---
@@ -263,7 +262,7 @@ let result = ch_query(graph, source, target)
 | 可执行文档 | crate docs / tests | README.mbt.md 可由 `moon test` 执行 |
 | 合约验证 | 无内建证明链路 | runtime proof predicates 已测试 |
 | 多后端 | Rust native / wasm 需额外链路 | MoonBit wasm-gc / js / native CI 目标 |
-| 前沿算法 | 无 CH/HL/PHAST 等路网 SOTA | 8 种已实现（含 CCH 权重换绑），OSM 实测证据归档（benches/results/osm-real-networks-ch-native-2026-07-08.md、cch-osm-20260708.md） |
+| 前沿算法 | 无 CH/HL/PHAST 等路网 SOTA | 8 种已实现（含 CCH 权重换绑），OSM 实测证据归档（benches/results/osm-real-networks-ch-native-2026-07-08.md、osm-alt-hl-native-2026-07-08.md、cch-osm-20260708.md） |
 
 ---
 
@@ -286,7 +285,7 @@ let result = ch_query(graph, source, target)
 1. 补齐负例与边界回归：不可达、空图、单点、重复边、负权、断连
 2. 双语 README、AI guide、slides、demo script 保持同一证据口径
 3. 为 CH / JPS / ALT 建立论文到代码 traceability
-4. 追加 OSM / 真实路网 benchmark artifact 后再讲加速比
+4. OSM / 真实路网 benchmark artifact 已归档（2026-07-08 重跑），口径统一引用
 5. 决策 playground：要么可本地打开并记录环境，要么继续移出交付承诺
 
 ---

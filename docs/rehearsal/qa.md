@@ -24,7 +24,7 @@
 
 **30 秒应答**：
 
-> 生产级 ALT（`src/directed/alt.mbt`）已在真实 OSM 路网上拿到实测证据：北京驾车网 ALT 双向 A* 相对双向 Dijkstra **6.60×**（k=16 farthest 选点，预处理约 88 次查询回本），证据归档 `benches/results/alt-indexed-osm-20260705.md`。
+> 生产级 ALT（`src/directed/alt.mbt`）已在真实 OSM 路网上拿到实测证据：北京驾车网 ALT 双向 A* 相对双向 Dijkstra **6.54×**（k=16 farthest 选点），证据归档 `benches/results/osm-alt-hl-native-2026-07-08.md`（历史对照：`alt-indexed-osm-20260705.md`）。
 >
 > 正确性不靠口头保证：INF 统一截断保证下界可采纳且一致（不存在早停次优问题），并有差分 PBT 与 OSM 全量对拍守卫。
 >
@@ -36,11 +36,11 @@
 
 **30 秒应答**：
 
-> 能，而且是真实路网实测而非引用论文数字：生产级 CH（`src/directed/ch.mbt`，edge-difference 懒更新收缩序 + witness 搜索 + stall-on-demand）在 OSM 北京驾车网 **134 µs/查询，相对双向 Dijkstra 46×**，厦门 17×；预处理北京 24.6 s（约 4500 查询回本）。
+> 能，而且是真实路网实测而非引用论文数字：生产级 CH（`src/directed/ch.mbt`，edge-difference 懒更新收缩序 + witness 搜索 + stall-on-demand）在 OSM 北京驾车网 **132 µs/查询，相对双向 Dijkstra 46.7×**（相对单向 Dijkstra 103.6×），厦门 17.8×；预处理北京 25.0 s。2026-07-08 重跑与 07-05 首次归档同口径复现。
 >
-> 在 CH 之上还有完整上层建筑：Hub Labeling 距离查询 **0.44 µs（14304×）**、PHAST 一到全 6.15×、many-to-many 距离表 16–25×、RPHAST 目标子集再 6.9–9.8×。
+> 在 CH 之上还有完整上层建筑：Hub Labeling 距离查询 **0.47 µs（13279×）**、PHAST 一到全 6.27×、many-to-many 距离表 16–27×、RPHAST 目标子集再 7.2–9.4×。
 >
-> 每个数字都附全量对拍一致性校验 + 差分 PBT，调参轨迹与回本分析归档 `benches/results/ch-osm-20260705.md`，论文到代码追溯在 `docs/verification/paper-to-code-advanced.md`。
+> 每个数字都附全量对拍一致性校验 + 差分 PBT，最新实测归档 `benches/results/osm-real-networks-ch-native-2026-07-08.md`、`osm-alt-hl-native-2026-07-08.md`（调参轨迹与回本分析见 `ch-osm-20260705.md`），论文到代码追溯在 `docs/verification/paper-to-code-advanced.md`。
 ---
 
 ## Q4：相对 Rust pathfinding，这个项目不可替代的价值是什么？
@@ -53,7 +53,7 @@
 > 2. successor function 风格适合 AI Agent 生成调用代码，也适合真实项目把数组、Map 或外部数据源接入。
 > 3. `README.mbt.md` 可被 `moon test` 执行，文档不是静态宣传页。
 > 4. runtime proof predicates 让路径合法性、代价一致性、BFS minimality 变成可运行检查。
-> 5. 8 种前沿路网算法（CH / ALT / HL / PHAST / RPHAST / m2m / CCH / JPS）Rust pathfinding 均未提供，且附真实 OSM 路网实测证据（北京 CH 46×、HL 14304×、CCH 换权 13.4×）。
+> 5. 8 种前沿路网算法（CH / ALT / HL / PHAST / RPHAST / m2m / CCH / JPS）Rust pathfinding 均未提供，且附真实 OSM 路网实测证据（2026-07-08 重跑，北京 CH 46.7×、HL 13279×、CCH 换权 13.1×）。
 > 6. 跨语言等价工作负载对比基础设施（`bench_rust/` + 逐位一致随机源 + 黄金交叉校验）把“和 Rust 比”变成可复现命令而非口号。
 >
 > 也就是说，我的差异化不是“语言换皮”，而是把 MoonBit 的多后端、可执行文档和未来证明链路组合成一个可交付库。

@@ -116,3 +116,31 @@ test "parse_proto_full skips comments and top-level statements" {
     Err(e) => fail("含注释的合法 .proto 不应失败：\{e}")
   }
 }
+
+///|
+/// 畸形 .proto 拒绝路径：未闭合字符串、字段选项字符串值、
+/// 缺失定界符 —— 覆盖语法器 Err 分支。
+test "parse_proto_full 畸形输入与字符串选项值" {
+  // 未闭合字符串字面量。
+  assert_true(parse_proto_full("syntax = \"proto3") is Err(_))
+  // 缺失分号 / 大括号。
+  assert_true(parse_proto_full("syntax = \"proto3\"; message M {") is Err(_))
+  assert_true(
+    parse_proto_full("syntax = \"proto3\"; message M { int32 a = 1 }") is Err(_),
+  )
+  // 字段选项为字符串值（触发选项值的字符串字面量分支）。
+  let src = "syntax = \"proto3\";\n" +
+    "message M {\n" +
+    "  int32 a = 1 [json_name = \"customA\", deprecated = true];\n" +
+    "}\n"
+  match parse_proto_full(src) {
+    Err(_) => abort("字符串选项值解析失败")
+    Ok(schema) => {
+      let f = schema.messages[0].fields[0]
+      assert_true(f.options.length() >= 2)
+    }
+  }
+  // option 语句字符串值。
+  let src2 = "syntax = \"proto3\";\noption java_package = \"com.example\";\nmessage M { int32 a = 1; }\n"
+  assert_true(parse_proto_full(src2) is Ok(_))
+}

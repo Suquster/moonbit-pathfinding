@@ -31,12 +31,13 @@
 ///|
 /// 生成一个「含转义场景」的随机字符串（长度落在 `[0, max_len]`）。
 ///
-/// 字符集刻意混入 `"` / `\` / 换行 / 制表 / 回车，以覆盖 JSON 转义往返；
+/// 字符集刻意混入 `"` / `\` / 换行 / 制表 / 回车 / 退格 / 换页 /
+/// 其他控制字符（\uXXXX 路径），以覆盖 JSON 转义往返；
 /// 不含竖线 `|`，避免干扰 Markdown 表格数据行统计。
 fn rr_gen_escapable_string(rng : @infra_pbt.Rng, max_len : Int) -> String {
   let charset = [
     'a', 'b', 'c', 'Z', 'Q', '0', '1', '2', ' ', '_', '/', '"', '\\', '\n', '\t',
-    '\r',
+    '\r', '\u{08}', '\u{0C}', '\u{01}', '\u{1F}',
   ]
   let len = rng.next_below(max_len + 1)
   let buf : Array[Char] = []

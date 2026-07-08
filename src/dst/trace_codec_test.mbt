@@ -42,3 +42,40 @@ test "serialize/deserialize round-trips a rich result" {
     Err(_) => fail("round-trip should succeed")
   }
 }
+
+///|
+/// Byzantine 与 DiskFault 故障种类编解码往返 + 截断记号流拒绝。
+test "serialize/deserialize covers Byzantine/DiskFault and truncation" {
+  let r : DesResult = {
+    seed: 7,
+    trace: [
+      EvFaulted(time=1UL, task_id=0, kind=NetFaultKind::Byzantine),
+      EvFaulted(time=2UL, task_id=1, kind=NetFaultKind::DiskFault(lose=3)),
+    ],
+    status: Completed,
+    finals: [],
+  }
+  let s = serialize_result(r)
+  match deserialize_result(s) {
+    Err(_) => fail("Byzantine/DiskFault 往返失败")
+    Ok(r2) => {
+      assert_eq(r2.seed, 7UL)
+      assert_true(r2.trace[0] is EvFaulted(kind=NetFaultKind::Byzantine, ..))
+      assert_true(
+        r2.trace[1] is EvFaulted(kind=NetFaultKind::DiskFault(lose=3), ..),
+      )
+    }
+  }
+  // 截断记号流：任意前缀（按空白切分后去尾）不得成功。
+  let toks = s.split(" ").collect()
+  if toks.length() > 2 {
+    let sb = StringBuilder::new()
+    for k in 0..<(toks.length() - 1) {
+      if k > 0 {
+        sb.write_char(' ')
+      }
+      sb.write_string(toks[k].to_owned())
+    }
+    assert_true(deserialize_result(sb.to_string()) is Err(_))
+  }
+}

@@ -274,3 +274,21 @@ test "parse_json_log returns none on malformed input" {
     parse_json_log("{\"ts\":1,\"level\":\"NOPE\",\"fields\":{}}") is None,
   ) // 未知级别
 }
+
+///|
+/// 阈值查询、未结束 span 时长、顶层对象后含尾随垃圾的 JSON 拒绝。
+test "logging：current_threshold / 未结束 span / JSON 尾随垃圾" {
+  let _ = current_threshold()
+  let sp = enter_span("work")
+  assert_true(span_duration(sp) is None)
+  exit_span(sp)
+  let mut seen = false
+  for f in finished_spans() {
+    if f.id == sp.id {
+      seen = true
+      assert_true(span_duration(f) is Some(d) && d >= 0L)
+    }
+  }
+  assert_true(seen)
+  assert_true(parse_json_log("{\"level\":\"info\"} extra") is None)
+}

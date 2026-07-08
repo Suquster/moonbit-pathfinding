@@ -326,7 +326,18 @@ fn inflate_dynamic_tables(br : BitReader) -> (HuffTable, HuffTable)? {
 ///|
 /// 解压 raw DEFLATE 流（RFC 1951）；畸形输入返回 None。
 pub fn inflate(data : Array[Int]) -> Array[Int]? {
+  match inflate_at(data, 0) {
+    Some((out, _)) => Some(out)
+    None => None
+  }
+}
+
+///|
+/// 自 `start` 字节偏移起解压一条 DEFLATE 流，返回（输出，流结束后按
+/// 字节对齐的下一偏移）。供 gzip 多成员解析定位成员边界使用。
+fn inflate_at(data : Array[Int], start : Int) -> (Array[Int], Int)? {
   let br = BitReader::new(data)
+  br.pos = start
   let out : Array[Int] = []
   for ;; {
     let bfinal = br.take(1)
@@ -376,7 +387,8 @@ pub fn inflate(data : Array[Int]) -> Array[Int]? {
       return None // BTYPE=11 保留
     }
     if bfinal == 1 {
-      return Some(out)
+      br.align_byte()
+      return Some((out, br.pos))
     }
   }
 }
@@ -588,66 +600,79 @@ pub fn gzip_compress(data : Array[Int]) -> Array[Int] {
 ///|
 /// gzip 解压：校验魔数/CM、跳过可选字段（FEXTRA/FNAME/FCOMMENT/FHCRC）、
 /// 解 deflate 体并核对 CRC-32 与 ISIZE；任一不符返回 None。
+///
+/// 支持 RFC 1952 §2.2 多成员流（若干 gzip 成员首尾拼接，如 `cat a.gz b.gz`）：
+/// 逐成员解压并拼接输出；成员之间/末尾不允许残留垃圾字节。
 pub fn gzip_decompress(data : Array[Int]) -> Array[Int]? {
-  if data.length() < 18 {
+  let n = data.length()
+  if n < 18 {
     return None
   }
-  if (data[0] & 0xFF) != 0x1F ||
-    (data[1] & 0xFF) != 0x8B ||
-    (data[2] & 0xFF) != 8 {
-    return None
-  }
-  let flg = data[3] & 0xFF
-  let mut pos = 10
-  if (flg & 0x04) != 0 {
-    // FEXTRA
-    if pos + 2 > data.length() {
+  let out : Array[Int] = []
+  let mut pos = 0
+  while pos < n {
+    if pos + 18 > n {
       return None
     }
-    let xlen = (data[pos] & 0xFF) | ((data[pos + 1] & 0xFF) << 8)
-    pos = pos + 2 + xlen
-  }
-  if (flg & 0x08) != 0 {
-    // FNAME：NUL 结尾
-    while pos < data.length() && (data[pos] & 0xFF) != 0 {
+    if (data[pos] & 0xFF) != 0x1F ||
+      (data[pos + 1] & 0xFF) != 0x8B ||
+      (data[pos + 2] & 0xFF) != 8 {
+      return None
+    }
+    let flg = data[pos + 3] & 0xFF
+    pos = pos + 10
+    if (flg & 0x04) != 0 {
+      // FEXTRA
+      if pos + 2 > n {
+        return None
+      }
+      let xlen = (data[pos] & 0xFF) | ((data[pos + 1] & 0xFF) << 8)
+      pos = pos + 2 + xlen
+    }
+    if (flg & 0x08) != 0 {
+      // FNAME：NUL 结尾
+      while pos < n && (data[pos] & 0xFF) != 0 {
+        pos = pos + 1
+      }
       pos = pos + 1
     }
-    pos = pos + 1
-  }
-  if (flg & 0x10) != 0 {
-    // FCOMMENT
-    while pos < data.length() && (data[pos] & 0xFF) != 0 {
+    if (flg & 0x10) != 0 {
+      // FCOMMENT
+      while pos < n && (data[pos] & 0xFF) != 0 {
+        pos = pos + 1
+      }
       pos = pos + 1
     }
-    pos = pos + 1
+    if (flg & 0x02) != 0 {
+      pos = pos + 2 // FHCRC
+    }
+    if pos + 8 > n {
+      return None
+    }
+    guard inflate_at(data, pos) is Some((raw, body_end)) else { return None }
+    if body_end + 8 > n {
+      return None
+    }
+    let mut crc_stored = 0U
+    for k in 0..<4 {
+      crc_stored = crc_stored |
+        ((data[body_end + k] & 0xFF).reinterpret_as_uint() << (8 * k))
+    }
+    let mut isize_stored = 0U
+    for k in 0..<4 {
+      isize_stored = isize_stored |
+        ((data[body_end + 4 + k] & 0xFF).reinterpret_as_uint() << (8 * k))
+    }
+    if @infra_hash.crc32(raw) != crc_stored {
+      return None
+    }
+    if raw.length().reinterpret_as_uint() != isize_stored {
+      return None
+    }
+    for b in raw {
+      out.push(b)
+    }
+    pos = body_end + 8
   }
-  if (flg & 0x02) != 0 {
-    pos = pos + 2 // FHCRC
-  }
-  if pos + 8 > data.length() {
-    return None
-  }
-  let body : Array[Int] = []
-  for k in pos..<(data.length() - 8) {
-    body.push(data[k] & 0xFF)
-  }
-  guard inflate(body) is Some(raw) else { return None }
-  let tail = data.length() - 8
-  let mut crc_stored = 0U
-  for k in 0..<4 {
-    crc_stored = crc_stored |
-      ((data[tail + k] & 0xFF).reinterpret_as_uint() << (8 * k))
-  }
-  let mut isize_stored = 0U
-  for k in 0..<4 {
-    isize_stored = isize_stored |
-      ((data[tail + 4 + k] & 0xFF).reinterpret_as_uint() << (8 * k))
-  }
-  if @infra_hash.crc32(raw) != crc_stored {
-    return None
-  }
-  if raw.length().reinterpret_as_uint() != isize_stored {
-    return None
-  }
-  Some(raw)
+  Some(out)
 }

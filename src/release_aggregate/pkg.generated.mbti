@@ -7,9 +7,15 @@ import {
 }
 
 // Values
+pub fn actual_bump(String, String) -> BumpLevel?
+
 pub fn aggregate_suite(SuiteGates) -> SuiteReleaseReport
 
+pub fn check_release_compat(ApiSurface, ApiSurface, String, String) -> String?
+
 pub fn collect_direction_releases(SuiteGates) -> Array[@release_meta.DirectionRelease]
+
+pub fn compat_diff(ApiSurface, ApiSurface) -> CompatDiff
 
 pub let direction_count : Int
 
@@ -20,6 +26,25 @@ pub fn suite_release_ready(Array[@release_meta.DirectionRelease]) -> Bool
 // Errors
 
 // Types and methods
+pub struct ApiSurface {
+  decls : Map[String, String]
+}
+pub fn ApiSurface::new(Array[(String, String)]) -> Self
+
+pub(all) enum BumpLevel {
+  PatchBump
+  MinorBump
+  MajorBump
+} derive(Eq)
+
+pub struct CompatDiff {
+  removed : Array[String]
+  changed : Array[String]
+  added : Array[String]
+  required : BumpLevel
+}
+pub fn CompatDiff::breaking(Self) -> Array[String]
+
 pub(all) struct SuiteGates {
   parser_combinator : @release_meta.QualityGates
   regex_engine : @release_meta.QualityGates

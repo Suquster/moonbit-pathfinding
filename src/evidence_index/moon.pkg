@@ -1,0 +1,13 @@
+// 包：Suquster/moonbit-pathfinding/src/evidence_index
+//
+// 「声明 → 测试 → commit」可校验证据索引引擎（H-4 + G-C2，L7 自治工厂层）：
+// 解析证据三元组快照（psv），校验无断链（声明必须挂测试与 commit）、
+// 以 SHA-256 计算索引摘要（防篡改锚点）、渲染 markdown 证据表。
+// 快照由 scripts/evidence_index.ps1 扫描测试清单自动刷新；引擎离线可测。
+import {
+  "Suquster/moonbit-pathfinding/src/infra_hash",
+}
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt",
+} for "test"

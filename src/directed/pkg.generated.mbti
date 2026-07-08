@@ -95,8 +95,10 @@ pub struct CompressedHubLabels {
   b_off : Array[Int]
   b_bytes : Array[Int]
 }
+pub fn CompressedHubLabels::from_bytes(Array[Int]) -> Self?
 pub fn CompressedHubLabels::label_bytes(Self) -> Int
 pub fn CompressedHubLabels::query(Self, Int, Int) -> Int64?
+pub fn CompressedHubLabels::to_bytes(Self) -> Array[Int]
 
 pub struct Condensation[N] {
   components : Array[Array[N]]

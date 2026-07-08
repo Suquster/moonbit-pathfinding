@@ -208,6 +208,23 @@ pub struct Target {
 pub fn Target::new(String) -> Self
 pub impl Show for Target
 
+pub struct Workspace {
+  packages : Array[WorkspacePackage]
+}
+pub fn Workspace::build_order(Self) -> Result[Array[String], Cycle]
+pub fn Workspace::dependents(Self, String) -> Array[String]
+pub fn Workspace::new(Array[WorkspacePackage]) -> Self
+pub fn Workspace::rebuild_plan(Self, Array[String]) -> Result[Array[String], Cycle]
+pub fn Workspace::to_build_graph(Self) -> BuildGraph
+pub fn Workspace::transitive_deps(Self, String) -> Array[String]
+pub fn Workspace::validate(Self) -> String?
+
+pub struct WorkspacePackage {
+  name : String
+  deps : Array[String]
+}
+pub fn WorkspacePackage::new(String, Array[String]) -> Self
+
 // Type aliases
 
 // Traits

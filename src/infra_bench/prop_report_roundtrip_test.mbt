@@ -217,3 +217,21 @@ test "Feature: championship-v1-upgrade, Property 6: to_markdown is non-empty wit
   )
   assert_true(ok)
 }
+
+///|
+/// 畸形 JSON 拒绝：截断、非法关键字、数字语法（指数/小数/负号）、
+/// 尾随垃圾 —— 覆盖 BJParser 各错误分支且绝不崩溃。
+test "Feature: championship-v1-upgrade, Property 6 补充: 畸形 JSON 报告拒绝" {
+  let bad = [
+    "", "   ", "{", "[1,2", "tru", "truX", "nul", "falsX", "{\"a\":}", "{\"a\":1,}",
+    "{\"a\" 1}", "\"unterminated", "01", "1.", "1e", "1e+", "-", "-x", "1.5e3x",
+    "{\"schema\":\"x\"} garbage",
+  ]
+  for s in bad {
+    assert_true(parse_report(s) is Err(_))
+  }
+  // 合法 JSON 但缺必需字段亦拒绝。
+  assert_true(parse_report("{\"schema\":\"y\"}") is Err(_))
+  assert_true(parse_report("true") is Err(_))
+  assert_true(parse_report("[1, 2.5, -3e2, true, false, \"s\"]") is Err(_))
+}

@@ -29,13 +29,18 @@ fn hlc_fnv1a(bytes : Array[Int], len : Int) -> Int64 {
 }
 
 ///|
-/// 有界安全 varint 读取：越界或超出 63 位返回 `None`，否则返回 (值, 新游标)。
-fn hlc_get_varint_checked(bytes : Array[Int], pos : Int) -> (Int64, Int)? {
+/// 有界安全 varint 读取（上界 `limit`，不越入校验和尾）：越界或超出
+/// 63 位返回 `None`，否则返回 (值, 新游标)。
+fn hlc_get_varint_checked(
+  bytes : Array[Int],
+  pos : Int,
+  limit : Int,
+) -> (Int64, Int)? {
   let mut v = 0L
   let mut shift = 0
   let mut p = pos
   while true {
-    if p >= bytes.length() || shift > 56 {
+    if p >= limit || shift > 56 {
       return None
     }
     let b = bytes[p]
@@ -89,23 +94,23 @@ fn hlc_decode_side(
   bytes : Array[Int],
   pos : Int,
   n : Int,
+  limit : Int,
 ) -> (Array[Int], Array[Int], Int)? {
   let off : Array[Int] = Array::make(n + 1, 0)
   let mut p = pos
   for v in 1..<(n + 1) {
-    guard hlc_get_varint_checked(bytes, p) is Some((d, np)) else { return None }
-    if d < 0L {
+    guard hlc_get_varint_checked(bytes, p, limit) is Some((d, np)) else {
       return None
     }
     off[v] = off[v - 1] + d.to_int()
     p = np
   }
-  guard hlc_get_varint_checked(bytes, p) is Some((blen64, np)) else {
+  guard hlc_get_varint_checked(bytes, p, limit) is Some((blen64, np)) else {
     return None
   }
   p = np
   let blen = blen64.to_int()
-  if blen < 0 || off[n] != blen || p + blen > bytes.length() {
+  if blen < 0 || off[n] != blen || p + blen > limit {
     return None
   }
   let body : Array[Int] = Array::make(blen, 0)
@@ -142,15 +147,19 @@ pub fn CompressedHubLabels::from_bytes(
   if h != stored {
     return None
   }
-  guard hlc_get_varint_checked(bytes, 4) is Some((n64, p0)) else { return None }
+  guard hlc_get_varint_checked(bytes, 4, body_len) is Some((n64, p0)) else {
+    return None
+  }
   let n = n64.to_int()
-  if n < 0 {
+  // 每节点两侧偏移增量至少各占 1 字节：n 超过体长即为伪造，提前拒绝，
+  // 防止按伪造 n 分配超大偏移数组。
+  if n < 0 || n > body_len {
     return None
   }
-  guard hlc_decode_side(bytes, p0, n) is Some((f_off, f_bytes, p1)) else {
+  guard hlc_decode_side(bytes, p0, n, body_len) is Some((f_off, f_bytes, p1)) else {
     return None
   }
-  guard hlc_decode_side(bytes, p1, n) is Some((b_off, b_bytes, p2)) else {
+  guard hlc_decode_side(bytes, p1, n, body_len) is Some((b_off, b_bytes, p2)) else {
     return None
   }
   if p2 != body_len {

@@ -6,6 +6,8 @@ import {
 }
 
 // Values
+pub const BOUNDED_BACKTRACK_BUDGET : Int = 2097152
+
 pub fn build_nfa(Regex) -> Nfa
 
 pub fn category_charset(GeneralCategory) -> CharSet
@@ -100,6 +102,12 @@ pub(all) enum Ast {
   Look(positive~ : Bool, body~ : Ast)
 } derive(Eq)
 pub fn Ast::of_regex(Regex) -> Self
+
+pub(all) enum BacktrackResult {
+  BtMatch(Captures)
+  BtNoMatch
+  BtOverBudget
+}
 
 pub struct Captures {
   slots : Array[Int]
@@ -265,6 +273,8 @@ pub struct Program {
   prefilter : Prefilter
 }
 pub fn Program::exec(Self, String, start? : Int, kind? : MatchKind) -> Captures?
+pub fn Program::exec_backtrack(Self, String, start? : Int, budget? : Int) -> BacktrackResult
+pub fn Program::exec_bounded(Self, String, start? : Int, budget? : Int) -> Captures?
 pub fn Program::exec_steps(Self, String) -> Int
 pub fn Program::is_match(Self, String) -> Bool
 pub fn Program::without_prefilter(Self) -> Self

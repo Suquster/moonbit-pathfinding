@@ -2,6 +2,10 @@
 package "Suquster/moonbit-pathfinding/src/mooncakes_audit"
 
 // Values
+pub fn audit_dep(IndexSnapshot, DepRequirement, Array[String]) -> DepFinding
+
+pub fn audit_deps(IndexSnapshot, Array[DepRequirement], Array[String]) -> (Array[(String, DepFinding)], Bool)
+
 pub fn domain_coverage(IndexSnapshot, CapabilityDomain) -> Array[String]
 
 pub fn gap_report(IndexSnapshot, Array[CapabilityDomain], Int) -> Array[(String, Int, Bool)]
@@ -12,6 +16,8 @@ pub fn parse_index(Array[String]) -> IndexSnapshot
 
 pub fn render_coverage_markdown(IndexSnapshot, Array[CapabilityDomain], Int) -> String
 
+pub fn render_dep_audit_markdown(IndexSnapshot, Array[DepRequirement], Array[String]) -> String
+
 // Errors
 
 // Types and methods
@@ -20,6 +26,19 @@ pub struct CapabilityDomain {
   keywords : Array[String]
 }
 pub fn CapabilityDomain::new(String, Array[String]) -> Self
+
+pub(all) enum DepFinding {
+  DepHealthy
+  DepMissingFromIndex
+  DepVersionBehind(String)
+  DepLicenseViolation(String)
+} derive(Eq)
+
+pub struct DepRequirement {
+  name : String
+  version : String
+}
+pub fn DepRequirement::new(String, String) -> Self
 
 pub struct IndexEntry {
   name : String

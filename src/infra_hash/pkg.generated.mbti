@@ -83,6 +83,30 @@ pub fn xxhash64(Array[Int], UInt64) -> UInt64
 // Errors
 
 // Types and methods
+pub struct Crc32Hasher {
+  data : Array[Int]
+}
+pub fn Crc32Hasher::finalize(Self) -> UInt
+pub fn Crc32Hasher::new() -> Self
+pub fn Crc32Hasher::reset(Self) -> Unit
+pub fn Crc32Hasher::update(Self, Array[Int]) -> Unit
+
+pub struct Sha256Hasher {
+  data : Array[Int]
+}
+pub fn Sha256Hasher::finalize(Self) -> Array[Int]
+pub fn Sha256Hasher::new() -> Self
+pub fn Sha256Hasher::reset(Self) -> Unit
+pub fn Sha256Hasher::update(Self, Array[Int]) -> Unit
+
+pub struct XxHash64Hasher {
+  seed : UInt64
+  data : Array[Int]
+}
+pub fn XxHash64Hasher::finalize(Self) -> UInt64
+pub fn XxHash64Hasher::new(UInt64) -> Self
+pub fn XxHash64Hasher::reset(Self) -> Unit
+pub fn XxHash64Hasher::update(Self, Array[Int]) -> Unit
 
 // Type aliases
 

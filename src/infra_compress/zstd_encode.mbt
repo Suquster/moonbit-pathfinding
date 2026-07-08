@@ -181,6 +181,252 @@ fn zstd_ml_encode(ml : Int) -> (Int, Int, Int) {
 }
 
 ///|
+/// Package-Merge 长度受限 Huffman（Larmore & Hirschberg 1990）：
+/// 频次 → 码长（≤ max_len），Kraft 等式取等（完备码）。
+/// 返回每符号码长（0 = 不出现）；不足 2 个符号返回 None。
+fn huf_lengths(freq : Array[Int], max_len : Int) -> Array[Int]? {
+  let leaves : Array[(Int, Int)] = [] // (freq, symbol)
+  for s in 0..<freq.length() {
+    if freq[s] > 0 {
+      leaves.push((freq[s], s))
+    }
+  }
+  let n = leaves.length()
+  if n < 2 {
+    return None
+  }
+  if n > 1 << max_len {
+    return None
+  }
+  leaves.sort_by(fn(a, b) { a.0 - b.0 })
+  // 每个条目：权重 + 叶子出现次数向量。
+  let mut prev : Array[(Int, Array[Int])] = []
+  for _level in 0..<max_len {
+    // 上一层打包成对。
+    let packaged : Array[(Int, Array[Int])] = []
+    let mut i = 0
+    while i + 1 < prev.length() {
+      let counts : Array[Int] = Array::make(n, 0)
+      for k in 0..<n {
+        counts[k] = prev[i].1[k] + prev[i + 1].1[k]
+      }
+      packaged.push((prev[i].0 + prev[i + 1].0, counts))
+      i = i + 2
+    }
+    // 与单叶归并（皆有序）。
+    let merged : Array[(Int, Array[Int])] = []
+    let mut a = 0
+    let mut b = 0
+    while a < n || b < packaged.length() {
+      let take_leaf = if a >= n {
+        false
+      } else if b >= packaged.length() {
+        true
+      } else {
+        leaves[a].0 <= packaged[b].0
+      }
+      if take_leaf {
+        let counts : Array[Int] = Array::make(n, 0)
+        counts[a] = 1
+        merged.push((leaves[a].0, counts))
+        a = a + 1
+      } else {
+        merged.push(packaged[b])
+        b = b + 1
+      }
+    }
+    prev = merged
+  }
+  // 取顶层最便宜的 2n-2 项，叶子出现次数即码长。
+  if prev.length() < 2 * n - 2 {
+    return None
+  }
+  let lengths : Array[Int] = Array::make(freq.length(), 0)
+  for i in 0..<(2 * n - 2) {
+    for k in 0..<n {
+      lengths[leaves[k].1] = lengths[leaves[k].1] + prev[i].1[k]
+    }
+  }
+  Some(lengths)
+}
+
+///|
+/// 由码长派生规范码（与解码表同一布局：rank 起点按权重升序、
+/// 同权重按符号自然序）。返回每符号 (code, nb_bits)。
+fn huf_assign_codes(lengths : Array[Int], table_log : Int) -> Array[(Int, Int)] {
+  let max_w = table_log // 权重上界（len=1 → w=tableLog）。
+  let rank_count : Array[Int] = Array::make(max_w + 2, 0)
+  for s in 0..<lengths.length() {
+    if lengths[s] > 0 {
+      let w = table_log + 1 - lengths[s]
+      rank_count[w] = rank_count[w] + 1
+    }
+  }
+  let rank_start : Array[Int] = Array::make(max_w + 2, 0)
+  let mut cur = 0
+  for w in 1..<=(max_w + 1) {
+    if w <= max_w && rank_count[w] > 0 {
+      rank_start[w] = cur
+      cur = cur + (rank_count[w] << (w - 1))
+    } else if w <= max_w {
+      rank_start[w] = cur
+    }
+  }
+  let codes : Array[(Int, Int)] = Array::make(lengths.length(), (0, 0))
+  for s in 0..<lengths.length() {
+    if lengths[s] > 0 {
+      let w = table_log + 1 - lengths[s]
+      let span = 1 << (w - 1)
+      codes[s] = (rank_start[w] >> (table_log - lengths[s]), lengths[s])
+      rank_start[w] = rank_start[w] + span
+    }
+  }
+  codes
+}
+
+///|
+/// 用规范码把 lits[from..to) 编成一条逆向 Huffman 流（解码端
+/// 先读首字面量 → 编码端逆序写入）。
+fn huf_encode_stream(
+  lits : Array[Int],
+  from : Int,
+  to : Int,
+  codes : Array[(Int, Int)],
+) -> Array[Int] {
+  let bw : ZstdBitWriter = { bits: [] }
+  let mut i = to - 1
+  while i >= from {
+    let (code, nb) = codes[lits[i]]
+    bw.add(code, nb)
+    i = i - 1
+  }
+  bw.close()
+}
+
+///|
+/// 尝试把字面量段编成 Compressed(Huffman) 布局（权重 4-bit 直存 +
+/// 1 流或 4 流）；无收益或超出直存权重域（max_sym > 128）返回 None。
+fn huf_encode_literals(lits : Array[Int]) -> Array[Int]? {
+  let regen = lits.length()
+  if regen < 16 {
+    return None
+  }
+  let freq : Array[Int] = Array::make(256, 0)
+  let mut max_sym = 0
+  for b in lits {
+    freq[b] = freq[b] + 1
+    if b > max_sym {
+      max_sym = b
+    }
+  }
+  if max_sym > 128 {
+    return None // 直存权重头最多 128 个显式权重。
+  }
+  let lengths = match huf_lengths(freq, 11) {
+    None => return None
+    Some(l) => l
+  }
+  let mut table_log = 0
+  for s in 0..<lengths.length() {
+    if lengths[s] > table_log {
+      table_log = lengths[s]
+    }
+  }
+  let codes = huf_assign_codes(lengths, table_log)
+  // 权重头：符号 0..max_sym-1 显式，max_sym 的权重隐式。
+  let num_w = max_sym
+  let wbytes : Array[Int] = []
+  wbytes.push(127 + num_w)
+  let mut k = 0
+  while k < num_w {
+    let w1 = if lengths[k] > 0 { table_log + 1 - lengths[k] } else { 0 }
+    let w2 = if k + 1 < num_w {
+      if lengths[k + 1] > 0 {
+        table_log + 1 - lengths[k + 1]
+      } else {
+        0
+      }
+    } else {
+      0
+    }
+    wbytes.push((w1 << 4) | w2)
+    k = k + 2
+  }
+  // 流体：regen < 64 单流（size_format 00），否则 4 流。
+  let four = regen >= 64
+  let streams : Array[Int] = []
+  if four {
+    let c1 = (regen + 3) / 4
+    let s1 = huf_encode_stream(lits, 0, c1, codes)
+    let s2 = huf_encode_stream(lits, c1, 2 * c1, codes)
+    let s3 = huf_encode_stream(lits, 2 * c1, 3 * c1, codes)
+    let s4 = huf_encode_stream(lits, 3 * c1, regen, codes)
+    streams.push(s1.length() & 0xFF)
+    streams.push((s1.length() >> 8) & 0xFF)
+    streams.push(s2.length() & 0xFF)
+    streams.push((s2.length() >> 8) & 0xFF)
+    streams.push(s3.length() & 0xFF)
+    streams.push((s3.length() >> 8) & 0xFF)
+    for st in [s1, s2, s3, s4] {
+      for b in st {
+        streams.push(b)
+      }
+    }
+    if s1.length() > 65535 || s2.length() > 65535 || s3.length() > 65535 {
+      return None
+    }
+  } else {
+    for b in huf_encode_stream(lits, 0, regen, codes) {
+      streams.push(b)
+    }
+  }
+  let comp = wbytes.length() + streams.length()
+  if comp + 5 >= regen {
+    return None // 无收益（含最大头开销），回退 Raw 字面量。
+  }
+  // 段头：type=2，size_format 按 regen/comp 宽度选择。
+  let out : Array[Int] = []
+  if !four {
+    // size_format 00：10+10 位（regen < 64 必然适配）。
+    let v = 2 | (0 << 2) | (regen << 4) | (comp << 14)
+    out.push(v & 0xFF)
+    out.push((v >> 8) & 0xFF)
+    out.push((v >> 16) & 0xFF)
+  } else if regen <= 1023 && comp <= 1023 {
+    // size_format 01：4 流，10+10 位。
+    let v = 2 | (1 << 2) | (regen << 4) | (comp << 14)
+    out.push(v & 0xFF)
+    out.push((v >> 8) & 0xFF)
+    out.push((v >> 16) & 0xFF)
+  } else if regen <= 16383 && comp <= 16383 {
+    // size_format 10：4 流，14+14 位。
+    let v = 2 | (2 << 2) | (regen << 4) | (comp << 18)
+    out.push(v & 0xFF)
+    out.push((v >> 8) & 0xFF)
+    out.push((v >> 16) & 0xFF)
+    out.push((v >> 24) & 0xFF)
+  } else {
+    // size_format 11：4 流，18+18 位（UInt64 防符号位）。
+    let v = 2UL |
+      (3UL << 2) |
+      (regen.to_uint64() << 4) |
+      (comp.to_uint64() << 22)
+    out.push((v & 0xFFUL).to_int())
+    out.push(((v >> 8) & 0xFFUL).to_int())
+    out.push(((v >> 16) & 0xFFUL).to_int())
+    out.push(((v >> 24) & 0xFFUL).to_int())
+    out.push(((v >> 32) & 0xFFUL).to_int())
+  }
+  for b in wbytes {
+    out.push(b)
+  }
+  for b in streams {
+    out.push(b)
+  }
+  Some(out)
+}
+
+///|
 /// 单条 LZ77 序列。
 priv struct ZstdSeq {
   ll : Int
@@ -256,31 +502,46 @@ fn zstd_find_sequences(
 }
 
 ///|
-/// 编码一个 Compressed 块内容（Raw 字面量 + 预定义 FSE 序列）；
-/// 无收益（序列为空或产物不小于 Raw）返回 None。
+/// 编码一个 Compressed 块内容（Huffman/Raw 字面量 + 预定义 FSE 序列）；
+/// 无收益（产物不小于 Raw 块）返回 None。
 fn zstd_encode_block(data : Array[Int], start : Int, len : Int) -> Array[Int]? {
   let (seqs, lits) = zstd_find_sequences(data, start, len)
-  if seqs.length() == 0 || seqs.length() >= 0x7F00 {
+  if seqs.length() >= 0x7F00 {
     return None
   }
   let out : Array[Int] = []
-  // ── 字面量段：Raw 布局 ──
+  // ── 字面量段：Huffman 优先，无收益回退 Raw 布局 ──
   let regen = lits.length()
-  if regen < 32 {
-    out.push((regen << 3) | 0) // size_format 00，5 位。
-  } else if regen < 4096 {
-    out.push(((regen & 0x0F) << 4) | (1 << 2) | 0) // size_format 01，12 位。
-    out.push((regen >> 4) & 0xFF)
-  } else {
-    out.push(((regen & 0x0F) << 4) | (3 << 2) | 0) // size_format 11，20 位。
-    out.push((regen >> 4) & 0xFF)
-    out.push((regen >> 12) & 0xFF)
+  match huf_encode_literals(lits) {
+    Some(sec) =>
+      for b in sec {
+        out.push(b)
+      }
+    None => {
+      if regen < 32 {
+        out.push((regen << 3) | 0) // size_format 00，5 位。
+      } else if regen < 4096 {
+        out.push(((regen & 0x0F) << 4) | (1 << 2) | 0) // size_format 01，12 位。
+        out.push((regen >> 4) & 0xFF)
+      } else {
+        out.push(((regen & 0x0F) << 4) | (3 << 2) | 0) // size_format 11，20 位。
+        out.push((regen >> 4) & 0xFF)
+        out.push((regen >> 12) & 0xFF)
+      }
+      for b in lits {
+        out.push(b)
+      }
+    }
   }
-  for b in lits {
-    out.push(b)
-  }
-  // ── 序列段：预定义三表 ──
+  // ── 序列段：预定义三表（序列为空时仅写 nbSeq=0）──
   let nb_seq = seqs.length()
+  if nb_seq == 0 {
+    out.push(0)
+    if out.length() >= len {
+      return None
+    }
+    return Some(out)
+  }
   if nb_seq < 128 {
     out.push(nb_seq)
   } else {

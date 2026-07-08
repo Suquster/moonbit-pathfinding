@@ -21,3 +21,5 @@ mooncakes 索引快照刷新（2026-07-08，1497 包）|docs/verification::moonc
 HL serde 解码加固（varint 体长上界、伪造 n 预拒绝、结构级畸形全路径覆盖）|src/directed::hub labels serde structural rejection|c385367
 OSM 真实路网基准重跑归档（2026-07-08，native 三系列 CH/CCH/ALT-HL 全代价对拍一致，加速比与已归档同口径复现）|benches/results::osm rerun 2026-07-08|6029442
 G-B3 regex_engine 覆盖盲区收口（解析器错误分支/Unicode 类别/打印器/替换语法/惰性 DFA 容量饱和/字面扫描失配，未覆盖行 100+→20，余为文档化防御兜底；三后端 2502 全绿）|src/regex_engine::coverage gaps closure|1a4c19d
+全仓覆盖率审计盘点（2332 未覆盖行按包分类定性：驱动/示例豁免、防御兜底、深层错误路径；regex_engine 深度收口示范 100+→20）|docs/verification::coverage_audit_2026-07-08.md|6004a26
+答辩材料与 2026-07-08 OSM 重跑数字对齐（slides/video/offline_demo/qa 全口径刷新，历史工件保留对照）|docs/presentation+rehearsal::OSM numbers refresh|6004a26

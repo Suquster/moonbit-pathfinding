@@ -28,3 +28,5 @@ README 双语 38 算法表与 OSM 数字一致性终验（中英同口径 2026-0
 serialization 覆盖盲区收口（JSON 转义/畸形数字、Any 流式、wire 截断、canonical、schema 校验/投影、proto 解析器错误路径；未覆盖 292→约200）|src/serialization::coverage_gaps_test.mbt|0e5f3cc
 infra_compress 覆盖盲区收口（Huffman 建表拒绝、位流耗尽、FSE/HUF 计数表损坏、bit reader 边界）|src/infra_compress::coverage_gaps_wbtest.mbt|0e5f3cc
 mini_compiler 覆盖盲区收口（JS/WAT 文本后端全算符、优化器元组/遮蔽/除以-1、ValX/TypeMismatch Show）|src/mini_compiler::coverage_gaps2_test.mbt / coverage_gaps2_wbtest.mbt|084bb34
+codegen_infra 覆盖盲区收口（TypedInstr/Operand/IrError Show、验证器错误分支、线性扫描 k=0、liveness 空集缺省）|src/codegen_infra::coverage_gaps2_test.mbt|d9fe95f
+proofs 覆盖盲区收口（max_flow/min_cut/MST/分量后置条件负例、ProofReport JSON 数字/转义边界）|src/proofs::coverage_gaps2_test.mbt|d9fe95f

@@ -1,0 +1,9 @@
+流式哈希器与一次性哈希一致（sha256/crc32/xxh64）|src/infra_hash::streaming matches oneshot|13b7b3c
+zstd 帧格式 RFC 8878 编解码往返（Raw/RLE/校验和/skippable）|src/infra_compress::zstd frame roundtrip|4eaa8c4
+有界回溯引擎与 Pike VM 捕获组差分一致 + ReDoS 免疫|src/regex_engine::bounded backtrack vs pike vm|d84f0e8
+INFRA 家族证明谓词跨包 PBT 见证|src/proofs::infra family proof predicates|6f68bc2
+多包工作区拓扑构建序与增量重建最小性|src/build_tool::workspace rebuild plan|29234d2
+semver 兼容性 diff 发布门禁（API 表面三档位分类）|src/release_aggregate::compat diff release gate|2383342
+mooncakes 全量索引审计（1494 包快照、能力域缺口）|src/mooncakes_audit::gap report and markdown|66a2784
+依赖健康审计（存在性/版本时效/许可证合规）|src/mooncakes_audit::dep audit findings|7e8e487
+基准回归自动二分定位（skip 邻域扩散、对数探测上界）|src/build_tool::auto bisect logarithmic probes|d305464

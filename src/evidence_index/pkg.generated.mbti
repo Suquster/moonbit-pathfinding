@@ -1,0 +1,27 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Suquster/moonbit-pathfinding/src/evidence_index"
+
+// Values
+pub fn parse_evidence(Array[String]) -> EvidenceIndex
+
+// Errors
+
+// Types and methods
+pub struct EvidenceEntry {
+  claim : String
+  test_ref : String
+  commit : String
+}
+
+pub struct EvidenceIndex {
+  entries : Array[EvidenceEntry]
+  diagnostics : Array[String]
+}
+pub fn EvidenceIndex::digest(Self) -> String
+pub fn EvidenceIndex::is_sound(Self) -> Bool
+pub fn EvidenceIndex::render_markdown(Self) -> String
+
+// Type aliases
+
+// Traits
+

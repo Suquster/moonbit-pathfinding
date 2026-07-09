@@ -108,3 +108,23 @@ test "toml 表头定位与点分键冲突" {
   assert_true(tg_err("k = +"))
   assert_true(tg_err("k = 1 junk"))
 }
+
+///|
+test "toml_parse：多行字面串首行 \\n 与 \\r\\n 修剪" {
+  match toml_parse("k = '''\nabc'''") {
+    Some(t) => assert_true(toml_get(t, "k") == Some(TomlString("abc")))
+    None => assert_true(false)
+  }
+  match toml_parse("k = '''\r\nabc'''") {
+    Some(t) => assert_true(toml_get(t, "k") == Some(TomlString("abc")))
+    None => assert_true(false)
+  }
+}
+
+///|
+test "toml_parse：多行基本串中的普通转义" {
+  match toml_parse("k = \"\"\"a\\tb\"\"\"") {
+    Some(t) => assert_true(toml_get(t, "k") == Some(TomlString("a\tb")))
+    None => assert_true(false)
+  }
+}

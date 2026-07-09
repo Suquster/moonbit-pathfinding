@@ -62,3 +62,23 @@ test "proto import 修饰与路径拒绝" {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test "parse_proto_file：方法选项块未闭合拒绝" {
+  let src = "syntax = \"proto3\";\n" +
+    "service S {\n" +
+    "  rpc M(A) returns (B) {\n"
+  assert_true(parse_proto_file(src) is Err(_))
+}
+
+///|
+test "parse_proto_file：方法选项块整体跳过" {
+  let src = "syntax = \"proto3\";\n" +
+    "service S {\n" +
+    "  rpc M(A) returns (B) { option idempotency_level = IDEMPOTENT; }\n" +
+    "}\n"
+  match parse_proto_file(src) {
+    Ok(f) => assert_eq(f.services.length(), 1)
+    Err(_) => assert_true(false)
+  }
+}

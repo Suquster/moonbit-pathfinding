@@ -372,6 +372,19 @@
         `src/infra_cli/cli_typed_gaps_test.mbt`、
         `src/mini_compiler/tco_gaps_test.mbt`、
         `src/parser_combinator/json_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++ INFRA 第二十六批覆盖收口（logging
+        logfmt 8：键后无 =/空键/ts、level 非法值/字段值非法与粘连；
+        lsp_server position_encoding 8：负行列/越界偏移/转换负字符位；
+        infra_config toml 8：多行字面串 \n 与 \r\n 首行修剪、多行基本串
+        普通转义；codegen_infra out_of_ssa/ssa_min：空指令终结判定、
+        空插入/无终结块插入、不可达块版本跳过；serialization
+        proto_service：方法选项块未闭合拒绝与整体跳过；三后端
+        2928→2940 全绿）。2026-07-09，
+        `src/logging/logfmt_gaps_test.mbt`、
+        `src/lsp_server/position_encoding_gaps_test.mbt`、
+        `src/infra_config/toml_gaps_test.mbt`（增补）、
+        `src/codegen_infra/out_of_ssa_gaps_wbtest.mbt`、
+        `src/serialization/proto_service_gaps_test.mbt`（增补）。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

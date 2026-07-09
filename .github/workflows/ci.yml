@@ -252,6 +252,28 @@ jobs:
         run: pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/evidence_guard.ps1
 
   # ─────────────────────────────────────────────────────────────
+  # Job 3c · 发布流水线自动兼容性 diff 门禁 (G-A2 自动化收口)
+  #   与 src/release_aggregate/compat_diff.mbt 同一语义内核: 以最近一次
+  #   moon.mod 版本变更提交的父提交为 API 表面基线, 逐 .mbti 行集 diff,
+  #   校验「实际 semver 升级档位 ≥ 变更要求档位」(0.x 按 rank-shift 约定)。
+  #   破坏性变更未升相应档位即 fail, 输出违规见证。
+  #   需要完整 git 历史 (fetch-depth: 0) 以定位基线提交。
+  # ─────────────────────────────────────────────────────────────
+  compat:
+    name: compat diff gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: ci
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: API surface compat diff gate
+        run: python3 scripts/compat_gate.py
+
+  # ─────────────────────────────────────────────────────────────
   # Job 4 · 形式化证明 (task 34.4 · R8.3 · R10.3)
   #   在 release 分支 (main / tags v*) 运行 `moon prove`。
   #   当前 MoonBit 的 `moon prove` 仍处于实验期且依赖 Why3/SMT solver。

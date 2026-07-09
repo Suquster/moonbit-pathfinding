@@ -170,6 +170,10 @@
   - [x] G-A2 release_aggregate 生态级发布流水线（API 表面 semver 兼容性 diff：
         删除/改签名→MAJOR、新增→MINOR、无变化→PATCH，发布档位门禁 +
         违规见证诊断）。commit 2383342，`src/release_aggregate/compat_diff.mbt`。
+  - [x] G-A2+ 兼容性 diff CI 自动化（`scripts/compat_gate.py` + CI `compat
+        diff gate` Job：以最近版本变更提交的父提交为 .mbti 表面基线，自动
+        校验实际 semver 档位覆盖变更要求档位，0.x 按 rank-shift 约定）。
+        2026-07-09。
   - [x] G-A3 mooncakes 包索引抓取/审计工具（与 H-1 合并收官，见下）。
 - [x] G-B 深度闭包：性能/形式化前沿（2026-07-08 收官）
   - [x] G-B1 hash/compress 流式增量 API（sha256/crc32/xxh64 流式哈希器，

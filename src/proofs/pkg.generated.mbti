@@ -13,6 +13,8 @@ pub fn[N : Eq + Hash, W : @core.Weight] all_pairs_post(Array[(N, N)], (N, N) -> 
 
 pub fn all_within(Array[Int], Int, Int) -> Bool
 
+pub fn all_within64(Array[Int64], Int64, Int64) -> Bool
+
 pub fn[N : Eq + Hash, W : @core.Weight] alt_query_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] astar_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
@@ -70,6 +72,8 @@ pub fn components_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
 pub fn condensation_is_dag(Int, Array[(Int, Int)]) -> Bool
 
 pub fn[N, W : @core.Weight] cost_agrees_with_reference((Array[N], W)?, (Array[N], W)?) -> Bool
+
+pub fn count_conserved(Int, Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] dag_sp_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
@@ -136,6 +140,10 @@ pub fn mst_weight_le_post(Int, Array[(Int, Int, Int)], Int) -> Bool
 pub fn nfa_dfa_consistent(Bool, Bool) -> Bool
 
 pub fn non_decreasing(Array[Int]) -> Bool
+
+pub fn non_decreasing64(Array[Int64]) -> Bool
+
+pub fn non_decreasing_f(Array[Double]) -> Bool
 
 pub fn pairwise_diff_within(Array[Int], Int) -> Bool
 

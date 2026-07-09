@@ -264,6 +264,18 @@
         代价降序拒绝；proofs 未覆盖行 78→3（余 3 行为防御性死分支））。
         2026-07-09，`src/proofs/family15_coverage_test.mbt`、
         `src/proofs/family15b_coverage_test.mbt`。
+  - [x] G-B4++++++++++++++++ INFRA 第十六批覆盖收口（proofs 之外的
+        moon coverage analyze 头部缺口：proto 全文法解析器错误分支
+        66→7、zstd Compressed 块解码器（Huffman 权重/建表/序列表四模
+        式/字面量段与序列段结构级联）62→22、match_ext 扩展层桥接与
+        拒绝分支 55→17、骨架 proto 解析器 35→5、proto3 JSON 映射编
+        解码类型不符全谱与 map 键各标量形态 38→5；全仓未覆盖行
+        1887→1683）。2026-07-09，
+        `src/serialization/proto_grammar_errors_test.mbt`、
+        `src/infra_compress/zstd_block_gaps_wbtest.mbt`、
+        `src/mini_compiler/match_ext_gaps_wbtest.mbt`、
+        `src/serialization/proto_parser_gaps_test.mbt`、
+        `src/serialization/json_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

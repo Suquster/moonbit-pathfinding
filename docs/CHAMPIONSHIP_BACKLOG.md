@@ -218,6 +218,11 @@
         一致 + 三门禁合取律真值表全覆盖；证据索引：健全性 + 渲染完备 +
         摘要确定性；生态审计：license 直方图计数守恒 + 域覆盖来源封闭）。
         2026-07-09，`src/proofs/release_audit_proof_test.mbt`。
+  - [x] G-B4+++++++++ INFRA 第九批证明谓词（文本引擎：Myers 差分编辑代价
+        == N+M−2·LCS 闭式最优 + source/apply 双向还原；grapheme 簇切分
+        无损重组；eq_fold 等价关系三律；PieceTable/Rope 随机编辑脚本与
+        朴素 String 模型逐步等价；全部经真实包实现驱动）。2026-07-09，
+        `src/proofs/text_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，
@@ -254,7 +259,7 @@
       证明 F(F) 成立。commit 077497d。
 
 横轴（六条正交闭包轴）缺口收口：正确性轴顶格 = G-B4（moon prove 全量）；
-平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2664 测试
+平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2671 测试
 + 12 份可执行文档全绿并入 CI 矩阵）；第六级 = WASI 交付（2026-07-09 收官：
 scripts/wasi_gate.sh — backend_cli 与三个 examples 的独立 wasm 工件在
 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI `wasi delivery gate`

@@ -181,6 +181,10 @@
         commit d84f0e8，`src/regex_engine/bounded_backtrack.mbt`。
   - [x] G-B4 moon prove 证明谓词全量接入（INFRA 家族后置条件谓词 +
         跨包 PBT 见证）。commit 6f68bc2，`src/proofs/infra_family_proof.mbt`。
+  - [x] G-B4+ 加速算法族证明谓词横向铺满（CH/CCH/ALT/HL/JPS 单点查询 A+B+C
+        后置条件 + 加速算法独有的「与 Dijkstra 参考逐对代价等价」正确性护栏
+        `cost_agrees_with_reference` / `batch_cost_agrees`）。2026-07-09，
+        `src/proofs/advanced_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

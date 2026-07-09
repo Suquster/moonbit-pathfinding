@@ -323,6 +323,16 @@
         2026-07-09，`src/infra_codec/codec_gaps_test.mbt`、
         `src/mini_compiler/row_poly_gaps_test.mbt`、
         `src/playground/exports_gaps_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++ INFRA 第二十一批覆盖收口（infra_time
+        time_ext 13：parse_duration 单位次序违规/小数秒截断/未知单位、
+        strftime 年与年积日补零各档/星期换算/未知指示符保留；codegen_infra
+        ir_interp 14：Show 打印、Mem 作值/Imm 作地址兜底、跳转不存在块/
+        缺终结/终结字段持非终结指令安全停机；serialization typed 13：
+        类型默认值全谱、非标量默认判定兜底、wire 类别映射、packed 对
+        Len 拒绝；三后端 2820→2827 全绿）。2026-07-09，
+        `src/infra_time/time_ext_gaps_test.mbt`、
+        `src/codegen_infra/ir_interp_gaps_wbtest.mbt`、
+        `src/serialization/typed_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

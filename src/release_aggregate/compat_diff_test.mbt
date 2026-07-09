@@ -146,3 +146,18 @@ test "PBT：随机表面扰动的档位正确性（100 迭代）" {
   })
   assert_true(ok)
 }
+
+///|
+test "check_release_compat：新增 API 配 MINOR 升级即合规" {
+  let old_api = @release_aggregate.ApiSurface::new([("f", "sig")])
+  let new_api = @release_aggregate.ApiSurface::new([("f", "sig"), ("g", "sig2")])
+  assert_true(
+    @release_aggregate.check_release_compat(old_api, new_api, "1.2.3", "1.3.0")
+    is None,
+  )
+  // 新增 API 配 MAJOR 升级同样覆盖（更高档位覆盖低要求）。
+  assert_true(
+    @release_aggregate.check_release_compat(old_api, new_api, "1.2.3", "2.0.0")
+    is None,
+  )
+}

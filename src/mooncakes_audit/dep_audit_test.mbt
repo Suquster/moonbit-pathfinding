@@ -123,3 +123,29 @@ test "PBT：随机版本对的时效判定自洽（100 迭代）" {
   })
   assert_true(ok)
 }
+
+///|
+test "audit_dep：畸形版本号不参与时效比较（视作健康）" {
+  let snap = @mooncakes_audit.parse_index(["p/x|9.9.9|MIT|lib"])
+  // 依次触达 parse_version_loose 的四条拒绝路径：
+  // 前导点（段无数字）、非法字符、尾随点、超过 3 段。
+  for v in [".1", "1.x", "1.", "1.2.3.4"] {
+    let f = @mooncakes_audit.audit_dep(
+      snap,
+      @mooncakes_audit.DepRequirement::new("p/x", v),
+      ["MIT"],
+    )
+    assert_true(f == @mooncakes_audit.DepHealthy)
+  }
+}
+
+///|
+test "render_dep_audit_markdown：版本落后行渲染" {
+  let snap = @mooncakes_audit.parse_index(["p/x|2.0.0|MIT|lib"])
+  let md = @mooncakes_audit.render_dep_audit_markdown(
+    snap,
+    [@mooncakes_audit.DepRequirement::new("p/x", "1.0.0")],
+    ["MIT"],
+  )
+  assert_true(md.contains("版本落后（最新 2.0.0）"))
+}

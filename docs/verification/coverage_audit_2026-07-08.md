@@ -81,6 +81,11 @@
    - 防御性兜底分支（结构不可达的 `None => break` / 损坏输入预拒绝，代码内
      已有注释说明，如 regex_engine、zstd_block 摆表校验）；
    - 深层畸形输入错误路径（proto_grammar/toml/json 解析器的截断输入分支）。
-3. **regex_engine 已作深度收口示范**：未覆盖行 100+ → 20，剩余全部为文档化
+3. **2026-07-09 尾包收口**：mooncakes_audit（畸形版本号四条拒绝路径 +
+   版本落后渲染）、release_aggregate（MINOR 覆盖档位）、road_service
+   （CLI 熔断拒绝路径）已补黑盒测试收口；release_aggregate/compat_diff.mbt
+   余下 2 行（`PatchBump => "patch"` 与空见证 `""`）为结构不可达防御兜底
+   （PatchBump 恒被任意实际档位覆盖、MINOR/MAJOR 必有见证），予以注记豁免。
+4. **regex_engine 已作深度收口示范**：未覆盖行 100+ → 20，剩余全部为文档化
    防御兜底（见 evidence_index.psv 对应行）。其余核心包按同法可继续收口，
    优先级：serialization > infra_compress > mini_compiler > infra_config。

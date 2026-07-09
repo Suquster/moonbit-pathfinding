@@ -131,3 +131,21 @@ test "PBT：随机链式路网 CH 成本 = 逐边权和（100 迭代）" {
   })
   assert_true(ok)
 }
+
+///|
+test "run_cli：熔断器打开期短路拒绝" {
+  let (net, _) = @road_service.parse_road_network(["A B 1"])
+  let svc = @road_service.RoadService::build(net)
+  for k in 0..<3 {
+    assert_true(
+      svc.route("B", "A", k.to_int64(), 1) == @road_service.RouteNotFound,
+    )
+  }
+  let out = @road_service.run_cli(
+    svc,
+    ["route", "--from", "A", "--to", "B"],
+    10,
+    1,
+  )
+  assert_eq(out, "rejected: circuit breaker open")
+}

@@ -13,6 +13,8 @@ pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) 
 
 pub fn[N : Eq + Hash, W : @core.Weight] all_pairs_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
+pub fn all_strictly_less(Array[Int], Int) -> Bool
+
 pub fn all_within(Array[Int], Int, Int) -> Bool
 
 pub fn all_within64(Array[Int64], Int64, Int64) -> Bool
@@ -94,6 +96,8 @@ pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(
 pub fn distance_bounds(String, String, (String, String) -> Int) -> Bool
 
 pub fn edge_is_bridge(Int, Array[(Int, Int)], Int, Int) -> Bool
+
+pub fn endpoints_in_range(Array[(Int, Int)], Int) -> Bool
 
 pub fn error_isolation(Array[Int], Int, Array[Int]) -> Bool
 

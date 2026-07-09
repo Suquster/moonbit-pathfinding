@@ -16,7 +16,9 @@ test "diff：patch_apply 删除失配与残留旧行拒绝" {
   assert_true(patch_apply(["x", "y"], [Keep("x")]) is None)
   guard patch_apply(["x", "y"], [Keep("x"), Delete("y"), Insert("z")])
     is Some(out)
-  assert_eq(out, ["x", "z"])
+  assert_eq(out.length(), 2)
+  assert_eq(out[0], "x")
+  assert_eq(out[1], "z")
 }
 
 ///|

@@ -113,6 +113,30 @@ jobs:
           git diff --exit-code -- ':(glob)**/*.mbti'
 
   # ─────────────────────────────────────────────────────────────
+  # Job 1b · WASI 交付门禁 (平台轴第六级)
+  #   `moon build --release --target wasm` 的独立 wasm 工件在标准 WASI
+  #   运行时 (wasmtime) 下直接执行, 输出与 js 后端逐字节 diff 一致。
+  # ─────────────────────────────────────────────────────────────
+  wasi:
+    name: wasi delivery gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit toolchain
+        uses: hustcer/setup-moonbit@v1
+
+      - name: Install wasmtime
+        run: |
+          curl -fsSL https://wasmtime.dev/install.sh | bash
+          echo "$HOME/.wasmtime/bin" >> "$GITHUB_PATH"
+
+      - name: WASI gate (wasmtime vs js backend byte diff)
+        run: bash scripts/wasi_gate.sh
+
+  # ─────────────────────────────────────────────────────────────
   # Job 2 · 覆盖率报告 + 85% 硬门禁 (关卡 4, 对应 design.md §15.3)
   #   task 28.2 升级: 从 best-effort → 硬门禁
   #   - `moon test --enable-coverage` 生成 coverage 数据

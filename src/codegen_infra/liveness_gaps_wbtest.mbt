@@ -31,6 +31,23 @@ test "liveness_step：悬空后继标签安全忽略" {
 }
 
 ///|
+test "analyze_liveness：悬空后继标签在不动点中安全忽略" {
+  let blocks : Array[BasicBlock] = [
+    { label: "b0", instrs: ["x = 1", "y = x + 1"], succs: ["b1", "ghost"] },
+    { label: "b1", instrs: ["z = y + x"], succs: ["ghost"] },
+  ]
+  let live = analyze_liveness(blocks)
+  match live.live_out.get("b1") {
+    Some(vs) => assert_eq(vs.length(), 0)
+    None => assert_true(false)
+  }
+  match live.live_in.get("b1") {
+    Some(vs) => assert_true(vs.length() > 0)
+    None => assert_true(false)
+  }
+}
+
+///|
 test "int_set_equal：同长异键判不等" {
   let a : Map[Int, Bool] = Map([])
   a[1] = true

@@ -360,6 +360,18 @@
         `src/actor/system_gaps2_wbtest.mbt`、`src/infra_text/rope_gaps2_test.mbt`、
         `src/mini_compiler/parser_gaps_test.mbt`、`src/infra_codec/cbor_gaps2_test.mbt`、
         `src/graph/osm_gaps_test.mbt`、`src/infra_resilience/resilience_gaps_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++ INFRA 第二十五批覆盖收口（infra_ds
+        hamt 10：全哈希冲突桶建立/查找/替换/追加与异哈希升层分裂；
+        codegen_infra liveness：analyze_liveness 悬空后继不动点忽略；
+        infra_cli cli_typed 10：bool/float 取值缺席、畸形浮点各位置、
+        VFloat 规则上报；mini_compiler tco 9：PushBool/Logic 指令与
+        无 Ret 帧安全弹帧；parser_combinator json 9：恢复解析非数组
+        退化/空数组/畸形元素同步；三后端 2917→2928 全绿）。2026-07-09，
+        `src/infra_ds/hamt_gaps_wbtest.mbt`、
+        `src/codegen_infra/liveness_gaps_wbtest.mbt`（增补）、
+        `src/infra_cli/cli_typed_gaps_test.mbt`、
+        `src/mini_compiler/tco_gaps_test.mbt`、
+        `src/parser_combinator/json_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

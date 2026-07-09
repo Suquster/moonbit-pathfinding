@@ -29,8 +29,9 @@
 /// `blocked[r * width + c] == true` means the cell `(r, c)` is a wall.
 /// All open cells carry unit move cost for cardinal steps; diagonal steps
 /// have cost `sqrt(2)` (approximated as `1.4142135` in `Double`). A
-/// diagonal move is only legal when **both** adjacent cardinal neighbours
-/// are open — "no corner cutting", the standard grid rule.
+/// diagonal move is legal whenever its destination cell is open — corner
+/// cutting past a blocked cardinal neighbour is permitted, matching the
+/// 8-direction A\* reference semantics used across this module's tests.
 pub struct JPSGrid {
   width : Int
   height : Int

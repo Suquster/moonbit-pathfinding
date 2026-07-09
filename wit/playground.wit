@@ -1,0 +1,40 @@
+// playground.wit —— 平台轴第八级：WIT 显式接口导出。
+//
+// 把 src/playground 的 pg_* 整型句柄协议（见 src/playground/exports.mbt）
+// 提升为组件模型显式类型接口：核心 wasm 模块（纯模块、零导入）经
+// `wasm-tools component embed + new` 按 canonical ABI 提升为实现本
+// world 的组件，wasmtime 以类型化方式逐函数调用（scripts/wit_gate.sh）。
+package pathfinding:playground@0.1.0;
+
+world playground {
+  /// 重建 rows×cols 网格会话，返回错误码（0 = 成功）。
+  export pg-reset: func(rows: s32, cols: s32) -> s32;
+  /// 设置/清除障碍（扁平格 id + 开关）。
+  export pg-set-obstacle: func(cell: s32, on: s32) -> s32;
+  /// 设置起点（扁平格 id）。
+  export pg-set-start: func(cell: s32) -> s32;
+  /// 设置终点（扁平格 id）。
+  export pg-set-goal: func(cell: s32) -> s32;
+  /// 选择算法（0=BFS 1=DFS 2=Dijkstra 3=A*）。
+  export pg-select-algo: func(algo: s32) -> s32;
+  /// 物化 StepTrace，返回帧数（<0 为错误）。
+  export pg-compute: func() -> s32;
+  /// 第 i 帧 visited 数量。
+  export pg-step-visited-len: func(i: s32) -> s32;
+  /// 第 i 帧 visited 第 j 项（扁平格 id）。
+  export pg-step-visited-at: func(i: s32, j: s32) -> s32;
+  /// 第 i 帧 frontier 数量。
+  export pg-step-frontier-len: func(i: s32) -> s32;
+  /// 第 i 帧 frontier 第 j 项。
+  export pg-step-frontier-at: func(i: s32, j: s32) -> s32;
+  /// 第 i 帧当前扩展格。
+  export pg-step-current: func(i: s32) -> s32;
+  /// 第 i 帧标志位。
+  export pg-step-flags: func(i: s32) -> s32;
+  /// 最终路径长度（-1 = 不可达）。
+  export pg-final-path-len: func() -> s32;
+  /// 最终路径第 i 项。
+  export pg-final-path-at: func(i: s32) -> s32;
+  /// 最近一次操作错误码。
+  export pg-last-error: func() -> s32;
+}

@@ -169,6 +169,38 @@ jobs:
         run: bash scripts/component_gate.sh
 
   # ─────────────────────────────────────────────────────────────
+  # Job 1d · WIT 显式接口导出门禁 (平台轴第八级)
+  #   src/playground 的 pg_* 协议提升为组件模型显式类型接口
+  #   (wit/playground.wit): componentize + 接口反解一致 + wasmtime
+  #   --invoke 类型化调用逐值校验。
+  # ─────────────────────────────────────────────────────────────
+  wit:
+    name: wit interface gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit toolchain
+        uses: hustcer/setup-moonbit@v1
+
+      - name: Install wasmtime
+        run: |
+          curl -fsSL https://wasmtime.dev/install.sh | bash
+          echo "$HOME/.wasmtime/bin" >> "$GITHUB_PATH"
+
+      - name: Install wasm-tools
+        run: |
+          curl -fsSL -o /tmp/wasm-tools.tar.gz \
+            https://github.com/bytecodealliance/wasm-tools/releases/download/v1.244.0/wasm-tools-1.244.0-x86_64-linux.tar.gz
+          tar -xzf /tmp/wasm-tools.tar.gz -C /tmp
+          sudo mv /tmp/wasm-tools-1.244.0-x86_64-linux/wasm-tools /usr/local/bin/
+
+      - name: WIT gate (typed world componentize + invoke)
+        run: bash scripts/wit_gate.sh
+
+  # ─────────────────────────────────────────────────────────────
   # Job 2 · 覆盖率报告 + 85% 硬门禁 (关卡 4, 对应 design.md §15.3)
   #   task 28.2 升级: 从 best-effort → 硬门禁
   #   - `moon test --enable-coverage` 生成 coverage 数据

@@ -64,5 +64,28 @@ options(
       ],
       "export-memory-name": "moonbit_memory",
     },
+    // 纯 wasm（线性内存）后端同样导出 pg_* 入口：供组件模型 WIT 显式
+    // 接口导出门禁（scripts/wit_gate.sh，平台轴第八级）把该核心模块经
+    // canonical ABI 提升为带类型 WIT world 的组件后逐函数调用对拍。
+    "wasm": {
+      "exports": [
+        "pg_reset:pg-reset",
+        "pg_set_obstacle:pg-set-obstacle",
+        "pg_set_start:pg-set-start",
+        "pg_set_goal:pg-set-goal",
+        "pg_select_algo:pg-select-algo",
+        "pg_compute:pg-compute",
+        "pg_step_visited_len:pg-step-visited-len",
+        "pg_step_visited_at:pg-step-visited-at",
+        "pg_step_frontier_len:pg-step-frontier-len",
+        "pg_step_frontier_at:pg-step-frontier-at",
+        "pg_step_current:pg-step-current",
+        "pg_step_flags:pg-step-flags",
+        "pg_final_path_len:pg-final-path-len",
+        "pg_final_path_at:pg-final-path-at",
+        "pg_last_error:pg-last-error",
+      ],
+      "export-memory-name": "moonbit_memory",
+    },
   },
 )

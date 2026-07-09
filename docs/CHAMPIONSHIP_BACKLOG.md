@@ -277,7 +277,12 @@ Job）；第七级 = wasm 组件模型交付（2026-07-09 收官：scripts/compo
 —— 核心 wasm 模块经 wasi_snapshot_preview1 命令适配器组件化
 （wasm-tools component new），4 个组件模型二进制通过 component-model
 校验并在 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI
-`component model gate` Job），下一级 = WIT 显式接口导出；
+`component model gate` Job）；第八级 = WIT 显式接口导出（2026-07-09 收官：
+wit/playground.wit 把 src/playground 的 pg_* 整型句柄协议提升为组件
+模型显式类型接口：纯 wasm 核心模块（零导入）经 canonical ABI 提升
+为实现该 world 的组件，接口反解与源 WIT 一致，wasmtime --invoke
+类型化调用逐值校验（scripts/wit_gate.sh，入 CI `wit interface gate`
+Job），下一级 = 多组件组合（wasm-tools compose）；
 时间轴第五级 = G-A2；人机轴第四级 = G-C2/H-4。
 
 ### 冲刺优先级（截止 2026-07-12 前）

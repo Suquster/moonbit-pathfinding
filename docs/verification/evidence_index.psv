@@ -99,3 +99,12 @@ zstd Compressed 块解码器结构级联拒绝（Huffman 权重直存与 FSE 两
 match_ext 扩展层桥接与拒绝分支收口（check_x/eval_x 错误传播、模式失配落空、代入遮蔽、投影边界回退）|src/mini_compiler::match_ext_gaps_wbtest.mbt|551c61f
 骨架 proto 解析器错误分支与标量类型映射全谱 + 枚举引用重写|src/serialization::proto_parser_gaps_test.mbt|551c61f
 proto3 JSON 映射编解码类型不符全谱与 map 键各标量形态往返/拒绝|src/serialization::json_gaps_test.mbt|551c61f
+infra_bench BenchReport JSON 解析器错误分支覆盖收口（顶层/machine/case/stats 字段缺失与类型不符、底层 JSON 结构破坏）|src/infra_bench::report_gaps_test.mbt|64eb27d
+infra_config TOML 词法与结构错误分支覆盖收口（转义/续行/多行、inf/nan、进制整数、浮点词法、数组/内联表结构、表头与点分键冲突）|src/infra_config::toml_gaps_test.mbt|64eb27d
+serialization typed 编解码类型不符全谱（15 标量/repeated/packed/map 键值/嵌套消息 encode 拒绝 + decode wire 类别失配与 map 记录结构）|src/serialization::typed_gaps_test.mbt|64eb27d
+dst trace_codec 记号级损坏与事件/故障种类全谱拒绝（顶层结构/字符串码点/长度前缀/尾部多余记号 + 事件 0..4/故障 0..8 + finals 段逐级损坏 + 字节适配）|src/dst::trace_codec_gaps_test.mbt|64eb27d
+logging parse_json_log 顶层键类型不符/字段还原/转义与数值词法边界确定性反例|src/logging::parse_json_log_gaps_test.mbt|64eb27d
+mini_compiler ml_parser 语法产生式缺件拒绝（let/let rec/if/lambda/元组/括号/运算符右操作数）|src/mini_compiler::ml_parser_gaps_test.mbt|64eb27d
+infra_compress deflate/gzip 解码器块级与可选字段结构破坏拒绝（stored/fixed/dynamic 头、回拷越界、gzip 魔数/CM/可选字段全谱/CRC/ISIZE/尾部垃圾/多成员）|src/infra_compress::deflate_gaps_test.mbt|64eb27d
+infra_text rope UTF-8/UTF-16 偏移换算与行列定位覆盖收口（多字节/代理对/孤立代理项 WTF-8、行偏移、深树重建、切片与 charcode 边界）|src/infra_text::rope_gaps_test.mbt|64eb27d
+infra_compress zstd 熵编码字面量段各 size_format/单符号退化回退/FSE 归一化边界/长匹配远距离码档无损往返|src/infra_compress::zstd_encode_gaps_test.mbt|64eb27d

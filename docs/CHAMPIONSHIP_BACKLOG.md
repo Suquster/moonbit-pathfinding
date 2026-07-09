@@ -189,6 +189,10 @@
         后置条件 + 加速算法独有的「与 Dijkstra 参考逐对代价等价」正确性护栏
         `cost_agrees_with_reference` / `batch_cost_agrees`）。2026-07-09，
         `src/proofs/advanced_proof.mbt`。
+  - [x] G-B4++ INFRA 第二批证明谓词（韧性原语：退避有界单调 / AIMD·舱壁
+        硬预算 / 熔断器三态迁移闭包；diff/patch 三引擎正反向往返恒等；
+        全部经真实包实现 PBT 接地）。2026-07-09，
+        `src/proofs/resilience_diff_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

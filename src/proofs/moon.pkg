@@ -22,6 +22,7 @@ import {
   "Suquster/moonbit-pathfinding/src/infra_codec",
   "Suquster/moonbit-pathfinding/src/infra_compress",
   "Suquster/moonbit-pathfinding/src/infra_diff",
+  "Suquster/moonbit-pathfinding/src/infra_ds",
   "Suquster/moonbit-pathfinding/src/infra_hash",
   "Suquster/moonbit-pathfinding/src/infra_metrics",
   "Suquster/moonbit-pathfinding/src/infra_time",

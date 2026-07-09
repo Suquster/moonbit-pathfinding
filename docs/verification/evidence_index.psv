@@ -65,3 +65,5 @@ road_service 尾包收口（CLI 熔断拒绝路径）|src/road_service::road_ser
 diff/patch 往返恒等（三引擎正向 + 反向 revert，随机行数组 PBT）|src/proofs::resilience_diff_proof.mbt|dfdcb2b
 指标聚合不变量（Hdr/DDSketch 分位数单调夹逼 + merge 计数守恒，随机样本 PBT）|src/proofs::metrics_time_proof_test.mbt|c959ba2
 时间运算往返恒等（civil↔days 双射 + ISO8601 format∘parse，随机日期 PBT）|src/proofs::metrics_time_proof.mbt|c959ba2
+编解码往返恒等（CBOR/CSV/hex/UTF-8/varint/zigzag，随机值 PBT）|src/proofs::codec_alloc_timer_proof_test.mbt|72ed8ad
+句柄生命周期不变量（Slab 世代键互异守恒 + TimerWheel 触发来源封闭守恒）|src/proofs::codec_alloc_timer_proof.mbt|72ed8ad

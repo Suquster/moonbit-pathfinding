@@ -85,3 +85,7 @@ wasm 组件模型交付（4 个核心 wasm 模块经 preview1 命令适配器组
 WIT 显式接口导出（playground pg_* 协议提升为类型化 world，组件接口反解一致 + wasmtime --invoke 逐值校验）|scripts::wit_gate.sh|c4c89be
 图方向家族谓词首次真实实现接地（unweighted/undirected/directed/playground/road_service，PBT ≥128 迭代）|src/proofs::graph_directions_proof_test.mbt|5a6672f
 BFS 最短性与 BfsTree 层号一致 + Kruskal/Prim 总权一致（随机连通图 PBT）|src/proofs::graph_directions_proof_test.mbt|5a6672f
+加速算法代价等价（CH/ALT 单查询与批量 vs Dijkstra 参考，随机带权有向图 PBT + 查询后置条件）|src/proofs::family13_proof_test.mbt|aa679cb
+SSA 单赋值建立与全 pass 流水线保持 + 干涉着色边端互异（随机基本块程序 PBT）|src/proofs::family13_proof_test.mbt|aa679cb
+LSP 帧编解码往返恒等 + 任意切分点分块重组 + 畸形帧结构化 parse_error 存活|src/proofs::family13_proof_test.mbt|aa679cb
+mini_compiler 作用域绑定一致（真实前端接地含自由变量反例）+ 解释/编译两路优化开关全组合一致|src/proofs::family13_proof_test.mbt|aa679cb

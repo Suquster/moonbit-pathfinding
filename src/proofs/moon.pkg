@@ -19,7 +19,9 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/infra_alloc",
+  "Suquster/moonbit-pathfinding/src/infra_cli",
   "Suquster/moonbit-pathfinding/src/infra_codec",
+  "Suquster/moonbit-pathfinding/src/infra_config",
   "Suquster/moonbit-pathfinding/src/infra_compress",
   "Suquster/moonbit-pathfinding/src/infra_diff",
   "Suquster/moonbit-pathfinding/src/infra_ds",

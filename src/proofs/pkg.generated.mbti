@@ -73,6 +73,8 @@ pub fn components_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
 
 pub fn condensation_is_dag(Int, Array[(Int, Int)]) -> Bool
 
+pub fn contains_all(String, Array[String]) -> Bool
+
 pub fn[N, W : @core.Weight] cost_agrees_with_reference((Array[N], W)?, (Array[N], W)?) -> Bool
 
 pub fn count_conserved(Int, Array[Int]) -> Bool
@@ -88,6 +90,8 @@ pub fn[N : Eq + Hash] dfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array
 pub fn[W : @core.Weight] dijkstra_pop_monotonic(Array[W]) -> Bool
 
 pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(N, W)], (N, N) -> W?) -> Bool
+
+pub fn distance_bounds(String, String, (String, String) -> Int) -> Bool
 
 pub fn edge_is_bridge(Int, Array[(Int, Int)], Int, Int) -> Bool
 
@@ -160,6 +164,8 @@ pub fn[N, W : @core.Weight] path_cost(Array[N], (N, N) -> W?) -> W?
 pub fn perfect_matching_weight(Array[(Int, Int)], Array[(Int, Int)], Array[Int], Int, Int) -> Bool
 
 pub fn[T] preserves(T, (T) -> T, (T) -> Bool) -> Bool
+
+pub fn pseudo_metric_laws(String, String, (String, String) -> Int) -> Bool
 
 pub fn[N, W : @core.Weight] require_non_negative_edges(Array[(N, N)], (N, N) -> W?) -> Bool
 

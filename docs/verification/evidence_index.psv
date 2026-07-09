@@ -92,3 +92,5 @@ mini_compiler 作用域绑定一致（真实前端接地含自由变量反例）
 JPS 与 8 向 Dijkstra 参考代价一致（随机障碍栅格 PBT，单查+批量，2^-20 量化恢复严格相等）|src/proofs::family14_proof_test.mbt|a840cf6
 CH-CSR 查询与逐邻接 Dijkstra 参考代价一致 + cost 专用接口自洽（合成栅格图 PBT）|src/proofs::family14_proof_test.mbt|a840cf6
 双向 Dijkstra 与单向参考逐对代价一致（随机带权有向图 PBT）|src/proofs::family14_proof_test.mbt|a840cf6
+证明谓词层可证伪性收口（每个拒绝分支的确定性反例：build_tool/metrics/infra/loop/flow_matching/spanning/shortest_path/unweighted/resilience/proof_report）|src/proofs::family15_coverage_test.mbt|b4f6813
+proof_report JSON 解析器结构破坏拒绝 + yen_post 代价降序拒绝（残余分支收口）|src/proofs::family15b_coverage_test.mbt|b4f6813

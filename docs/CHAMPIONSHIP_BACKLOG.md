@@ -256,6 +256,14 @@
         单向参考一致；顺带修正 jps.mbt 文档与实现语义不符（实现允许
         切角，与模块内 A* 参考同口径））。2026-07-09，
         `src/proofs/family14_proof_test.mbt`。
+  - [x] G-B4+++++++++++++++ INFRA 第十五批证明谓词可证伪性收口（moon
+        coverage analyze 驱动：proofs 包内全部谓词拒绝分支补齐确定性
+        反例——build_tool/metrics/infra/loop_invariants/flow_matching/
+        spanning_connectivity/shortest_path/unweighted/resilience 各家族
+        + proof_report JSON 解析器结构破坏拒绝与转义边缘分支 + yen_post
+        代价降序拒绝；proofs 未覆盖行 78→3（余 3 行为防御性死分支））。
+        2026-07-09，`src/proofs/family15_coverage_test.mbt`、
+        `src/proofs/family15b_coverage_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

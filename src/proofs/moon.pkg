@@ -19,6 +19,9 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/docgen",
+  "Suquster/moonbit-pathfinding/src/evidence_index",
+  "Suquster/moonbit-pathfinding/src/mooncakes_audit",
+  "Suquster/moonbit-pathfinding/src/release_meta",
   "Suquster/moonbit-pathfinding/src/graph",
   "Suquster/moonbit-pathfinding/src/infra_alloc",
   "Suquster/moonbit-pathfinding/src/infra_bench",

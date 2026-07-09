@@ -209,6 +209,11 @@
         长度夹逼、拼写建议来源封闭与距离预算、help/补全文本完备；配置：
         ini/toml 查找与解析结构逐项一致；全部经真实包实现驱动）。
         2026-07-09，`src/proofs/cli_config_proof.mbt`。
+  - [x] G-B4+++++++ INFRA 第七批证明谓词（图容器：CSR/随机图端点封闭；
+        基准统计：min≤median≤p95≤max 排序律 + mean 夹逼 + 报告 JSON
+        往返；模糊收缩：候选规模严格递减良基；文档生成：复杂度表算法名
+        完备；全部经真实包实现驱动）。2026-07-09，
+        `src/proofs/graph_bench_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

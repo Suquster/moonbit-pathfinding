@@ -48,3 +48,8 @@ infra_diff 覆盖盲区收口（DiffOp/SemVer Show、patch_apply 负例）|src/i
 infra_metrics 覆盖盲区收口（分位/百分位/精度位钳制、越界 id 防御）|src/infra_metrics::coverage_gaps2_test.mbt|cab915b
 infra_resilience 覆盖盲区收口（退避/抖动钳制、CircuitState Show、对冲截断）|src/infra_resilience::coverage_gaps2_test.mbt|cab915b
 infra_cli 覆盖盲区收口（CliError/TypedError Show、整数记号边界）|src/infra_cli::coverage_gaps2_wbtest.mbt|cab915b
+directed 覆盖盲区收口（ALT 地标闭包、一到全 Dijkstra、索引搜索越界防御）|src/directed::coverage_gaps3_test.mbt|aba1251
+infra_hash 覆盖盲区收口（UTF-8 四字节、HMAC 超块密钥、流式 reset）|src/infra_hash::coverage_gaps2_test.mbt|aba1251
+infra_pbt 覆盖盲区收口（next_below 非正、round_trip 解码失败、统计失败分支）|src/infra_pbt::coverage_gaps2_wbtest.mbt|aba1251
+infra_timer 覆盖盲区收口（空队列弹出、时间轮取消越界、worker 数）|src/infra_timer::coverage_gaps2_wbtest.mbt|aba1251
+infra_alloc 覆盖盲区收口（Slab 越界键 get/set/free 拒绝）|src/infra_alloc::coverage_gaps2_wbtest.mbt|aba1251

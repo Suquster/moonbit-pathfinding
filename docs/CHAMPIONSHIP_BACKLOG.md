@@ -273,7 +273,11 @@
 + 12 份可执行文档全绿并入 CI 矩阵）；第六级 = WASI 交付（2026-07-09 收官：
 scripts/wasi_gate.sh — backend_cli 与三个 examples 的独立 wasm 工件在
 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI `wasi delivery gate`
-Job），下一级 = wasm 组件模型；
+Job）；第七级 = wasm 组件模型交付（2026-07-09 收官：scripts/component_gate.sh
+—— 核心 wasm 模块经 wasi_snapshot_preview1 命令适配器组件化
+（wasm-tools component new），4 个组件模型二进制通过 component-model
+校验并在 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI
+`component model gate` Job），下一级 = WIT 显式接口导出；
 时间轴第五级 = G-A2；人机轴第四级 = G-C2/H-4。
 
 ### 冲刺优先级（截止 2026-07-12 前）

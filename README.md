@@ -45,7 +45,7 @@
    regression tests today and a clear `moon prove` upgrade path.
 2. **Executable README examples** via `moon test README.mbt.md`, so examples
    are compiled and snapshot-checked instead of drifting.
-3. **四后端一致性** — wasm-gc / native / js / wasm 差分测试 CI 门禁 + WASI 交付门禁。
+3. **四后端一致性** — wasm-gc / native / js / wasm 差分测试 CI 门禁 + WASI 交付门禁 + wasm 组件模型交付门禁。
 4. **AI-agent-friendly successor-function APIs** and graph input guides that
    keep callers free from a forced graph data structure.
 
@@ -387,7 +387,11 @@ backends**: `wasm-gc`, `js`, `native`, and pure `wasm` (linear memory). Every
 push to `main` and every PR triggers the `ci` workflow's **4-backend matrix**,
 which executes the full test suite (2683 cases) on each backend, plus a
 **WASI delivery gate** (`scripts/wasi_gate.sh`) that runs the release wasm
-artifacts under `wasmtime` and byte-diffs the output against the js backend. Any
+artifacts under `wasmtime` and byte-diffs the output against the js backend, and
+a **component model gate** (`scripts/component_gate.sh`) that componentizes the
+core wasm modules via the `wasi_snapshot_preview1` command adapter
+(`wasm-tools component new`), validates the component-model binaries, and runs
+them under `wasmtime` with the same byte-level diff against the js backend. Any
 output divergence — including snapshot mismatches from `inspect(..., content=...)`
 — fails the entire build, giving us a **differential test** of algorithmic
 behaviour across backends for free.

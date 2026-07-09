@@ -333,6 +333,20 @@
         `src/infra_time/time_ext_gaps_test.mbt`、
         `src/codegen_infra/ir_interp_gaps_wbtest.mbt`、
         `src/serialization/typed_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++ INFRA 第二十三批覆盖收口（infra_compress
+        59+：DEFLATE 动态表/符号/距离校验与 gzip 尾部、zstd FSE/HUF 读写
+        与四流字面量各流损坏/第 4 流负长、编码器归一化与段头档位、LZ4
+        帧头/块校验和/越界；codegen_infra 31：BURS/max_munch 空规则退化
+        与特化兜底、liveness 空记号/未登记变量/悬空后继/集合比较；
+        mini_compiler 47：infer 各子位置错误冒泡、match_ext 转换器与
+        环境克隆、exhaustive 通配特化/见证重建/缺失字面量；logging 17：
+        OTLP 属性值全构造 + Client 种别、采样率 0/1 边界；三后端
+        2831→2891 全绿）。2026-07-09，
+        `src/infra_compress/{deflate_gaps2,zstd_gaps2,lz4_frame_gaps}_wbtest.mbt`、
+        `src/codegen_infra/burs_gaps_test.mbt`、
+        `src/codegen_infra/liveness_gaps_wbtest.mbt`、
+        `src/mini_compiler/{infer_gaps_test,match_ext_gaps2_wbtest,exhaustive_gaps_wbtest}.mbt`、
+        `src/logging/otlp_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

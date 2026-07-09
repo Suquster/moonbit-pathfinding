@@ -89,6 +89,8 @@ pub fn deterministic_replay(Array[Int], Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash] dfs_post(Array[N]?, N, (N) -> Array[N], (N) -> Bool, Array[N]) -> Bool
 
+pub fn diff_optimal_cost(Int, Int, Int, Int) -> Bool
+
 pub fn[W : @core.Weight] dijkstra_pop_monotonic(Array[W]) -> Bool
 
 pub fn[N : Eq, W : @core.Weight] dijkstra_post((Array[N], W)?, N, (N) -> Array[(N, W)], (N, N) -> W?) -> Bool
@@ -98,6 +100,8 @@ pub fn distance_bounds(String, String, (String, String) -> Int) -> Bool
 pub fn edge_is_bridge(Int, Array[(Int, Int)], Int, Int) -> Bool
 
 pub fn endpoints_in_range(Array[(Int, Int)], Int) -> Bool
+
+pub fn equivalence_laws(String, String, String, (String, String) -> Bool) -> Bool
 
 pub fn error_isolation(Array[Int], Int, Array[Int]) -> Bool
 
@@ -160,6 +164,8 @@ pub fn non_decreasing_f(Array[Double]) -> Bool
 pub fn pairwise_diff_within(Array[Int], Int) -> Bool
 
 pub fn parse_proof_report(String) -> ProofReport?
+
+pub fn partition_reassembles(Array[String], String) -> Bool
 
 pub fn[T : Eq] patch_round_trip_eq(T, T, (T, T) -> T?) -> Bool
 

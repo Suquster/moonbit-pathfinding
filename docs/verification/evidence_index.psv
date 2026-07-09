@@ -132,3 +132,6 @@ infra_resilience 参数钳制与状态机边角收口（退避 base>cap、熔断
 infra_ds HAMT 冲突桶收口（全哈希冲突建桶/查找/替换/追加、异哈希升层分裂）|src/infra_ds::hamt_gaps_wbtest.mbt|e184fd5
 codegen_infra liveness 不动点防御增补（analyze_liveness 悬空后继安全忽略）|src/codegen_infra::liveness_gaps_wbtest.mbt|e184fd5
 infra_cli/mini_compiler/parser_combinator 边角收口（类型化取值缺席与畸形浮点、TCO PushBool/Logic/无 Ret 弹帧、JSON 恢复解析退化与同步）|src/infra_cli::cli_typed_gaps_test.mbt+src/mini_compiler::tco_gaps_test.mbt+src/parser_combinator::json_gaps_test.mbt|e184fd5
+logging/lsp_server 解析防御收口（logfmt 畸形行各位置拒绝、位置换算负值/越界拒绝）|src/logging::logfmt_gaps_test.mbt+src/lsp_server::position_encoding_gaps_test.mbt|4d1a1a9
+infra_config/serialization 语法边角收口（TOML 多行首行修剪与转义、proto 方法选项块未闭合/整体跳过）|src/infra_config::toml_gaps_test.mbt+src/serialization::proto_service_gaps_test.mbt|4d1a1a9
+codegen_infra SSA 解构与最小 SSA 防御收口（空指令终结判定、终结前插入各形态、不可达块跳过）|src/codegen_infra::out_of_ssa_gaps_wbtest.mbt|4d1a1a9

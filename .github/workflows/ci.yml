@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false                        # 一个后端失败不影响其他后端
       matrix:
-        backend: [wasm-gc, js, native]
+        backend: [wasm-gc, js, native, wasm]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

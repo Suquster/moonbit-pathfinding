@@ -14,7 +14,7 @@
 >
 > 面向 **MoonBit** 的生产级路径规划与图算法库，核心亮点：
 > **可执行 proof predicates**、**可执行 Markdown 文档**、
-> **三后端一致性** (wasm-gc / native / js)、**一键验收脚本**。
+> **四后端一致性** (wasm-gc / native / js / wasm) 与 **WASI 交付门禁**、**一键验收脚本**。
 
 ---
 
@@ -34,7 +34,7 @@ MIT OR Apache-2.0 双许可）。核心借鉴：
 
 1. **可执行 proof predicates**：BFS/Dijkstra 合约已有运行时回归测试，后续可升级到稳定 `moon prove`
 2. **可执行 README 示例**：`moon test README.mbt.md` 会编译并快照校验文档示例
-3. **三后端一致性** — wasm-gc / native / js 差分测试作为 CI 硬门禁
+3. **四后端一致性** — wasm-gc / native / js / wasm 差分测试作为 CI 硬门禁，另有 WASI 交付门禁（wasmtime 运行产物与 js 后端逐字节对拍）
 4. **AI Agent 友好的后继函数 API**：不强制绑定图结构，便于生成、组合和验证调用代码
 
 与 MoonBit 生态内已有同类包（寻路、hash、compress、TOML、diff 等）的

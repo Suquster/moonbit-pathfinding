@@ -45,7 +45,7 @@
    regression tests today and a clear `moon prove` upgrade path.
 2. **Executable README examples** via `moon test README.mbt.md`, so examples
    are compiled and snapshot-checked instead of drifting.
-3. **三后端一致性** — wasm-gc / native / js 差分测试 CI 门禁。
+3. **四后端一致性** — wasm-gc / native / js / wasm 差分测试 CI 门禁 + WASI 交付门禁。
 4. **AI-agent-friendly successor-function APIs** and graph input guides that
    keep callers free from a forced graph data structure.
 
@@ -378,14 +378,16 @@ available with a deliberately loose 50% default because it times end-to-end
 
 ---
 
-## Multi-backend consistency · 三后端一致性
+## Multi-backend consistency · 四后端一致性
 
 > 对应 tasks.md 39.x · Requirement R17 · design.md §15.1
 
-This library is built to **compile and run identically on all three MoonBit
-backends**: `wasm-gc`, `js`, and `native`. Every push to `main` and every PR
-triggers the `ci` workflow's **3-backend matrix**, which executes the full
-test suite (currently 97 blackbox + whitebox cases) on each backend. Any
+This library is built to **compile and run identically on all four MoonBit
+backends**: `wasm-gc`, `js`, `native`, and pure `wasm` (linear memory). Every
+push to `main` and every PR triggers the `ci` workflow's **4-backend matrix**,
+which executes the full test suite (2600 cases) on each backend, plus a
+**WASI delivery gate** (`scripts/wasi_gate.sh`) that runs the release wasm
+artifacts under `wasmtime` and byte-diffs the output against the js backend. Any
 output divergence — including snapshot mismatches from `inspect(..., content=...)`
 — fails the entire build, giving us a **differential test** of algorithmic
 behaviour across backends for free.

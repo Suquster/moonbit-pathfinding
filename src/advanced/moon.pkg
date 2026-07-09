@@ -20,6 +20,7 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/directed" @dir,
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "Suquster/moonbit-pathfinding/src/proofs",
   "moonbitlang/core/debug",
   "moonbitlang/core/test",
 } for "test"

@@ -201,6 +201,10 @@
         zigzag 往返恒等；分配器：Slab 世代键互异 + 存活集守恒；定时器：
         TimerWheel 触发来源封闭 + 触发/取消/待决计数守恒；全部经真实包
         实现 PBT 接地）。2026-07-09，`src/proofs/codec_alloc_timer_proof.mbt`。
+  - [x] G-B4+++++ INFRA 第五批证明谓词（数据结构：BTree/SkipList 遍历
+        严格递增 + range 区间封闭；Roaring 并/交与成员判定外延一致；
+        LRU 容量硬上界；Bloom 无假阴性；全部经真实包实现 PBT 接地）。
+        2026-07-09，`src/proofs/ds_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

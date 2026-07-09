@@ -56,3 +56,4 @@ infra_alloc 覆盖盲区收口（Slab 越界键 get/set/free 拒绝）|src/infra
 mooncakes_audit 尾包收口（畸形版本号四条拒绝路径、版本落后渲染）|src/mooncakes_audit::dep_audit_test.mbt|25ae12b
 release_aggregate 尾包收口（MINOR 覆盖档位合规）|src/release_aggregate::compat_diff_test.mbt|25ae12b
 road_service 尾包收口（CLI 熔断拒绝路径）|src/road_service::road_service_test.mbt|25ae12b
+平台轴第六级 WASI 交付门禁（4 工件 wasmtime vs js 逐字节一致）|scripts::wasi_gate.sh|e590571

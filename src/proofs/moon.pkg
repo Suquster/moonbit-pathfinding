@@ -19,7 +19,9 @@ import {
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
   "Suquster/moonbit-pathfinding/src/infra_compress",
+  "Suquster/moonbit-pathfinding/src/infra_diff",
   "Suquster/moonbit-pathfinding/src/infra_hash",
+  "Suquster/moonbit-pathfinding/src/infra_resilience",
   "Suquster/moonbit-pathfinding/src/regex_engine",
   "moonbitlang/core/debug",
   "moonbitlang/core/test",

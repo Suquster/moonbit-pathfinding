@@ -11,7 +11,11 @@ pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) 
 
 pub fn[N : Eq + Hash, W : @core.Weight] all_pairs_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
+pub fn[N : Eq + Hash, W : @core.Weight] alt_query_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
 pub fn[N : Eq + Hash, W : @core.Weight] astar_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N, W : @core.Weight] batch_cost_agrees(Array[(Array[N], W)?], Array[(Array[N], W)?]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] bellman_ford_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
@@ -30,6 +34,10 @@ pub fn bridges_post(Int, Array[(Int, Int)], Array[(Int, Int)]) -> Bool
 pub fn build_order_respects_deps(Array[Int], Array[(Int, Int)]) -> Bool
 
 pub fn bytes_round_trip_eq(Array[Int], Array[Int]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] cch_query_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[N : Eq + Hash, W : @core.Weight] ch_query_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn[N, W : @core.Weight] check_cost_matches_path((Array[N], W)?, (N, N) -> W?) -> Bool
 
@@ -57,6 +65,8 @@ pub fn components_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
 
 pub fn condensation_is_dag(Int, Array[(Int, Int)]) -> Bool
 
+pub fn[N, W : @core.Weight] cost_agrees_with_reference((Array[N], W)?, (Array[N], W)?) -> Bool
+
 pub fn[N : Eq + Hash, W : @core.Weight] dag_sp_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn decode_failure_no_partial(Bool, Bool) -> Bool
@@ -83,6 +93,8 @@ pub fn[N : Eq + Hash, W : @core.Weight] floyd_warshall_post(Array[(N, N)], (N, N
 
 pub fn has_magic_prefix(Array[Int], Array[Int]) -> Bool
 
+pub fn[N : Eq + Hash, W : @core.Weight] hub_labeling_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
 pub fn[N : Eq + Hash, W : @core.Weight] ida_star_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
 pub fn illegal_message_keeps_alive(Bool, Bool, Bool) -> Bool
@@ -100,6 +112,8 @@ pub fn[N : Eq + Hash] is_reachable(N, (N) -> Bool, (N) -> Array[N], Array[N]) ->
 pub fn[N : Eq] is_valid_path(Array[N], N, (N) -> Array[N]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] johnson_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn[W : @core.Weight] jps_post((Array[(Int, Int)], W)?, (Int, Int), ((Int, Int)) -> Bool, ((Int, Int)) -> Array[((Int, Int), W)], ((Int, Int), (Int, Int)) -> W?, Array[(Int, Int)]) -> Bool
 
 pub fn level_threshold_filter(Int, Int, Bool) -> Bool
 

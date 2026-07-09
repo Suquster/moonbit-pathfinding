@@ -314,6 +314,15 @@
         `src/infra_time/time_gaps_test.mbt`、
         `src/serialization/proto_service_gaps_test.mbt`、
         `src/codegen_infra/ir_validator_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++ INFRA 第二十批覆盖收口（infra_codec 28：
+        varint 截断/超长、字符串载荷畸形码点、MsgView 字段定位跳过各线型
+        与保留线型拒绝、LEN 越界、嵌套消息子视图；mini_compiler row_poly
+        17：变量合一、occurs 检查（类型/行）、缺字段拒绝、替换追链与
+        Show 各臂；playground exports 19：算法码全谱、错误码映射、轨迹
+        缺失/帧越界哨兵、不可达路径与旗标；三后端 2810→2820 全绿）。
+        2026-07-09，`src/infra_codec/codec_gaps_test.mbt`、
+        `src/mini_compiler/row_poly_gaps_test.mbt`、
+        `src/playground/exports_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

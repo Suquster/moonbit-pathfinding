@@ -305,6 +305,15 @@
         `src/infra_ds/roaring_gaps_test.mbt`、
         `src/mini_compiler/vm_optimize_gaps_test.mbt`、
         `src/lsp_binding/json_gaps_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++ INFRA 第十九批覆盖收口（infra_time 30：
+        ISO-8601 逐段截断/分隔符错位/字段越界、POSIX TZ 词法/切换点/
+        显式 DST 偏移/南半球跨年；serialization proto_service 19：rpc
+        各段截断、service 成员拒绝、import 修饰与路径；codegen_infra
+        ir_validator 18：各指令 Mem 非值/Imm 非地址/空 callee/终结器
+        SSA 与结构违规；三后端 2800→2810 全绿）。2026-07-09，
+        `src/infra_time/time_gaps_test.mbt`、
+        `src/serialization/proto_service_gaps_test.mbt`、
+        `src/codegen_infra/ir_validator_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

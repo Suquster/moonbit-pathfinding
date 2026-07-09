@@ -240,6 +240,15 @@
         端到端网格路径合法且长度为曼哈顿距离 + 1；road_service 链式
         路网 route 命中首尾端点与成本）。2026-07-09，
         `src/proofs/graph_directions_proof_test.mbt`。
+  - [x] G-B4+++++++++++++ INFRA 第十三批证明谓词接地（加速/编译器/协议
+        家族首次真实接地：advanced CH/ALT 查询（含批量）与 Dijkstra 参考
+        逐对代价一致 + 查询后置条件；codegen_infra SSA 单赋值经 build_ssa
+        建立、全 pass 流水线保持 + 干涉图着色分配边端互异；lsp_binding
+        帧编解码往返恒等 + FrameReader 任意切分点分块重组 + 畸形帧结构化
+        parse_error 存活；mini_compiler 随机 let 链作用域绑定一致
+        （scope_binding_consistent 经真实前端接地，含自由变量反例）+
+        解释/编译两路优化开关全组合一致）。2026-07-09，
+        `src/proofs/family13_proof_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

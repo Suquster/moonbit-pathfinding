@@ -385,6 +385,13 @@
         `src/infra_config/toml_gaps_test.mbt`（增补）、
         `src/codegen_infra/out_of_ssa_gaps_wbtest.mbt`、
         `src/serialization/proto_service_gaps_test.mbt`（增补）。
+  - [x] G-B4++++++++++++++++++++++++++ INFRA 第二十七批覆盖收口
+        （mini_compiler ml_eval/vm：递归记录非闭包值原样返回、
+        as_int/as_bool 回退、未绑定变量全函数回退、VM 无 Ret 弹帧；
+        build_tool rule_grammar：模式后缀失配与多模式顺延；三后端
+        2940→2945 全绿）。2026-07-09，
+        `src/mini_compiler/ml_eval_gaps_wbtest.mbt`、
+        `src/build_tool/rule_grammar_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

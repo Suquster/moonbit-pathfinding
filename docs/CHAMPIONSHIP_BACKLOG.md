@@ -193,6 +193,10 @@
         硬预算 / 熔断器三态迁移闭包；diff/patch 三引擎正反向往返恒等；
         全部经真实包实现 PBT 接地）。2026-07-09，
         `src/proofs/resilience_diff_proof.mbt`。
+  - [x] G-B4+++ INFRA 第三批证明谓词（指标聚合：Hdr/DDSketch 分位数单调
+        夹逼 + merge 计数守恒；时间运算：civil↔days 双射 + ISO8601
+        format∘parse 往返；全部经真实包实现 PBT 接地）。2026-07-09，
+        `src/proofs/metrics_time_proof.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

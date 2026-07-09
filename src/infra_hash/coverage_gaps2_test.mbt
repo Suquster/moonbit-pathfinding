@@ -12,7 +12,7 @@ test "hash：HMAC 超块长密钥先散列" {
   let key : Array[Int] = Array::make(100, 0x61) // 100 > 64 块长。
   let m1 = hmac_sha256(key, [1, 2, 3])
   let m2 = hmac_sha256(key, [1, 2, 3])
-  assert_eq(m1, m2)
+  assert_true(m1 == m2)
   assert_eq(m1.length(), 32)
 }
 

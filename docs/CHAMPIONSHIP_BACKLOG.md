@@ -294,6 +294,17 @@
         `src/infra_compress/deflate_gaps_test.mbt`、
         `src/infra_text/rope_gaps_test.mbt`、
         `src/infra_compress/zstd_encode_gaps_test.mbt`。
+  - [x] G-B4++++++++++++++++++ INFRA 第十八批覆盖收口（actor 监督系统
+        边界 22：根升级退化/强度超限/无监督失败终态/未知 id 查询；
+        infra_ds roaring 20：容器两态升降级、并/交各容器组合、块键
+        归并尾段；mini_compiler vm/optimize 40：元组指令、种子环境
+        闭包桥接、beta 捕获避免替换 alpha 重命名各臂、死 let 消除；
+        lsp_binding json 19：转义全谱、\uXXXX 词法、控制字符渲染
+        往返、整数 id 字面量边界；三后端 2785→2800 全绿）。
+        2026-07-09，`src/actor/system_gaps_test.mbt`、
+        `src/infra_ds/roaring_gaps_test.mbt`、
+        `src/mini_compiler/vm_optimize_gaps_test.mbt`、
+        `src/lsp_binding/json_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

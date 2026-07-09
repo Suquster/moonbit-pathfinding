@@ -233,6 +233,13 @@
         报告一致；日志阈值过滤全矩阵一致；LSP 非法帧解码失败仍存活；
         解析器失败不消费输入）。2026-07-09，
         `src/proofs/runtime_family_proof_test.mbt`。
+  - [x] G-B4++++++++++++ INFRA 第十二批证明谓词接地（图方向家族首次
+        真实接地：unweighted BFS 路径合法 + 与 BfsTree 层号一致的最短性；
+        undirected Kruskal/Prim 随机连通图总权一致 + 连通分量划分守恒；
+        directed 随机 DAG 拓扑序尊重全部依赖边；playground pg_* 会话
+        端到端网格路径合法且长度为曼哈顿距离 + 1；road_service 链式
+        路网 route 命中首尾端点与成本）。2026-07-09，
+        `src/proofs/graph_directions_proof_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

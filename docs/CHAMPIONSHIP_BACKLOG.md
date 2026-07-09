@@ -249,6 +249,13 @@
         （scope_binding_consistent 经真实前端接地，含自由变量反例）+
         解释/编译两路优化开关全组合一致）。2026-07-09，
         `src/proofs/family13_proof_test.mbt`。
+  - [x] G-B4++++++++++++++ INFRA 第十四批证明谓词接地（查询算法族代价
+        等价扩展：JPS 随机障碍栅格与 8 向 Dijkstra 参考逐对代价一致
+        （单查+批量，2^-20 量化恢复严格相等）；CH-CSR 合成栅格图查询与
+        逐邻接 Dijkstra 参考一致 + cost 专用接口自洽；双向 Dijkstra 与
+        单向参考一致；顺带修正 jps.mbt 文档与实现语义不符（实现允许
+        切角，与模块内 A* 参考同口径））。2026-07-09，
+        `src/proofs/family14_proof_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -89,3 +89,6 @@ BFS 最短性与 BfsTree 层号一致 + Kruskal/Prim 总权一致（随机连通
 SSA 单赋值建立与全 pass 流水线保持 + 干涉着色边端互异（随机基本块程序 PBT）|src/proofs::family13_proof_test.mbt|aa679cb
 LSP 帧编解码往返恒等 + 任意切分点分块重组 + 畸形帧结构化 parse_error 存活|src/proofs::family13_proof_test.mbt|aa679cb
 mini_compiler 作用域绑定一致（真实前端接地含自由变量反例）+ 解释/编译两路优化开关全组合一致|src/proofs::family13_proof_test.mbt|aa679cb
+JPS 与 8 向 Dijkstra 参考代价一致（随机障碍栅格 PBT，单查+批量，2^-20 量化恢复严格相等）|src/proofs::family14_proof_test.mbt|a840cf6
+CH-CSR 查询与逐邻接 Dijkstra 参考代价一致 + cost 专用接口自洽（合成栅格图 PBT）|src/proofs::family14_proof_test.mbt|a840cf6
+双向 Dijkstra 与单向参考逐对代价一致（随机带权有向图 PBT）|src/proofs::family14_proof_test.mbt|a840cf6

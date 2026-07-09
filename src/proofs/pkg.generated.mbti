@@ -7,6 +7,8 @@ import {
 }
 
 // Values
+pub fn all_distinct(Array[Int]) -> Bool
+
 pub fn[N, W : @core.Weight] all_edges_non_negative(Array[(N, N)], (N, N) -> W?) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] all_pairs_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
@@ -176,6 +178,8 @@ pub fn ssa_single_assignment(Array[Int]) -> Bool
 pub fn ssa_single_assignment_counts(Array[Int]) -> Bool
 
 pub fn streaming_matches_oneshot(Array[Int], Array[Int]) -> Bool
+
+pub fn subset_of(Array[Int], Array[Int]) -> Bool
 
 pub fn topo_order_post(Array[Int], Array[(Int, Int)]) -> Bool
 

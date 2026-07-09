@@ -347,6 +347,19 @@
         `src/codegen_infra/liveness_gaps_wbtest.mbt`、
         `src/mini_compiler/{infer_gaps_test,match_ext_gaps2_wbtest,exhaustive_gaps_wbtest}.mbt`、
         `src/logging/otlp_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++ INFRA 第二十四批覆盖收口（dst 23：
+        trace_codec 各事件/故障字段截断拒绝、des_sim Byzantine 通路/
+        不存在节点故障忽略/丢写超长清空；actor 12：cell_by_id 错位回退
+        扫描、不存在 id 内部通路；infra_text rope 12：叶边界代理对不切半/
+        空串/孤立高代理 WTF-8 计数；mini_compiler parser 11：let 各错误
+        位置与原子意外关键字；infra_codec cbor 11：截断/超限/映射键值
+        缺失；graph osm 11：负权/NaN/表头/畸形行、合成网格参数；
+        infra_resilience 10：退避钳制、熔断三态边角、令牌桶/滑窗钳制；
+        三后端 2891→2917 全绿）。2026-07-09，
+        `src/dst/{trace_codec_gaps2,des_sim_gaps2}_test.mbt`、
+        `src/actor/system_gaps2_wbtest.mbt`、`src/infra_text/rope_gaps2_test.mbt`、
+        `src/mini_compiler/parser_gaps_test.mbt`、`src/infra_codec/cbor_gaps2_test.mbt`、
+        `src/graph/osm_gaps_test.mbt`、`src/infra_resilience/resilience_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

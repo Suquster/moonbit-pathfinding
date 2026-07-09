@@ -18,12 +18,15 @@ import {
 // 为横切测试期共享约定」的定位，保持 proofs 生产代码仅依赖 @core / @infra_text。
 import {
   "Suquster/moonbit-pathfinding/src/infra_pbt",
+  "Suquster/moonbit-pathfinding/src/infra_alloc",
+  "Suquster/moonbit-pathfinding/src/infra_codec",
   "Suquster/moonbit-pathfinding/src/infra_compress",
   "Suquster/moonbit-pathfinding/src/infra_diff",
   "Suquster/moonbit-pathfinding/src/infra_hash",
   "Suquster/moonbit-pathfinding/src/infra_metrics",
   "Suquster/moonbit-pathfinding/src/infra_time",
   "Suquster/moonbit-pathfinding/src/infra_resilience",
+  "Suquster/moonbit-pathfinding/src/infra_timer",
   "Suquster/moonbit-pathfinding/src/regex_engine",
   "moonbitlang/core/debug",
   "moonbitlang/core/test",

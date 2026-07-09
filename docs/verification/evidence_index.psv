@@ -59,3 +59,4 @@ road_service 尾包收口（CLI 熔断拒绝路径）|src/road_service::road_ser
 平台轴第六级 WASI 交付门禁（4 工件 wasmtime vs js 逐字节一致）|scripts::wasi_gate.sh|e590571
 加速算法族后置条件谓词（CH/CCH/ALT/HL/JPS 单点查询 A+B+C）|src/proofs::advanced_proof.mbt|7c0666d
 加速算法核心正确性护栏（与 Dijkstra 参考逐对代价等价 + 批量版）|src/proofs::advanced_proof_test.mbt|7c0666d
+加速算法证明谓词真实接地（CH/ALT 128 迭代全点对经 @proofs 护栏差分）|src/advanced::prop_cost_agrees_test.mbt|3d8ad33

@@ -228,6 +228,11 @@
         依赖（build_order_respects_deps 首次真实接地）；发布聚合：
         compat_diff 自反为空 + 套件就绪合取一致）。2026-07-09，
         `src/proofs/serialization_build_proof_test.mbt`。
+  - [x] G-B4+++++++++++ INFRA 第十一批证明谓词接地（运行时家族首次
+        真实接地：actor 邮箱 FIFO + 同种子重放一致；dst 有界探索同种子
+        报告一致；日志阈值过滤全矩阵一致；LSP 非法帧解码失败仍存活；
+        解析器失败不消费输入）。2026-07-09，
+        `src/proofs/runtime_family_proof_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，
@@ -264,7 +269,7 @@
       证明 F(F) 成立。commit 077497d。
 
 横轴（六条正交闭包轴）缺口收口：正确性轴顶格 = G-B4（moon prove 全量）；
-平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2677 测试
+平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2683 测试
 + 12 份可执行文档全绿并入 CI 矩阵）；第六级 = WASI 交付（2026-07-09 收官：
 scripts/wasi_gate.sh — backend_cli 与三个 examples 的独立 wasm 工件在
 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI `wasi delivery gate`

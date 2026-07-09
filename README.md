@@ -385,7 +385,7 @@ available with a deliberately loose 50% default because it times end-to-end
 This library is built to **compile and run identically on all four MoonBit
 backends**: `wasm-gc`, `js`, `native`, and pure `wasm` (linear memory). Every
 push to `main` and every PR triggers the `ci` workflow's **4-backend matrix**,
-which executes the full test suite (2600 cases) on each backend, plus a
+which executes the full test suite (2664 cases) on each backend, plus a
 **WASI delivery gate** (`scripts/wasi_gate.sh`) that runs the release wasm
 artifacts under `wasmtime` and byte-diffs the output against the js backend. Any
 output divergence — including snapshot mismatches from `inspect(..., content=...)`

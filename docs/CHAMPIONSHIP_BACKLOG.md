@@ -254,7 +254,7 @@
       证明 F(F) 成立。commit 077497d。
 
 横轴（六条正交闭包轴）缺口收口：正确性轴顶格 = G-B4（moon prove 全量）；
-平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2600 测试
+平台轴第五级 = 四后端一致（2026-07-09 收官：纯 wasm 线性内存后端 2664 测试
 + 12 份可执行文档全绿并入 CI 矩阵）；第六级 = WASI 交付（2026-07-09 收官：
 scripts/wasi_gate.sh — backend_cli 与三个 examples 的独立 wasm 工件在
 wasmtime 下直接运行、输出与 js 后端逐字节一致，入 CI `wasi delivery gate`

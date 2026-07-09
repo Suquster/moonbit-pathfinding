@@ -101,6 +101,8 @@ pub fn fifo_order_preserved(Array[Int], Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] floyd_warshall_post(Array[(N, N)], (N, N) -> (Array[N], W)?, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
 
+pub fn forall_holds(Array[Int], (Int) -> Bool) -> Bool
+
 pub fn has_magic_prefix(Array[Int], Array[Int]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] hub_labeling_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
@@ -163,6 +165,8 @@ pub fn[N, W : @core.Weight] require_non_negative_edges(Array[(N, N)], (N, N) -> 
 
 pub fn[T : Eq, S] round_trip_eq(T, (T) -> S, (S) -> T?) -> Bool
 
+pub fn same_members(Array[Int], Array[Int]) -> Bool
+
 pub fn scc_partition_post(Int, Array[Int], Array[(Int, Int)]) -> Bool
 
 pub fn scope_binding_consistent(Array[String], Array[String]) -> Bool
@@ -170,6 +174,8 @@ pub fn scope_binding_consistent(Array[String], Array[String]) -> Bool
 pub fn[T : Eq] seq_eq(Array[T], Array[T]) -> Bool
 
 pub fn[N : Eq + Hash, W : @core.Weight] shortest_path_post((Array[N], W)?, N, (N) -> Bool, (N) -> Array[(N, W)], (N, N) -> W?, Array[N]) -> Bool
+
+pub fn sorted_strict(Array[Int]) -> Bool
 
 pub fn spans_agree((Int, Int)?, (Int, Int)?) -> Bool
 

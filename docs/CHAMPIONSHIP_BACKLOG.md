@@ -276,6 +276,24 @@
         `src/mini_compiler/match_ext_gaps_wbtest.mbt`、
         `src/serialization/proto_parser_gaps_test.mbt`、
         `src/serialization/json_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++ INFRA 第十七批覆盖收口（下一梯队高缺口
+        模块：infra_bench 报告 JSON 解析器 45、infra_config TOML 词法/
+        标量/表头 35、serialization typed 编解码类型不符全谱 34、
+        dst trace_codec 记号级损坏与事件/故障种类全谱 29、
+        logging parse_json_log 顶层键/字段还原/转义词法 25、
+        mini_compiler ml_parser 语法产生式缺件 25、infra_compress
+        deflate/gzip 块级与可选字段结构破坏、infra_text rope UTF-8/
+        UTF-16 偏移换算与行列定位、infra_compress zstd 熵编码字面量段
+        各 size_format 与 FSE 归一化边界；三后端 2752→2785 全绿）。
+        2026-07-09，`src/infra_bench/report_gaps_test.mbt`、
+        `src/infra_config/toml_gaps_test.mbt`、
+        `src/serialization/typed_gaps_test.mbt`、
+        `src/dst/trace_codec_gaps_test.mbt`、
+        `src/logging/parse_json_log_gaps_test.mbt`、
+        `src/mini_compiler/ml_parser_gaps_test.mbt`、
+        `src/infra_compress/deflate_gaps_test.mbt`、
+        `src/infra_text/rope_gaps_test.mbt`、
+        `src/infra_compress/zstd_encode_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

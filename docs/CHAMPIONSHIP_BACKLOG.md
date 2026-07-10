@@ -637,6 +637,17 @@
         全绿。2026-07-10，`src/regex_engine/{unicode_gc,
         unicode_gc_table}.mbt`、
         `src/regex_engine/unicode_gc_full_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第六十一批 余支覆盖收口（infra_compress + regex_engine）：
+        结构化字典逐长度截断拒绝矩阵、字典帧解码防御分支（FCS 截断/
+        超限/篡改、校验和缺失/翻转、多帧总量超限）、字典路径 RLE 块、
+        20 位 Raw 字面量布局往返、压缩帧逐字节腐蚀鲁棒性；正则两代
+        解析器原子位元字符与未闭合字符类报错、Unicode 其余 13 子类名
+        全量解析、`Cn` 空表不变量白盒。src/ 未覆盖 553→534 行，
+        3103→3114 三后端全绿。2026-07-10，
+        `src/infra_compress/zstd_gaps_test.mbt`、
+        `src/regex_engine/coverage_gaps2_test.mbt`、
+        `src/regex_engine/unicode_gc_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

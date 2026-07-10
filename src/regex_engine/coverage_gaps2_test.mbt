@@ -32,3 +32,13 @@ test "parser（一代）：原子位元字符与未闭合字符类报错" {
   assert_true(@regex_engine.parse_regex("[") is Err(_))
   assert_true(@regex_engine.parse_regex("[a") is Err(_))
 }
+
+///|
+test "search：锚定模式后续位置无匹配的提前终止与无匹配替换" {
+  guard @regex_engine.Pattern::compile("^a") is Ok(p)
+  assert_eq(p.captures_all("abc").length(), 1)
+  assert_eq(p.replace_all("abc", "X"), "Xbc")
+  guard @regex_engine.Pattern::compile("z") is Ok(q)
+  assert_eq(q.replace("abc", "X"), "abc")
+  assert_eq(q.replace_all("abc", "X"), "abc")
+}

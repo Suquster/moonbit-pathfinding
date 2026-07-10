@@ -42,3 +42,18 @@ test "rope_join_right：递归下降后回溯左旋修复" {
   assert_eq(out.cp_len(), 6)
   assert_true(out.height() <= 4)
 }
+
+///|
+test "rope_join：右侧显著更高走 join_left 路径" {
+  let h2a = rope_mk(rs_leaf(1), rs_leaf(1))
+  let h2b = rope_mk(rs_leaf(1), rs_leaf(1))
+  let r = rope_mk(h2a, h2b)
+  let out = rope_join(rs_leaf(1), r)
+  assert_eq(out.cp_len(), 5)
+}
+
+///|
+test "nth_newline：叶内换行数不足时返回叶长" {
+  let leaf = rs_leaf(3) // 无换行。
+  assert_eq(leaf.nth_newline(0), 3)
+}

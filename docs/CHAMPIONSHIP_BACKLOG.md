@@ -647,7 +647,16 @@
         3103→3114 三后端全绿。2026-07-10，
         `src/infra_compress/zstd_gaps_test.mbt`、
         `src/regex_engine/coverage_gaps2_test.mbt`、
-        `src/regex_engine/unicode_gc_wbtest.mbt`。
+        `src/regex_engine/unicode_gc_wbtest.mbt`。第二期：活跃性
+        跨组防御分支（live 标签/变量不匹配、空指令块占号）、rope
+        平衡树 join_left/nth_newline 余支、JSON 日志解析器五类语法
+        错误、正则锚定搜索提前终止与无匹配替换、Rope 行列换算
+        Concat 遍历与空串/空区间切片。src/ 未覆盖 534→~510 行，
+        3114→3120 三后端全绿。2026-07-10，
+        `src/codegen_infra/liveness_gaps_wbtest.mbt`、
+        `src/lsp_server/rope_sync_gaps_wbtest.mbt`、
+        `src/logging/logging_gaps2_test.mbt`、
+        `src/infra_text/rope_gaps2_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

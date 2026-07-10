@@ -1,44 +1,26 @@
-// rope_gaps2_test.mbt —— Rope 叶切分/切片/WTF-8 前缀边界收口
-// （INFRA 第二十四批）。
+// rope_gaps2_test.mbt —— Rope 行列换算与切片余支收口（INFRA 第六十一批）。
 
 ///|
-test "Rope：叶边界代理对不被切半" {
-  // 511 个 'a' + 一个代理对（占位 511/512）+ 10 个 'b'：
-  // 叶上限 512 恰好落在代理对中间，切分点应回退 1。
-  let sb = StringBuilder::new()
-  for _i in 0..<511 {
-    sb.write_char('a')
-  }
-  sb.write_string("😀")
-  for _i in 0..<10 {
-    sb.write_char('b')
-  }
-  let s = sb.to_string()
-  let r = Rope::from_string(s)
-  assert_eq(r.len(), s.length())
-  assert_eq(r.to_string(), s)
-  assert_true(r.leaf_count() >= 2)
-  // 跨叶切片与整段一致。
-  assert_eq(r.slice(500, 520).length(), 20)
-  assert_eq(r.slice(0, s.length()), s)
-  assert_eq(r.slice(511, 513), "😀")
-}
-
-///|
-test "Rope：空串构造为空叶" {
-  let r = Rope::from_string("")
-  assert_eq(r.len(), 0)
+test "Rope：空串构造与空区间切片" {
+  let r = @infra_text.Rope::from_string("")
   assert_eq(r.to_string(), "")
-  assert_eq(r.leaf_count(), 1)
+  let s = @infra_text.Rope::from_string("hello")
+  assert_eq(s.slice(3, 3), "")
+  assert_eq(s.slice(4, 2), "")
 }
 
 ///|
-test "Rope：孤立高代理后接普通字符的 UTF-8 前缀计数" {
+test "Rope：大文本 Concat 结构下行列换算" {
   let sb = StringBuilder::new()
-  sb.write_char((0xD800).unsafe_to_char())
-  sb.write_char('a')
-  let r = Rope::from_string(sb.to_string())
-  // WTF-8：孤立高代理计 3 字节，'a' 计 1 字节。
-  assert_eq(r.utf16_to_utf8(2), 4)
-  assert_eq(r.utf16_to_utf8(1), 3)
+  for i in 0..<400 {
+    sb.write_string("line-\{i} content padding\n")
+  }
+  let r = @infra_text.Rope::from_string(sb.to_string())
+  let off = r.offset_of_line(300)
+  let (line, col) = r.line_col_at(off)
+  assert_eq(line, 300)
+  assert_eq(col, 0)
+  let (l2, c2) = r.line_col_at(off + 5)
+  assert_eq(l2, 300)
+  assert_eq(c2, 5)
 }

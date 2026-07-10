@@ -1,5 +1,21 @@
 // json_gaps_test.mbt —— JSON 错误恢复解析边角收口
-// （INFRA 第二十五批）。
+// （INFRA 第二十五批；第三十三批追加 EOF/同步终止收口）。
+
+///|
+test "parse_json_recover：EOF 截断与缺分隔符再同步" {
+  // 数组体在元素后 EOF（无 ',' 或 ']'）→ running 以 EOF 终止。
+  let (v1, _) = @parser_combinator.parse_json_recover("[1")
+  assert_true(v1 is Some(_))
+  // 元素后既非分隔符也非终止符 → 再同步跳到 ']'。
+  let (v2, _) = @parser_combinator.parse_json_recover("[1 2]")
+  assert_true(v2 is Some(_))
+  // 同步途中命中 EOF。
+  let (v3, _) = @parser_combinator.parse_json_recover("[1 2")
+  assert_true(v3 is Some(_))
+  // 尾随空白直至 EOF（skip_ws_input 的 EOF 出口）。
+  let (v4, _) = @parser_combinator.parse_json_recover("[1] ")
+  assert_true(v4 is Some(_))
+}
 
 ///|
 test "parse_json_recover：非数组退化为严格解析" {

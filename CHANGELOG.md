@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed — Pre-acceptance feedback（预验收反馈整改）
 
+- fix(directed): make ALT farthest-first landmark selection prioritize
+  uncovered disconnected components, prevent repeated landmarks, and accept
+  empty graphs without trapping (ALT 地标选择优先覆盖非连通分量、避免重复地标，
+  并为零节点图提供安全空预处理结果)
 - perf(actor): `run_until_idle` unseeded fast path — advance-cursor scheduling
   replaces the per-step full-table scan (`settle_stops` + `pick_ready`), making
   message processing amortised O(1) per message while preserving the exact

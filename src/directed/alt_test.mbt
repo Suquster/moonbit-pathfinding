@@ -29,6 +29,36 @@ test "AltLandmarks basic: bounds admissible and astar optimal" {
 }
 
 ///|
+test "AltLandmarks seeds disconnected components instead of repeating landmarks" {
+  let edges : Array[(Int, Int, Int)] = [
+    (0, 1, 2),
+    (1, 0, 2),
+    (2, 3, 7),
+    (3, 2, 7),
+  ]
+  let g = @directed.WeightedCsr::from_edges(4, edges)
+  let alt = @directed.AltLandmarks::build(g, g, 2)
+  assert_eq(alt.h_to(2, 3), 7)
+  assert_eq(alt.h_from(3, 2), 7)
+  let all = @directed.AltLandmarks::build(g, g, 99)
+  assert_eq(all.h_to(2, 3), 7)
+  assert_eq(all.h_from(3, 2), 7)
+  let ctx = @directed.SearchCtx::new(4)
+  match @directed.astar_indexed_ctx(g, ctx, 2, 3, fn(v) { alt.h_to(v, 3) }) {
+    Some((_, cost)) => assert_eq(cost, 7)
+    None => abort("expected second component to remain reachable")
+  }
+}
+
+///|
+test "AltLandmarks accepts an empty graph" {
+  let empty = @directed.WeightedCsr::from_edges(0, [])
+  let alt = @directed.AltLandmarks::build(empty, empty, 4)
+  assert_eq(alt.h_to(0, 0), 0)
+  assert_eq(alt.h_from(0, 0), 0)
+}
+
+///|
 test "AltLandmarks differential PBT vs dijkstra (100 iterations, 单向 + 双向, Dial + heap 权域)" {
   let rng = @infra_pbt.rng_new(0xA17_1A2DUL)
   for _iter in 0..<100 {

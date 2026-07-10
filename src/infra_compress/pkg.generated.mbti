@@ -40,6 +40,8 @@ pub fn zstd_compress_entropy(Array[Int], Bool) -> Array[Int]
 
 pub fn zstd_decompress(Array[Int], Int) -> Array[Int]?
 
+pub fn zstd_decompress_with_dict(Array[Int], Array[Int], Int) -> Array[Int]?
+
 // Errors
 
 // Types and methods

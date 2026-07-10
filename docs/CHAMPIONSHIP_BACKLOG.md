@@ -555,6 +555,16 @@
         `src/serialization/types.mbt`、`src/serialization/wire.mbt`、
         `src/serialization/typed.mbt`、
         `src/serialization/wire_group_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA 第五十一批
+        虚假闭包完备化续四：zstd 字典帧（RFC 8878 §5 ——
+        `zstd_decompress_with_dict`：结构化字典解析（魔数 0xEC30A437、
+        Dictionary_ID、Huffman + FSE OF→ML→LL 熵表、三初始重复偏移、
+        内容入匹配窗口）、裸内容字典入窗、帧头 Dictionary_ID 字段读取
+        与 id 一致性校验、多帧级联/跳过帧/XXH64 保持；python-zstandard
+        训练字典 + level19 黄金帧对拍、裸内容字典对拍、id 错配/截断
+        字典/帧体损坏拒绝、无字典普通帧兼容），3058→3061 三后端全绿。
+        2026-07-10，`src/infra_compress/zstd.mbt`、
+        `src/infra_compress/zstd_dict_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

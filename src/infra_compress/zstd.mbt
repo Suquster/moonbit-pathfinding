@@ -8,9 +8,11 @@
 // - RLE 块内容 1 字节、Block_Size 为再生长度；
 // - 跳过帧：魔数 0x184D2A50..0x184D2A5F + 4 字节小端长度，解码器直接跳过。
 //
-// 范围声明（诚实边界）：解码侧覆盖帧格式全链 + Raw/RLE/Compressed
+// 范围声明：解码侧覆盖帧格式全链 + Raw/RLE/Compressed
 // 全部三类块（Compressed 块 FSE/Huffman 熵解码见 zstd_block.mbt）+
-// XXH64 校验 + 跳过帧 + 多帧级联；字典帧不在范围，显式返回 None。
+// XXH64 校验 + 跳过帧 + 多帧级联；字典帧经 `zstd_decompress_with_dict`
+// 支持（RFC 8878 §5：结构化字典解熵表/重复偏移/内容入窗，裸内容
+// 字典仅入窗）；无字典入口遇 FDICT 声明帧显式返回 None。
 // 压缩侧输出为 Raw/RLE 块的合法 zstd 帧，任何符合 RFC 8878 的解码器
 // （含参考 zstd CLI / python-zstandard）均可无损还原，已作外部互通对拍。
 //
@@ -229,7 +231,7 @@ pub fn zstd_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       pos = pos + 1
     }
     if dict_flag != 0 {
-      // 字典帧不在范围内，显式拒绝。
+      // 声明了 Dictionary_ID 却无字典可用：请走 zstd_decompress_with_dict。
       return None
     }
     // FCS 字段宽度：flag 0 → 单段 1 字节 / 非单段缺省；1→2；2→4；3→8。
@@ -284,6 +286,268 @@ pub fn zstd_decompress(data : Array[Int], max_out : Int) -> Array[Int]? {
       if h != stored {
         return None
       }
+    }
+  }
+  Some(out)
+}
+
+// ───────────────────── 字典帧（RFC 8878 §5） ────────────────────
+
+///|
+/// 已解析的 zstd 字典：可选熵表（供 Treeless 字面量与 Repeat FSE
+/// 模式的初始“前一张表”）、初始重复偏移与预置窗口内容。
+priv struct ZstdDict {
+  id : UInt64
+  huff : ZstdHuffTable?
+  ll : FseTable?
+  of : FseTable?
+  ml : FseTable?
+  rep : Array[Int]
+  content : Array[Int]
+}
+
+///|
+/// 解析字典（RFC 8878 §5）：魔数 0xEC30A437 开头为结构化字典
+/// （Dictionary_ID + 熵表（Huffman、FSE 按 OF→ML→LL）+ 三个初始
+/// 重复偏移 + 内容）；否则整体作裸内容字典（仅入窗，id=0）。
+fn zstd_parse_dict(dict : Array[Int]) -> ZstdDict? {
+  let n = dict.length()
+  let is_magic = match zstd_read_le(dict, 0, 4) {
+    Some(v) => v == 0xEC30A437UL
+    None => false
+  }
+  if !is_magic {
+    let content : Array[Int] = []
+    for b in dict {
+      content.push(b & 0xFF)
+    }
+    return Some({
+      id: 0UL,
+      huff: None,
+      ll: None,
+      of: None,
+      ml: None,
+      rep: [1, 4, 8],
+      content,
+    })
+  }
+  let id = match zstd_read_le(dict, 4, 4) {
+    Some(v) => v
+    None => return None
+  }
+  let mut pos = 8
+  // Huffman 表（与 Compressed 字面量的树描述同格式）。
+  let (weights, consumed) = match huf_read_weights(dict, pos, n) {
+    Some(v) => v
+    None => return None
+  }
+  let huff = match huf_build_table(weights) {
+    Some(t) => t
+    None => return None
+  }
+  pos = pos + consumed
+  // FSE 表顺序：Offsets → Match_Lengths → Literals_Lengths。
+  let (of_norm, of_al, of_used) = match fse_read_ncount(dict, pos, n, 31, 8) {
+    Some(v) => v
+    None => return None
+  }
+  let of = match fse_build_table(of_norm, of_al) {
+    Some(t) => t
+    None => return None
+  }
+  pos = pos + of_used
+  let (ml_norm, ml_al, ml_used) = match fse_read_ncount(dict, pos, n, 52, 9) {
+    Some(v) => v
+    None => return None
+  }
+  let ml = match fse_build_table(ml_norm, ml_al) {
+    Some(t) => t
+    None => return None
+  }
+  pos = pos + ml_used
+  let (ll_norm, ll_al, ll_used) = match fse_read_ncount(dict, pos, n, 35, 9) {
+    Some(v) => v
+    None => return None
+  }
+  let ll = match fse_build_table(ll_norm, ll_al) {
+    Some(t) => t
+    None => return None
+  }
+  pos = pos + ll_used
+  // 三个初始重复偏移（各 4 字节小端，需非零且不超内容长度）。
+  let rep : Array[Int] = []
+  for k in 0..<3 {
+    match zstd_read_le(dict, pos + 4 * k, 4) {
+      Some(v) => rep.push(v.to_int())
+      None => return None
+    }
+  }
+  pos = pos + 12
+  let content : Array[Int] = []
+  for k in pos..<n {
+    content.push(dict[k] & 0xFF)
+  }
+  for r in rep {
+    if r <= 0 || r > content.length() {
+      return None
+    }
+  }
+  Some({
+    id,
+    huff: Some(huff),
+    ll: Some(ll),
+    of: Some(of),
+    ml: Some(ml),
+    rep,
+    content,
+  })
+}
+
+///|
+/// 带预置字典的 Zstandard 解压（RFC 8878 §5）：字典内容预填匹配
+/// 窗口（回引可越过帧起点），结构化字典同时提供初始熵表与重复
+/// 偏移；声明了 Dictionary_ID 的帧要求与字典 id 一致。支持多帧
+/// 级联与跳过帧，其余校验与 `zstd_decompress` 相同。
+pub fn zstd_decompress_with_dict(
+  data : Array[Int],
+  dict : Array[Int],
+  max_out : Int,
+) -> Array[Int]? {
+  guard zstd_parse_dict(dict) is Some(zd) else { return None }
+  let n = data.length()
+  let out : Array[Int] = []
+  let mut pos = 0
+  while pos < n {
+    let magic = match zstd_read_le(data, pos, 4) {
+      None => return None
+      Some(v) => v
+    }
+    pos = pos + 4
+    if magic >= 0x184D2A50UL && magic <= 0x184D2A5FUL {
+      let size = match zstd_read_le(data, pos, 4) {
+        None => return None
+        Some(v) => v.to_int()
+      }
+      pos = pos + 4
+      if pos + size > n {
+        return None
+      }
+      pos = pos + size
+      continue
+    }
+    if magic != 0xFD2FB528UL {
+      return None
+    }
+    if pos >= n {
+      return None
+    }
+    let fhd = data[pos] & 0xFF
+    pos = pos + 1
+    let fcs_flag = fhd >> 6
+    let single_segment = (fhd & 0x20) != 0
+    let checksum = (fhd & 0x04) != 0
+    let dict_flag = fhd & 0x03
+    if (fhd & 0x08) != 0 {
+      return None
+    }
+    if !single_segment {
+      if pos >= n {
+        return None
+      }
+      pos = pos + 1
+    }
+    // Dictionary_ID 字段：flag 1→1 字节、2→2、3→4。
+    if dict_flag != 0 {
+      let did_width = if dict_flag == 1 {
+        1
+      } else if dict_flag == 2 {
+        2
+      } else {
+        4
+      }
+      let did = match zstd_read_le(data, pos, did_width) {
+        None => return None
+        Some(v) => v
+      }
+      pos = pos + did_width
+      if zd.id != 0UL && did != zd.id {
+        return None // 帧引用的字典 id 不匹配。
+      }
+    }
+    let fcs_width = if fcs_flag == 0 {
+      if single_segment {
+        1
+      } else {
+        0
+      }
+    } else if fcs_flag == 1 {
+      2
+    } else if fcs_flag == 2 {
+      4
+    } else {
+      8
+    }
+    let mut expect : Int = -1
+    if fcs_width > 0 {
+      match zstd_read_le(data, pos, fcs_width) {
+        None => return None
+        Some(v) => {
+          let base = if fcs_width == 2 { 256UL } else { 0UL }
+          let total = v + base
+          if total > max_out.to_uint64() {
+            return None
+          }
+          expect = total.to_int()
+        }
+      }
+      pos = pos + fcs_width
+    }
+    // 每帧以字典内容预填的独立窗口解码（frame_start=0 允许回引
+    // 进入字典前缀），完成后剔除前缀归入总输出。
+    let fout : Array[Int] = []
+    for b in zd.content {
+      fout.push(b)
+    }
+    let prefix = fout.length()
+    let ctx = zstd_block_ctx()
+    ctx.huff = zd.huff
+    ctx.ll = zd.ll
+    ctx.of = zd.of
+    ctx.ml = zd.ml
+    ctx.rep[0] = zd.rep[0]
+    ctx.rep[1] = zd.rep[1]
+    ctx.rep[2] = zd.rep[2]
+    let budget = max_out - (out.length() - 0)
+    if budget < 0 {
+      return None
+    }
+    match zstd_decode_blocks(data, pos, fout, prefix + budget, ctx, 0) {
+      None => return None
+      Some(next) => pos = next
+    }
+    if expect >= 0 && fout.length() - prefix != expect {
+      return None
+    }
+    let frame_content : Array[Int] = []
+    for k in prefix..<fout.length() {
+      frame_content.push(fout[k])
+    }
+    if checksum {
+      let stored = match zstd_read_le(data, pos, 4) {
+        None => return None
+        Some(v) => v
+      }
+      pos = pos + 4
+      let h = @infra_hash.xxhash64(frame_content, 0) & 0xFFFFFFFFUL
+      if h != stored {
+        return None
+      }
+    }
+    for b in frame_content {
+      out.push(b)
+    }
+    if out.length() > max_out {
+      return None
     }
   }
   Some(out)

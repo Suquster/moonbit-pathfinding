@@ -27,6 +27,13 @@ if rg -n '桩当前为占位|接口桩' src/dst/dst_test.mbt; then
   fail=1
 fi
 
+if [[ ! -f scripts/release_ready_gate.sh ]] ||
+  [[ ! -f cmd/release_gate/main.mbt ]] ||
+  ! rg -q '^  release-ready:' .github/workflows/ci.yml; then
+  echo "release-ready 必须由真实 CI 证据接入聚合器" >&2
+  fail=1
+fi
+
 if (( fail != 0 )); then
   exit 1
 fi

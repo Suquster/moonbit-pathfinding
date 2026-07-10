@@ -362,3 +362,32 @@ jobs:
         shell: pwsh
         run: pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/proof_evidence.ps1
 
+  # ─────────────────────────────────────────────────────────────
+  # Job 5 · 全方向真实 release-ready 闭包
+  #   仅当四后端测试（含证明谓词与可执行文档）、覆盖率、文档、证据索引、
+  #   API 兼容性以及 wasm 交付门禁全部成功后才运行。脚本核对 10 个方向的
+  #   changelog / 可执行文档 / 证明谓词 / 已完成任务清单，并将这些已验证
+  #   状态输入 release_aggregate；不再只测试硬编码门禁真值表。
+  # ─────────────────────────────────────────────────────────────
+  release-ready:
+    name: release-ready (all directions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - ci
+      - wasi
+      - component
+      - wit
+      - coverage
+      - doc
+      - evidence
+      - compat
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit toolchain
+        uses: hustcer/setup-moonbit@v1
+
+      - name: Aggregate verified release evidence
+        run: bash scripts/release_ready_gate.sh

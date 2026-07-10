@@ -409,6 +409,11 @@
         下降累加、slice 空/全区间；三后端 2950→2958 全绿）。
         2026-07-09，`src/lsp_server/rope_sync_gaps_wbtest.mbt`、
         `src/infra_text/rope_gaps3_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++ INFRA 第三十批覆盖收口
+        （mini_compiler exhaustive：完整签名（元组/布尔）后通配臂
+        冗余判定、通配行在前的 None 分派、布尔/列表/元组缺失见证
+        与 PWild 头重建；三后端 2958→2960 全绿）。2026-07-09，
+        `src/mini_compiler/exhaustive_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

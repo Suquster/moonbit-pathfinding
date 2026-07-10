@@ -419,6 +419,13 @@
         缺 " +"/缺尾 " @@"）、无尾换行文本收集、空体行 Keep("")
         容错、重叠/越界 hunk 应用拒绝；三后端 2960→2963 全绿）。
         2026-07-09，`src/infra_diff/unified_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++ INFRA 第三十二批覆盖收口
+        （serialization proto_grammar：EOF 处标识符截断、repeated
+        后期望字段类型缺失、嵌套 message 错误向上传播；advanced ch：
+        退化捷径拒绝、层级不变量违例与缺失降级；三后端 2963→2967
+        全绿）。2026-07-09，
+        `src/serialization/proto_grammar_gaps_test.mbt`、
+        `src/advanced/ch_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

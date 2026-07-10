@@ -607,6 +607,12 @@
         2026-07-10，`src/regex_engine/{charset_ext,unicode_fold_table}.mbt`、
         `src/regex_engine/unicode_fold_test.mbt`、
         `src/regex_engine/unicode_fold_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十七批 余支覆盖收口：有界回溯引擎后顾路径与 Pike VM 差分
+        一致（正/负/变长后顾五例）；CBOR CborSimple Show 渲染与
+        float32 ±inf 解码，3087→3090 三后端全绿。2026-07-10，
+        `src/regex_engine/lookbehind_test.mbt`、
+        `src/infra_codec/cbor_gaps4_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

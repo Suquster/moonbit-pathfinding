@@ -105,6 +105,28 @@ test "后顾：忽略大小写标志与打印往返" {
 }
 
 ///|
+test "后顾：有界回溯引擎与 Pike VM 一致" {
+  let cases = [
+    ("(?<=a)b", "ab"),
+    ("(?<=a)b", "cb"),
+    ("(?<!a)b", "cb"),
+    ("(?<!a)b", "ab"),
+    ("(?<=ab+)c", "abbbc"),
+  ]
+  for c in cases {
+    let (pat, input) = c
+    let p = lb_prog(pat)
+    let pike = p.exec(input)
+    match (pike, p.exec_backtrack(input)) {
+      (Some(pc), BtMatch(bc)) => assert_true(pc.group(0) == bc.group(0))
+      (None, BtNoMatch) => assert_true(true)
+      _ =>
+        fail("回溯引擎与 Pike VM 后顾结果不一致: \{pat} / \{input}")
+    }
+  }
+}
+
+///|
 test "后顾：捕获不跨后顾边界，负后顾体不可匹配时恒真" {
   // 后顾体内的组不导出到外层捕获。
   let p = lb_prog("(?<=(a))b")

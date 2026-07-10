@@ -500,6 +500,17 @@
         3006→3010 全绿）。2026-07-09，
         `src/codegen_infra/sccp_gaps_wbtest.mbt`、
         `src/infra_bench/report_gaps2_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十六批覆盖收口
+        （build_tool：空目标名/非法 mtime 拒绝、无基线脏判定、未登记
+        边忽略、Show 渲染、write_conflicts DFS 重访、循环图调度余支、
+        mark_built 无操作、工作区悬空依赖；dst：EvFaulted 节点提取与
+        同消息 id DPOR 依赖、task_indep 未知 id、EventuallyResult
+        渲染、str_contains 边界；serialization：legacy 类型映射余支、
+        JSON map 键缺省/拒绝、option 值 EOF、skip_block 嵌套、schema
+        map 值引用校验、顶层枚举打印与畸形枚举拒绝；3013→3033 全绿）。
+        2026-07-10，`src/build_tool/coverage_gaps3_test.mbt`、
+        `src/dst/coverage_gaps2_wbtest.mbt`、
+        `src/serialization/coverage_gaps2_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

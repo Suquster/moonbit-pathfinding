@@ -3,7 +3,10 @@
 // paper-to-code（对照 TOML v1.0.0 规范章节）：
 // - 键：裸键 [A-Za-z0-9_-]、引号键（基本/字面量）、点分键（§Keys）；
 // - 字符串：基本 "..."（\b \t \n \f \r \" \\ \uXXXX \UXXXXXXXX 转义）、
-//   字面量 '...'（§String）；多行字符串（"""/'''，含首行换行剔除）；
+//   字面量 '...'（§String）；多行字符串（"""/'''，含首行换行剔除、
+//   行尾反斜杠续行、紧邻结束定界符的 1–2 个引号内容、连续 6+ 引号
+//   拒绝）；控制字符（U+0000–U+0008/U+000B/U+000C/U+000E–U+001F/
+//   U+007F）未转义出现一律拒绝（多行形态允许换行）；
 // - 整数：十进制（可下划线分隔）、0x/0o/0b 前缀（§Integer）；
 // - 浮点：小数/指数、inf/nan（§Float）；
 // - 布尔：true/false（§Boolean）；
@@ -11,9 +14,6 @@
 //   合法者按原文字符串保留（TomlDatetime，§Offset Date-Time）；
 // - 数组（§Array）、内联表（§Inline Table）、[table] 与 [[array-of-tables]]
 //   （§Table / §Array of Tables）、重复定义表报错。
-//
-// 明确不支持（诚实边界）：多行字符串内的行尾反斜杠续行修剪之外的
-// 高级转义组合。
 
 ///|
 /// TOML 值。表用保序键值对数组表示（确定性遍历、三后端一致）。
@@ -194,7 +194,7 @@ fn TomlParser::parse_basic_string(self : TomlParser) -> String? {
   let sb = StringBuilder::new()
   for ;; {
     match self.peek() {
-      None | Some('\n') => return None
+      None | Some('\n') | Some('\r') => return None
       Some('"') => {
         self.advance()
         return Some(sb.to_string())
@@ -205,11 +205,27 @@ fn TomlParser::parse_basic_string(self : TomlParser) -> String? {
         sb.write_char(c)
       }
       Some(c) => {
+        if toml_ctrl_banned(c) {
+          return None
+        }
         sb.write_char(c)
         self.advance()
       }
     }
   }
+}
+
+///|
+/// TOML 字符串内禁止未转义出现的控制字符（§String）：
+/// U+0000–U+0008、U+000B、U+000C、U+000E–U+001F、U+007F；
+/// 制表符允许，换行由各形态自行处理。
+fn toml_ctrl_banned(c : Char) -> Bool {
+  let v = c.to_int()
+  (v >= 0x00 && v <= 0x08) ||
+  v == 0x0B ||
+  v == 0x0C ||
+  (v >= 0x0E && v <= 0x1F) ||
+  v == 0x7F
 }
 
 ///|
@@ -263,20 +279,30 @@ fn TomlParser::parse_multiline_basic(self : TomlParser) -> String? {
   for ;; {
     match self.peek() {
       None => return None
-      Some('"') =>
-        if self.pos + 2 < self.chars.length() + 1 &&
-          self.pos + 2 <= self.chars.length() - 1 + 1 &&
-          self.pos + 2 < self.chars.length() + 1 &&
-          self.pos + 1 < self.chars.length() &&
-          self.chars[self.pos + 1] == '"' &&
-          self.pos + 2 < self.chars.length() &&
-          self.chars[self.pos + 2] == '"' {
-          self.pos = self.pos + 3
+      Some('"') => {
+        // 引号跑（§String）：末三个为结束定界符，其前 0–2 个属内容；
+        // 连续 6+ 引号（内容含 3+ 连续引号）非法。
+        let mut run = 0
+        while self.pos + run < self.chars.length() &&
+              self.chars[self.pos + run] == '"' {
+          run = run + 1
+        }
+        if run >= 3 {
+          if run > 5 {
+            return None
+          }
+          for _k in 0..<(run - 3) {
+            sb.write_char('"')
+          }
+          self.pos = self.pos + run
           return Some(sb.to_string())
         } else {
-          sb.write_char('"')
-          self.advance()
+          for _k in 0..<run {
+            sb.write_char('"')
+          }
+          self.pos = self.pos + run
         }
+      }
       Some('\\') => {
         // 行尾续行：反斜杠后仅空白直到换行 → 吞掉后续空白。
         let mut probe = self.pos + 1
@@ -298,6 +324,9 @@ fn TomlParser::parse_multiline_basic(self : TomlParser) -> String? {
         }
       }
       Some(c) => {
+        if c != '\n' && c != '\r' && toml_ctrl_banned(c) {
+          return None
+        }
         sb.write_char(c)
         self.advance()
       }
@@ -325,19 +354,33 @@ fn TomlParser::parse_literal_string(self : TomlParser) -> String? {
     for ;; {
       match self.peek() {
         None => return None
-        Some('\'') =>
-          if self.pos + 2 < self.chars.length() + 1 &&
-            self.pos + 1 < self.chars.length() &&
-            self.chars[self.pos + 1] == '\'' &&
-            self.pos + 2 < self.chars.length() &&
-            self.chars[self.pos + 2] == '\'' {
-            self.pos = self.pos + 3
+        Some('\'') => {
+          // 引号跑：同多行基本字符串，末三个为定界符、前 0–2 个属内容。
+          let mut run = 0
+          while self.pos + run < self.chars.length() &&
+                self.chars[self.pos + run] == '\'' {
+            run = run + 1
+          }
+          if run >= 3 {
+            if run > 5 {
+              return None
+            }
+            for _k in 0..<(run - 3) {
+              sb.write_char('\'')
+            }
+            self.pos = self.pos + run
             return Some(sb.to_string())
           } else {
-            sb.write_char('\'')
-            self.advance()
+            for _k in 0..<run {
+              sb.write_char('\'')
+            }
+            self.pos = self.pos + run
           }
+        }
         Some(c) => {
+          if c != '\n' && c != '\r' && toml_ctrl_banned(c) {
+            return None
+          }
           sb.write_char(c)
           self.advance()
         }
@@ -347,12 +390,15 @@ fn TomlParser::parse_literal_string(self : TomlParser) -> String? {
   let sb = StringBuilder::new()
   for ;; {
     match self.peek() {
-      None | Some('\n') => return None
+      None | Some('\n') | Some('\r') => return None
       Some('\'') => {
         self.advance()
         return Some(sb.to_string())
       }
       Some(c) => {
+        if toml_ctrl_banned(c) {
+          return None
+        }
         sb.write_char(c)
         self.advance()
       }

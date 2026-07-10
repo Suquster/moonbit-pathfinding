@@ -13,7 +13,9 @@
 //   按 LL→ML→OF 更新状态；重复偏移 rep1..rep3 历史在帧内跨块延续；
 // - §3.1.1.5 序列执行：字面量拷贝 + 允许自重叠的匹配回拷。
 //
-// 范围声明（诚实边界）：不支持字典帧（Dictionary_ID ≠ 0 在帧层已拒绝）。
+// 字典帧（RFC 8878 §5）由 zstd.mbt 的 `zstd_decompress_with_dict` 支持：
+// 字典熵表作为帧首块的“前一张表”（Treeless / Repeat 模式）注入本文件
+// 的块级上下文，字典内容预填匹配窗口、初始重复偏移取自字典头。
 // 帧内 Treeless 字面量 / Repeat FSE 模式 / 重复偏移历史均完整支持。
 //
 // 测试：python-zstandard（level 3/19）黄金帧解码对拍 + 畸形拒绝 +

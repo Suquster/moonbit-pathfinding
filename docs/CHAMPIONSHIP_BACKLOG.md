@@ -433,6 +433,12 @@
         2026-07-09，
         `src/parser_combinator/bounded_packrat_gaps_wbtest.mbt`、
         `src/parser_combinator/json_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++ INFRA 第三十四批覆盖收口
+        （parser_combinator arith：小数字面量求值/打印、负指数与
+        非整数指数幂回退；mini_compiler vm：空栈弹取/取顶回退、
+        非目标构造回退、递归闭包投影；三后端 2970→2976 全绿）。
+        2026-07-09，`src/parser_combinator/arith_gaps_test.mbt`、
+        `src/mini_compiler/vm_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

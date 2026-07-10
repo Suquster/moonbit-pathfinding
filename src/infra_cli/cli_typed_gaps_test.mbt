@@ -30,6 +30,33 @@ test "float_of：畸形浮点各位置拒绝" {
 }
 
 ///|
+test "float_of：科学计数法指数形态" {
+  let p = ctg_args([
+    ("e1", "1.5e3"),
+    ("e2", "2E-2"),
+    ("e3", "-1.25e2"),
+    ("bigpos", "1e999"),
+    ("bigneg", "1e-999"),
+    ("emptyexp", "1e"),
+    ("twoexp", "1e2e3"),
+    ("badexp", "1e+x"),
+    ("badmant", "e5"),
+  ])
+  assert_true(p.float_of("e1") == Ok(1500.0))
+  assert_true(p.float_of("e2") == Ok(0.02))
+  assert_true(p.float_of("e3") == Ok(-125.0))
+  match p.float_of("bigpos") {
+    Ok(d) => assert_true(d > 1.0e308)
+    Err(_) => assert_true(false)
+  }
+  assert_true(p.float_of("bigneg") == Ok(0.0))
+  assert_true(p.float_of("emptyexp") == Err(BadFloat("emptyexp", "1e")))
+  assert_true(p.float_of("twoexp") == Err(BadFloat("twoexp", "1e2e3")))
+  assert_true(p.float_of("badexp") == Err(BadFloat("badexp", "1e+x")))
+  assert_true(p.float_of("badmant") == Err(BadFloat("badmant", "e5")))
+}
+
+///|
 test "validate_rules：VFloat 规则畸形值上报" {
   let p = ctg_args([("ratio", "1.x")])
   let errs = validate_rules(p, [rule("ratio", vtype=VFloat, required=true)])

@@ -68,6 +68,7 @@ pub(all) enum CborValue {
   CborBool(Bool)
   CborNull
   CborUndefined
+  CborSimple(Int)
   CborFloat(Double)
   CborTag(UInt64, CborValue)
 } derive(Eq, @debug.Debug)

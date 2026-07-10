@@ -521,6 +521,16 @@
         空行为栈防御）；3033→3046 三后端全绿。2026-07-10，
         `src/infra_codec/cbor.mbt`、`src/infra_codec/cbor_full_test.mbt`、
         `src/actor/coverage_gaps2_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十八批
+        虚假闭包完备化续：CBOR simple 值全量（新增 CborSimple —— 内联
+        0..19、0xF8 扩展 32..255，扩展载荷 0..31 畸形拒绝，编码保持
+        canonical 最短形式）；CLI float_of 从「不支持指数」升级为完整
+        科学计数法（`[-+]?digits[.digits][(e|E)[-+]?digits]`，指数
+        ±400 截断饱和防 DoS，空指数/双指数/畸形指数拒绝）；
+        3046→3049 三后端全绿。2026-07-10，`src/infra_codec/cbor.mbt`、
+        `src/infra_codec/cbor_simple_test.mbt`、
+        `src/infra_cli/cli_typed.mbt`、
+        `src/infra_cli/cli_typed_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

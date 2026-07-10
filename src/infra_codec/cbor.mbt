@@ -36,6 +36,8 @@ pub(all) enum CborValue {
   CborNull
   /// major type 7 / simple 23。
   CborUndefined
+  /// major type 7：其余 simple 值（0..19、32..255；RFC 8949 §3.3）。
+  CborSimple(Int)
   /// major type 7：IEEE-754 浮点（float16/32 解码时提升为 float64）。
   CborFloat(Double)
   /// major type 6：带 tag 数据项（RFC 8949 §3.4）。
@@ -86,6 +88,7 @@ pub impl Show for CborValue with fn output(self, logger) {
     CborBool(b) => logger.write_string("CborBool(\{b})")
     CborNull => logger.write_string("CborNull")
     CborUndefined => logger.write_string("CborUndefined")
+    CborSimple(n) => logger.write_string("CborSimple(\{n})")
     CborFloat(d) => logger.write_string("CborFloat(\{d})")
     CborTag(t, inner) => {
       logger.write_string("CborTag(\{t}, ")
@@ -160,6 +163,15 @@ pub fn cbor_encode_into(w : ByteWriter, v : CborValue) -> Unit {
     CborBool(b) => w.buf.push((7 << 5) | (if b { 21 } else { 20 }))
     CborNull => w.buf.push((7 << 5) | 22)
     CborUndefined => w.buf.push((7 << 5) | 23)
+    CborSimple(n) =>
+      // 0..19 内联；24..255 用 0xF8 扩展字节（canonical：不以扩展形式
+      // 编码 0..23，解码侧亦拒绝该畸形，RFC 8949 §3.3）。
+      if n >= 0 && n < 20 {
+        w.buf.push((7 << 5) | n)
+      } else {
+        w.buf.push((7 << 5) | 24)
+        w.buf.push(n & 0xFF)
+      }
     CborTag(t, inner) => {
       cbor_write_head(w, 6, t)
       cbor_encode_into(w, inner)
@@ -473,6 +485,21 @@ fn cbor_decode_item(r : ByteReader, depth : Int) -> CborValue? {
         Some(CborNull)
       } else if info == 23 {
         Some(CborUndefined)
+      } else if info < 20 {
+        Some(CborSimple(info))
+      } else if info == 24 {
+        // 扩展 simple 值：载荷必须 ≥ 32（24..31 为畸形，RFC 8949 §3.3）。
+        match cbor_read_be(r, 1) {
+          Some(b) => {
+            let n = b.to_int()
+            if n >= 32 {
+              Some(CborSimple(n))
+            } else {
+              None
+            }
+          }
+          None => None
+        }
       } else if info == 25 {
         match cbor_read_be(r, 2) {
           Some(bits) => Some(CborFloat(cbor_half_to_double(bits.to_int())))
@@ -489,7 +516,7 @@ fn cbor_decode_item(r : ByteReader, depth : Int) -> CborValue? {
           None => None
         }
       } else {
-        // 其余 simple 值（0..19、24 扩展）与孤立 break（31）拒绝。
+        // 保留 info 28..30 与孤立 break（31）拒绝。
         None
       }
     _ => None

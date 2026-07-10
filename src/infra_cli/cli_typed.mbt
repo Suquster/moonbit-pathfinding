@@ -99,7 +99,7 @@ pub fn ParsedArgs::bool_of(
 }
 
 ///|
-/// 类型化浮点读取：`[-+]?digits[.digits]`（CLI 常用子集，不支持指数）。
+/// 类型化浮点读取：`[-+]?digits[.digits][(e|E)[-+]?digits]`。
 pub fn ParsedArgs::float_of(
   self : ParsedArgs,
   name : String,
@@ -107,46 +107,97 @@ pub fn ParsedArgs::float_of(
   match self.value_of(name) {
     None => Err(NotPresent(name))
     Some(v) => {
-      // 拆整数与小数部分复用整数解析。
-      let mut dot = -1
+      // 先剥离指数部分（e/E），尾部复用整数解析。
+      let mut epos = -1
       for i in 0..<v.length() {
-        if v.get_char(i).unwrap() == '.' {
-          if dot >= 0 {
+        let c = v.get_char(i).unwrap()
+        if c == 'e' || c == 'E' {
+          if epos >= 0 {
             return Err(BadFloat(name, v))
           }
-          dot = i
+          epos = i
         }
       }
-      if dot < 0 {
-        match parse_int_text(v) {
-          Some(n) => return Ok(n.to_double())
+      let mantissa_text = if epos < 0 { v } else { v[:epos].to_owned() }
+      let exp = if epos < 0 {
+        0L
+      } else {
+        let exp_text = v[epos + 1:].to_owned()
+        if exp_text.length() == 0 {
+          return Err(BadFloat(name, v))
+        }
+        match parse_int_text(exp_text) {
+          Some(n) => n
           None => return Err(BadFloat(name, v))
         }
       }
-      let int_part = v[:dot].to_owned()
-      let frac_part = v[dot + 1:].to_owned()
-      if frac_part.length() == 0 {
-        return Err(BadFloat(name, v))
-      }
-      let base = match parse_int_text(int_part) {
-        Some(n) => n
+      let mantissa = match cli_parse_mantissa(mantissa_text) {
+        Some(m) => m
         None => return Err(BadFloat(name, v))
       }
-      let frac = match parse_int_text(frac_part) {
-        Some(n) => if n < 0L { return Err(BadFloat(name, v)) } else { n }
-        None => return Err(BadFloat(name, v))
+      // |exp| 截断到 400：double 十进制指数范围约 ±308，超限已饱和为 inf/0。
+      let steps = if exp > 400L {
+        400L
+      } else if exp < -400L {
+        -400L
+      } else {
+        exp
       }
-      let mut scale = 1.0
-      for _ in 0..<frac_part.length() {
-        scale = scale * 10.0
+      let mut scaled = mantissa
+      if steps > 0L {
+        for _ in 0L..<steps {
+          scaled = scaled * 10.0
+        }
+      } else {
+        for _ in 0L..<-steps {
+          scaled = scaled / 10.0
+        }
       }
-      let magnitude = if base < 0L { -base } else { base }
-      let neg = base < 0L ||
-        (int_part.length() > 0 && int_part.get_char(0).unwrap() == '-')
-      let abs = magnitude.to_double() + frac.to_double() / scale
-      Ok(if neg { -abs } else { abs })
+      Ok(scaled)
     }
   }
+}
+
+///|
+/// 解析尾数 `[-+]?digits[.digits]`；非法返回 None。
+fn cli_parse_mantissa(v : String) -> Double? {
+  let mut dot = -1
+  for i in 0..<v.length() {
+    if v.get_char(i).unwrap() == '.' {
+      if dot >= 0 {
+        return None
+      }
+      dot = i
+    }
+  }
+  if dot < 0 {
+    match parse_int_text(v) {
+      Some(n) => return Some(n.to_double())
+      None => return None
+    }
+  }
+  let int_part = v[:dot].to_owned()
+  let frac_part = v[dot + 1:].to_owned()
+  if frac_part.length() == 0 {
+    return None
+  }
+  let base = match parse_int_text(int_part) {
+    Some(n) => n
+    None => return None
+  }
+  let frac = match parse_int_text(frac_part) {
+    Some(n) => if n < 0L { return None } else { n }
+    None => return None
+  }
+  let mut scale = 1.0
+  for _ in 0..<frac_part.length() {
+    scale = scale * 10.0
+  }
+  let magnitude = if base < 0L { -base } else { base }
+  let neg = base < 0L ||
+    (int_part.length() > 0 && int_part.get_char(0).unwrap() == '-')
+  let abs = magnitude.to_double() + frac.to_double() / scale
+  Some(if neg { -abs } else { abs })
 }
 
 ///|

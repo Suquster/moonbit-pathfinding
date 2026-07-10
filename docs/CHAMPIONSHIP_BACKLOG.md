@@ -531,6 +531,19 @@
         `src/infra_codec/cbor_simple_test.mbt`、
         `src/infra_cli/cli_typed.mbt`、
         `src/infra_cli/cli_typed_gaps_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十九批
+        虚假闭包完备化续二：zlib 预置字典（RFC 1950 §2.2 FDICT ——
+        `zlib_compress_with_dict`/`zlib_decompress_with_dict`/
+        `inflate_preset`，LZ77 滑窗预填字典跨起点回引、DICTID =
+        Adler-32(dict) 校验、>32K 字典尾部截取入窗；压缩增益断言）；
+        TOML 日期时间从「仅词法保留原文」升级为 RFC 3339 全形态语义
+        校验（月/日/闰年/闰秒/时分秒/偏移范围逐项，纯时刻禁偏移）；
+        3049→3055 三后端全绿。2026-07-10，
+        `src/infra_compress/deflate.mbt`、
+        `src/infra_compress/deflate_dynamic.mbt`、
+        `src/infra_compress/zlib_dict_test.mbt`、
+        `src/infra_config/toml.mbt`、
+        `src/infra_config/toml_datetime_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -7,12 +7,13 @@
 // - 整数：十进制（可下划线分隔）、0x/0o/0b 前缀（§Integer）；
 // - 浮点：小数/指数、inf/nan（§Float）；
 // - 布尔：true/false（§Boolean）；
-// - 日期时间：RFC 3339 形态按原文字符串保留（TomlDatetime，§Offset Date-Time）；
+// - 日期时间：RFC 3339 全形态语义校验（月/日/闰年/时分秒/偏移范围），
+//   合法者按原文字符串保留（TomlDatetime，§Offset Date-Time）；
 // - 数组（§Array）、内联表（§Inline Table）、[table] 与 [[array-of-tables]]
 //   （§Table / §Array of Tables）、重复定义表报错。
 //
 // 明确不支持（诚实边界）：多行字符串内的行尾反斜杠续行修剪之外的
-// 高级转义组合、日期时间的语义解析（仅词法校验并保留原文）。
+// 高级转义组合。
 
 ///|
 /// TOML 值。表用保序键值对数组表示（确定性遍历、三后端一致）。
@@ -430,13 +431,122 @@ fn classify_scalar(tok : String) -> TomlValue? {
     return Some(TomlFloat(0.0 / 0.0))
   }
   if tok.length() >= 8 && looks_like_date(prefix_of(tok, 10)) {
-    return Some(TomlDatetime(tok))
+    return if toml_valid_datetime(tok) { Some(TomlDatetime(tok)) } else { None }
   }
-  // 纯时刻 HH:MM:SS。
+  // 纯时刻 HH:MM:SS[.frac]。
   if tok.length() >= 8 && tok.iter().to_array()[2] == ':' {
-    return Some(TomlDatetime(tok))
+    let cs = tok.iter().to_array()
+    return if toml_valid_time(cs, 0, allow_offset=false) {
+      Some(TomlDatetime(tok))
+    } else {
+      None
+    }
   }
   parse_number(tok)
+}
+
+///|
+/// 闰年判定（格里高历）。
+fn toml_is_leap_year(y : Int) -> Bool {
+  (y % 4 == 0 && y % 100 != 0) || y % 400 == 0
+}
+
+///|
+/// 读两位十进制；非法返回 -1。
+fn toml_two_digits(cs : Array[Char], i : Int) -> Int {
+  if i + 2 > cs.length() || !is_toml_digit(cs[i]) || !is_toml_digit(cs[i + 1]) {
+    return -1
+  }
+  (cs[i].to_int() - 48) * 10 + (cs[i + 1].to_int() - 48)
+}
+
+///|
+/// 校验 HH:MM:SS[.frac][Z|±HH:MM]（自 `i` 起到串尾）。
+/// RFC 3339 §5.6：秒允许 60（闰秒）；`allow_offset` 控制是否
+/// 接受尾部时区偏移（纯时刻不带偏移）。
+fn toml_valid_time(
+  cs : Array[Char],
+  i : Int,
+  allow_offset? : Bool = true,
+) -> Bool {
+  let n = cs.length()
+  let hh = toml_two_digits(cs, i)
+  if hh < 0 || hh > 23 || i + 2 >= n || cs[i + 2] != ':' {
+    return false
+  }
+  let mm = toml_two_digits(cs, i + 3)
+  if mm < 0 || mm > 59 || i + 5 >= n || cs[i + 5] != ':' {
+    return false
+  }
+  let ss = toml_two_digits(cs, i + 6)
+  if ss < 0 || ss > 60 {
+    return false
+  }
+  let mut j = i + 8
+  if j < n && cs[j] == '.' {
+    j = j + 1
+    let frac_start = j
+    while j < n && is_toml_digit(cs[j]) {
+      j = j + 1
+    }
+    if j == frac_start {
+      return false // 小数点后至少一位
+    }
+  }
+  if j == n {
+    return true
+  }
+  if !allow_offset {
+    return false
+  }
+  if cs[j] == 'Z' || cs[j] == 'z' {
+    return j + 1 == n
+  }
+  if cs[j] == '+' || cs[j] == '-' {
+    let oh = toml_two_digits(cs, j + 1)
+    if oh < 0 || oh > 23 || j + 3 >= n || cs[j + 3] != ':' {
+      return false
+    }
+    let om = toml_two_digits(cs, j + 4)
+    return om >= 0 && om <= 59 && j + 6 == n
+  }
+  false
+}
+
+///|
+/// 日期时间语义校验（RFC 3339 / TOML §Offset Date-Time 全形态）：
+/// 本地日期、本地日期时间（T/空格/t 分隔）与带偏移形态；
+/// 月 1..12、日按月份与闰年上限、时分秒/偏移范围逐项校验。
+fn toml_valid_datetime(tok : String) -> Bool {
+  let cs = tok.iter().to_array()
+  let n = cs.length()
+  if n < 10 {
+    return false
+  }
+  let year = (cs[0].to_int() - 48) * 1000 +
+    (cs[1].to_int() - 48) * 100 +
+    (cs[2].to_int() - 48) * 10 +
+    (cs[3].to_int() - 48)
+  let month = toml_two_digits(cs, 5)
+  let day = toml_two_digits(cs, 8)
+  if month < 1 || month > 12 {
+    return false
+  }
+  let max_day = match month {
+    2 => if toml_is_leap_year(year) { 29 } else { 28 }
+    4 | 6 | 9 | 11 => 30
+    _ => 31
+  }
+  if day < 1 || day > max_day {
+    return false
+  }
+  if n == 10 {
+    return true // 本地日期
+  }
+  if cs[10] != 'T' && cs[10] != 't' && cs[10] != ' ' {
+    return false
+  }
+  toml_valid_time(cs, 11)
 }
 
 ///|

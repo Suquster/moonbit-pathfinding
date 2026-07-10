@@ -26,7 +26,9 @@ priv enum LzToken {
 /// 与既有 `deflate` 相同的哈希链匹配 + zlib 式一步惰性求值
 /// （下一位存在更长匹配时先放行字面量），产出 token 序列
 /// （两遍编码需要先统计频率再定码）。
-fn lz77_tokenize(data : Array[Int]) -> Array[LzToken] {
+/// 可选 `start`：仅从该下标起产出 token，之前的前缀（预置字典）只入
+/// 哈希链供匹配参照（RFC 1950 §2.2 FDICT 预置字典）。
+fn lz77_tokenize(data : Array[Int], start? : Int = 0) -> Array[LzToken] {
   let tokens : Array[LzToken] = []
   let n = data.length()
   let head : Array[Int] = Array::make(0x8000, -1)
@@ -66,7 +68,10 @@ fn lz77_tokenize(data : Array[Int]) -> Array[LzToken] {
     }
   }
 
-  let mut i = 0
+  for p in 0..<start {
+    insert(p)
+  }
+  let mut i = start
   while i < n {
     let (best_len, best_dist) = probe(i)
     if best_len >= lz_min_match {
@@ -311,7 +316,12 @@ fn rle_code_lengths(lens : Array[Int]) -> Array[(Int, Int, Int)] {
 /// 两遍：先 LZ77 token 化统计频率，再按频率定制码表编码；
 /// 高频偏斜数据显著小于 `deflate`（fixed 码表）。
 pub fn deflate_dynamic(data : Array[Int]) -> Array[Int] {
-  let tokens = lz77_tokenize(data)
+  deflate_dynamic_tokens(lz77_tokenize(data))
+}
+
+///|
+/// 把 token 序列编码为单个 dynamic Huffman final 块（BTYPE=10）。
+fn deflate_dynamic_tokens(tokens : Array[LzToken]) -> Array[Int] {
   // 频率统计（literal/length 288 符号 + distance 30 符号）。
   let lit_freq : Array[Int] = Array::make(288, 0)
   let dist_freq : Array[Int] = Array::make(30, 0)
@@ -434,8 +444,89 @@ pub fn zlib_compress(data : Array[Int]) -> Array[Int] {
 }
 
 ///|
-/// zlib 解压：校验 CMF/FLG（CM=8、FCHECK、不支持 FDICT）、解 deflate 体、
+/// zlib 预置字典压缩（RFC 1950 §2.2 FDICT）：FLG 置 FDICT 位、写
+/// DICTID = Adler-32(dict)，LZ77 滑窗预填字典供跨起点回引。
+pub fn zlib_compress_with_dict(
+  data : Array[Int],
+  dict : Array[Int],
+) -> Array[Int] {
+  let cmf = 0x78
+  let mut flg = 0x20 // FDICT=1、FLEVEL=0
+  let rem = (cmf * 256 + flg) % 31
+  if rem != 0 {
+    flg = flg + (31 - rem)
+  }
+  let out : Array[Int] = [cmf, flg]
+  let dict_id = @infra_hash.adler32(dict)
+  for shift in [24, 16, 8, 0] {
+    out.push(((dict_id >> shift) & 0xFFU).reinterpret_as_int())
+  }
+  let combined : Array[Int] = []
+  for b in dict {
+    combined.push(b & 0xFF)
+  }
+  for b in data {
+    combined.push(b & 0xFF)
+  }
+  let tokens = lz77_tokenize(combined, start=dict.length())
+  for b in deflate_dynamic_tokens(tokens) {
+    out.push(b)
+  }
+  let adler = @infra_hash.adler32(data)
+  for shift in [24, 16, 8, 0] {
+    out.push(((adler >> shift) & 0xFFU).reinterpret_as_int())
+  }
+  out
+}
+
+///|
+/// zlib 预置字典解压（RFC 1950 §2.2 FDICT）：要求 FDICT 置位且
+/// DICTID 与 Adler-32(dict) 一致，字典预填滑窗后解 deflate 体、
 /// 核对 Adler-32；任一不符返回 None。
+pub fn zlib_decompress_with_dict(
+  data : Array[Int],
+  dict : Array[Int],
+) -> Array[Int]? {
+  if data.length() < 10 {
+    return None
+  }
+  let cmf = data[0] & 0xFF
+  let flg = data[1] & 0xFF
+  if (cmf & 0x0F) != 8 {
+    return None // CM 必须是 deflate
+  }
+  if (cmf * 256 + flg) % 31 != 0 {
+    return None // FCHECK
+  }
+  if (flg & 0x20) == 0 {
+    return None // 必须置 FDICT
+  }
+  let mut dict_id = 0U
+  for i in 2..<6 {
+    dict_id = (dict_id << 8) | (data[i] & 0xFF).reinterpret_as_uint()
+  }
+  if @infra_hash.adler32(dict) != dict_id {
+    return None // 字典不匹配
+  }
+  let body : Array[Int] = []
+  for i in 6..<(data.length() - 4) {
+    body.push(data[i])
+  }
+  guard inflate_preset(body, dict) is Some(raw) else { return None }
+  let mut expected = 0U
+  for i in (data.length() - 4)..<data.length() {
+    expected = (expected << 8) | (data[i] & 0xFF).reinterpret_as_uint()
+  }
+  if @infra_hash.adler32(raw) != expected {
+    return None
+  }
+  Some(raw)
+}
+
+///|
+/// zlib 解压：校验 CMF/FLG（CM=8、FCHECK；FDICT 帧请用
+/// `zlib_decompress_with_dict`）、解 deflate 体、核对 Adler-32；
+/// 任一不符返回 None。
 pub fn zlib_decompress(data : Array[Int]) -> Array[Int]? {
   if data.length() < 6 {
     return None
@@ -449,7 +540,7 @@ pub fn zlib_decompress(data : Array[Int]) -> Array[Int]? {
     return None // FCHECK
   }
   if (flg & 0x20) != 0 {
-    return None // FDICT 不支持
+    return None // FDICT 帧需提供字典，走 zlib_decompress_with_dict
   }
   let body : Array[Int] = []
   for i in 2..<(data.length() - 4) {

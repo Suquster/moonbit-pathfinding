@@ -333,12 +333,33 @@ pub fn inflate(data : Array[Int]) -> Array[Int]? {
 }
 
 ///|
+/// 预置字典解压 raw DEFLATE 流（RFC 1950 §2.2 FDICT 语义）：字典尾部
+/// 最多 32K 先行填入滑窗，回引距离可越过输出起点引用字典内容；
+/// 返回不含字典前缀的输出。
+pub fn inflate_preset(data : Array[Int], dict : Array[Int]) -> Array[Int]? {
+  match inflate_at(data, 0, preset=dict) {
+    Some((out, _)) => Some(out)
+    None => None
+  }
+}
+
+///|
 /// 自 `start` 字节偏移起解压一条 DEFLATE 流，返回（输出，流结束后按
 /// 字节对齐的下一偏移）。供 gzip 多成员解析定位成员边界使用。
-fn inflate_at(data : Array[Int], start : Int) -> (Array[Int], Int)? {
+/// 可选 `preset`：预置字典（尾部最多 32K 先行入窗，返回时剔除）。
+fn inflate_at(
+  data : Array[Int],
+  start : Int,
+  preset? : Array[Int] = [],
+) -> (Array[Int], Int)? {
   let br = BitReader::new(data)
   br.pos = start
   let out : Array[Int] = []
+  let keep = if preset.length() > 32768 { preset.length() - 32768 } else { 0 }
+  for k in keep..<preset.length() {
+    out.push(preset[k] & 0xFF)
+  }
+  let prefix = out.length()
   for ;; {
     let bfinal = br.take(1)
     let btype = br.take(2)
@@ -388,6 +409,13 @@ fn inflate_at(data : Array[Int], start : Int) -> (Array[Int], Int)? {
     }
     if bfinal == 1 {
       br.align_byte()
+      if prefix > 0 {
+        let stripped : Array[Int] = []
+        for k in prefix..<out.length() {
+          stripped.push(out[k])
+        }
+        return Some((stripped, br.pos))
+      }
       return Some((out, br.pos))
     }
   }

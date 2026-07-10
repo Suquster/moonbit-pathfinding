@@ -16,6 +16,8 @@ pub fn gzip_decompress(Array[Int]) -> Array[Int]?
 
 pub fn inflate(Array[Int]) -> Array[Int]?
 
+pub fn inflate_preset(Array[Int], Array[Int]) -> Array[Int]?
+
 pub fn lz4_compress(Array[Int]) -> Array[Int]
 
 pub fn lz4_decompress(Array[Int], Int) -> Array[Int]?
@@ -26,7 +28,11 @@ pub fn lz4_frame_decompress(Array[Int], Int) -> Array[Int]?
 
 pub fn zlib_compress(Array[Int]) -> Array[Int]
 
+pub fn zlib_compress_with_dict(Array[Int], Array[Int]) -> Array[Int]
+
 pub fn zlib_decompress(Array[Int]) -> Array[Int]?
+
+pub fn zlib_decompress_with_dict(Array[Int], Array[Int]) -> Array[Int]?
 
 pub fn zstd_compress(Array[Int], Bool) -> Array[Int]
 

@@ -493,6 +493,13 @@
         infra_ds skiplist：contains 双向判定；三后端 3004→3006
         全绿）。2026-07-09，`src/infra_codec/utf8_gaps_test.mbt`、
         `src/infra_ds/skiplist_gaps_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十五批覆盖收口
+        （codegen_infra sccp：格 meet Top 单位元/常量相遇、不可
+        折叠算符与非法记号数回退 Bottom、空程序恒等；infra_bench
+        report：backend 字段缺失/非字符串错误传播；三后端
+        3006→3010 全绿）。2026-07-09，
+        `src/codegen_infra/sccp_gaps_wbtest.mbt`、
+        `src/infra_bench/report_gaps2_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

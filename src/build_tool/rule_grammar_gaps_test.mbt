@@ -16,3 +16,39 @@ test "match_pattern：后缀不匹配与多模式顺延" {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test "parse_rules_full：游离 TAB recipe 行忽略与空变量名拒绝" {
+  // 游离 recipe 行（TAB 起始且无所属规则）被忽略。
+  match @build_tool.parse_rules_full("\techo x\napp: a.o\n") {
+    Ok(rs) => assert_eq(rs.rules.length(), 1)
+    Err(_) => assert_true(false)
+  }
+  // 空变量名拒绝。
+  assert_true(@build_tool.parse_rules_full("= v\n") is Err(_))
+}
+
+///|
+test "parse_rules_full_with_includes：模式规则/phony/变量合并去重" {
+  let resolve = fn(path : String) -> String? {
+    if path == "sub.mk" {
+      Some(
+        "%.o: %.c\n\techo cc\n.PHONY: clean\nCC = gcc\nCC = clang\nclean:\n\techo rm\n",
+      )
+    } else {
+      None
+    }
+  }
+  match
+    @build_tool.parse_rules_full_with_includes(
+      "include sub.mk\nCC = tcc\napp: a.o\n", resolve,
+    ) {
+    Ok(rs) => {
+      assert_eq(rs.pattern_rules.length(), 1)
+      assert_true(rs.is_phony("clean"))
+      // 主文件变量优先于 include 内定义。
+      assert_true(rs.variables.get("CC") == Some("tcc"))
+    }
+    Err(_) => assert_true(false)
+  }
+}

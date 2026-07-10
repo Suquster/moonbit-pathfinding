@@ -439,6 +439,11 @@
         非目标构造回退、递归闭包投影；三后端 2970→2976 全绿）。
         2026-07-09，`src/parser_combinator/arith_gaps_test.mbt`、
         `src/mini_compiler/vm_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++ INFRA 第三十五批覆盖收口
+        （lsp_server lifecycle：LifecycleState Show 全构造、一般
+        请求/通知/响应消息分类、initialize params capabilities
+        混杂/非数组容错；三后端 2976→2979 全绿）。2026-07-09，
+        `src/lsp_server/lifecycle_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -358,7 +358,9 @@ test "README · 实战 demo：ISO 日期命名捕获与重排" {
   lookaround 的保守策略一致）。
 * **不支持反向引用（backreference）**：需要回溯、破坏线性保证；
   解析期对明确不支持的构造报含位置的 `ParseError`，而非静默接受。
-* **Unicode 折叠**：以 ASCII 大小写折叠为主，Unicode 简单折叠为声明边界。
+* **Unicode 折叠**：完整 Unicode 简单大小写折叠（UCD CaseFolding.txt C+S
+  条目的轨道闭包，含 σ↔ς↔Σ、K↔K、S↔ſ 等多元轨道），与 RE2/Rust `regex`
+  同水位；完整折叠（full folding，如 ß→ss）为声明边界。
 
 | 维度 | 本库 | RE2 | Rust `regex` | PCRE |
 |---|---|---|---|---|

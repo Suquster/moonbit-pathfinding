@@ -598,6 +598,15 @@
         2026-07-10，`src/regex_engine/{ast,pattern_parser,program,
         pikevm,bounded_backtrack}.mbt`、
         `src/regex_engine/lookbehind_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十六批 虚假闭包完备化续七：Unicode 简单大小写折叠完整实现
+        （`case_fold` 自 ASCII 平移升级为 UCD CaseFolding.txt C+S 条目
+        的折叠轨道闭包——3090 条有向边排序表二分定位，覆盖拉丁补充/
+        扩展、希腊含词尾 σ 三元轨道、西里尔、全角与 K↔K、S↔ſ 跨区段
+        轨道；与 RE2/Rust regex 同水位），3081→3087 三后端全绿。
+        2026-07-10，`src/regex_engine/{charset_ext,unicode_fold_table}.mbt`、
+        `src/regex_engine/unicode_fold_test.mbt`、
+        `src/regex_engine/unicode_fold_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -460,6 +460,13 @@
         特化与完整签名余列拼接；三后端 2986→2991 全绿）。
         2026-07-09，`src/infra_diff/semver_gaps_test.mbt`、
         `src/mini_compiler/exhaustive_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++ INFRA 第三十九批覆盖收口
+        （build_tool cache：缺字段分隔/空目标名/无值行/负数与畸形
+        mtime 数值；actor router：空 worker 集安全早退、
+        ConsistentHash 经 route 空键退化、非哈希策略 route_keyed
+        回退；三后端 2991→2995 全绿）。2026-07-09，
+        `src/build_tool/cache_gaps_test.mbt`、
+        `src/actor/router_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

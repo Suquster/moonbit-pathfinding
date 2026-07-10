@@ -57,3 +57,9 @@ test "typed packed 载荷解码：Len 类别拒绝与畸形传播" {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test "typed_default：浮点/双精度缺省值构造" {
+  assert_true(typed_default(PFloat) == TFloatV((0.0 : Float)))
+  assert_true(typed_default(PDouble) == TDoubleV(0.0))
+}

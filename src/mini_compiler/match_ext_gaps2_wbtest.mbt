@@ -10,6 +10,43 @@ test "expr_span：各构造返回其 Span" {
 }
 
 ///|
+test "expr_span：EVar/ELogic/EArith 构造返回其 Span" {
+  let sp : Span = { line: 5, col: 2 }
+  assert_true(expr_span(EVar("x", sp)) == sp)
+  assert_true(
+    expr_span(ELogic(And, EBool(true, sp), EBool(false, sp), sp)) == sp,
+  )
+  assert_true(expr_span(EArith(Add, EInt(1, sp), EInt(2, sp), sp)) == sp)
+}
+
+///|
+test "check_base：环境未命中变量回退闭式检查" {
+  let sp : Span = { line: 1, col: 1 }
+  let tenv : Map[String, TyX] = Map([])
+  // EVar 未登记 → check_base_closed 路径（自由变量报错）。
+  assert_true(check_base(EVar("free", sp), tenv) is Err(_))
+  // 复合表达式内的未登记变量 → subst_var 查询 None 保留原样后报错。
+  assert_true(
+    check_base(EArith(Add, EVar("free", sp), EInt(1, sp), sp), tenv) is Err(_),
+  )
+}
+
+///|
+test "check_match：PBool 模式匹配布尔 scrutinee" {
+  let sp : Span = { line: 1, col: 1 }
+  let tenv : Map[String, TyX] = Map([])
+  let scrut = XBase(EBool(true, sp))
+  let arms : Array[(Pattern, ExprX)] = [
+    (PBool(true), XBase(EInt(1, sp))),
+    (PBool(false), XBase(EInt(0, sp))),
+  ]
+  assert_true(check_match(scrut, arms, sp, tenv) == Ok(TXInt))
+  // PBool 对非布尔 scrutinee 拒绝。
+  let bad = check_match(XBase(EInt(7, sp)), arms, sp, tenv)
+  assert_true(bad is Err(_))
+}
+
+///|
 test "valx_to_expr：元组递归转换与列表拒绝" {
   let sp : Span = { line: 1, col: 1 }
   match valx_to_expr(VXTuple([VXInt(1), VXBool(true)]), sp) {

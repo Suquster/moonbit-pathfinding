@@ -392,6 +392,17 @@
         2940→2945 全绿）。2026-07-09，
         `src/mini_compiler/ml_eval_gaps_wbtest.mbt`、
         `src/build_tool/rule_grammar_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++ INFRA 第二十八批覆盖收口
+        （mini_compiler match_ext：expr_span EVar/ELogic/EArith、
+        check_base 环境未命中回退闭式检查、check_match PBool 模式；
+        codegen_infra gvn：空程序原样返回、operand_vn 唯一回退、
+        def_value_number 非常规形态；serialization typed 浮点缺省值；
+        dst des_sim DiskFault 部分丢写保留前缀；三后端 2945→2950
+        全绿）。2026-07-09，
+        `src/mini_compiler/match_ext_gaps2_wbtest.mbt`、
+        `src/codegen_infra/gvn_gaps_wbtest.mbt`、
+        `src/serialization/typed_gaps_wbtest.mbt`、
+        `src/dst/des_sim_gaps2_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -1,8 +1,8 @@
-// codegen_infra_proof.mbt —— Codegen_Infra（R3，复用图着色）方向的证明谓词占位。
+// codegen_infra_proof.mbt —— Codegen_Infra（R3，复用图着色）方向的契约谓词。
 //
 // 复用约定（见 design.md「proofs（扩展）」）：
 //   * SSA pass 流水线「保持单赋值不变量」可复用通用谓词 `preserves`；
-//   * 本文件补充方向特有的最小占位谓词，均为纯、全（total）。
+//   * 本文件补充方向特有的纯、全（total）谓词。
 //
 // 升级路径：design.md 声明的 `ssa_single_assignment(p : SsaProgram) -> Bool`
 // 需要 `SsaProgram` 类型（属 `codegen_infra` 包），为保持 `proofs` 为方向
@@ -12,7 +12,7 @@
 // 基于计数的 `ssa_single_assignment_counts` 作为另一等价表述一并保留。
 
 ///|
-/// SSA 单赋值不变量（占位）。
+/// SSA 单赋值不变量。
 ///
 /// 给定各 SSA 变量的「定义次数」列表 `def_counts`，当且仅当每个变量恰好被
 /// 定义一次（计数为 1）时成立。这是 SSA 形式的核心不变量。任一计数不等于 1
@@ -55,7 +55,7 @@ pub fn ssa_single_assignment(def_ids : Array[Int]) -> Bool {
 }
 
 ///|
-/// 寄存器分配干涉不变量（占位）。
+/// 寄存器分配干涉不变量。
 ///
 /// 给定每条干涉边两端变量被分配到的寄存器编号对 `colored_edges`，当且仅当
 /// 每条边两端寄存器互不相同时成立——即相邻（冲突）变量不共享寄存器。任一边

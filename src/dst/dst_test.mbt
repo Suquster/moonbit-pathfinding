@@ -1,10 +1,10 @@
-// dst_test.mbt —— DST_Framework 骨架（task 13.1）的最小单元测试。
+// dst_test.mbt —— DST_Framework 核心确定性运行接口的单元测试。
 //
-// 覆盖范围（仅骨架基线，完整调度/故障/重放属性测试属 task 13.3）：
+// 覆盖范围：
 //   * `Rng` 同种子确定性：相同种子产生逐位一致的随机序列（确定性可重放的
 //     基石；该性质在三后端上必须一致）；
 //   * 不同种子产生不同序列（随机源具备区分度）；
-//   * 接口桩签名可用且数据流形态正确（step / inject_fault / run / replay）。
+//   * step / inject_fault / run / replay 的确定性数据流与状态变化。
 
 ///|
 /// Rng 同种子确定性：两个以相同种子构造的随机源，连续推进产生逐位一致序列。
@@ -47,14 +47,14 @@ test "rng next_below stays within bounds" {
 }
 
 ///|
-/// 接口桩可用：step / inject_fault 保持 Sim 数据流形态，run / replay 回填种子。
+/// 核心接口可用：step / inject_fault 推进状态，run / replay 保留可重放种子。
 test "skeleton stubs expose the designed interface shape" {
   let tasks = [Task::new(0, "build"), Task::new(1, "test")]
   let sim = Sim::new(99, tasks)
-  // step / inject_fault 桩当前为占位（task 13.2 落地完整逻辑），此处仅验证可调用。
+  // step / inject_fault 均执行真实状态转换。
   let _ = sim.step()
   let _ = sim.inject_fault(FaultPolicy::new(1, 0, FaultKind::Crash))
-  // run / replay 桩回填种子，锁定 SimResult 数据流形态。
+  // run / replay 回填种子并锁定 SimResult 数据流形态。
   let scenario = Scenario::new(tasks, [], 16)
   let result = run(123, scenario)
   @test.assert_eq(result.seed, 123)

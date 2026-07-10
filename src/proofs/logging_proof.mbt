@@ -1,11 +1,11 @@
-// logging_proof.mbt —— Logging_Library（R7）方向的证明谓词占位。
+// logging_proof.mbt —— Logging_Library（R7）方向的契约谓词。
 //
 // 复用约定：结构化日志往返复用 `round_trip_eq`；本文件补充方向特有的
-// 「级别阈值过滤」最小占位谓词。谓词均为纯、全（total）。
-// 升级路径：任务 10.x 引入真实 `Event` / `Level` / `Span` 后替换占位。
+// 「级别阈值过滤」谓词。生产属性测试把真实 `Event` / `Level` 观测投影为
+// 整数序数与发射标志；谓词保持纯、全（total），便于收缩反例。
 
 ///|
-/// 日志级别阈值过滤（占位）。
+/// 日志级别阈值过滤。
 ///
 /// 当且仅当：事件被输出（`emitted`）⇔ 其级别不低于阈值（`event_level >= threshold`）
 /// 时成立。级别以整数序数表示，数值越大级别越高。实现为 `emitted == (event_level

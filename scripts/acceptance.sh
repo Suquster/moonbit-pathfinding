@@ -35,5 +35,6 @@ moon test --deny-warn
 
 echo "== 关卡 5: mini compiler 双后端真实运行时验证 =="
 bash scripts/verify_mini_compiler_backends.sh
+bash scripts/closure_truth_guard.sh
 
 echo "全部验收门禁通过（deny-warn 语义）"

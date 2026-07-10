@@ -334,14 +334,38 @@ test "eval is deterministic" {
 }
 
 // ---------------------------------------------------------------------------
-// 编译桩 compile（骨架级）
+// 编译后端 compile
 // ---------------------------------------------------------------------------
 
 ///|
-/// compile 桩锁定签名并返回空产物（骨架级）。
-test "compile stub returns empty bytes" {
-  match check(Int(1)) {
-    Ok(t) => @test.assert_eq(compile(t, Wasm).length(), 0)
+/// compile 返回带目标格式标识的非空、可执行产物。
+test "compile produces wasm and js artifacts" {
+  match check(Let("x", Int(40), Bin(Add, Var("x"), Int(2)))) {
+    Ok(t) => {
+      let wasm = compile(t, Wasm)
+      assert_true(wasm.length() > 8)
+      @test.assert_eq(wasm[0], 0x00)
+      @test.assert_eq(wasm[1], 0x61)
+      @test.assert_eq(wasm[2], 0x73)
+      @test.assert_eq(wasm[3], 0x6d)
+      assert_true(compile(t, Js).length() > 0)
+    }
     Err(_) => fail("check 意外失败")
+  }
+}
+
+///|
+/// compile 覆盖负数及四种算术 lowering，并对 wasm 有符号常量编码走负数路径。
+test "compile covers arithmetic lowering" {
+  let cases : Array[TypedAst] = [
+    TInt(-7),
+    TBin(Add, TInt(1), TInt(2), IntT),
+    TBin(Sub, TInt(1), TInt(2), IntT),
+    TBin(Mul, TInt(-6), TInt(7), IntT),
+    TBin(Div, TInt(-17), TInt(5), IntT),
+  ]
+  for typed in cases {
+    assert_true(compile(typed, Js).length() > 0)
+    assert_true(compile(typed, Wasm).length() > 8)
   }
 }

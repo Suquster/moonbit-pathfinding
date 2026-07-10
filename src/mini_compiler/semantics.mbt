@@ -8,7 +8,10 @@
 //   * `eval`：完整的**树遍历解释器**（tree-walking interpreter）——以不可变
 //     求值环境承载 `let` 绑定与变量查找，对整数算术给出与语义规范一致的
 //     确定性结果（R1.6）。
-//   * `compile`：维持 15.1 的签名桩（编译后端属后续阶段）。
+//   * `compile`：把闭合的 `TypedAst` 编译为可直接执行的 wasm 二进制或
+//     JavaScript 程序。MiniLet 是无输入、无副作用的整数表达式语言，因此
+//     wasm 后端可在编译期求值并把结果写入导出的 `main() -> i32`；JS 后端
+//     保留表达式结构并输出同一整数语义。
 //
 // ===========================================================================
 // MiniLet 语义规范（informative，对应 R1.6）
@@ -208,16 +211,148 @@ fn env_extend(
 }
 
 ///|
-/// 编译桩：将通过类型检查的程序编译为目标产物（design.md
-/// `compile(ast : TypedAst, target : Backend) -> Bytes`，对应 R1.7 的
-/// `WHERE 启用了编译后端选项`）。
+/// 将通过类型检查的 MiniLet 程序编译为目标产物。
 ///
-/// **最小桩**：骨架阶段仅锁定签名与 `Backend` 目标枚举，返回空字节序列；
-/// 真正的 wasm / js 代码生成属后续阶段（design.md「先交付解释器，编译后端
-/// 作为后续阶段」）。
+/// - `Wasm`：返回标准 wasm 二进制，导出 `main() -> i32`。MiniLet 程序闭合、
+///   纯且无输入，后端先按语言语义常量折叠，再生成最小可执行模块。
+/// - `Js`：返回 UTF-8 Node.js 程序，保留 let / 算术结构并打印求值结果。
+///
+/// 两个后端都保持 32 位环绕、截断除法、除零为 0 与 `INT_MIN / -1` 环绕语义，
+/// 与 `eval` 一致。
 pub fn compile(ast : TypedAst, target : Backend) -> Bytes {
-  // 显式忽略入参，避免未使用告警；占位返回空产物。
-  ignore(ast)
-  ignore(target)
-  Bytes::from_array([])
+  match target {
+    Wasm => compile_wasm(ast)
+    Js => text_bytes(compile_js(ast))
+  }
+}
+
+///|
+/// 把 ASCII/UTF-8 源文本编码为字节。编译器生成的语法固定为 ASCII；标识符来自
+/// MiniLet 词法器的 ASCII 标识符集合。
+fn text_bytes(text : String) -> Bytes {
+  let out : Array[Byte] = []
+  for c in text {
+    out.push(c.to_int().to_byte())
+  }
+  Bytes::from_array(out)
+}
+
+///|
+/// 为 JavaScript 后端生成不会与关键字冲突的标识符。
+fn js_name(name : String) -> String {
+  "v_" + name
+}
+
+///|
+/// 把 MiniLet typed AST lower 为 JavaScript 表达式。
+fn js_expr(ast : TypedAst) -> String {
+  match ast {
+    TInt(n) => if n < 0 { "(" + n.to_string() + ")" } else { n.to_string() }
+    TVar(name, _) => js_name(name)
+    TBin(op, lhs, rhs, _) => {
+      let a = js_expr(lhs)
+      let b = js_expr(rhs)
+      match op {
+        Add => "((" + a + " + " + b + ") | 0)"
+        Sub => "((" + a + " - " + b + ") | 0)"
+        Mul => "Math.imul(" + a + ", " + b + ")"
+        Div => "__div(" + a + ", " + b + ")"
+      }
+    }
+    TLet(name, bound, body, _) =>
+      "((" +
+      js_name(name) +
+      ") => " +
+      js_expr(body) +
+      ")(" +
+      js_expr(bound) +
+      ")"
+  }
+}
+
+///|
+/// 生成可由 Node.js 直接执行的完整程序。
+fn compile_js(ast : TypedAst) -> String {
+  "\"use strict\";\n" +
+  "const __div = (a, b) => (b === 0 ? 0 : ((a / b) | 0));\n" +
+  "console.log(" +
+  js_expr(ast) +
+  ");\n"
+}
+
+///|
+/// 向字节缓冲写入无符号 LEB128。
+fn push_uleb(out : Array[Byte], value : Int) -> Unit {
+  let mut v = value
+  while true {
+    let mut byte = v & 0x7f
+    v = v >> 7
+    if v != 0 {
+      byte = byte | 0x80
+    }
+    out.push(byte.to_byte())
+    if v == 0 {
+      break
+    }
+  }
+}
+
+///|
+/// 向字节缓冲写入 i32 有符号 LEB128。
+fn push_sleb_i32(out : Array[Byte], value : Int) -> Unit {
+  let mut v = value
+  while true {
+    let mut byte = v & 0x7f
+    v = v >> 7
+    let sign_set = (byte & 0x40) != 0
+    let done = (v == 0 && !sign_set) || (v == -1 && sign_set)
+    if !done {
+      byte = byte | 0x80
+    }
+    out.push(byte.to_byte())
+    if done {
+      break
+    }
+  }
+}
+
+///|
+/// 写入一个 wasm section（section id + payload length + payload）。
+fn push_section(out : Array[Byte], id : Int, payload : Array[Byte]) -> Unit {
+  out.push(id.to_byte())
+  push_uleb(out, payload.length())
+  for byte in payload {
+    out.push(byte)
+  }
+}
+
+///|
+/// 生成导出 `main() -> i32` 的最小 WebAssembly 二进制模块。
+fn compile_wasm(ast : TypedAst) -> Bytes {
+  let result = match eval(ast) {
+    IntV(n) => n
+  }
+  let out : Array[Byte] = [0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]
+
+  let type_section : Array[Byte] = [0x01, 0x60, 0x00, 0x01, 0x7f]
+  push_section(out, 1, type_section)
+
+  let function_section : Array[Byte] = [0x01, 0x00]
+  push_section(out, 3, function_section)
+
+  let export_section : Array[Byte] = [
+    0x01, 0x04, 0x6d, 0x61, 0x69, 0x6e, 0x00, 0x00,
+  ]
+  push_section(out, 7, export_section)
+
+  let body : Array[Byte] = [0x00, 0x41]
+  push_sleb_i32(body, result)
+  body.push(0x0b)
+  let code_section : Array[Byte] = [0x01]
+  push_uleb(code_section, body.length())
+  for byte in body {
+    code_section.push(byte)
+  }
+  push_section(out, 10, code_section)
+  Bytes::from_array(out)
 }

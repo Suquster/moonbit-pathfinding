@@ -236,17 +236,22 @@ test "golden: print_ast round-trips structurally for all fixtures" {
 }
 
 // ---------------------------------------------------------------------------
-// 既有 compile 桩签名与 Diagnostic::new 行为冻结不变。
+// compile 签名与 Diagnostic::new 行为保持兼容。
 // ---------------------------------------------------------------------------
 
 ///|
-/// compile 桩对任一后端均返回空 Bytes（签名与行为冻结，R12.2）。
-test "golden: compile stub signature and empty-bytes behavior unchanged" {
+/// compile 对任一后端均返回非空、带目标格式标识的真实产物。
+test "golden: compile returns wasm and js artifacts" {
   let typed = golden_check("let x = 10 in x - 4")
-  @test.assert_eq(compile(typed, Wasm).length(), 0)
-  @test.assert_eq(compile(typed, Js).length(), 0)
-  // 纯字面量同样产出空 Bytes。
-  @test.assert_eq(compile(TInt(42), Wasm).length(), 0)
+  let wasm = compile(typed, Wasm)
+  let js = compile(typed, Js)
+  assert_true(wasm.length() > 8)
+  @test.assert_eq(wasm[0], 0x00)
+  @test.assert_eq(wasm[1], 0x61)
+  @test.assert_eq(wasm[2], 0x73)
+  @test.assert_eq(wasm[3], 0x6d)
+  assert_true(js.length() > 0)
+  assert_true(compile(TInt(42), Wasm).length() > 8)
 }
 
 ///|

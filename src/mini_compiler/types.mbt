@@ -151,7 +151,8 @@ pub fn Diagnostic::new(
 /// 编译后端目标（compile backend target）。
 ///
 /// 对应 design.md `compile(ast : TypedAst, target : Backend) -> Bytes` 的
-/// `Backend` 参数。骨架阶段仅声明目标枚举，编译实现属后续阶段。
+/// `Backend` 参数。`Wasm` 产出可直接实例化的 WebAssembly 二进制模块；
+/// `Js` 产出可由 Node.js 直接执行的 UTF-8 JavaScript 程序。
 pub(all) enum Backend {
   /// 编译到 WebAssembly 目标。
   Wasm

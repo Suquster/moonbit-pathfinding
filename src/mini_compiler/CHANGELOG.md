@@ -17,7 +17,11 @@
 
 ## [Unreleased]
 
-（暂无计划中条目；后续新增方向能力时在此登记。）
+### Fixed
+
+- `compile(TypedAst, Backend)` 不再返回恒空字节：`Wasm` 现产出导出
+  `main() -> i32` 的合法 WebAssembly 二进制，`Js` 现产出可由 Node.js
+  直接执行且与解释器整数语义一致的程序。
 
 ## [0.2.0] - 2026-06-12
 

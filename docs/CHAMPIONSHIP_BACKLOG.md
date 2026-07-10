@@ -453,6 +453,13 @@
         message 体错误传播、package 声明畸形逐段拒绝、顶层语句
         缺尾分号、enum 顶层入口；三后端 2982→2986 全绿）。
         2026-07-09，`src/serialization/proto_service_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++ INFRA 第三十八批覆盖收口
+        （infra_diff semver：多 build 元数据/空数字段/非数字
+        minor·patch/预发布段非法字符拒绝；mini_compiler
+        exhaustive：非整数首列见证 PWild 回退与余列拼接、构造子
+        特化与完整签名余列拼接；三后端 2986→2991 全绿）。
+        2026-07-09，`src/infra_diff/semver_gaps_test.mbt`、
+        `src/mini_compiler/exhaustive_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -151,4 +151,4 @@ parser_combinator JSON 恢复解析 EOF 收口（EOF 截断、缺分隔符再同
 parser_combinator 算术小数/幂运算收口（小数字面量求值与打印、负指数与非整数指数幂回退）|src/parser_combinator::arith_gaps_test.mbt|9ee2345
 mini_compiler VM 栈值全函数回退收口（空栈弹取/取顶、非目标构造回退、递归闭包投影）|src/mini_compiler::vm_gaps_wbtest.mbt|9ee2345
 lsp_server 生命周期消息分类/参数解析收口（LifecycleState Show 全构造、请求/通知/响应分类、initialize capabilities 混杂/非数组容错）|src/lsp_server::lifecycle_gaps_test.mbt|0fca106
-codegen_infra 常量折叠/DCE 记号回退收口（不可折叠算符保留、可折叠算符归约、无版本号定义左值保留）|src/codegen_infra::codegen_infra_gaps_wbtest.mbt|PENDING36
+codegen_infra 常量折叠/DCE 记号回退收口（不可折叠算符保留、可折叠算符归约、无版本号定义左值保留）|src/codegen_infra::codegen_infra_gaps_wbtest.mbt|64622eb

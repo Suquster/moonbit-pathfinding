@@ -67,7 +67,9 @@ pub(all) enum CborValue {
   CborMap(Array[(CborValue, CborValue)])
   CborBool(Bool)
   CborNull
+  CborUndefined
   CborFloat(Double)
+  CborTag(UInt64, CborValue)
 } derive(Eq, @debug.Debug)
 pub impl Show for CborValue
 

@@ -124,10 +124,10 @@ test "cbor decode rejects malformed input" {
   assert_true(@infra_codec.cbor_decode([0x64, 0x49, 0x45]) == None)
   // 尾随字节。
   assert_true(@infra_codec.cbor_decode([0x01, 0x02]) == None)
-  // 不定长编码（info=31）不在子集。
-  assert_true(@infra_codec.cbor_decode([0x9F, 0xFF]) == None)
-  // tag（major 6）不在子集。
-  assert_true(@infra_codec.cbor_decode([0xC0, 0x00]) == None)
+  // 孤立 break（0xFF）不构成数据项。
+  assert_true(@infra_codec.cbor_decode([0xFF]) == None)
+  // 截断的 tag（major 6 缺内层项）。
+  assert_true(@infra_codec.cbor_decode([0xC0]) == None)
   // 非法 UTF-8 文本（孤立续字节）。
   assert_true(@infra_codec.cbor_decode([0x61, 0x80]) == None)
   // 保留 additional info 28。

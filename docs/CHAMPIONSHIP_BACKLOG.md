@@ -511,6 +511,16 @@
         2026-07-10，`src/build_tool/coverage_gaps3_test.mbt`、
         `src/dst/coverage_gaps2_wbtest.mbt`、
         `src/serialization/coverage_gaps2_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十七批
+        虚假闭包完备化：CBOR 从「核心子集」升级为 RFC 8949 全量解码
+        （tag/major 6、undefined/simple 23、float16/float32 提升为
+        Double、不定长字节串/文本/数组/映射含 break 与嵌套禁止校验，
+        附录 A 向量对拍；编码侧保持 canonical 定长最短编码）；actor
+        监督树防御余支收口（幽灵子 id、缺失 supervisor 单元、
+        default_spec 回退、apply_scope Escalate/空子列表、空邮箱/
+        空行为栈防御）；3033→3046 三后端全绿。2026-07-10，
+        `src/infra_codec/cbor.mbt`、`src/infra_codec/cbor_full_test.mbt`、
+        `src/actor/coverage_gaps2_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

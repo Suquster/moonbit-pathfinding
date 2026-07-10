@@ -165,5 +165,5 @@ logging 采样阈值量化钳制收口（边界率 0/1/负/极小正率钳制）
 lsp_server 帧解析辅助与错误 Show 收口（尾随空白裁剪、空数值段、同长键失配、JsonRpcError Show 全构造）|src/lsp_server::jsonrpc_frame_gaps2_wbtest.mbt|5dce8af
 infra_codec UTF-8 严格解码畸形序列收口（2/3/4 字节畸形续字节与截断拒绝）|src/infra_codec::utf8_gaps_test.mbt|03982ae
 infra_ds 跳表 contains 委托收口（存在与缺失双向判定）|src/infra_ds::skiplist_gaps_test.mbt|03982ae
-codegen_infra SCCP 格 meet/求值回退收口（Top 单位元、常量相遇、不可折叠算符与非法记号数回退 Bottom、空程序恒等）|src/codegen_infra::sccp_gaps_wbtest.mbt|PENDING45
-infra_bench 报告 JSON 解析防御收口（backend 字段缺失/非字符串错误传播）|src/infra_bench::report_gaps2_test.mbt|PENDING45
+codegen_infra SCCP 格 meet/求值回退收口（Top 单位元、常量相遇、不可折叠算符与非法记号数回退 Bottom、空程序恒等）|src/codegen_infra::sccp_gaps_wbtest.mbt|5287d83
+infra_bench 报告 JSON 解析防御收口（backend 字段缺失/非字符串错误传播）|src/infra_bench::report_gaps2_test.mbt|5287d83

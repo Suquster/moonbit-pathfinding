@@ -36,6 +36,18 @@ test "run_des：指向不存在节点的故障安全忽略" {
 }
 
 ///|
+test "run_des：DiskFault 部分丢写保留日志前缀" {
+  // 晚步注入 lose=1：此时日志已非空，keep>0 路径保留前缀条目。
+  let sc = dg2_scenario([
+    FaultPolicyEx::new(20, 1, NetFaultKind::DiskFault(lose=1)),
+  ])
+  let r1 = run_des(11UL, sc)
+  let r2 = run_des(11UL, sc)
+  assert_true(r1.trace == r2.trace)
+  assert_true(r1.trace.length() > 0)
+}
+
+///|
 test "run_des：DiskFault 丢写超过日志长度时安全清空" {
   let sc = dg2_scenario([
     FaultPolicyEx::new(3, 0, NetFaultKind::DiskFault(lose=1000)),

@@ -267,3 +267,186 @@ test "zstd 字典帧：畸形与错配拒绝" {
     Some(zsd_payload()),
   )
 }
+
+///|
+/// 空数组字典 == 裸内容空窗（仍可解无回引帧）。
+test "zstd 字典帧：帧层防御边界（INFRA 第五十三批）" {
+  let raw = zsd_raw_dict()
+  // 魔数截断 / 错误魔数 / 魔数后即截止。
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict([0x28, 0xB5], raw, 100) is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict([1, 2, 3, 4, 0], raw, 100) is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x28, 0xB5, 0x2F, 0xFD],
+      raw,
+      100,
+    )
+    is None,
+  )
+  // 跳过帧：长度字段截断 / 载荷越界。
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x50, 0x2A, 0x4D, 0x18, 0x01],
+      raw,
+      100,
+    )
+    is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x50, 0x2A, 0x4D, 0x18, 0x05, 0x00, 0x00, 0x00, 0x01],
+      raw,
+      100,
+    )
+    is None,
+  )
+  // Reserved bit 置位。
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x28],
+      raw,
+      100,
+    )
+    is None,
+  )
+  // 非单段帧：窗口描述符截断。
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x00],
+      raw,
+      100,
+    )
+    is None,
+  )
+}
+
+///|
+test "zstd 字典帧：Dictionary_ID 字段宽度与 FCS 宽度全形态" {
+  let raw = zsd_raw_dict()
+  let empty_last_block = [0x01, 0x00, 0x00]
+  // dict_flag=1（1 字节 DID）+ 单段 FCS0（1 字节）。
+  let f1 : Array[Int] = [0x28, 0xB5, 0x2F, 0xFD, 0x21, 0x7B, 0x00]
+  for b in empty_last_block {
+    f1.push(b)
+  }
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(f1, raw, 100) == Some([]),
+  )
+  // dict_flag=2（2 字节 DID）。
+  let f2 : Array[Int] = [0x28, 0xB5, 0x2F, 0xFD, 0x22, 0x7B, 0x00, 0x00]
+  for b in empty_last_block {
+    f2.push(b)
+  }
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(f2, raw, 100) == Some([]),
+  )
+  // DID 字段截断。
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x21],
+      raw,
+      100,
+    )
+    is None,
+  )
+  // 非单段 + fcs_flag=0（FCS 缺省）。
+  let f3 : Array[Int] = [0x28, 0xB5, 0x2F, 0xFD, 0x00, 0x00]
+  for b in empty_last_block {
+    f3.push(b)
+  }
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(f3, raw, 100) == Some([]),
+  )
+  // fcs_flag=3（8 字节 FCS = 0）。
+  let f4 : Array[Int] = [0x28, 0xB5, 0x2F, 0xFD, 0xE0, 0, 0, 0, 0, 0, 0, 0, 0]
+  for b in empty_last_block {
+    f4.push(b)
+  }
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(f4, raw, 100) == Some([]),
+  )
+  // fcs_flag=1（2 字节 FCS，基准 256）：256 字节 Raw 块。
+  let f5 : Array[Int] = [0x28, 0xB5, 0x2F, 0xFD, 0x60, 0x00, 0x00]
+  let hdr = 1 | (0 << 1) | (256 << 3)
+  f5.push(hdr & 0xFF)
+  f5.push((hdr >> 8) & 0xFF)
+  f5.push((hdr >> 16) & 0xFF)
+  for _k in 0..<256 {
+    f5.push(0xAB)
+  }
+  match @infra_compress.zstd_decompress_with_dict(f5, raw, 1000) {
+    Some(o) => {
+      assert_eq(o.length(), 256)
+      assert_eq(o[0], 0xAB)
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "zstd 字典帧：结构化字典逐级截断拒绝" {
+  let d = zsd_dict()
+  // 熵表/重复偏移各阶段截断均须拒绝（内容截断则重复偏移越界拒绝）。
+  let cuts = [4, 6, 8, 12, 16, 20]
+  for cut in cuts {
+    if cut < d.length() {
+      let t : Array[Int] = []
+      for k in 0..<cut {
+        t.push(d[k])
+      }
+      assert_true(
+        @infra_compress.zstd_decompress_with_dict(zsd_frame(), t, 1 << 20)
+        is None,
+      )
+    }
+  }
+}
+
+///|
+test "zstd 无字典入口：帧层与块层防御边界" {
+  // 魔数截断 / 跳过帧长度截断 / 跳过帧载荷越界 / 魔数后即截止。
+  assert_true(@infra_compress.zstd_decompress([0x28, 0xB5], 100) is None)
+  assert_true(
+    @infra_compress.zstd_decompress([0x50, 0x2A, 0x4D, 0x18, 0x01], 100) is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress(
+      [0x50, 0x2A, 0x4D, 0x18, 0x05, 0x00, 0x00, 0x00, 0x01],
+      100,
+    )
+    is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress([0x28, 0xB5, 0x2F, 0xFD], 100) is None,
+  )
+  // 非单段帧：窗口描述符截断；有窗口描述符 + FCS 缺省的空帧可解。
+  assert_true(
+    @infra_compress.zstd_decompress([0x28, 0xB5, 0x2F, 0xFD, 0x00], 100) is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x00, 0x00, 0x01, 0x00, 0x00],
+      100,
+    ) ==
+    Some([]),
+  )
+  // RLE 块：内容字节截断 / 超出输出上限。
+  assert_true(
+    @infra_compress.zstd_decompress(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x00, 0x00, 0x0B, 0x00, 0x00],
+      100,
+    )
+    is None,
+  )
+  assert_true(
+    @infra_compress.zstd_decompress(
+      [0x28, 0xB5, 0x2F, 0xFD, 0x00, 0x00, 0x0B, 0x02, 0x00, 0x41],
+      10,
+    )
+    is None,
+  )
+}

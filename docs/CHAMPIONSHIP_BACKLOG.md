@@ -574,6 +574,12 @@
         「高级转义组合不支持」边界声明），3061→3064 三后端全绿。
         2026-07-10，`src/infra_config/toml.mbt`、
         `src/infra_config/toml_string_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十三批 zstd 字典/帧层防御覆盖收口（帧魔数与跳过帧截断、
+        Reserved bit、窗口描述符截断、Dictionary_ID 1/2 字节宽度、
+        FCS 0/1/3 全宽度形态、RLE 块内容截断与输出上限、结构化字典
+        逐级截断拒绝），3064→3068 三后端全绿。2026-07-10，
+        `src/infra_compress/zstd_dict_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

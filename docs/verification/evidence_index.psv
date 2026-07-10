@@ -161,3 +161,5 @@ build_tool 规则文法 include 合并收口（游离 TAB recipe 行忽略、空
 lsp_server demo 回复投影空值回退收口（None/空 Response 回退 JNull、error 投影 {"error": message}）|src/lsp_server::demo_gaps_wbtest.mbt|f78bdb0
 mini_compiler Algorithm W 错误冒泡收口（应用位合一失败、let/letrec 绑定体与主体错误冒泡）|src/mini_compiler::infer_gaps_test.mbt|a27dd23
 parser_combinator 恢复策略 Show 收口（SyncTo 多标记逗号分隔输出）|src/parser_combinator::incremental_ext_gaps_wbtest.mbt|a27dd23
+logging 采样阈值量化钳制收口（边界率 0/1/负/极小正率钳制）|src/logging::sampling_gaps_wbtest.mbt|PENDING43
+lsp_server 帧解析辅助与错误 Show 收口（尾随空白裁剪、空数值段、同长键失配、JsonRpcError Show 全构造）|src/lsp_server::jsonrpc_frame_gaps2_wbtest.mbt|PENDING43

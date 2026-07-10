@@ -482,6 +482,12 @@
         Show 多标记逗号分隔输出；三后端 2998→3000 全绿）。
         2026-07-09，`src/mini_compiler/infer_gaps_test.mbt`、
         `src/parser_combinator/incremental_ext_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十三批覆盖收口
+        （logging sampling：边界率量化钳制；lsp_server
+        jsonrpc_frame：尾随空白裁剪、空数值段、同长键失配、
+        JsonRpcError Show 全构造；三后端 3000→3004 全绿）。
+        2026-07-09，`src/logging/sampling_gaps_wbtest.mbt`、
+        `src/lsp_server/jsonrpc_frame_gaps2_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

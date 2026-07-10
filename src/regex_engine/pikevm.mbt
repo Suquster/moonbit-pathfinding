@@ -121,9 +121,14 @@ fn Program::add_thread(
       if assert_holds(kind, chars, n, pos) {
         self.add_thread(list, pc + 1, saved, chars, n, pos)
       }
-    ILook(positive~, prog~) => {
-      // 前瞻：锚定执行子程序（不消费、仅判 bool）；捕获不跨前瞻边界导出。
-      let ok = prog.run_bool(chars, n, pos)
+    ILook(positive~, behind~, prog~) => {
+      // 环视：锚定执行子程序（不消费、仅判 bool）；捕获不跨环视边界导出。
+      // 后顾以翻转子程序自 pos 向左反向扫描。
+      let ok = if behind {
+        prog.run_bool_rev(chars, pos)
+      } else {
+        prog.run_bool(chars, n, pos)
+      }
       if ok == positive {
         self.add_thread(list, pc + 1, saved, chars, n, pos)
       }
@@ -173,6 +178,56 @@ fn Program::run_bool(
       break
     }
     pos = pos + 1
+    let tmp = clist
+    clist = nlist
+    nlist = tmp
+    nlist.reset()
+    if clist.pcs.length() == 0 {
+      break
+    }
+  }
+  false
+}
+
+///|
+/// 布尔模式反向运行（供后顾）：自 `start` 向左反向扫描，判定是否存在
+/// 恰好终止于 `start` 的子匹配（子程序由翻转 AST 编译，串接顺序已逆）。
+/// ε 转移（断言 / 嵌套环视）仍以原文位置求值，与扫描方向无关。
+fn Program::run_bool_rev(
+  self : Program,
+  chars : Array[Char],
+  start : Int,
+) -> Bool {
+  let n = chars.length()
+  let ninst = self.insts.length()
+  let mut clist = ThreadList::new(ninst)
+  let mut nlist = ThreadList::new(ninst)
+  let init = Array::make(2 * (self.num_groups + 1), -1)
+  self.add_thread(clist, 0, init, chars, n, start)
+  let mut pos = start
+  while true {
+    let mut i = 0
+    while i < clist.pcs.length() {
+      let pc = clist.pcs[i]
+      let saved = clist.saveds[i]
+      match self.insts[pc] {
+        IChar(ch) =>
+          if pos > 0 && chars[pos - 1] == ch {
+            self.add_thread(nlist, pc + 1, saved, chars, n, pos - 1)
+          }
+        ISet(cs) =>
+          if pos > 0 && cs.contains(chars[pos - 1].to_int()) {
+            self.add_thread(nlist, pc + 1, saved, chars, n, pos - 1)
+          }
+        IMatch => return true
+        _ => ()
+      }
+      i = i + 1
+    }
+    if pos <= 0 {
+      break
+    }
+    pos = pos - 1
     let tmp = clist
     clist = nlist
     nlist = tmp

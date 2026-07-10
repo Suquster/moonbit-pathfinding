@@ -141,10 +141,13 @@ test "prefilter degrades to PfNone on nullable Empty and Look nodes" {
   // Empty 可空 => PfNone。
   assert_true(compute_prefilter(Empty, flags) is PfNone)
   // Look（零宽前瞻）可空 => PfNone。
-  let look : Ast = Look(positive=true, body=Lit('a'))
+  let look : Ast = Look(positive=true, behind=false, body=Lit('a'))
   assert_true(compute_prefilter(look, flags) is PfNone)
   // Concat[Look, Lit('b')]：Look 零宽可空，Concat 继续累计 => 必经首字符 {'b'}。
-  let concat : Ast = Concat([Look(positive=true, body=Lit('a')), Lit('b')])
+  let concat : Ast = Concat([
+    Look(positive=true, behind=false, body=Lit('a')),
+    Lit('b'),
+  ])
   assert_true(!(compute_prefilter(concat, flags) is PfNone))
   // 非可空但首字符集为空（如空字符类 `Set([]）`）：该正则不可能匹配 =>
   // 保守 PfNone，正确性交由 Pike VM 自然得出 None。

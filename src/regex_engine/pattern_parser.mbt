@@ -278,8 +278,8 @@ fn p_escape(
 
 ///|
 /// 分组：捕获 `(...)`、非捕获 `(?:...)`、命名 `(?<name>...)` / `(?P<name>...)`、
-/// 前瞻 `(?=...)` / `(?!...)`、内联标志 `(?ims)` / `(?ims:...)`。后瞻
-/// `(?<=...)` / `(?<!...)` 不支持（显式报错，R5.6）。
+/// 前瞻 `(?=...)` / `(?!...)`、后顾 `(?<=...)` / `(?<!...)`、
+/// 内联标志 `(?ims)` / `(?ims:...)`。
 fn p_group(
   st : PState,
   input : @pc.Input,
@@ -291,16 +291,14 @@ fn p_group(
       let q = after_lp.advance() // 位于 '?' 之后
       match q.peek() {
         Some(':') => p_finish_group(st, q.advance(), open, None, None)
-        Some('=') => p_finish_look(st, q.advance(), open, true)
-        Some('!') => p_finish_look(st, q.advance(), open, false)
+        Some('=') => p_finish_look(st, q.advance(), open, true, false)
+        Some('!') => p_finish_look(st, q.advance(), open, false, false)
         Some('<') => {
           let lt = q.advance() // 位于 '<' 之后
           match lt.peek() {
-            // 后瞻 (?<=...) / (?<!...) 不支持。
-            Some('=') =>
-              Err(Unexpected(pos=open, expected=["lookbehind not supported"]))
-            Some('!') =>
-              Err(Unexpected(pos=open, expected=["lookbehind not supported"]))
+            // 后顾 (?<=...) / (?<!...)：反向子程序锚定执行。
+            Some('=') => p_finish_look(st, lt.advance(), open, true, true)
+            Some('!') => p_finish_look(st, lt.advance(), open, false, true)
             _ => p_named_group(st, lt, open)
           }
         }
@@ -368,19 +366,21 @@ fn p_finish_group(
 }
 
 ///|
-/// 解析前瞻体并要求闭合 `)`，组装为 `Look(positive, body)`（R5.4/5.5）。
+/// 解析环视体并要求闭合 `)`，组装为 `Look(positive, behind, body)`
+/// （R5.4/5.5；后顾取 `behind=true`）。
 fn p_finish_look(
   st : PState,
   input : @pc.Input,
   open : Int,
   positive : Bool,
+  behind : Bool,
 ) -> Result[(Ast, @pc.Input), ParseError] {
   let (body, rest) = match p_alt(st, input) {
     Err(e) => return Err(e)
     Ok(pair) => pair
   }
   match rest.peek() {
-    Some(')') => Ok((Look(positive~, body~), rest.advance()))
+    Some(')') => Ok((Look(positive~, behind~, body~), rest.advance()))
     _ => Err(Unbalanced(pos=open, what="("))
   }
 }

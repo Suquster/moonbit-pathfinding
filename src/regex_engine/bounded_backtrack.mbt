@@ -90,8 +90,13 @@ pub fn Program::exec_backtrack(
           if assert_holds(kind, chars, n, pos) {
             stack.push({ pc: pc + 1, pos, saved: frame.saved })
           }
-        ILook(positive~, prog~) =>
-          if prog.run_bool(chars, n, pos) == positive {
+        ILook(positive~, behind~, prog~) =>
+          if (if behind {
+              prog.run_bool_rev(chars, pos)
+            } else {
+              prog.run_bool(chars, n, pos)
+            }) ==
+            positive {
             stack.push({ pc: pc + 1, pos, saved: frame.saved })
           }
         IChar(ch) =>

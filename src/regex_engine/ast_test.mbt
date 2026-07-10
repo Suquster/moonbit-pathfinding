@@ -91,6 +91,12 @@ test "print_ast renders asserts and lookarounds" {
   inspect(print_ast(Assert(TextStart)), content="\\A")
   inspect(print_ast(Assert(LineStart)), content="^")
   inspect(print_ast(Assert(LineEnd)), content="$")
-  inspect(print_ast(Look(positive=true, body=Lit('a'))), content="(?=a)")
-  inspect(print_ast(Look(positive=false, body=Lit('a'))), content="(?!a)")
+  inspect(
+    print_ast(Look(positive=true, behind=false, body=Lit('a'))),
+    content="(?=a)",
+  )
+  inspect(
+    print_ast(Look(positive=false, behind=false, body=Lit('a'))),
+    content="(?!a)",
+  )
 }

@@ -36,7 +36,8 @@ pub(all) enum AssertKind {
 ///   * `Repeat{node,min,max,greedy}` —— `*`/`+`/`?`/`{m,n}` 及其惰性变体；
 ///   * `Group{body,index,name}` —— `index=None` 即非捕获组 `(?:...)`；
 ///   * `Assert(kind)` —— 零宽位置断言；
-///   * `Look{positive,body}` —— 正 / 负前瞻 `(?=...)` / `(?!...)`。
+///   * `Look{positive,behind,body}` —— 环视：前瞻 `(?=...)` / `(?!...)`
+///     与后顾 `(?<=...)` / `(?<!...)`（`behind=true`）。
 pub(all) enum Ast {
   Empty
   Lit(Char)
@@ -46,7 +47,7 @@ pub(all) enum Ast {
   Repeat(node~ : Ast, min~ : Int, max~ : Int?, greedy~ : Bool)
   Group(body~ : Ast, index~ : Int?, name~ : String?)
   Assert(AssertKind)
-  Look(positive~ : Bool, body~ : Ast)
+  Look(positive~ : Bool, behind~ : Bool, body~ : Ast)
 } derive(Eq)
 
 ///|
@@ -139,8 +140,20 @@ pub fn print_ast(a : Ast) -> String {
         WordBoundary => "\\b"
         NotWordBoundary => "\\B"
       }
-    Look(positive~, body~) =>
-      (if positive { "(?=" } else { "(?!" }) + print_ast(body) + ")"
+    Look(positive~, behind~, body~) =>
+      (if behind {
+        if positive {
+          "(?<="
+        } else {
+          "(?<!"
+        }
+      } else if positive {
+        "(?="
+      } else {
+        "(?!"
+      }) +
+      print_ast(body) +
+      ")"
   }
 }
 

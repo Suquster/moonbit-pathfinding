@@ -175,7 +175,7 @@ test "Feature: moonbit-infra-suite, Property 6: generator only emits illegal str
 /// 确定性「语法非法模式字符串」生成器（面向 `parse_pattern`）。
 ///
 /// 在 10 个互斥非法类别间按随机源选择，每个都对 pattern_parser.mbt 文法保证
-/// 非法：既有 7 类结构错误，外加重复组名、反向引用、后瞻三类旗舰新增构造。
+/// 非法：既有 7 类结构错误，外加重复组名、反向引用、未闭合后顾三类。
 fn gen_illegal_pattern() -> @infra_pbt.Gen[String] {
   @infra_pbt.Gen::new(fn(rng) {
     match rng.next_below(10) {
@@ -211,10 +211,10 @@ fn gen_illegal_pattern() -> @infra_pbt.Gen[String] {
         gen_safe_letters(rng, 0, 2) +
         ")"
       }
-      // 旗舰新增：后瞻（不支持）。
+      // 未闭合后顾：缺右括号。
       _ => {
         let kind = if rng.next_bool() { "=" } else { "!" }
-        "(?<" + kind + gen_safe_letters(rng, 1, 3) + ")"
+        "(?<" + kind + gen_safe_letters(rng, 1, 3)
       }
     }
   })

@@ -116,8 +116,14 @@ test "parse_pattern word boundary and text anchors" {
 ///|
 /// 前瞻解析为 `Look`。
 test "parse_pattern lookahead" {
-  assert_true(parse_pattern("(?=a)") == Ok(Look(positive=true, body=Lit('a'))))
-  assert_true(parse_pattern("(?!a)") == Ok(Look(positive=false, body=Lit('a'))))
+  assert_true(
+    parse_pattern("(?=a)") ==
+    Ok(Look(positive=true, behind=false, body=Lit('a'))),
+  )
+  assert_true(
+    parse_pattern("(?!a)") ==
+    Ok(Look(positive=false, behind=false, body=Lit('a'))),
+  )
 }
 
 ///|
@@ -139,11 +145,19 @@ test "parse_pattern backreference is unsupported" {
 }
 
 ///|
-/// 后瞻不支持 → `Unexpected`。
-test "parse_pattern lookbehind is unsupported" {
-  match parse_pattern("(?<=a)") {
-    Err(Unexpected(_)) => assert_true(true)
-    _ => fail("expected Unexpected for lookbehind")
+/// 后顾解析为 `Look(behind=true)`；未闭合后顾 → `Unbalanced`。
+test "parse_pattern lookbehind" {
+  assert_true(
+    parse_pattern("(?<=a)") ==
+    Ok(Look(positive=true, behind=true, body=Lit('a'))),
+  )
+  assert_true(
+    parse_pattern("(?<!a)") ==
+    Ok(Look(positive=false, behind=true, body=Lit('a'))),
+  )
+  match parse_pattern("(?<=a") {
+    Err(Unbalanced(_)) => assert_true(true)
+    _ => fail("expected Unbalanced for unclosed lookbehind")
   }
 }
 

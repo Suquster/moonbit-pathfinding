@@ -49,8 +49,9 @@ test "解析器错误分支：命名组与组构造非法形态" {
   assert_true(@regex_engine.parse_pattern("(?x)") is Err(_))
   assert_true(@regex_engine.parse_pattern("(?i") is Err(_))
   assert_true(@regex_engine.parse_pattern("(?s:a") is Err(_))
-  assert_true(@regex_engine.parse_pattern("(?<=a)b") is Err(_))
-  assert_true(@regex_engine.parse_pattern("(?<!a)b") is Err(_))
+  assert_true(@regex_engine.parse_pattern("(?<=a)b") is Ok(_))
+  assert_true(@regex_engine.parse_pattern("(?<!a)b") is Ok(_))
+  assert_true(@regex_engine.parse_pattern("(?<=a") is Err(_))
 }
 
 ///|

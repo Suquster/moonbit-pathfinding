@@ -589,6 +589,15 @@
         2026-07-10，`src/serialization/typed_gaps2_wbtest.mbt`、
         `src/infra_config/toml_gaps2_test.mbt`、
         `src/infra_codec/cbor_gaps3_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十五批 虚假闭包完备化续六：正则后顾 `(?<=...)`/`(?<!...)`
+        完整实现（AST `Look` 增加 `behind`、翻转子程序 `ast_reverse`、
+        Pike VM/有界回溯 `run_bool_rev` 自锚点向左反向扫描——支持
+        变长体/择一/嵌套环视/断言/标志，保持线性时间；打印往返
+        `(?<=..)`；非法生成器改为未闭合后顾），3075→3081 三后端全绿。
+        2026-07-10，`src/regex_engine/{ast,pattern_parser,program,
+        pikevm,bounded_backtrack}.mbt`、
+        `src/regex_engine/lookbehind_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

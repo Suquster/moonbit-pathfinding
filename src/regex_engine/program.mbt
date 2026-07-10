@@ -13,7 +13,8 @@
 //   * `Group(Some(g))` → `ISave(2g)` … 子程序 … `ISave(2g+1)`；非捕获组不发 `ISave`；
 //   * `Repeat`：贪婪 `*` 为 `Split(body,out)`，惰性 `*?` 为 `Split(out,body)`
 //     （仅调换 Split 两臂优先级即统一贪婪 / 惰性）；`min` 份强制副本 + 上界处理；
-//   * `Assert` → `IAssert`；`Look` → `ILook(positive, 子程序)`；
+//   * `Assert` → `IAssert`；`Look` → `ILook(positive, behind, 子程序)`
+//     （后顾的子程序由 `ast_reverse` 翻转串接顺序后编译，反向扫描执行）；
 //   * 整个程序以 `ISave(0)` … `ISave(1)` 包裹整体匹配区间（第 0 组），末尾 `IMatch`。
 
 ///|
@@ -31,8 +32,9 @@ pub enum Inst {
   ISave(Int)
   /// 零宽位置断言。
   IAssert(AssertKind)
-  /// 前瞻：在当前位置锚定执行子程序（不消费输入）。
-  ILook(positive~ : Bool, prog~ : Program)
+  /// 环视：在当前位置锚定执行子程序（不消费输入）；`behind=true`
+  /// 时子程序由翻转 AST 编译，自当前位置向左反向扫描。
+  ILook(positive~ : Bool, behind~ : Bool, prog~ : Program)
   /// 匹配成功。
   IMatch
 }
@@ -113,9 +115,18 @@ fn emit_node(insts : Array[Inst], ast : Ast, flags : Flags) -> Unit {
       }
     }
     Assert(kind) => insts.push(IAssert(kind))
-    Look(positive~, body~) => {
-      let sub = compile_program(body, flags~)
-      insts.push(ILook(positive~, prog=sub))
+    Look(positive~, behind~, body~) => {
+      // 后顾：翻转串接顺序后编译，执行时自锚点向左反向扫描；
+      // 嵌套环视作为零宽位置谓词不参与翻转。
+      let sub = compile_program(
+        if behind {
+          ast_reverse(body)
+        } else {
+          body
+        },
+        flags~,
+      )
+      insts.push(ILook(positive~, behind~, prog=sub))
     }
   }
 }
@@ -259,6 +270,35 @@ fn ast_max_group(ast : Ast) -> Int {
     Repeat(node~, ..) => ast_max_group(node)
     Look(body~, ..) => ast_max_group(body)
     _ => 0
+  }
+}
+
+///|
+/// 翻转 AST 的串接顺序（供后顾子程序反向执行）：`Concat` 子项逆序递归
+/// 翻转；`Alt`/`Repeat`/`Group` 递归下推；零宽节点（`Assert` 与嵌套
+/// `Look`）是位置谓词，与扫描方向无关，原样保留。
+fn ast_reverse(ast : Ast) -> Ast {
+  match ast {
+    Concat(parts) => {
+      let out : Array[Ast] = []
+      let mut i = parts.length() - 1
+      while i >= 0 {
+        out.push(ast_reverse(parts[i]))
+        i = i - 1
+      }
+      Concat(out)
+    }
+    Alt(branches) => {
+      let out : Array[Ast] = []
+      for b in branches {
+        out.push(ast_reverse(b))
+      }
+      Alt(out)
+    }
+    Repeat(node~, min~, max~, greedy~) =>
+      Repeat(node=ast_reverse(node), min~, max~, greedy~)
+    Group(body~, index~, name~) => Group(body=ast_reverse(body), index~, name~)
+    _ => ast
   }
 }
 

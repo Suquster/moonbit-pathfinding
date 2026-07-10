@@ -140,5 +140,5 @@ build_tool 模式规则匹配边角收口（后缀失配拒绝与多模式顺延
 mini_compiler 扩展匹配内部收口（expr_span EVar/ELogic/EArith、check_base 环境未命中回退、check_match PBool 模式匹配）|src/mini_compiler::match_ext_gaps2_wbtest.mbt|d1229d6
 codegen_infra 全局值编号回退收口（空程序原样返回、operand_vn 唯一回退、def_value_number 非常规形态）|src/codegen_infra::gvn_gaps_wbtest.mbt|d1229d6
 serialization/dst 缺省值与故障通路收口（typed 浮点/双精度缺省值、des_sim DiskFault 部分丢写保留前缀）|src/serialization::typed_gaps_wbtest.mbt,src/dst::des_sim_gaps2_test.mbt|d1229d6
-lsp_server rope 同步 AVL join 平衡修复收口（joinLeft 双旋/递归直返、joinRight 回溯左旋）|src/lsp_server::rope_sync_gaps_wbtest.mbt|PENDING29
-infra_text 多叶 rope 偏移换算收口（UTF-16→UTF-8 右子树下降累加、slice 空/全区间）|src/infra_text::rope_gaps3_test.mbt|PENDING29
+lsp_server rope 同步 AVL join 平衡修复收口（joinLeft 双旋/递归直返、joinRight 回溯左旋）|src/lsp_server::rope_sync_gaps_wbtest.mbt|b9c759f
+infra_text 多叶 rope 偏移换算收口（UTF-16→UTF-8 右子树下降累加、slice 空/全区间）|src/infra_text::rope_gaps3_test.mbt|b9c759f

@@ -159,5 +159,5 @@ build_tool 缓存反序列化防御收口（缺字段分隔、空目标名、无
 actor 路由器策略交叉回退收口（空 worker 安全早退、ConsistentHash 空键退化、非哈希策略 route_keyed 回退）|src/actor::router_gaps_test.mbt|b407dcd
 build_tool 规则文法 include 合并收口（游离 TAB recipe 行忽略、空变量名拒绝、模式规则/phony/变量合并去重与主文件变量优先）|src/build_tool::rule_grammar_gaps_test.mbt|a555ccc
 lsp_server demo 回复投影空值回退收口（None/空 Response 回退 JNull、error 投影 {"error": message}）|src/lsp_server::demo_gaps_wbtest.mbt|f78bdb0
-mini_compiler Algorithm W 错误冒泡收口（应用位合一失败、let/letrec 绑定体与主体错误冒泡）|src/mini_compiler::infer_gaps_test.mbt|PENDING42
-parser_combinator 恢复策略 Show 收口（SyncTo 多标记逗号分隔输出）|src/parser_combinator::incremental_ext_gaps_wbtest.mbt|PENDING42
+mini_compiler Algorithm W 错误冒泡收口（应用位合一失败、let/letrec 绑定体与主体错误冒泡）|src/mini_compiler::infer_gaps_test.mbt|a27dd23
+parser_combinator 恢复策略 Show 收口（SyncTo 多标记逗号分隔输出）|src/parser_combinator::incremental_ext_gaps_wbtest.mbt|a27dd23

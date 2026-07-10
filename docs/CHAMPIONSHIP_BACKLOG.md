@@ -426,6 +426,13 @@
         全绿）。2026-07-09，
         `src/serialization/proto_grammar_gaps_test.mbt`、
         `src/advanced/ch_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++ INFRA 第三十三批覆盖收口
+        （parser_combinator bounded_packrat：capacity 查询、大量
+        驱逐触发 order 压实；json 恢复解析 EOF 截断/缺分隔符再
+        同步/尾随空白 EOF 出口；三后端 2967→2970 全绿）。
+        2026-07-09，
+        `src/parser_combinator/bounded_packrat_gaps_wbtest.mbt`、
+        `src/parser_combinator/json_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

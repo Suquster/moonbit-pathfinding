@@ -137,6 +137,6 @@ infra_config/serialization 语法边角收口（TOML 多行首行修剪与转义
 codegen_infra SSA 解构与最小 SSA 防御收口（空指令终结判定、终结前插入各形态、不可达块跳过）|src/codegen_infra::out_of_ssa_gaps_wbtest.mbt|4d1a1a9
 mini_compiler 解释器全函数回退收口（递归记录非闭包值、as_int/as_bool 回退、未绑定变量、VM 无 Ret 帧安全弹出）|src/mini_compiler::ml_eval_gaps_wbtest.mbt|f7a36ac
 build_tool 模式规则匹配边角收口（后缀失配拒绝与多模式顺延命中）|src/build_tool::rule_grammar_gaps_test.mbt|f7a36ac
-mini_compiler 扩展匹配内部收口（expr_span EVar/ELogic/EArith、check_base 环境未命中回退、check_match PBool 模式匹配）|src/mini_compiler::match_ext_gaps2_wbtest.mbt|PENDING28
-codegen_infra 全局值编号回退收口（空程序原样返回、operand_vn 唯一回退、def_value_number 非常规形态）|src/codegen_infra::gvn_gaps_wbtest.mbt|PENDING28
-serialization/dst 缺省值与故障通路收口（typed 浮点/双精度缺省值、des_sim DiskFault 部分丢写保留前缀）|src/serialization::typed_gaps_wbtest.mbt,src/dst::des_sim_gaps2_test.mbt|PENDING28
+mini_compiler 扩展匹配内部收口（expr_span EVar/ELogic/EArith、check_base 环境未命中回退、check_match PBool 模式匹配）|src/mini_compiler::match_ext_gaps2_wbtest.mbt|d1229d6
+codegen_infra 全局值编号回退收口（空程序原样返回、operand_vn 唯一回退、def_value_number 非常规形态）|src/codegen_infra::gvn_gaps_wbtest.mbt|d1229d6
+serialization/dst 缺省值与故障通路收口（typed 浮点/双精度缺省值、des_sim DiskFault 部分丢写保留前缀）|src/serialization::typed_gaps_wbtest.mbt,src/dst::des_sim_gaps2_test.mbt|d1229d6

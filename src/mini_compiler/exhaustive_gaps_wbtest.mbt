@@ -56,3 +56,29 @@ test "fresh_int_not_in：跳过既有字面量并忽略非整数头" {
   let p = fresh_int_not_in([PInt(0), PInt(1), PWild, PBool(true)])
   assert_true(p is PInt(2))
 }
+
+///|
+test "missing_witness：非整数首列见证回退 PWild 且拼接余列" {
+  // 布尔首列已覆盖 true/false 之外仍缺失？构造未覆盖余列使见证含 PWild 头。
+  let w = check_exhaustive(
+    [PTuple([PWild, PBool(true)])],
+    TXTuple([TXList(TXInt), TXBool]),
+  )
+  assert_true(w is Some(_))
+}
+
+///|
+test "useful：构造子特化失配与完整签名余列拼接" {
+  // 元组模式列固定 → root_ctor 命中、specialize 后余列拼接（sub_tys_of）。
+  let r = redundant_arms(
+    [PTuple([PNil, PWild]), PTuple([PCons(PWild, PWild), PWild])],
+    TXTuple([TXList(TXInt), TXBool]),
+  )
+  assert_true(r.length() == 0)
+  // 完整签名（列表 Nil/Cons）后通配臂冗余：走 ws 余列拼接分支。
+  let r2 = redundant_arms(
+    [PTuple([PNil, PWild]), PTuple([PCons(PWild, PWild), PWild]), PWild],
+    TXTuple([TXList(TXInt), TXBool]),
+  )
+  assert_true(r2 == [2])
+}

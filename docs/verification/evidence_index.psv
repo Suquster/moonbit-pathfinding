@@ -148,3 +148,5 @@ serialization proto 全文法 EOF/嵌套错误传播收口（标识符截断、r
 advanced CH 捷径展开不变量收口（中点与端点重合退化拒绝、层级不变量违例/缺失降级）|src/advanced::ch_gaps_wbtest.mbt|dbd304a
 parser_combinator 有界 packrat 缓存收口（capacity 查询、大量驱逐触发 order 压实）|src/parser_combinator::bounded_packrat_gaps_wbtest.mbt|c89e573
 parser_combinator JSON 恢复解析 EOF 收口（EOF 截断、缺分隔符再同步、尾随空白 EOF 出口）|src/parser_combinator::json_gaps_test.mbt|c89e573
+parser_combinator 算术小数/幂运算收口（小数字面量求值与打印、负指数与非整数指数幂回退）|src/parser_combinator::arith_gaps_test.mbt|PENDING34
+mini_compiler VM 栈值全函数回退收口（空栈弹取/取顶、非目标构造回退、递归闭包投影）|src/mini_compiler::vm_gaps_wbtest.mbt|PENDING34

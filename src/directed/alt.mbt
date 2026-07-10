@@ -69,13 +69,17 @@ fn alt_sssp(g : WeightedCsr, src : Int, out : Array[Int64], base : Int) -> Unit 
 ///|
 /// 构建 k 个地标（farthest 选点：迭代取「到已选地标集的最小距离」
 /// 最大的可达节点）。预处理共 (k+1) 次 g 上 + k 次 rg 上的全量
-/// Dijkstra，O(k (E + V log V))。k 会被截到 [1, n]。
+/// Dijkstra，O(k (E + V log V))。不同可达分量之间的距离视为无穷，
+/// 因而优先为尚未覆盖的分量播种；k 会被截到 [1, n]，空图取 0。
 pub fn AltLandmarks::build(
   g : WeightedCsr,
   rg : WeightedCsr,
   k : Int,
 ) -> AltLandmarks {
   let n = g.node_count()
+  if n == 0 {
+    return { k: 0, n: 0, dist_from: [], dist_to: [] }
+  }
   let kk = if k < 1 { 1 } else if k > n { n } else { k }
   let dist_from = Array::make(kk * n, ALT_CAP)
   let dist_to = Array::make(kk * n, ALT_CAP)
@@ -92,6 +96,8 @@ pub fn AltLandmarks::build(
     }
   }
   let lms = Array::make(kk, first)
+  let selected = Array::make(n, false)
+  selected[first] = true
   // min_d[u] = u 到已选地标集的最小（取正/反向较小者）距离。
   let min_d = Array::make(n, INF_DIST)
   for i in 0..<kk {
@@ -102,8 +108,6 @@ pub fn AltLandmarks::build(
       dist_to[u * kk + i] = alt_cap(row_t[u])
     }
     if i + 1 < kk {
-      let mut nxt = lms[i]
-      let mut far = -1L
       for u in 0..<n {
         let d1 = row_f[u]
         let d2 = row_t[u]
@@ -111,12 +115,23 @@ pub fn AltLandmarks::build(
         if dm < min_d[u] {
           min_d[u] = dm
         }
-        if min_d[u] < INF_DIST && min_d[u] > far {
+      }
+      let mut nxt = 0
+      while selected[nxt] {
+        nxt = nxt + 1
+      }
+      let mut far = min_d[nxt]
+      for u in (nxt + 1)..<n {
+        if selected[u] {
+          continue
+        }
+        if far < INF_DIST && (min_d[u] >= INF_DIST || min_d[u] > far) {
           far = min_d[u]
           nxt = u
         }
       }
       lms[i + 1] = nxt
+      selected[nxt] = true
     }
   }
   { k: kk, n, dist_from, dist_to }

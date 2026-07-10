@@ -195,8 +195,10 @@ The current local guard passes with one environment warning: `moon publish
 ## Algorithm Catalog
 
 当前已落地 **30 种经典图/路径算法** 与 **8 种前沿算法**。
-CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）
-并附真实 OSM 路网基准证据（北京驾车网：CH 相对双向 Dijkstra
+CH / ALT / Hub Labeling 已有生产级稠密快路径变体（`src/directed/`）；
+ALT 的 farthest-first 地标选择会优先为尚未覆盖的非连通分量播种，
+避免重复地标削弱启发式；三者均附真实 OSM 路网基准证据（北京驾车网：
+CH 相对双向 Dijkstra
 **46.7×**，HL 距离查询 **0.47 µs（13279×）**，PHAST 一到全 SSSP
 相对全量 Dijkstra **6.27×**，many-to-many 64×64 距离表相对逐对
 CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见

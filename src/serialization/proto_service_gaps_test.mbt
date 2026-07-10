@@ -82,3 +82,28 @@ test "parse_proto_file：方法选项块整体跳过" {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test "parse_proto_file：顶层声明处非标识符与 message 体错误传播" {
+  assert_true(parse_proto_file("=") is Err(_))
+  assert_true(parse_proto_file("message M { int32 = 1; }") is Err(_))
+}
+
+///|
+test "parse_proto_file：package 声明畸形逐段拒绝" {
+  assert_true(parse_proto_file("package ;") is Err(_))
+  assert_true(parse_proto_file("package abc") is Err(_))
+}
+
+///|
+test "parse_proto_file：顶层语句缺尾分号拒绝" {
+  assert_true(parse_proto_file("syntax = \"proto3\"") is Err(_))
+}
+
+///|
+test "parse_proto_file：enum 顶层解析入口" {
+  match parse_proto_file("enum E { A = 0; }") {
+    Ok(f) => assert_eq(f.schema.enums.length(), 1)
+    Err(_) => assert_true(false)
+  }
+}

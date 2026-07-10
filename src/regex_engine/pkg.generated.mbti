@@ -167,6 +167,9 @@ pub enum GeneralCategory {
   Lt
   Lm
   Lo
+  Mn
+  Mc
+  Me
   Nd
   Nl
   No
@@ -174,9 +177,20 @@ pub enum GeneralCategory {
   Pd
   Ps
   Pe
+  Pi
+  Pf
   Po
+  Sm
+  Sc
+  Sk
+  So
   Zs
+  Zl
+  Zp
   Cc
+  Cf
+  Co
+  Cs
   Cn
 } derive(Eq)
 

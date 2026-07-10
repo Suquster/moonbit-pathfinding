@@ -637,10 +637,15 @@ priv struct ZstdSeq {
 /// 若 pos+1 处存在更长匹配则先放行一个字面量）：
 /// 返回 (sequences, 尾部字面量起点)；字面量即 data[..] 中未被
 /// 序列覆盖的区段，由调用方按 ll 切分。
+///
+/// `hist` 为块起点前可供回引的历史字节数（字典内容/帧内前缀，
+/// RFC 8878 §5 允许匹配跨过帧起点回引字典）：历史位置以负偏移
+/// 入链，仅作匹配候选，不产出序列。
 fn zstd_find_sequences(
   data : Array[Int],
   start : Int,
   len : Int,
+  hist? : Int = 0,
 ) -> (Array[ZstdSeq], Array[Int]) {
   let seqs : Array[ZstdSeq] = []
   let lits : Array[Int] = []
@@ -686,6 +691,17 @@ fn zstd_find_sequences(
     }
   }
 
+  // 历史区段入链（负偏移）：只做候选，不产出序列。
+  let mut hp = -hist
+  while hp + 4 <= 0 {
+    insert(hp)
+    hp = hp + 1
+  }
+  // 跨界位置（后 3 字节伸入块内）也入链。
+  while hp < 0 && hp + 4 <= len {
+    insert(hp)
+    hp = hp + 1
+  }
   let mut pos = 0
   let mut lit_run = 0
   while pos + 4 <= len {
@@ -731,8 +747,9 @@ fn zstd_encode_block(
   start : Int,
   len : Int,
   rep : Array[Int],
+  hist? : Int = 0,
 ) -> Array[Int]? {
-  let (seqs, lits) = zstd_find_sequences(data, start, len)
+  let (seqs, lits) = zstd_find_sequences(data, start, len, hist~)
   if seqs.length() >= 0x7F00 {
     return None
   }
@@ -983,4 +1000,107 @@ pub fn zstd_compress_entropy(
     out.push(((h >> 24) & 0xFFUL).to_int())
   }
   out
+}
+
+///|
+/// 带预置字典的 Zstandard 压缩（RFC 8878 §5）：字典内容预填 LZ77
+/// 匹配窗口（序列可跨帧起点回引字典前缀，帧内历史逐块累积），
+/// 结构化字典（magic 0xEC30A437）另提供初始重复偏移并在帧头写入
+/// Dictionary_ID；原始内容字典按整体字节作窗口前缀。逐块择优
+/// （Compressed/RLE/Raw），产物可由 `zstd_decompress_with_dict`
+/// 以同一字典无损还原。字典本身非法（结构化头损坏）返回 None。
+pub fn zstd_compress_with_dict(
+  data : Array[Int],
+  dict : Array[Int],
+  with_checksum : Bool,
+) -> Array[Int]? {
+  guard zstd_parse_dict(dict) is Some(zd) else { return None }
+  let content = zd.content
+  let clen = content.length()
+  // 拼接窗口：字典内容 + 数据（块内匹配以负偏移回引历史）。
+  let all : Array[Int] = []
+  for b in content {
+    all.push(b & 0xFF)
+  }
+  for b in data {
+    all.push(b & 0xFF)
+  }
+  let n = data.length()
+  let out : Array[Int] = []
+  for b in zstd_magic() {
+    out.push(b)
+  }
+  let fcs_flag = if n <= 255 { 0 } else if n - 256 <= 65535 { 1 } else { 2 }
+  let checksum_bit = if with_checksum { 4 } else { 0 }
+  let dict_flag = if zd.id != 0UL { 3 } else { 0 }
+  out.push((fcs_flag << 6) | 0x20 | checksum_bit | dict_flag)
+  if dict_flag == 3 {
+    out.push((zd.id & 0xFFUL).to_int())
+    out.push(((zd.id >> 8) & 0xFFUL).to_int())
+    out.push(((zd.id >> 16) & 0xFFUL).to_int())
+    out.push(((zd.id >> 24) & 0xFFUL).to_int())
+  }
+  if fcs_flag == 0 {
+    out.push(n & 0xFF)
+  } else if fcs_flag == 1 {
+    let v = n - 256
+    out.push(v & 0xFF)
+    out.push((v >> 8) & 0xFF)
+  } else {
+    out.push(n & 0xFF)
+    out.push((n >> 8) & 0xFF)
+    out.push((n >> 16) & 0xFF)
+    out.push((n >> 24) & 0xFF)
+  }
+  if n == 0 {
+    zstd_write_block_header(out, true, 0, 0)
+  } else {
+    let chunk = 65536
+    // 帧级重复偏移历史：结构化字典给定初值，原始字典为默认 [1,4,8]。
+    let rep : Array[Int] = [zd.rep[0], zd.rep[1], zd.rep[2]]
+    let mut pos = 0
+    while pos < n {
+      let len = if n - pos < chunk { n - pos } else { chunk }
+      let last = pos + len >= n
+      let start = clen + pos
+      // 可回引历史 = 字典内容 + 帧内已编码前缀（入链上限 64KB 控成本）。
+      let hist_all = start
+      let hist = if hist_all > 65536 { 65536 } else { hist_all }
+      let mut all_same = len >= 4
+      for k in 1..<len {
+        if data[pos + k] != data[pos] {
+          all_same = false
+          break
+        }
+      }
+      if all_same {
+        zstd_write_block_header(out, last, 1, len)
+        out.push(data[pos] & 0xFF)
+      } else {
+        match zstd_encode_block(all, start, len, rep, hist~) {
+          Some(blk) => {
+            zstd_write_block_header(out, last, 2, blk.length())
+            for b in blk {
+              out.push(b)
+            }
+          }
+          None => {
+            zstd_write_block_header(out, last, 0, len)
+            for k in 0..<len {
+              out.push(data[pos + k] & 0xFF)
+            }
+          }
+        }
+      }
+      pos = pos + len
+    }
+  }
+  if with_checksum {
+    let h = @infra_hash.xxhash64(data, 0)
+    out.push((h & 0xFFUL).to_int())
+    out.push(((h >> 8) & 0xFFUL).to_int())
+    out.push(((h >> 16) & 0xFFUL).to_int())
+    out.push(((h >> 24) & 0xFFUL).to_int())
+  }
+  Some(out)
 }

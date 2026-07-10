@@ -613,6 +613,30 @@
         float32 ±inf 解码，3087→3090 三后端全绿。2026-07-10，
         `src/regex_engine/lookbehind_test.mbt`、
         `src/infra_codec/cbor_gaps4_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十八批 环视纳入属性测试矩阵：Pike VM×有界回溯差分（含
+        后顾）、前瞻双重否定等价 `(?=x)`≡`(?!(?!x))`、环视尊重
+        ignore_case 折叠，3090→3093 三后端全绿。2026-07-10，
+        `src/regex_engine/prop_lookaround_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十九批 zstd 压缩侧字典闭包（RFC 8878 §5）：
+        `zstd_find_sequences`/`zstd_encode_block` 增设 `hist` 历史窗口
+        （字典内容+帧内前缀以负偏移入链，仅作匹配候选）；新增
+        `zstd_compress_with_dict`（帧头 Dictionary_ID、结构化字典初始
+        rep 偏移、跨 64KB 块历史累积、校验和），原始/结构化字典往返
+        与净收益核验，3093→3098 三后端全绿。2026-07-10，
+        `src/infra_compress/zstd_encode.mbt`、
+        `src/infra_compress/zstd_dict_encode_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第六十批 Unicode 属性类全表闭包：General_Category 自核心表
+        （约 60 区间、15 类别）升级为 UCD 16.0 UnicodeData.txt 机器
+        生成全表（29 个已赋值类别、3414 条区间、跨全部平面、
+        <First>/<Last> 范围展开），新增 M/S 大类与 Pi/Pf/Zl/Zp/Cf/
+        Co/Cs 子类、`Cn` = 全域补集，逐类别二分定位；`\p{...}` 支持
+        全部 30 类名，与 RE2/Rust regex 同水位，3098→3103 三后端
+        全绿。2026-07-10，`src/regex_engine/{unicode_gc,
+        unicode_gc_table}.mbt`、
+        `src/regex_engine/unicode_gc_full_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

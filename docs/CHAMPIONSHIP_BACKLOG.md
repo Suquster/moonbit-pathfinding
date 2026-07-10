@@ -476,6 +476,12 @@
         （lsp_server demo：回复投影 None/空 Response 回退 JNull、
         error 投影 {"error": message}；三后端 2997→2998 全绿）。
         2026-07-09，`src/lsp_server/demo_gaps_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++ INFRA 第四十二批覆盖收口
+        （mini_compiler infer：应用位合一失败、let/letrec 绑定体与
+        主体错误冒泡；parser_combinator incremental_ext：SyncTo
+        Show 多标记逗号分隔输出；三后端 2998→3000 全绿）。
+        2026-07-09，`src/mini_compiler/infer_gaps_test.mbt`、
+        `src/parser_combinator/incremental_ext_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

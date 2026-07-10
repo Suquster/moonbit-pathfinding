@@ -35,3 +35,17 @@ test "infer：lambda 体与应用两侧错误冒泡" {
   ig_err("(1 + true) 2") // 函数位错误
   ig_err("(fun x -> x) (1 + true)") // 实参位错误
 }
+
+///|
+test "infer：应用位/let/letrec 各段错误冒泡" {
+  // 应用结果类型合一失败（EApp unify Err）。
+  ig_err("1 2")
+  // let 绑定体错误冒泡。
+  ig_err("let x = 1 + true in x")
+  // let 主体错误冒泡。
+  ig_err("let x = 1 in x + true")
+  // letrec 绑定体错误冒泡。
+  ig_err("let rec f = fun x -> (1 + true) in f")
+  // letrec 主体错误冒泡。
+  ig_err("let rec f = fun x -> x in 1 + true")
+}

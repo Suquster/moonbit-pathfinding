@@ -580,6 +580,15 @@
         FCS 0/1/3 全宽度形态、RLE 块内容截断与输出上限、结构化字典
         逐级截断拒绝），3064→3068 三后端全绿。2026-07-10，
         `src/infra_compress/zstd_dict_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第五十四批 typed/TOML/CBOR 余支防御收口（typed 标量解释
+        线型错配拒绝与缺失 map 编码跳过；TOML 日期分隔符/两位数字/
+        月日越界拒绝、数值词法残留拒绝、空数组；CBOR Show 渲染
+        Undefined/Tag、float16 ±inf、不定长块/数组/映射/tag/float64
+        截断拒绝、major7 保留 info 拒绝），3068→3075 三后端全绿。
+        2026-07-10，`src/serialization/typed_gaps2_wbtest.mbt`、
+        `src/infra_config/toml_gaps2_test.mbt`、
+        `src/infra_codec/cbor_gaps3_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

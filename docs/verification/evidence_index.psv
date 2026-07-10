@@ -163,3 +163,5 @@ mini_compiler Algorithm W 错误冒泡收口（应用位合一失败、let/letre
 parser_combinator 恢复策略 Show 收口（SyncTo 多标记逗号分隔输出）|src/parser_combinator::incremental_ext_gaps_wbtest.mbt|a27dd23
 logging 采样阈值量化钳制收口（边界率 0/1/负/极小正率钳制）|src/logging::sampling_gaps_wbtest.mbt|5dce8af
 lsp_server 帧解析辅助与错误 Show 收口（尾随空白裁剪、空数值段、同长键失配、JsonRpcError Show 全构造）|src/lsp_server::jsonrpc_frame_gaps2_wbtest.mbt|5dce8af
+infra_codec UTF-8 严格解码畸形序列收口（2/3/4 字节畸形续字节与截断拒绝）|src/infra_codec::utf8_gaps_test.mbt|PENDING44
+infra_ds 跳表 contains 委托收口（存在与缺失双向判定）|src/infra_ds::skiplist_gaps_test.mbt|PENDING44

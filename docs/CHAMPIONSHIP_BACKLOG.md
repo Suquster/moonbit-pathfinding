@@ -488,6 +488,11 @@
         JsonRpcError Show 全构造；三后端 3000→3004 全绿）。
         2026-07-09，`src/logging/sampling_gaps_wbtest.mbt`、
         `src/lsp_server/jsonrpc_frame_gaps2_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++ INFRA 第四十四批覆盖收口
+        （infra_codec utf8：2/3/4 字节序列畸形续字节与截断拒绝；
+        infra_ds skiplist：contains 双向判定；三后端 3004→3006
+        全绿）。2026-07-09，`src/infra_codec/utf8_gaps_test.mbt`、
+        `src/infra_ds/skiplist_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -47,7 +47,15 @@ fn write_fixed(buf : Array[Byte], value : UInt64, width : Int) -> Unit {
 /// 取值（varint / 定长 / 长度前缀 + 原始字节）。模式化类型编码见任务 7.2。
 pub fn encode(msg : Message) -> Bytes {
   let buf : Array[Byte] = []
-  for entry in msg.fields {
+  encode_fields(buf, msg.fields)
+  Bytes::from_array(buf)
+}
+
+///|
+/// 将字段记录序列逐条写入缓冲；分组（VGroup）以 SGroup..EGroup
+/// 定界递归写入子字段。
+fn encode_fields(buf : Array[Byte], fields : Array[FieldEntry]) -> Unit {
+  for entry in fields {
     let wt = entry.value.wire_type()
     let tag = (entry.number.to_uint64() << 3) | wt.code().to_uint64()
     write_varint(buf, tag)
@@ -61,9 +69,14 @@ pub fn encode(msg : Message) -> Bytes {
           buf.push(bytes[i])
         }
       }
+      VGroup(sub) => {
+        encode_fields(buf, sub)
+        let end_tag = (entry.number.to_uint64() << 3) |
+          WireType::EGroup.code().to_uint64()
+        write_varint(buf, end_tag)
+      }
     }
   }
-  Bytes::from_array(buf)
 }
 
 ///|
@@ -127,8 +140,26 @@ fn read_fixed(
 /// （Requirement 9.4）。
 pub fn decode(bytes : Bytes, schema : Schema) -> Result[Message, DecodeError] {
   ignore(schema)
+  match decode_fields(bytes, 0, -1) {
+    Ok((entries, end_pos)) => {
+      ignore(end_pos)
+      Ok(Message::from_fields(entries))
+    }
+    Err(e) => Err(e)
+  }
+}
+
+///|
+/// 自 `start` 扫描字段直至输入末尾（`group_number < 0`）或遇到字段号
+/// 匹配的 EGroup 定界（处于分组内）；返回（字段序列，下一偏移）。
+/// SGroup 递归下降；孤立 / 号不匹配的 EGroup、未闭合的分组均报错。
+fn decode_fields(
+  bytes : Bytes,
+  start : Int,
+  group_number : Int,
+) -> Result[(Array[FieldEntry], Int), DecodeError] {
   let entries : Array[FieldEntry] = []
-  let mut pos = 0
+  let mut pos = start
   while pos < bytes.length() {
     let tag_start = pos
     let (tag, after_tag) = match read_varint(bytes, pos) {
@@ -146,6 +177,21 @@ pub fn decode(bytes : Bytes, schema : Schema) -> Result[Message, DecodeError] {
     }
     pos = after_tag
     let value = match wt {
+      SGroup =>
+        match decode_fields(bytes, pos, number) {
+          Ok((sub, next)) => {
+            pos = next
+            FieldValue::VGroup(sub)
+          }
+          Err(e) => return Err(e)
+        }
+      EGroup =>
+        if group_number == number {
+          return Ok((entries, pos))
+        } else {
+          // 孤立或号不匹配的结束定界：非法。
+          return Err(InvalidWireType(offset=tag_start, tag~))
+        }
       Varint => {
         let (v, next) = match read_varint(bytes, pos) {
           Ok(pair) => pair
@@ -192,5 +238,9 @@ pub fn decode(bytes : Bytes, schema : Schema) -> Result[Message, DecodeError] {
     }
     entries.push({ number, value })
   }
-  Ok(Message::from_fields(entries))
+  if group_number >= 0 {
+    // 分组未以 EGroup 闭合即到达末尾：截断。
+    return Err(UnexpectedEof(offset=pos))
+  }
+  Ok((entries, pos))
 }

@@ -21,33 +21,39 @@
 ///|
 /// protobuf wire 类型（wire type）。
 ///
-/// 对应 protobuf 规范中 tag 低 3 位编码的线格式类别。骨架阶段覆盖四类常用
-/// wire 类型；废弃的 group（3 / 4）不在支持范围内。
+/// 对应 protobuf 规范中 tag 低 3 位编码的线格式类别，含 proto2 group
+/// 分组定界（3 / 4；废弃但仍属线格式，未知字段跳过与保留需要）。
 pub(all) enum WireType {
   Varint // 0：变长整数（int32/int64/uint*/bool/enum/sint*）
   I64 // 1：定长 64 位（fixed64/sfixed64/double）
   Len // 2：长度前缀（string/bytes/嵌套消息/packed repeated）
+  SGroup // 3：group 起始定界（proto2 废弃形态）
+  EGroup // 4：group 结束定界
   I32 // 5：定长 32 位（fixed32/sfixed32/float）
 } derive(Eq, Debug)
 
 ///|
-/// 返回该 wire 类型在 tag 中编码的数值（0/1/2/5）。
+/// 返回该 wire 类型在 tag 中编码的数值（0/1/2/3/4/5）。
 pub fn WireType::code(self : WireType) -> Int {
   match self {
     Varint => 0
     I64 => 1
     Len => 2
+    SGroup => 3
+    EGroup => 4
     I32 => 5
   }
 }
 
 ///|
-/// 由 tag 低 3 位的数值还原 wire 类型；非受支持的取值返回 `None`。
+/// 由 tag 低 3 位的数值还原 wire 类型；非法取值（6/7）返回 `None`。
 pub fn WireType::from_code(code : Int) -> WireType? {
   match code {
     0 => Some(Varint)
     1 => Some(I64)
     2 => Some(Len)
+    3 => Some(SGroup)
+    4 => Some(EGroup)
     5 => Some(I32)
     _ => None
   }
@@ -63,6 +69,7 @@ pub(all) enum FieldValue {
   VI64(UInt64) // 来自 I64：原始 8 字节小端位
   VI32(UInt) // 来自 I32：原始 4 字节小端位
   VBytes(Bytes) // 来自 Len：长度前缀的原始字节
+  VGroup(Array[FieldEntry]) // 来自 SGroup..EGroup：分组内字段序列
 } derive(Eq, Debug)
 
 ///|
@@ -90,13 +97,20 @@ pub fn FieldValue::bytes(b : Bytes) -> FieldValue {
 }
 
 ///|
-/// 返回该字段值对应的 wire 类型。
+/// 构造一个分组字段值（proto2 group：SGroup..EGroup 定界的子字段序列）。
+pub fn FieldValue::group(fields : Array[FieldEntry]) -> FieldValue {
+  VGroup(fields)
+}
+
+///|
+/// 返回该字段值对应的 wire 类型（分组以起始定界 SGroup 计）。
 pub fn FieldValue::wire_type(self : FieldValue) -> WireType {
   match self {
     VVarint(_) => Varint
     VI64(_) => I64
     VI32(_) => I32
     VBytes(_) => Len
+    VGroup(_) => SGroup
   }
 }
 

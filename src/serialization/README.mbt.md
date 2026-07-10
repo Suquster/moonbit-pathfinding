@@ -104,7 +104,7 @@ test "README · 四类 wire 类型混合编解码并保持顺序" {
 
 非法字节序列不会产出半成品消息，而是返回携带**出错字节偏移**的 `DecodeError`
 （**R9.4**）。下例演示两类错误：续位标志置位却无后续字节的**截断 varint**
-（`UnexpectedEof`，偏移 0），以及 tag 低三位为 3（废弃 group）的**非法 wire 类型**
+（`UnexpectedEof`，偏移 0），以及 tag 低三位为 6（保留取值）的**非法 wire 类型**
 （`InvalidWireType`，偏移 0）。`DecodeError::offset` 提供统一的偏移读取入口。
 
 ```mbt check
@@ -121,8 +121,8 @@ test "README · 非法字节返回含偏移的解码错误" {
       }
     }
   }
-  // 非法 wire 类型：tag 0x0b = 字段号 1、wire 3（废弃 group）→ InvalidWireType(offset=0)
-  match decode(b"\x0b", Schema::empty()) {
+  // 非法 wire 类型：tag 0x0e = 字段号 1、wire 6（保留取值）→ InvalidWireType(offset=0)
+  match decode(b"\x0e", Schema::empty()) {
     Ok(_) => fail("非法 wire 类型不应解码成功")
     Err(e) => {
       @test.assert_eq(e.offset(), 0)

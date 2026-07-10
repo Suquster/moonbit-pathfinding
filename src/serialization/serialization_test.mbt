@@ -15,17 +15,21 @@
 // ───────────────────────────── wire 类型 ─────────────────────────────────
 
 ///|
-/// WireType 的数值编码与还原一一对应，未支持的取值返回 None。
+/// WireType 的数值编码与还原一一对应，非法取值（6/7）返回 None。
 test "wire type code and from_code roundtrip" {
   @test.assert_eq(WireType::Varint.code(), 0)
   @test.assert_eq(WireType::I64.code(), 1)
   @test.assert_eq(WireType::Len.code(), 2)
+  @test.assert_eq(WireType::SGroup.code(), 3)
+  @test.assert_eq(WireType::EGroup.code(), 4)
   @test.assert_eq(WireType::I32.code(), 5)
   assert_true(WireType::from_code(0) == Some(WireType::Varint))
   assert_true(WireType::from_code(2) == Some(WireType::Len))
+  assert_true(WireType::from_code(3) == Some(WireType::SGroup))
+  assert_true(WireType::from_code(4) == Some(WireType::EGroup))
   assert_true(WireType::from_code(5) == Some(WireType::I32))
-  // 3 / 4（废弃的 group）与其它取值不受支持。
-  assert_true(WireType::from_code(3) is None)
+  // 6 / 7 为非法取值。
+  assert_true(WireType::from_code(6) is None)
   assert_true(WireType::from_code(7) is None)
 }
 
@@ -81,9 +85,9 @@ test "decode truncated varint reports offset and yields no object" {
 }
 
 ///|
-/// 非法 wire 类型（tag 低三位为 3 = 废弃 group）→ 含偏移的 InvalidWireType。
+/// 非法 wire 类型（tag 低三位为 6 = 保留取值）→ 含偏移的 InvalidWireType。
 test "decode invalid wire type reports offset" {
-  let bytes = b"\x0b" // 字段号 1、wire 类型 3（不支持）。
+  let bytes = b"\x0e" // 字段号 1、wire 类型 6（非法）。
   match decode(bytes, Schema::empty()) {
     Ok(_) => fail("非法 wire 类型不应解码成功")
     Err(InvalidWireType(offset~, ..)) => @test.assert_eq(offset, 0)

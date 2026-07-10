@@ -527,7 +527,7 @@ fn typed_unpack(
           Err(e) => return Err(e)
         }
       }
-      Len => return Err(InvalidWireType(offset=0, tag=0UL))
+      Len | SGroup | EGroup => return Err(InvalidWireType(offset=0, tag=0UL))
     }
   }
   Ok(elems)

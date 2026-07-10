@@ -544,6 +544,17 @@
         `src/infra_compress/zlib_dict_test.mbt`、
         `src/infra_config/toml.mbt`、
         `src/infra_config/toml_datetime_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++ INFRA 第五十批
+        虚假闭包完备化续三：protobuf group（wire 类型 3/4 ——
+        `WireType::SGroup/EGroup`、`FieldValue::VGroup`，编码递归写
+        SGroup..EGroup 定界、解码递归下降；孤立/号不匹配 EGroup 报
+        InvalidWireType、未闭合分组报 UnexpectedEof；嵌套与空分组
+        roundtrip；packed 载荷内分组定界拒绝），wire 类型非法取值边界
+        从「3..7 不支持」收窄为规范内的「仅 6/7 保留」；
+        3055→3058 三后端全绿。2026-07-10，
+        `src/serialization/types.mbt`、`src/serialization/wire.mbt`、
+        `src/serialization/typed.mbt`、
+        `src/serialization/wire_group_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

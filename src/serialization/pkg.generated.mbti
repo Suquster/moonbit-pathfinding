@@ -183,8 +183,10 @@ pub(all) enum FieldValue {
   VI64(UInt64)
   VI32(UInt)
   VBytes(Bytes)
+  VGroup(Array[FieldEntry])
 } derive(Eq, @debug.Debug)
 pub fn FieldValue::bytes(Bytes) -> Self
+pub fn FieldValue::group(Array[FieldEntry]) -> Self
 pub fn FieldValue::i32(UInt) -> Self
 pub fn FieldValue::i64(UInt64) -> Self
 pub fn FieldValue::varint(UInt64) -> Self
@@ -343,6 +345,8 @@ pub(all) enum WireType {
   Varint
   I64
   Len
+  SGroup
+  EGroup
   I32
 } derive(Eq, @debug.Debug)
 pub fn WireType::code(Self) -> Int

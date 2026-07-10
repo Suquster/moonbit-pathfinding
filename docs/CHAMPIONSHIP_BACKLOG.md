@@ -448,6 +448,11 @@
         （codegen_infra：不可折叠算符保留原指令、可折叠算符归约、
         无版本号定义左值 DCE 保留；三后端 2979→2982 全绿）。
         2026-07-09，`src/codegen_infra/codegen_infra_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++ INFRA 第三十七批覆盖收口
+        （serialization proto_service：顶层声明非标识符拒绝、
+        message 体错误传播、package 声明畸形逐段拒绝、顶层语句
+        缺尾分号、enum 顶层入口；三后端 2982→2986 全绿）。
+        2026-07-09，`src/serialization/proto_service_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

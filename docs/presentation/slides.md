@@ -93,7 +93,7 @@ pub fn dijkstra[N, W](start, successors: (N) -> Array[(N, W)], goal) -> (Array[N
 | 图结构 | Kruskal / Connected Components / Tarjan SCC / Topo Sort | 已实现并测试 |
 | 流与匹配 | Edmonds-Karp / Kuhn-Munkres | 已实现并测试 |
 | 组合路径 | Bidirectional BFS / IDA* / Yen | 已实现并测试 |
-| 前沿方向 | CH / JPS / ALT / Hub Labeling / PHAST / RPHAST / many-to-many / CCH | 生产级实现 + OSM 真实路网实测（2026-07-08 重跑，北京：CH 46.7×、HL 13279×、CCH 换权 13.1×）+ 论文追踪 |
+| 前沿方向 | CH / JPS / ALT / Hub Labeling / PHAST / RPHAST / many-to-many / CCH | 生产级实现 + OSM 真实路网实测（2026-07-08 重跑，北京：CH 46.7×、HL 13279×、CCH 换权 13.1×；2026-07-12 异机复测同量级可复现，见 `benches/results/osm-suite-native-2026-07-12.md`）+ 论文追踪 |
 
 ---
 

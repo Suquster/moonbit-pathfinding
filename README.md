@@ -203,7 +203,9 @@ CH 相对双向 Dijkstra
 相对全量 Dijkstra **6.27×**，many-to-many 64×64 距离表相对逐对
 CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见
 `benches/results/osm-real-networks-ch-native-2026-07-08.md`、
-`benches/results/osm-alt-hl-native-2026-07-08.md`）。HL 支持路径还原
+`benches/results/osm-alt-hl-native-2026-07-08.md`；
+2026-07-12 异机复测同量级可复现，见
+`benches/results/osm-suite-native-2026-07-12.md`）。HL 支持路径还原
 （`query_via` / `query_path`）。
 
 | # | Algorithm | Module | Status | Paper |

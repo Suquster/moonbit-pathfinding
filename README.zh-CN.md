@@ -148,7 +148,9 @@ CH 相对双向 Dijkstra
 **46.7×**，HL 距离查询 **0.47 µs（13279×）**，PHAST 一到全 SSSP
 相对全量 Dijkstra **6.27×**，many-to-many 64×64 距离表相对逐对
 CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见
-`benches/results/osm-real-networks-ch-native-2026-07-08.md`）。HL 支持路径还原
+`benches/results/osm-real-networks-ch-native-2026-07-08.md`；
+2026-07-12 异机复测同量级可复现，见
+`benches/results/osm-suite-native-2026-07-12.md`）。HL 支持路径还原
 （`query_via` / `query_path`）：
 
 | # | 算法 | 模块 | 状态 | 参考论文 |
@@ -296,7 +298,7 @@ smoke artifact 用于端到端包执行守卫。
 |------|------|
 | 代码风格 | `moon fmt --check` 硬门禁；100 列软限制；`snake_case` / `PascalCase` |
 | 测试 | `moon test` 全绿 + `moon test README.mbt.md` 可执行文档门禁 |
-| 覆盖率 | src/ 核心库行覆盖率 ≥ 85%（CI 硬门禁，当前 91.62%） |
+| 覆盖率 | src/ 核心库行覆盖率 ≥ 85%（CI 硬门禁，2026-07-12 实测覆盖点 20666/21164 = 97.65%，未覆盖 275 行均为已判定的不可达防御分支） |
 | 文档 | 每个 `pub` 项 ≥ 3 行 `///` Doc_Comment，`scripts/audit_doc.ps1` 审计 |
 | 本地验收 | `pwsh -File scripts/acceptance.ps1` 一键运行 check / fmt / test / README / doc / coverage；加 `-RunNativeBenchmarkGuard` / `-RunBenchmarkGuard` 可跑 native / smoke 基准回归守门 |
 | 提交 | Conventional Commits（`feat` / `fix` / `docs` / `test` / `proof` 等） |

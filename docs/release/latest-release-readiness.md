@@ -1,11 +1,11 @@
 ﻿# Release Readiness
 
-- Generated at: 2026-05-31T18:40:42.8463821+08:00
+- Generated at: 2026-07-12T18:48:50.2826716+00:00
 - Script: scripts\release_guard.ps1
-- MoonBit: moon 0.1.20260427 (48d7def 2026-04-27)  Feature flags enabled: rr_moon_pkg
-- Module: Suquster/moonbit-pathfinding@0.0.1
+- MoonBit: moon 0.1.20260703 (6fbf8c3 2026-07-03)  Feature flags enabled: rr_moon_mod,rr_moon_pkg
+- Module: Suquster/moonbit-pathfinding@0.2.0
 - Status: pass-with-warnings
-- Package artifact: D:\my\STUDY\university\U_3\down\Competitions\MoonBit国产基础软件开源大赛\moonbit-pathfinding\_build\publish\Suquster-moonbit-pathfinding-0.0.1.zip
+- Package artifact: /home/ubuntu/repos/moonbit-pathfinding/_build/publish/Suquster-moonbit-pathfinding-0.2.0.zip
 - moon publish --dry-run: blocked-missing-credentials
 
 ## Checklist
@@ -33,4 +33,4 @@
 ## Warnings
 - moon publish --dry-run is blocked locally by missing mooncakes credentials; run moon login or configure CI secrets before publishing.
 
-Raw JSON: release-readiness-20260531-184042.json and latest-release-readiness.json.
+Raw JSON: release-readiness-20260712-184850.json and latest-release-readiness.json.

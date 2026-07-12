@@ -45,7 +45,7 @@ function Invoke-Captured {
     }
 }
 
-$modPath = Join-Path $root "moon.mod.json"
+$modPath = Join-Path $root "moon.mod"
 $readmePath = Join-Path $root "README.md"
 $readmeMbtPath = Join-Path $root "README.mbt.md"
 $readmeZhPath = Join-Path $root "README.zh-CN.md"
@@ -53,32 +53,52 @@ $licensePath = Join-Path $root "LICENSE"
 $changelogPath = Join-Path $root "CHANGELOG.md"
 $releaseWorkflowPath = Join-Path $root ".github\workflows\release.yml"
 
-$mod = Get-Content -LiteralPath $modPath -Encoding UTF8 | ConvertFrom-Json
+# moon.mod 为新版 `key = "value"` 文本格式（非 JSON），这里提取发布元数据。
+$modText = Get-Content -LiteralPath $modPath -Encoding UTF8 -Raw
+function Get-ModField {
+    param([string]$Name)
+    $m = [regex]::Match($modText, ('(?m)^' + $Name + '\s*=\s*"(?<v>[^"]*)"'))
+    if ($m.Success) { return $m.Groups['v'].Value }
+    return ""
+}
+$mod = [ordered]@{}
+$mod.name = Get-ModField "name"
+$mod.version = Get-ModField "version"
+$mod.readme = Get-ModField "readme"
+$mod.repository = Get-ModField "repository"
+$mod.license = Get-ModField "license"
+$mod.description = Get-ModField "description"
+$homepageMatch = [regex]::Match($modText, 'homepage:\s*"(?<v>[^"]*)"')
+$mod.homepage = if ($homepageMatch.Success) { $homepageMatch.Groups['v'].Value } else { "" }
+$keywordsMatch = [regex]::Match($modText, '(?s)keywords\s*=\s*\[(?<body>.*?)\]')
+$mod.keywords = if ($keywordsMatch.Success) {
+    @([regex]::Matches($keywordsMatch.Groups['body'].Value, '"[^"]+"') | ForEach-Object { $_.Value.Trim('"') })
+} else { @() }
 $checks = [ordered]@{}
 
 $checks.module_name = $mod.name -match '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
-if (-not $checks.module_name) { Add-Failure "moon.mod.json name must look like owner/package." }
+if (-not $checks.module_name) { Add-Failure "moon.mod name must look like owner/package." }
 
 $checks.version_semver = $mod.version -match '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)([-+][0-9A-Za-z.-]+)?$'
-if (-not $checks.version_semver) { Add-Failure "moon.mod.json version must be SemVer." }
+if (-not $checks.version_semver) { Add-Failure "moon.mod version must be SemVer." }
 
 $checks.readme_exists = -not [string]::IsNullOrWhiteSpace($mod.readme) -and (Test-Path -LiteralPath (Join-Path $root $mod.readme))
-if (-not $checks.readme_exists) { Add-Failure "moon.mod.json readme must point to an existing file." }
+if (-not $checks.readme_exists) { Add-Failure "moon.mod readme must point to an existing file." }
 
 $checks.repository_url = $mod.repository -match '^https://github\.com/[^/]+/[^/]+/?$'
-if (-not $checks.repository_url) { Add-Failure "moon.mod.json repository must be a GitHub HTTPS URL." }
+if (-not $checks.repository_url) { Add-Failure "moon.mod repository must be a GitHub HTTPS URL." }
 
-$checks.homepage_url = $mod.PSObject.Properties.Name -contains "homepage" -and $mod.homepage -match '^https://'
-if (-not $checks.homepage_url) { Add-Failure "moon.mod.json homepage must be present and HTTPS." }
+$checks.homepage_url = $mod.homepage -match '^https://'
+if (-not $checks.homepage_url) { Add-Failure "moon.mod homepage must be present and HTTPS." }
 
 $checks.license_spdx = $mod.license -eq "Apache-2.0"
-if (-not $checks.license_spdx) { Add-Failure "moon.mod.json license must be Apache-2.0." }
+if (-not $checks.license_spdx) { Add-Failure "moon.mod license must be Apache-2.0." }
 
 $checks.keywords = $mod.keywords.Count -ge 8
-if (-not $checks.keywords) { Add-Failure "moon.mod.json should include at least 8 useful keywords." }
+if (-not $checks.keywords) { Add-Failure "moon.mod should include at least 8 useful keywords." }
 
 $checks.description = -not [string]::IsNullOrWhiteSpace($mod.description) -and $mod.description.Length -ge 80
-if (-not $checks.description) { Add-Failure "moon.mod.json description should be specific and at least 80 characters." }
+if (-not $checks.description) { Add-Failure "moon.mod description should be specific and at least 80 characters." }
 
 $licenseText = Get-Content -LiteralPath $licensePath -Encoding UTF8 -Raw
 $checks.license_file = $licenseText.Contains("Apache License") -and $licenseText.Contains("Version 2.0")
@@ -89,12 +109,12 @@ $checks.changelog_unreleased = $changelogText.Contains("## [Unreleased]")
 if (-not $checks.changelog_unreleased) { Add-Failure "CHANGELOG.md must contain an [Unreleased] section." }
 
 $checks.changelog_current_version = $changelogText.Contains("## [$($mod.version)]")
-if (-not $checks.changelog_current_version) { Add-Warning "CHANGELOG.md does not contain a released section matching moon.mod.json version $($mod.version)." }
+if (-not $checks.changelog_current_version) { Add-Warning "CHANGELOG.md does not contain a released section matching moon.mod version $($mod.version)." }
 
 $readmeText = Get-Content -LiteralPath $readmePath -Encoding UTF8 -Raw
 $readmeZhText = Get-Content -LiteralPath $readmeZhPath -Encoding UTF8 -Raw
 $checks.readme_badge_version = $readmeText.Contains("version-v$($mod.version)") -and $readmeZhText.Contains("version-v$($mod.version)")
-if (-not $checks.readme_badge_version) { Add-Failure "README version badges must match moon.mod.json version." }
+if (-not $checks.readme_badge_version) { Add-Failure "README version badges must match moon.mod version." }
 
 $checks.readme_mbt_exists = Test-Path -LiteralPath $readmeMbtPath
 if (-not $checks.readme_mbt_exists) { Add-Failure "README.mbt.md executable documentation must exist." }

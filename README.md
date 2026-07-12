@@ -209,8 +209,8 @@ stories instead of isolated snippets — pathfinding and INFRA directions alike:
 
 Verify all example outputs with checked markers:
 
-```powershell
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\examples_guard.ps1
+```bash
+bash scripts/demos_guard.sh
 ```
 
 Latest evidence:

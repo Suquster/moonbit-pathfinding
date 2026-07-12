@@ -30,7 +30,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-无。
+### Added
+
+- feat(bench): four new INFRA native benchmark packages —
+  `benches/infra_time_bench`（ISO 8601 解析/格式化、strftime、civil 换算、
+  POSIX TZ 偏移）、`benches/infra_resilience_bench`（熔断器/令牌桶/滑动
+  窗口/AIMD/带抖动退避）、`benches/infra_cli_bench`（解析/校验/拼写建议/
+  help 生成）、`benches/infra_pbt_bench`（属性检查/失败缩小/加权生成/
+  种子化图 fuzz），measured native results archived in
+  `benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`
+- feat(scripts): `scripts/demos_guard.sh` — runs all 20
+  `moon run examples/...` demos and checks deterministic output markers,
+  wired into `scripts/acceptance.sh` as gate 6; evidence written to
+  `docs/examples/latest-examples-run.md` / `.json`
+  （20 个 demo 输出快照守卫接入验收门禁）
+
+### Fixed
+
+- fix(release): write mooncakes credentials without UTF-8 BOM in the release
+  workflow and make `moon publish` idempotent on rerun
+  （修复 release 工作流凭据 BOM 解析失败；发版幂等化）
 
 ## [0.2.0] - 2026-07-12
 

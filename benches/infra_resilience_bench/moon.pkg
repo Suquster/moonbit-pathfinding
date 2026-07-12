@@ -1,0 +1,11 @@
+// Package: benches/infra_resilience_bench
+//
+// 韧性方向基准：熔断器状态机、令牌桶 / 滑动窗口限流、AIMD 自适应
+// 并发上限与带抖动退避在高频调用路径上的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_resilience_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_resilience" @res,
+}

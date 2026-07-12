@@ -150,8 +150,8 @@ path = [0, 1, 2, 3]
 
 一键验证示例输出 marker：
 
-```powershell
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\examples_guard.ps1
+```bash
+bash scripts/demos_guard.sh
 ```
 
 最新证据：

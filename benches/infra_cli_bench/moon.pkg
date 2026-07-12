@@ -1,0 +1,11 @@
+// Package: benches/infra_cli_bench
+//
+// CLI 方向基准：子命令解析（含默认值 / 短参展开）、类型化校验、
+// 拼写建议（Damerau-Levenshtein）与 help 文本生成的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_cli_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_cli" @cli,
+}

@@ -1,0 +1,11 @@
+// Package: benches/infra_time_bench
+//
+// 时间方向基准：ISO 8601 解析 / 格式化、strftime 渲染、civil 历法
+// 双向换算、POSIX TZ 夏令时偏移求解在确定性输入上的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_time_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_time" @time,
+}

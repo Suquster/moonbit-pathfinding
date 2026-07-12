@@ -32,6 +32,11 @@
 - 哈希/压缩原生基准（含解读）：
   [`benches/results/infra-hash-compress-native-2026-07-12.md`](../../benches/results/infra-hash-compress-native-2026-07-12.md)
   —— 16 KiB 下 xxHash64 比 SHA-256 快约 7.5×；36 KB 下 LZ4 往返比 DEFLATE 快约 7×。
+- 时间/韧性/CLI/PBT+fuzz 原生基准（含解读）：
+  [`benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`](../../benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md)
+  —— 韧性原语单次调用个位数纳秒级；完整子命令解析单次约 1.2 µs。
 - 其余方向基准见 `benches/`（timer/metrics/text/parser/codec/actor/dst 等），
   结果归档于 `benches/results/`。
+- 20 个 demo 输出快照守卫：`bash scripts/demos_guard.sh`（已接入验收门禁），
+  证据归档于 `docs/examples/latest-examples-run.md`。
 - 全量门禁：`bash scripts/acceptance.sh`。

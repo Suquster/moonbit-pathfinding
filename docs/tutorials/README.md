@@ -206,6 +206,10 @@ let g = @fuzz.fuzz_graph_gen(5, 42)   // seeded, reproducible graphs
 
 - Algorithm + INFRA native benchmarks live under `benches/`; results under
   [`benches/results/`](../../benches/results/).
-- Example outputs are guarded by `scripts/examples_guard.ps1`; latest
-  evidence in [`docs/examples/latest-examples-run.md`](../examples/latest-examples-run.md).
+- Example outputs are guarded by `scripts/demos_guard.sh` (all 20 demos with
+  checked output markers, wired into the acceptance gate); latest evidence in
+  [`docs/examples/latest-examples-run.md`](../examples/latest-examples-run.md).
+- Native benchmark results for the time / resilience / CLI / PBT+fuzz
+  directions:
+  [`benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`](../../benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md).
 - Full acceptance gate: `bash scripts/acceptance.sh`.

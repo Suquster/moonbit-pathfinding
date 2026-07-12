@@ -1,0 +1,12 @@
+// Package: benches/infra_pbt_bench
+//
+// PBT 与 fuzz 方向基准：属性检查（holds_for_all）、失败缩小
+// （check_with_shrink）、加权生成器与种子化图 fuzz 生成的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_pbt_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+  "Suquster/moonbit-pathfinding/src/infra_fuzz" @fuzz,
+}

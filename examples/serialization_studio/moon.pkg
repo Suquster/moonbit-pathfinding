@@ -1,0 +1,17 @@
+// Runnable example: serialization_studio
+//
+// Protobuf-compatible serialization with the `src/serialization` direction:
+// .proto parsing and validation, typed binary encode/decode round-trip,
+// canonical bytes, JSON bridge, schema evolution checking, and code
+// generation.
+//
+// Run with:
+//   moon run examples/serialization_studio
+
+import {
+  "Suquster/moonbit-pathfinding/src/serialization" @ser,
+}
+
+options(
+  "is-main": true,
+)

@@ -1,0 +1,16 @@
+// Runnable example: build_pipeline
+//
+// Incremental build system with the `src/build_tool` direction: makefile-style
+// rule parsing, cycle detection, parallel wave scheduling, dirty propagation
+// with minimal rebuilds, cached action execution, and auto-bisect.
+//
+// Run with:
+//   moon run examples/build_pipeline
+
+import {
+  "Suquster/moonbit-pathfinding/src/build_tool" @build,
+}
+
+options(
+  "is-main": true,
+)

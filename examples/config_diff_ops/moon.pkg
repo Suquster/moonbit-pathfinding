@@ -1,0 +1,18 @@
+// Runnable example: config_diff_ops
+//
+// Configuration + diff toolchain with the `src/infra_config` and
+// `src/infra_diff` directions: TOML/INI parsing, line diffs with unified
+// hunks, patch apply/revert, three-way merge with conflict rendering, and
+// semver comparison.
+//
+// Run with:
+//   moon run examples/config_diff_ops
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_config" @config,
+  "Suquster/moonbit-pathfinding/src/infra_diff" @diff,
+}
+
+options(
+  "is-main": true,
+)

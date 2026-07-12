@@ -1,0 +1,16 @@
+// Runnable example: actor_worker_pool
+//
+// Deterministic actor runtime with the `src/actor` direction: supervised
+// worker pool, restart directives, round-robin / consistent-hash routing,
+// bounded mailboxes with backpressure, and the ask pattern.
+//
+// Run with:
+//   moon run examples/actor_worker_pool
+
+import {
+  "Suquster/moonbit-pathfinding/src/actor",
+}
+
+options(
+  "is-main": true,
+)

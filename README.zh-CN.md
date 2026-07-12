@@ -123,13 +123,21 @@ path = [0, 1, 2, 3]
 
 ## 示例工作流 · Example Workflows
 
-仓库提供 3 个可直接运行、可检查输出的完整工作流，而不是孤立片段：
+仓库提供覆盖寻路与 INFRA 各方向的可直接运行、可检查输出的完整工作流，而不是孤立片段：
 
-| 示例 | 命令 | 算法 | 覆盖点 |
+| 示例 | 命令 | 方向 | 覆盖点 |
 |---|---|---|---|
 | 迷宫求解 | `moon run examples/maze_solver` | BFS | ASCII 迷宫最短路、不可达目标 |
 | 网络路由 | `moon run examples/network_routing` | Dijkstra | A..J 路由器最小延迟路径、非对称不可达路由 |
 | 八数码 | `moon run examples/eight_puzzle` | A* | Manhattan 启发式、解题轨迹、20 步挑战局面 |
+| 迷你编译器流水线 | `moon run examples/mini_compiler_pipeline` | mini_compiler | mini-ML 全链路：词法 → 语法 → HM 推断 → 优化 → 字节码 VM+TCO、解释器差分、JS 发射 |
+| 正则工具箱 | `moon run examples/regex_toolkit` | regex_engine | 日志脱敏：命名捕获、replace_all 遮蔽、split、线性时间抗 ReDoS |
+| 日志管线 | `moon run examples/log_pipeline` | logging | trace span + W3C traceparent、JSON/logfmt/pretty 三渲染、PII 脱敏、env-filter |
+| Actor 工作池 | `moon run examples/actor_worker_pool` | actor | 监督工作池注错重启、deathwatch、ask 模式、路由策略、有界邮箱背压 |
+| 构建流水线 | `moon run examples/build_pipeline` | build_tool | 规则解析、并行波次调度、最小增量重建、缓存执行、auto-bisect |
+| 序列化工作台 | `moon run examples/serialization_studio` | serialization | .proto 解析校验、类型化二进制/JSON 往返、规范字节、破坏性变更检测、代码生成 |
+| DST 探索器 | `moon run examples/dst_explorer` | dst | 种子确定性重放、分区/崩溃注错、DPOR 探索、缩小最小复现、线性一致性检查 |
+| 配置与差分运维 | `moon run examples/config_diff_ops` | infra_config + infra_diff | TOML/INI 解析、统一 diff、补丁应用/回退、diff3 三方合并冲突、semver 门禁 |
 
 一键验证示例输出 marker：
 

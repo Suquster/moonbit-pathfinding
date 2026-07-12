@@ -181,14 +181,22 @@ path = [0, 1, 2, 3]
 
 ## Example Workflows
 
-The repository ships three runnable workflows that exercise different user
-stories instead of isolated snippets:
+The repository ships runnable workflows that exercise different user
+stories instead of isolated snippets — pathfinding and INFRA directions alike:
 
-| Example | Command | Algorithm | What it proves |
+| Example | Command | Direction | What it proves |
 |---|---|---|---|
 | Maze solver | `moon run examples/maze_solver` | BFS | ASCII maze shortest paths, including an unreachable goal |
 | Network routing | `moon run examples/network_routing` | Dijkstra | Minimum-latency routes over routers A..J, including asymmetric unreachable routing |
 | Eight puzzle | `moon run examples/eight_puzzle` | A* | Sliding-tile solution traces with Manhattan heuristic and a 20-move scenario |
+| Mini compiler pipeline | `moon run examples/mini_compiler_pipeline` | mini_compiler | Full mini-ML chain: lexer → parser → HM inference → optimizer → bytecode VM with TCO, interpreter differential, JS emission |
+| Regex toolkit | `moon run examples/regex_toolkit` | regex_engine | Log scrubbing: named captures, replace_all redaction, split, linear-time ReDoS resistance |
+| Log pipeline | `moon run examples/log_pipeline` | logging | Trace spans + W3C traceparent, JSON/logfmt/pretty renderers, PII redaction, env-filter |
+| Actor worker pool | `moon run examples/actor_worker_pool` | actor | Supervised worker pool with faults + restart, deathwatch, ask pattern, routing strategies, bounded-mailbox backpressure |
+| Build pipeline | `moon run examples/build_pipeline` | build_tool | Rule parsing, parallel wave scheduling, minimal incremental rebuilds, cached execution, auto-bisect |
+| Serialization studio | `moon run examples/serialization_studio` | serialization | .proto parse/validate, typed wire + JSON round-trips, canonical bytes, breaking-change detection, codegen |
+| DST explorer | `moon run examples/dst_explorer` | dst | Seeded deterministic replays, partition/crash fault injection, DPOR exploration, shrinking, linearizability checking |
+| Config & diff ops | `moon run examples/config_diff_ops` | infra_config + infra_diff | TOML/INI parsing, unified diffs, patch apply/revert, diff3 merge with conflicts, semver gates |
 
 Verify all example outputs with checked markers:
 

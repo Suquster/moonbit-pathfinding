@@ -1,6 +1,6 @@
 # Examples Guard
 
-- Generated at: 2026-07-12T23:37:17Z
+- Generated at: 2026-07-12T23:56:34Z
 - Script: scripts/demos_guard.sh
 - MoonBit: moon 0.1.20260703 (6fbf8c3 2026-07-03)
 - Status: pass

@@ -25,4 +25,13 @@ description = "A MoonBit pathfinding and graph algorithms library with executabl
 
 options(
   homepage: "https://github.com/Suquster/moonbit-pathfinding#readme",
+  exclude: [
+    "cache/**",
+    "benches/**",
+    "playground/**",
+    "docs/**",
+    "bench_rust/**",
+    "assets/**",
+    "_build/**",
+  ],
 )

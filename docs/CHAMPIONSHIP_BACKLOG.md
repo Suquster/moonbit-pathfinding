@@ -701,6 +701,14 @@
         合法读取成功臂。src/ 未覆盖 471→467 行，3152→3156 三后端
         全绿。2026-07-12，`src/serialization/typed_gaps_wbtest.mbt`、
         `src/playground/exports_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十六批 余支覆盖收口（mini_compiler + regex_engine）：
+        EIf/ETuple/TkBool/TkLParen span 提取余臂、空 token 流语法诊断
+        (0,0) 兜底、行多态 RVar 归一化保持、行重排深层缺失标签错误经
+        外层字段传播；正则切片辅助负下界/超上界钳制。src/ 未覆盖
+        467→461 行，3156→3162 三后端全绿。2026-07-12，
+        `src/mini_compiler/spans_gaps_wbtest.mbt`、
+        `src/regex_engine/search_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

@@ -478,3 +478,7 @@ human–AI collaboration record — see the development article (Chinese):
 ## License
 
 Apache-2.0 © 2026 Suquster. See [LICENSE](./LICENSE).
+
+Benchmark fixtures under `cache/` contain map data © [OpenStreetMap](https://www.openstreetmap.org/copyright)
+contributors, retrieved via the Overpass API and redistributed under the
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) license.

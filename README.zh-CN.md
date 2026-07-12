@@ -325,3 +325,6 @@ smoke artifact 用于端到端包执行守卫。
 ## License · 许可证
 
 Apache License 2.0 © 2026 Suquster. 详见 [LICENSE](./LICENSE)。
+
+`cache/` 下的基准数据来自 [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献者
+（经 Overpass API 获取），按 [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) 许可再分发。

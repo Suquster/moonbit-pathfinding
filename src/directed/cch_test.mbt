@@ -137,3 +137,14 @@ test "CustomizableCch differential PBT vs dijkstra (100 iterations, 含换权重
     }
   }
 }
+
+///|
+test "CustomizableCch：边计数与越界端点直接拒绝" {
+  let g = @directed.WeightedCsr::from_edges(2, [(0, 1, 1)])
+  let cch = @directed.CustomizableCch::build(g)
+  assert_true(cch.edge_count() >= 1)
+  assert_true(cch.query_dist(-1, 0) is None)
+  assert_true(cch.query_dist(0, 2) is None)
+  assert_true(cch.query_dist_tree(-1, 0) is None)
+  assert_true(cch.query_dist_tree(0, 2) is None)
+}

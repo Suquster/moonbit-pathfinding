@@ -671,6 +671,17 @@
         `src/infra_ds/coverage_gaps2_wbtest.mbt`、
         `src/mini_compiler/tco_gaps_test.mbt`、
         `src/lsp_server/rope_sync_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十三批 余支覆盖收口（lsp_binding + actor + infra_bench +
+        directed）：进度令牌非整数/非法类型解析拒绝、progress_of 令牌与
+        value 形态拒绝、begin 百分比越界错误传播；监督重启窗口修剪非正
+        窗口早退与过半陈旧一次性压缩；回归判定零中位数加速比、基线重名
+        去重与当前侧缺失算法跳过；CCH 边计数与越界端点拒绝。src/ 未覆盖
+        508→490 行，3132→3140 三后端全绿。2026-07-12，
+        `src/lsp_binding/progress_gaps_wbtest.mbt`、
+        `src/actor/supervision_gaps_wbtest.mbt`、
+        `src/infra_bench/regression_gaps_wbtest.mbt`、
+        `src/directed/cch_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

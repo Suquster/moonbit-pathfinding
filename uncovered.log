@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":945.3346427652732,"min":313.8088887459807,"max":317.22613665594855,"mean":315.1115475884244,"median":314.29961736334405,"variance":3.4138188373442064,"std_dev":1.8476522501120731,"std_dev_pct":0.5863486324929421,"median_abs_dev":0.7275542481028955,"median_abs_dev_pct":0.2314842933015127,"quartiles":[314.05425305466235,314.29961736334405,315.76287700964633],"iqr":1.7086239549839775,"batch_size":311,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1756.1108372093024,"min":580.0857738372092,"max":595.6571970930233,"mean":585.3702790697674,"median":580.3678662790697,"variance":79.38540584932913,"std_dev":8.909848811810958,"std_dev_pct":1.5220876649169672,"median_abs_dev":0.4182302543024177,"median_abs_dev_pct":0.07206295844458621,"quartiles":[580.2268200581395,580.3678662790697,588.0125316860465],"iqr":7.785711627906949,"batch_size":172,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":301.16858684985283,"min":99.04821717369971,"max":101.35971216879294,"mean":100.38952894995094,"median":100.76065750736016,"variance":1.4390545826787495,"std_dev":1.1996060114382345,"std_dev_pct":1.194951330069789,"median_abs_dev":0.8881584410402308,"median_abs_dev_pct":0.8814535980725954,"quartiles":[99.90443734052994,100.76065750736016,101.06018483807655],"iqr":1.1557474975466135,"batch_size":1019,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":452.1407165680473,"min":148.27800621301776,"max":152.5420624260355,"mean":150.7135721893491,"median":151.32064792899408,"variance":4.821949562192906,"std_dev":2.1958937957453464,"std_dev_pct":1.4569980419457738,"median_abs_dev":1.8108691333136129,"median_abs_dev_pct":1.1967098727751602,"quartiles":[149.7993270710059,151.32064792899408,151.93135517751477],"iqr":2.1320281065088693,"batch_size":676,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":408.9040878116343,"min":134.98125290858727,"max":138.11888476454294,"mean":136.30136260387812,"median":135.80395013850415,"variance":2.646747786409021,"std_dev":1.6268828434798313,"std_dev_pct":1.1935925014982516,"median_abs_dev":1.2197309130747715,"median_abs_dev_pct":0.8981556956412451,"quartiles":[135.3926015235457,135.80395013850415,136.96141745152354],"iqr":1.5688159279778517,"batch_size":722,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":940.5978567823344,"min":312.76847539432174,"max":313.93304700315457,"mean":313.5326189274448,"median":313.89633438485805,"variance":0.43827345849587623,"std_dev":0.6620222492453529,"std_dev_pct":0.21114940177836897,"median_abs_dev":0.054430127886419655,"median_abs_dev_pct":0.017340160404576324,"quartiles":[313.3324048895899,313.89633438485805,313.9146906940063],"iqr":0.582285804416415,"batch_size":317,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1762.5140087719296,"min":581.4143327485381,"max":596.8613485380116,"mean":587.5046695906432,"median":584.2383274853801,"variance":67.65431726152255,"std_dev":8.225224450525502,"std_dev_pct":1.4000270765944054,"median_abs_dev":4.186854596841943,"median_abs_dev_pct":0.71663470194819,"quartiles":[582.8263301169591,584.2383274853801,590.5498380116958],"iqr":7.723507894736713,"batch_size":171,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":302.90595014895734,"min":99.3587314796425,"max":104.01875094339624,"mean":100.96865004965245,"median":99.52846772591857,"variance":6.984539194837533,"std_dev":2.642827878397973,"std_dev_pct":2.617473717929608,"median_abs_dev":0.25165095872890675,"median_abs_dev_pct":0.2528431960008698,"quartiles":[99.44359960278054,99.52846772591857,101.77360933465741],"iqr":2.3300097318768707,"batch_size":1007,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":455.5614985141159,"min":149.45305631500744,"max":156.31015096582465,"mean":151.85383283803864,"median":149.7982912332838,"variance":14.923875229225011,"std_dev":3.8631431800057596,"std_dev_pct":2.5439879308980213,"median_abs_dev":0.5118452898365331,"median_abs_dev_pct":0.3416896719064882,"quartiles":[149.62567377414564,149.7982912332838,153.05422109955424],"iqr":3.4285473254086014,"batch_size":673,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":414.0631087078651,"min":135.24789438202245,"max":139.56256264044944,"mean":138.02103623595505,"median":139.25265168539326,"variance":5.791748006540513,"std_dev":2.4066050790564937,"std_dev_pct":1.7436509279225096,"median_abs_dev":0.45947398196629546,"median_abs_dev_pct":0.3299570790252258,"quartiles":[137.25027303370786,139.25265168539326,139.40760716292135],"iqr":2.1573341292134955,"batch_size":712,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 312 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 578 | 50% | 6000 | -86% | OK
-ask_round_trip | 900 | 98 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 155 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
+high_frequency_send | 1500 | 311 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 580 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 104 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 147 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 137 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 941 uncovered line(s) in 212 file(s)
+Total: 923 uncovered line(s) in 209 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -3114,35 +3114,6 @@ Total: 941 uncovered line(s) in 212 file(s)
 257	    None => 0	<-- UNCOVERED
 258	  }
 259	}
-   	…
-
-5 uncovered line(s) in src/actor/supervision.mbt:
-
-116	fn prune_restart_times(
-117	  restart_times : Array[Int],
-118	  clock : Int,
-119	  window : Int,
-120	) -> Unit {
-121	  if window <= 0 {
-122	    return	<-- UNCOVERED
-123	  }
-124	  // restart_times 按逻辑时钟单调追加；窗口外的旧时刻不再影响任何后续
-125	  // 强度判定（clock 单调不减），过半陈旧时一次性压缩，判定摊销 O(窗口内条目)。
-126	  let n = restart_times.length()
-127	  let mut first = 0
-128	  while first < n && restart_times[first] <= clock - window {
-129	    first = first + 1	<-- UNCOVERED
-130	  }
-131	  if first >= 64 && first * 2 >= n {
-132	    let live = n - first	<-- UNCOVERED
-133	    for i in 0..<live {
-134	      restart_times[i] = restart_times[first + i]	<-- UNCOVERED
-135	    }
-136	    while restart_times.length() > live {	<-- UNCOVERED
-137	      ignore(restart_times.pop())
-138	    }
-139	  }
-140	}
    	…
 
 1 uncovered line(s) in src/actor/system.mbt:
@@ -6877,7 +6848,7 @@ Total: 941 uncovered line(s) in 212 file(s)
 163	}
    	…
 
-5 uncovered line(s) in src/directed/cch.mbt:
+2 uncovered line(s) in src/directed/cch.mbt:
 
 128	pub fn CustomizableCch::build(g : WeightedCsr) -> CustomizableCch {
 129	  let n = g.node_count()
@@ -7102,201 +7073,6 @@ Total: 941 uncovered line(s) in 212 file(s)
 446	  }
 447	  rank
 448	}
-   	…
-
-452	pub fn CustomizableCch::edge_count(self : CustomizableCch) -> Int {
-453	  self.ft.length()	<-- UNCOVERED
-454	}
-   	…
-
-529	pub fn CustomizableCch::query_dist(
-530	  self : CustomizableCch,
-531	  start : Int,
-532	  target : Int,
-533	) -> Int64? {
-534	  if start < 0 || start >= self.n || target < 0 || target >= self.n {
-535	    return None	<-- UNCOVERED
-536	  }
-537	  self.gen = self.gen + 1
-538	  let gen = self.gen
-539	  let mask = (1L << NODE_BITS) - 1L
-540	  let df = self.df
-541	  let db = self.db
-542	  let sf = self.sf
-543	  let sb = self.sb
-544	  let fo = self.fo
-545	  let ft = self.ft
-546	  let fw = self.fw
-547	  let gw = self.gw
-548	  let hf = self.hf
-549	  let hb = self.hb
-550	  hf.reset(0L)
-551	  hb.reset(0L)
-552	  df[start] = 0L
-553	  sf[start] = gen
-554	  hf.push(start.to_int64())
-555	  db[target] = 0L
-556	  sb[target] = gen
-557	  hb.push(target.to_int64())
-558	  let mut mu = INF_DIST
-559	  while hf.len > 0 || hb.len > 0 {
-560	    let ff = if hf.len > 0 { hf.peek() >> NODE_BITS } else { INF_DIST }
-561	    let fb = if hb.len > 0 { hb.peek() >> NODE_BITS } else { INF_DIST }
-562	    if ff >= mu && fb >= mu {
-563	      break
-564	    }
-565	    if ff <= fb {
-566	      let enc = hf.pop()
-567	      let u = (enc & mask).to_int()
-568	      let du = enc >> NODE_BITS
-569	      if du > df[u] {
-570	        continue
-571	      }
-572	      let stop = fo[u + 1]
-573	      // stall-on-demand：更高 rank 上邻 v 经下行 v→u 更短则免松弛。
-574	      let mut stalled = false
-575	      for ei = fo[u]; ei < stop; ei = ei + 1 {
-576	        let v = ft[ei]
-577	        if sf[v] == gen && df[v] + gw[ei] < du {
-578	          stalled = true
-579	          break
-580	        }
-581	      }
-582	      if stalled {
-583	        continue
-584	      }
-585	      if sb[u] == gen && du + db[u] < mu {
-586	        mu = du + db[u]
-587	      }
-588	      for ei = fo[u]; ei < stop; ei = ei + 1 {
-589	        let v = ft[ei]
-590	        let nd = du + fw[ei]
-591	        if nd < INF_DIST && (sf[v] != gen || nd < df[v]) {
-592	          df[v] = nd
-593	          sf[v] = gen
-594	          hf.push((nd << NODE_BITS) | v.to_int64())
-595	        }
-596	      }
-597	    } else {
-598	      let enc = hb.pop()
-599	      let u = (enc & mask).to_int()
-600	      let du = enc >> NODE_BITS
-601	      if du > db[u] {
-602	        continue
-603	      }
-604	      let stop = fo[u + 1]
-605	      let mut stalled = false
-606	      for ei = fo[u]; ei < stop; ei = ei + 1 {
-607	        let v = ft[ei]
-608	        if sb[v] == gen && db[v] + fw[ei] < du {
-609	          stalled = true
-610	          break
-611	        }
-612	      }
-613	      if stalled {
-614	        continue
-615	      }
-616	      if sf[u] == gen && du + df[u] < mu {
-617	        mu = du + df[u]
-618	      }
-619	      for ei = fo[u]; ei < stop; ei = ei + 1 {
-620	        let v = ft[ei]
-621	        let nd = du + gw[ei]
-622	        if nd < INF_DIST && (sb[v] != gen || nd < db[v]) {
-623	          db[v] = nd
-624	          sb[v] = gen
-625	          hb.push((nd << NODE_BITS) | v.to_int64())
-626	        }
-627	      }
-628	    }
-629	  }
-630	  if mu >= INF_DIST {
-631	    None
-632	  } else {
-633	    Some(mu)
-634	  }
-635	}
-   	…
-
-643	pub fn CustomizableCch::query_dist_tree(
-644	  self : CustomizableCch,
-645	  start : Int,
-646	  target : Int,
-647	) -> Int64? {
-648	  if start < 0 || start >= self.n || target < 0 || target >= self.n {
-649	    return None	<-- UNCOVERED
-650	  }
-651	  if start == target {
-652	    return Some(0L)
-653	  }
-654	  self.gen = self.gen + 1
-655	  let gen = self.gen
-656	  let df = self.df
-657	  let db = self.db
-658	  let sf = self.sf
-659	  let sb = self.sb
-660	  let fo = self.fo
-661	  let ft = self.ft
-662	  let fw = self.fw
-663	  let gw = self.gw
-664	  let ep = self.ep
-665	  df[start] = 0L
-666	  sf[start] = gen
-667	  let mut v = start
-668	  while v >= 0 {
-669	    if sf[v] == gen {
-670	      let dv = df[v]
-671	      let stop = fo[v + 1]
-672	      for ei = fo[v]; ei < stop; ei = ei + 1 {
-673	        let w = fw[ei]
-674	        if w >= INF_DIST {
-675	          continue
-676	        }
-677	        let u = ft[ei]
-678	        let nd = dv + w
-679	        if sf[u] != gen || nd < df[u] {
-680	          df[u] = nd
-681	          sf[u] = gen
-682	        }
-683	      }
-684	    }
-685	    v = ep[v]
-686	  }
-687	  db[target] = 0L
-688	  sb[target] = gen
-689	  let mut mu = INF_DIST
-690	  let mut u0 = target
-691	  while u0 >= 0 {
-692	    if sb[u0] == gen {
-693	      let du = db[u0]
-694	      if sf[u0] == gen {
-695	        let cand = du + df[u0]
-696	        if cand < mu {
-697	          mu = cand
-698	        }
-699	      }
-700	      let stop = fo[u0 + 1]
-701	      for ei = fo[u0]; ei < stop; ei = ei + 1 {
-702	        let w = gw[ei]
-703	        if w >= INF_DIST {
-704	          continue
-705	        }
-706	        let u = ft[ei]
-707	        let nd = du + w
-708	        if sb[u] != gen || nd < db[u] {
-709	          db[u] = nd
-710	          sb[u] = gen
-711	        }
-712	      }
-713	    }
-714	    u0 = ep[u0]
-715	  }
-716	  if mu >= INF_DIST {
-717	    None
-718	  } else {
-719	    Some(mu)
-720	  }
-721	}
    	…
 
 3 uncovered line(s) in src/directed/ch.mbt:
@@ -9615,65 +9391,6 @@ Total: 941 uncovered line(s) in 212 file(s)
 145	    }
 146	  }
 147	}
-   	…
-
-5 uncovered line(s) in src/infra_bench/regression.mbt:
-
-66	pub fn RegressionVerdict::speedup(self : RegressionVerdict) -> Double? {
-67	  if self.current_median == 0.0 {
-68	    None	<-- UNCOVERED
-69	  } else {
-70	    Some(self.baseline_median / self.current_median)
-71	  }
-72	}
-  	…
-
-107	pub fn regression_check(
-108	  baseline : BenchReport,
-109	  current : BenchReport,
-110	  tol_pct : Double,
-111	) -> Array[RegressionVerdict] {
-112	  let verdicts : Array[RegressionVerdict] = []
-113	  // 记录已产出的算法名，避免基线侧重复同名用例导致重复 verdict。
-114	  let seen : Array[String] = []
-115	  for bc in baseline.cases {
-116	    let algorithm = bc.algorithm
-117	    // 跳过已处理过的算法名（取基线首次出现者）。
-118	    let mut already = false
-119	    for s in seen {
-120	      if s == algorithm {
-121	        already = true	<-- UNCOVERED
-122	      }
-123	    }
-124	    if already {
-125	      continue	<-- UNCOVERED
-126	    }
-127	    match find_median_by_algorithm(current, algorithm) {
-128	      None => continue	<-- UNCOVERED
-129	      Some(current_median) => {
-130	        seen.push(algorithm)
-131	        let baseline_median = bc.stats.median
-132	        let regression_pct = if baseline_median == 0.0 {
-133	          0.0	<-- UNCOVERED
-134	        } else {
-135	          (current_median - baseline_median) /
-136	          baseline_median *
-137	          tol_percent_base
-138	        }
-139	        let threshold = baseline_median * (1.0 + tol_pct / tol_percent_base)
-140	        let failed = current_median > threshold
-141	        verdicts.push({
-142	          algorithm,
-143	          baseline_median,
-144	          current_median,
-145	          regression_pct,
-146	          failed,
-147	        })
-148	      }
-149	    }
-150	  }
-151	  verdicts
-152	}
    	…
 
 4 uncovered line(s) in src/infra_bench/report.mbt:
@@ -14376,123 +14093,6 @@ Total: 941 uncovered line(s) in 212 file(s)
 284	  }
 285	  Some(code)
 286	}
-   	…
-
-5 uncovered line(s) in src/lsp_binding/progress.mbt:
-
-143	fn parse_token(j : Json) -> ProgressToken? {
-144	  match j {
-145	    JStr(s) => Some(TokStr(s))
-146	    JNum(s) =>
-147	      match parse_int_literal(s) {
-148	        Some(n) => Some(TokNum(n))
-149	        None => None	<-- UNCOVERED
-150	      }
-151	    _ => None	<-- UNCOVERED
-152	  }
-153	}
-   	…
-
-176	pub fn progress_of(params : Json) -> (ProgressToken, WorkDoneProgress)? {
-177	  match params {
-178	    JObj(fields) => {
-179	      let token = match json_obj_get(fields, "token") {
-180	        Some(j) =>
-181	          match parse_token(j) {
-182	            Some(t) => t
-183	            None => return None	<-- UNCOVERED
-184	          }
-185	        None => return None
-186	      }
-187	      match json_obj_get(fields, "value") {
-188	        Some(JObj(vf)) => {
-189	          let (cancellable, message, percentage) = parse_optionals(vf)
-190	          match json_obj_get(vf, "kind") {
-191	            Some(JStr("begin")) =>
-192	              match json_obj_get(vf, "title") {
-193	                Some(JStr(title)) =>
-194	                  Some(
-195	                    (token, Begin(title~, cancellable~, message~, percentage~)),
-196	                  )
-197	                _ => None
-198	              }
-199	            Some(JStr("report")) =>
-200	              Some((token, Report(cancellable~, message~, percentage~)))
-201	            Some(JStr("end")) => Some((token, End(message~)))
-202	            _ => None
-203	          }
-204	        }
-205	        _ => None	<-- UNCOVERED
-206	      }
-207	    }
-208	    _ => None
-209	  }
-210	}
-   	…
-
-260	pub fn ProgressTracker::observe(
-261	  self : ProgressTracker,
-262	  token : ProgressToken,
-263	  value : WorkDoneProgress,
-264	) -> Result[ProgressTracker, String] {
-265	  let key = token_key(token)
-266	  let cur = self.phases.get(key)
-267	  fn check_pct(p : Int?, last : Int) -> Result[Int, String] {
-268	    match p {
-269	      None => Ok(last)
-270	      Some(v) =>
-271	        if v < 0 || v > 100 {
-272	          Err("percentage \{v} out of range [0, 100]")
-273	        } else if v < last {
-274	          Err(
-275	            "percentage must be monotonically non-decreasing (\{last} -> \{v})",
-276	          )
-277	        } else {
-278	          Ok(v)
-279	        }
-280	    }
-281	  }
-282	
-283	  match value {
-284	    Begin(percentage~, ..) =>
-285	      match cur {
-286	        Some(_) => Err("duplicate begin for token \{key}")
-287	        None =>
-288	          match check_pct(percentage, -1) {
-289	            Ok(p) => {
-290	              let next = self.copy_phases()
-291	              next[key] = PActive(p)
-292	              Ok({ phases: next })
-293	            }
-294	            Err(e) => Err(e)	<-- UNCOVERED
-295	          }
-296	      }
-297	    Report(percentage~, ..) =>
-298	      match cur {
-299	        Some(PActive(last)) =>
-300	          match check_pct(percentage, last) {
-301	            Ok(p) => {
-302	              let next = self.copy_phases()
-303	              next[key] = PActive(p)
-304	              Ok({ phases: next })
-305	            }
-306	            Err(e) => Err(e)
-307	          }
-308	        Some(PDone) => Err("report after end for token \{key}")
-309	        None => Err("report before begin for token \{key}")
-310	      }
-311	    End(..) =>
-312	      match cur {
-313	        Some(PActive(_)) => {
-314	          let next = self.copy_phases()
-315	          next[key] = PDone
-316	          Ok({ phases: next })
-317	        }
-318	        Some(PDone) => Err("duplicate end for token \{key}")
-319	        None => Err("end before begin for token \{key}")
-320	      }
-321	  }
-322	}
    	…
 
 13 uncovered line(s) in src/lsp_server/demo.mbt:
@@ -20217,4 +19817,4 @@ Total: 941 uncovered line(s) in 212 file(s)
 268	}
    	…
 
-Total: 941 uncovered line(s) in 212 file(s)
+Total: 923 uncovered line(s) in 209 file(s)

@@ -747,6 +747,17 @@
         覆盖 430→420 行，3183→3186 三后端全绿。2026-07-12，
         `src/lsp_server/demo.mbt`、
         `src/lsp_server/demo_router_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十二批 余支覆盖收口（logging + infra_metrics +
+        infra_resilience + infra_fuzz）：logfmt 坏值/粘连分隔/缺失必备
+        键拒绝、大写十六进制与非法字符、OTLP Producer/Consumer 码；
+        HDR 100 百分位秩钳制与跨精度合并降级；滑窗限流 max_events
+        下钳与 1024+ 驱逐压实；imax/clamp_int 余臂。src/ 未覆盖
+        420→405 行，3186→3194 三后端全绿。2026-07-12，
+        `src/logging/coverage_gaps3_wbtest.mbt`、
+        `src/infra_metrics/hdr_gaps_test.mbt`、
+        `src/infra_resilience/limiter_gaps_test.mbt`、
+        `src/infra_fuzz/gen_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

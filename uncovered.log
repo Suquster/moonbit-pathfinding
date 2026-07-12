@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":947.6436096463021,"min":313.3593762057877,"max":320.688136977492,"mean":315.881203215434,"median":313.5960964630225,"variance":17.34396826465551,"std_dev":4.164609017021347,"std_dev_pct":1.3184098878403483,"median_abs_dev":0.3509614533762627,"median_abs_dev_pct":0.11191512181901352,"quartiles":[313.4777363344051,313.5960964630225,317.14211672025726],"iqr":3.664380385852155,"batch_size":311,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1743.051615882353,"min":580.3506123529412,"max":582.1841505882353,"mean":581.0172052941176,"median":580.5168529411765,"variance":1.0282299728916873,"std_dev":1.014016751780604,"std_dev_pct":0.17452439317477647,"median_abs_dev":0.24646829611760931,"median_abs_dev_pct":0.04245669955469559,"quartiles":[580.4337326470588,580.5168529411765,581.3505017647059],"iqr":0.9167691176470498,"batch_size":170,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":302.29309803108805,"min":100.05049626943006,"max":101.23310746113988,"mean":100.76436601036268,"median":101.00949430051813,"variance":0.3947082166652299,"std_dev":0.6282580812574001,"std_dev_pct":0.6234923179021338,"median_abs_dev":0.33152887193781044,"median_abs_dev_pct":0.3282155546205025,"quartiles":[100.52999528497409,101.00949430051813,101.12130088082901],"iqr":0.5913055958549194,"batch_size":965,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":460.54682178517396,"min":153.05983464447806,"max":153.845465204236,"mean":153.51560726172465,"median":153.64152193645992,"variance":0.1661947230916615,"std_dev":0.40766987022793516,"std_dev_pct":0.2655559766851,"median_abs_dev":0.3023662888048204,"median_abs_dev_pct":0.19679985266604375,"quartiles":[153.35067829046898,153.64152193645992,153.74349357034797],"iqr":0.3928152798789881,"batch_size":661,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":407.0320128630706,"min":134.91231479944676,"max":136.24809778699864,"mean":135.67733762102353,"median":135.87160027662517,"variance":0.47438253197931,"std_dev":0.6887543335466645,"std_dev_pct":0.5076413980575784,"median_abs_dev":0.5581952088797043,"median_abs_dev_pct":0.4108255203760443,"quartiles":[135.39195753803597,135.87160027662517,136.0598490318119],"iqr":0.6678914937759259,"batch_size":723,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":997.0965182432432,"min":319.0745513513513,"max":353.8990175675675,"mean":332.36550608108104,"median":324.12294932432434,"variance":354.14066822736265,"std_dev":18.818625566904792,"std_dev_pct":5.662027262935632,"median_abs_dev":7.4847548347298005,"median_abs_dev_pct":2.3092332247169565,"quartiles":[321.5987503378378,324.12294932432434,339.01098344594595],"iqr":17.412233108108126,"batch_size":296,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1924.0485163265307,"min":626.1787727891157,"max":661.5135258503402,"mean":641.3495054421769,"median":636.3562176870748,"variance":330.8358854283686,"std_dev":18.188894563121988,"std_dev_pct":2.8360347063153495,"median_abs_dev":15.089079805714254,"median_abs_dev_pct":2.371168755222918,"quartiles":[631.2674952380953,636.3562176870748,648.9348717687076],"iqr":17.667376530612273,"batch_size":147,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":375.8389945137157,"min":122.50428104738154,"max":129.99312493765586,"mean":125.27966483790523,"median":123.3415885286783,"variance":16.83780053851479,"std_dev":4.103388909001289,"std_dev_pct":3.275383051439764,"median_abs_dev":1.2413920717705786,"median_abs_dev_pct":1.0064667453848635,"quartiles":[122.92293478802992,123.3415885286783,126.66735673316708],"iqr":3.7444219451371623,"batch_size":802,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":528.9803552962298,"min":173.46952585278274,"max":180.4055511669659,"mean":176.32678509874327,"median":175.10527827648116,"variance":13.146170977372032,"std_dev":3.625764881700416,"std_dev_pct":2.056275726725229,"median_abs_dev":2.425166543375278,"median_abs_dev_pct":1.3849762652762982,"quartiles":[174.28740206463195,175.10527827648116,177.75541472172353],"iqr":3.4680126570915775,"batch_size":557,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":410.4511306318681,"min":136.16294876373627,"max":137.19727252747253,"mean":136.81704354395603,"median":137.09090934065935,"variance":0.32370826801033964,"std_dev":0.5689536606880561,"std_dev_pct":0.41584998911722937,"median_abs_dev":0.15769406076922596,"median_abs_dev_pct":0.11502882395897567,"quartiles":[136.6269290521978,137.09090934065935,137.14409093406596],"iqr":0.5171618818681623,"batch_size":728,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 310 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 579 | 50% | 6000 | -86% | OK
-ask_round_trip | 900 | 102 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 146 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 309 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 584 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 99 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 157 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 853 uncovered line(s) in 203 file(s)
+Total: 838 uncovered line(s) in 202 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -12450,27 +12450,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 64	}
   	…
 
-4 uncovered line(s) in src/infra_fuzz/gen.mbt:
-
-105	fn imax(a : Int, b : Int) -> Int {
-106	  if a > b {
-107	    a	<-- UNCOVERED
-108	  } else {
-109	    b
-110	  }
-111	}
-   	…
-
-115	fn clamp_int(v : Int, lo : Int, hi : Int) -> Int {
-116	  if v < lo {
-117	    lo	<-- UNCOVERED
-118	  } else if v > hi {
-119	    hi	<-- UNCOVERED
-120	  } else {
-121	    v
-122	  }
-123	}
-   	…
+1 uncovered line(s) in src/infra_fuzz/gen.mbt:
 
 242	fn self_loop_graph_gen(
 243	  max_n : Int,
@@ -12663,7 +12643,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 123	}
    	…
 
-4 uncovered line(s) in src/infra_metrics/hdr_histogram.mbt:
+1 uncovered line(s) in src/infra_metrics/hdr_histogram.mbt:
 
 115	pub fn HdrHistogram::value_at_percentile(
 116	  self : HdrHistogram,
@@ -12696,33 +12676,6 @@ Total: 853 uncovered line(s) in 203 file(s)
 143	  }
 144	  Some(self.max_seen)
 145	}
-   	…
-
-149	pub fn HdrHistogram::merge_with(
-150	  self : HdrHistogram,
-151	  other : HdrHistogram,
-152	) -> Unit {
-153	  if other.precision_bits != self.precision_bits {
-154	    // 精度不同：逐桶按代表值重记录（保守降级路径）。
-155	    for i in 0..<other.counts.length() {	<-- UNCOVERED
-156	      let c = other.counts[i]
-157	      if c > 0 {
-158	        let v = other.value_of(i)	<-- UNCOVERED
-159	        for _ in 0..<c {
-160	          self.record(v)	<-- UNCOVERED
-161	        }
-162	      }
-163	    }
-164	    return
-165	  }
-166	  for i in 0..<other.counts.length() {
-167	    self.counts[i] = self.counts[i] + other.counts[i]
-168	  }
-169	  self.total = self.total + other.total
-170	  if other.max_seen > self.max_seen {
-171	    self.max_seen = other.max_seen
-172	  }
-173	}
    	…
 
 2 uncovered line(s) in src/infra_pbt/combinators.mbt:
@@ -12765,51 +12718,6 @@ Total: 853 uncovered line(s) in 203 file(s)
 96	  })
 97	}
   	…
-
-4 uncovered line(s) in src/infra_resilience/resilience.mbt:
-
-246	pub fn SlidingWindowLimiter::create(
-247	  window_ms : Int,
-248	  max_events : Int,
-249	) -> SlidingWindowLimiter {
-250	  {
-251	    window_ms: if window_ms < 1 {
-252	      1
-253	    } else {
-254	      window_ms
-255	    },
-256	    max_events: if max_events < 1 {
-257	      1	<-- UNCOVERED
-258	    } else {
-259	      max_events
-260	    },
-261	    stamps: [],
-262	    head: 0,
-263	  }
-264	}
-   	…
-
-268	fn SlidingWindowLimiter::evict(
-269	  self : SlidingWindowLimiter,
-270	  now_ms : Int64,
-271	) -> Unit {
-272	  while self.head < self.stamps.length() &&
-273	        now_ms - self.stamps[self.head] >= self.window_ms.to_int64() {
-274	    self.head = self.head + 1
-275	  }
-276	  if self.head > 1024 && self.head * 2 > self.stamps.length() {	<-- UNCOVERED
-277	    let kept : Array[Int64] = []
-278	    for i in self.head..<self.stamps.length() {
-279	      kept.push(self.stamps[i])
-280	    }
-281	    self.stamps.clear()	<-- UNCOVERED
-282	    for s in kept {
-283	      self.stamps.push(s)	<-- UNCOVERED
-284	    }
-285	    self.head = 0
-286	  }
-287	}
-   	…
 
 1 uncovered line(s) in src/infra_resilience/resilience_ext.mbt:
 
@@ -13345,7 +13253,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 126	}
    	…
 
-4 uncovered line(s) in src/logging/logfmt.mbt:
+3 uncovered line(s) in src/logging/logfmt.mbt:
 
  53	pub fn parse_logfmt(s : String) -> Event? {
  54	  let chars : Array[Char] = []
@@ -13412,7 +13320,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 115	  }
 116	  match (ts_val, level_val) {
 117	    (Some(ts), Some(level)) => Some(Event::new(ts, level, fields))
-118	    _ => None	<-- UNCOVERED
+118	    _ => None
 119	  }
 120	}
    	…
@@ -13532,7 +13440,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 801	}
    	…
 
-4 uncovered line(s) in src/logging/otlp_export.mbt:
+3 uncovered line(s) in src/logging/otlp_export.mbt:
 
 118	pub fn otlp_schema() -> @serialization.ProtoSchema {
 119	  match otlp_schema_cache.val {
@@ -13550,17 +13458,6 @@ Total: 853 uncovered line(s) in 203 file(s)
 131	      }
 132	  }
 133	}
-   	…
-
-200	fn otlp_kind_code(kind : SpanKind) -> Int {
-201	  match kind {
-202	    Internal => 1
-203	    Server => 2
-204	    Client => 3
-205	    Producer => 4	<-- UNCOVERED
-206	    Consumer => 5
-207	  }
-208	}
    	…
 
 325	pub fn otlp_export_traces(
@@ -13684,7 +13581,7 @@ Total: 853 uncovered line(s) in 203 file(s)
 174	}
    	…
 
-4 uncovered line(s) in src/logging/trace_context.mbt:
+1 uncovered line(s) in src/logging/trace_context.mbt:
 
 52	pub fn extract_traceparent(s : String) -> W3CContext? {
 53	  let chars : Array[Char] = []
@@ -13730,32 +13627,6 @@ Total: 853 uncovered line(s) in 203 file(s)
 93	  Some({ trace_id, span_id, flags })
 94	}
   	…
-
-150	fn hex_char_val(c : Char) -> Int {
-151	  if c >= '0' && c <= '9' {
-152	    c.to_int() - '0'.to_int()
-153	  } else if c >= 'a' && c <= 'f' {
-154	    c.to_int() - 'a'.to_int() + 10
-155	  } else if c >= 'A' && c <= 'F' {	<-- UNCOVERED
-156	    c.to_int() - 'A'.to_int() + 10
-157	  } else {
-158	    -1	<-- UNCOVERED
-159	  }
-160	}
-   	…
-
-164	fn hex_to_int(s : String) -> Int? {
-165	  let mut v = 0
-166	  for c in s {
-167	    let d = hex_char_val(c)
-168	    if d < 0 {
-169	      return None	<-- UNCOVERED
-170	    }
-171	    v = v * 16 + d
-172	  }
-173	  Some(v)
-174	}
-   	…
 
 1 uncovered line(s) in src/lsp_binding/binding.mbt:
 
@@ -18780,4 +18651,4 @@ Total: 853 uncovered line(s) in 203 file(s)
 268	}
    	…
 
-Total: 853 uncovered line(s) in 203 file(s)
+Total: 838 uncovered line(s) in 202 file(s)

@@ -313,6 +313,8 @@ smoke artifact 用于端到端包执行守卫。
 （`pwsh scripts/rust_comparison.ps1` 生成；native 后端，两侧共享逐位一致的
 xorshift64 工作负载并做黄金逐元素交叉校验，每条查询的结果签名两侧逐元素相等）：
 
+![MoonBit vs Rust pathfinding 同算法加速比](./benches/results/rust-comparison-chart.svg)
+
 - **同算法对齐层**（两侧均为单向 BFS / Dijkstra / A\*，18/18 用例全部纳入，
   最大 10 万节点 / 160 万边）：中位加速 **≈2.7×**（区间 2.1–3.6×）。
 - **库能力 bonus 层**：本库双向变体（Rust crate 无对应 API）在同一工作负载上

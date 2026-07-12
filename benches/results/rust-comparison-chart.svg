@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="460" font-family="Helvetica,Arial,sans-serif">
+<rect width="860" height="460" fill="white"/>
+<text x="430.0" y="24" text-anchor="middle" font-size="16" font-weight="bold">MoonBit vs Rust pathfinding crate — same-algorithm speedup (median, higher = MoonBit faster)</text>
+<text x="430.0" y="42" text-anchor="middle" font-size="11" fill="#555">18/18 cases · unidirectional BFS/Dijkstra/A* both sides · shared xorshift64 workloads · signatures element-wise equal · median of medians 2.67x</text>
+<line x1="60" y1="290.0" x2="840" y2="290.0" stroke="#d33"/>
+<text x="52" y="294.0" text-anchor="end" font-size="11" fill="#333">1x</text>
+<line x1="60" y1="210.0" x2="840" y2="210.0" stroke="#ccc" stroke-dasharray="4,3"/>
+<text x="52" y="214.0" text-anchor="end" font-size="11" fill="#333">2x</text>
+<line x1="60" y1="130.0" x2="840" y2="130.0" stroke="#ccc" stroke-dasharray="4,3"/>
+<text x="52" y="134.0" text-anchor="end" font-size="11" fill="#333">3x</text>
+<line x1="60" y1="50.0" x2="840" y2="50.0" stroke="#ccc" stroke-dasharray="4,3"/>
+<text x="52" y="54.0" text-anchor="end" font-size="11" fill="#333">4x</text>
+<rect x="60" y="176.6" width="34" height="193.4" fill="#54a24b"/>
+<text x="77.0" y="172.6" text-anchor="middle" font-size="9.5" fill="#222">2.42</text>
+<rect x="104" y="159.7" width="34" height="210.3" fill="#54a24b"/>
+<text x="121.0" y="155.7" text-anchor="middle" font-size="9.5" fill="#222">2.63</text>
+<rect x="148" y="153.7" width="34" height="216.3" fill="#54a24b"/>
+<text x="165.0" y="149.7" text-anchor="middle" font-size="9.5" fill="#222">2.70</text>
+<rect x="192" y="134.3" width="34" height="235.7" fill="#54a24b"/>
+<text x="209.0" y="130.3" text-anchor="middle" font-size="9.5" fill="#222">2.95</text>
+<rect x="236" y="83.2" width="34" height="286.8" fill="#54a24b"/>
+<text x="253.0" y="79.2" text-anchor="middle" font-size="9.5" fill="#222">3.59</text>
+<rect x="280" y="111.3" width="34" height="258.7" fill="#54a24b"/>
+<text x="297.0" y="107.3" text-anchor="middle" font-size="9.5" fill="#222">3.23</text>
+<rect x="324" y="155.1" width="34" height="214.9" fill="#4c78a8"/>
+<text x="341.0" y="151.1" text-anchor="middle" font-size="9.5" fill="#222">2.69</text>
+<rect x="368" y="121.8" width="34" height="248.2" fill="#4c78a8"/>
+<text x="385.0" y="117.8" text-anchor="middle" font-size="9.5" fill="#222">3.10</text>
+<rect x="412" y="198.7" width="34" height="171.3" fill="#4c78a8"/>
+<text x="429.0" y="194.7" text-anchor="middle" font-size="9.5" fill="#222">2.14</text>
+<rect x="456" y="159.8" width="34" height="210.2" fill="#4c78a8"/>
+<text x="473.0" y="155.8" text-anchor="middle" font-size="9.5" fill="#222">2.63</text>
+<rect x="500" y="164.0" width="34" height="206.0" fill="#4c78a8"/>
+<text x="517.0" y="160.0" text-anchor="middle" font-size="9.5" fill="#222">2.58</text>
+<rect x="544" y="157.2" width="34" height="212.8" fill="#4c78a8"/>
+<text x="561.0" y="153.2" text-anchor="middle" font-size="9.5" fill="#222">2.66</text>
+<rect x="588" y="160.2" width="34" height="209.8" fill="#f58518"/>
+<text x="605.0" y="156.2" text-anchor="middle" font-size="9.5" fill="#222">2.62</text>
+<rect x="632" y="165.9" width="34" height="204.1" fill="#f58518"/>
+<text x="649.0" y="161.9" text-anchor="middle" font-size="9.5" fill="#222">2.55</text>
+<rect x="676" y="169.7" width="34" height="200.3" fill="#f58518"/>
+<text x="693.0" y="165.7" text-anchor="middle" font-size="9.5" fill="#222">2.50</text>
+<rect x="720" y="153.8" width="34" height="216.2" fill="#f58518"/>
+<text x="737.0" y="149.8" text-anchor="middle" font-size="9.5" fill="#222">2.70</text>
+<rect x="764" y="96.4" width="34" height="273.6" fill="#f58518"/>
+<text x="781.0" y="92.4" text-anchor="middle" font-size="9.5" fill="#222">3.42</text>
+<rect x="808" y="115.6" width="34" height="254.4" fill="#f58518"/>
+<text x="825.0" y="111.6" text-anchor="middle" font-size="9.5" fill="#222">3.18</text>
+<text x="77.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d4</text>
+<text x="121.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d16</text>
+<text x="165.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d4</text>
+<text x="209.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d16</text>
+<text x="253.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d4</text>
+<text x="297.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d16</text>
+<text x="341.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d4</text>
+<text x="385.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d16</text>
+<text x="429.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d4</text>
+<text x="473.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d16</text>
+<text x="517.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d4</text>
+<text x="561.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d16</text>
+<text x="605.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d4</text>
+<text x="649.0" y="384" text-anchor="middle" font-size="9" fill="#333">1k/d16</text>
+<text x="693.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d4</text>
+<text x="737.0" y="384" text-anchor="middle" font-size="9" fill="#333">10k/d16</text>
+<text x="781.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d4</text>
+<text x="825.0" y="384" text-anchor="middle" font-size="9" fill="#333">100k/d16</text>
+<text x="187.0" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#54a24b">A*</text>
+<text x="451.0" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#4c78a8">BFS</text>
+<text x="715.0" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#f58518">Dijkstra</text>
+<text x="60" y="432" font-size="10" fill="#555">x-axis: nodes/avg-out-degree (1k/10k/100k x d4/d16, 100 queries each) · red line = parity (1x) · Rust pathfinding 4.11.0 cargo --release vs MoonBit native</text>
+<text x="60" y="446" font-size="10" fill="#555">Bidirectional variants (no Rust counterpart API) reported separately as a capability bonus and excluded from this chart.</text>
+</svg>

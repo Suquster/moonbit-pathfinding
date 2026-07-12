@@ -395,6 +395,8 @@ A reproducible head-to-head comparison against Rust's `pathfinding` crate
 xorshift64 workloads with a golden element-wise cross-check, per-query result
 signatures verified equal on both sides):
 
+![MoonBit vs Rust pathfinding same-algorithm speedup](./benches/results/rust-comparison-chart.svg)
+
 - **Same-algorithm tier** (unidirectional BFS / Dijkstra / A\* on both sides,
   18/18 cases included, up to 100k nodes / 1.6M edges): median speedup
   **≈2.7× over Rust** (range 2.1–3.6×).

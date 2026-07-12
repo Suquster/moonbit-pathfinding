@@ -694,6 +694,13 @@
         `src/lsp_server/lsp_gaps3_wbtest.mbt`、
         `src/parser_combinator/commit_gaps_wbtest.mbt`、
         `src/regex_engine/coverage_gaps2_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十五批 余支覆盖收口（serialization + playground）：
+        repeated 数值标量遇 I64 线型/repeated string 遇 Varint 线型的
+        解码错误传播；playground 障碍设置幂等成功路与步进 frontier
+        合法读取成功臂。src/ 未覆盖 471→467 行，3152→3156 三后端
+        全绿。2026-07-12，`src/serialization/typed_gaps_wbtest.mbt`、
+        `src/playground/exports_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

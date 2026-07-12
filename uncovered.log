@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":951.3558198113207,"min":310.7446339622641,"max":323.38045,"mean":317.11860660377357,"median":317.2307358490566,"variance":39.92539146061162,"std_dev":6.318654244426706,"std_dev_pct":1.9925208148765614,"median_abs_dev":9.117566200188678,"median_abs_dev_pct":2.874111859238936,"quartiles":[313.98768490566033,317.2307358490566,320.3055929245283],"iqr":6.317908018867968,"batch_size":318,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1763.5230714285713,"min":580.9553791666666,"max":601.5722041666667,"mean":587.8410238095238,"median":580.9954880952381,"variance":141.40938768182755,"std_dev":11.891567923609887,"std_dev_pct":2.022922430038342,"median_abs_dev":0.05946549750010417,"median_abs_dev_pct":0.010235104870617594,"quartiles":[580.9754336309524,580.9954880952381,591.2838461309524],"iqr":10.308412500000031,"batch_size":168,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":299.8732913955929,"min":99.43428426023084,"max":100.83344050367262,"mean":99.95776379853096,"median":99.6055666316894,"variance":0.5824416816389413,"std_dev":0.7631786695387531,"std_dev_pct":0.7635011434199064,"median_abs_dev":0.2539432439244605,"median_abs_dev_pct":0.2549488472501383,"quartiles":[99.51992544596013,99.6055666316894,100.21950356768102],"iqr":0.6995781217208901,"batch_size":953,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":487.156712254902,"min":160.01208937908498,"max":164.85871437908494,"mean":162.385570751634,"median":162.28590849673205,"variance":5.879892896445259,"std_dev":2.4248490461150896,"std_dev_pct":1.4932663258756256,"median_abs_dev":3.371164223823538,"median_abs_dev_pct":2.0772994125312017,"quartiles":[161.14899893790852,162.28590849673205,163.5723114379085],"iqr":2.42331249999998,"batch_size":612,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":438.4003941434846,"min":144.8766149341142,"max":147.58818184480234,"mean":146.13346471449486,"median":145.93559736456808,"variance":1.8675123939099865,"std_dev":1.3665695715586479,"std_dev_pct":0.935151694533866,"median_abs_dev":1.5700473513909237,"median_abs_dev_pct":1.0758494704131165,"quartiles":[145.40610614934116,145.93559736456808,146.76188960468522],"iqr":1.355783455344067,"batch_size":683,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1460.4853665198239,"min":463.13450969162994,"max":503.188640969163,"mean":486.82845550660795,"median":494.1622158590309,"variance":441.4213887795405,"std_dev":21.01003067059971,"std_dev_pct":4.3156948680693,"median_abs_dev":13.382577868281844,"median_abs_dev_pct":2.7081345839074586,"quartiles":[478.6483627753304,494.1622158590309,498.6754284140969],"iqr":20.027065638766544,"batch_size":227,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2799.0305038834954,"min":911.1295514563107,"max":944.1828553398058,"mean":933.0101679611652,"median":943.7180970873787,"variance":359.1250340326799,"std_dev":18.950594556178967,"std_dev_pct":2.031124119214074,"median_abs_dev":0.6890505850483175,"median_abs_dev_pct":0.0730144507321574,"quartiles":[927.4238242718448,943.7180970873787,943.9504762135923],"iqr":16.52665194174756,"batch_size":103,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":484.36150000000004,"min":158.78420761904763,"max":163.3384161904762,"mean":161.45383333333334,"median":162.2388761904762,"variance":5.6474231436816265,"std_dev":2.376430757182213,"std_dev_pct":1.4718949114549027,"median_abs_dev":1.6301780040000278,"median_abs_dev_pct":1.004801094705637,"quartiles":[160.5115419047619,162.2388761904762,162.7886461904762],"iqr":2.277104285714273,"batch_size":630,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":617.5782414473684,"min":156.14271644736843,"max":232.67088684210526,"mean":205.85941381578948,"median":228.76463815789475,"variance":1857.6271926130976,"std_dev":43.10019944980647,"std_dev_pct":20.936715329605523,"median_abs_dev":5.791404299210502,"median_abs_dev_pct":2.5315994403004014,"quartiles":[192.4536773026316,228.76463815789475,230.7177625],"iqr":38.26408519736839,"batch_size":456,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":446.9687238744884,"min":136.05362373806275,"max":170.55894597544335,"mean":148.98957462482946,"median":140.35615416098227,"variance":353.55627735554947,"std_dev":18.80309222855511,"std_dev_pct":12.62040802244262,"median_abs_dev":6.378931605020476,"median_abs_dev_pct":4.544817890709748,"quartiles":[138.2048889495225,140.35615416098227,155.4575500682128],"iqr":17.2526611186903,"batch_size":733,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 358 | 50% | 2250 | -76% | OK
-massive_actor_scheduling | 4000 | 654 | 50% | 6000 | -84% | OK
-ask_round_trip | 900 | 111 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 160 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 140 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 495 | 50% | 2250 | -67% | OK
+massive_actor_scheduling | 4000 | 674 | 50% | 6000 | -83% | OK
+ask_round_trip | 900 | 114 | 50% | 1350 | -87% | OK
+router_dispatch | 1800 | 181 | 50% | 2700 | -90% | OK
+supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 904 uncovered line(s) in 206 file(s)
+Total: 900 uncovered line(s) in 206 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -17462,7 +17462,7 @@ Total: 904 uncovered line(s) in 206 file(s)
 127	}
    	…
 
-4 uncovered line(s) in src/playground/exports.mbt:
+2 uncovered line(s) in src/playground/exports.mbt:
 
 210	pub fn pg_set_obstacle(cell : Int, on : Int) -> Int {
 211	  let s = current()
@@ -17475,7 +17475,7 @@ Total: 904 uncovered line(s) in 206 file(s)
 218	  let desired = on != 0
 219	  // 目标状态已满足：幂等成功，无需变更。
 220	  if g.blocked[cell] == desired {
-221	    s.last_error = err_ok	<-- UNCOVERED
+221	    s.last_error = err_ok
 222	    return err_ok
 223	  }
 224	  match g.toggle_obstacle(cell) {
@@ -17492,25 +17492,6 @@ Total: 904 uncovered line(s) in 206 file(s)
 235	    }
 236	  }
 237	}
-   	…
-
-403	pub fn pg_step_frontier_at(step : Int, i : Int) -> Int {
-404	  let s = current()
-405	  match step_at(step) {
-406	    Some(st) =>
-407	      if i >= 0 && i < st.frontier.length() {
-408	        s.last_error = err_ok	<-- UNCOVERED
-409	        st.frontier[i]
-410	      } else {
-411	        s.last_error = err_invalid_argument
-412	        sentinel_none
-413	      }
-414	    None => {
-415	      s.last_error = err_invalid_argument
-416	      sentinel_none
-417	    }
-418	  }
-419	}
    	…
 
 428	pub fn pg_step_current(step : Int) -> Int {
@@ -19022,7 +19003,7 @@ Total: 904 uncovered line(s) in 206 file(s)
 180	}
    	…
 
-6 uncovered line(s) in src/serialization/typed.mbt:
+4 uncovered line(s) in src/serialization/typed.mbt:
 
 279	fn write_scalar_to_buf(
 280	  schema : ProtoSchema,
@@ -19097,58 +19078,6 @@ Total: 904 uncovered line(s) in 206 file(s)
 532	  }
 533	  Ok(elems)
 534	}
-   	…
-
-596	fn typed_decode_into(
-597	  schema : ProtoSchema,
-598	  f : ProtoField,
-599	  entry : FieldEntry,
-600	  fields : Map[Int, TypedValue],
-601	) -> Result[Unit, DecodeError] {
-602	  match f.label {
-603	    LRepeated(..) =>
-604	      if proto_is_numeric_scalar(f.ptype) {
-605	        match entry.value {
-606	          VBytes(payload) => {
-607	            // packed：拆包全部元素。
-608	            let elems = match typed_unpack(f.ptype, payload) {
-609	              Ok(es) => es
-610	              Err(e) => return Err(e)
-611	            }
-612	            typed_append_list(fields, f.number, elems)
-613	            Ok(())
-614	          }
-615	          other =>
-616	            // 非 packed：单元素。
-617	            match typed_interpret_scalar(schema, f.ptype, other) {
-618	              Ok(tv) => {
-619	                typed_append_list(fields, f.number, [tv])
-620	                Ok(())
-621	              }
-622	              Err(e) => Err(e)	<-- UNCOVERED
-623	            }
-624	        }
-625	      } else {
-626	        // string/bytes/message repeated：单个 Len 元素。
-627	        match typed_interpret_scalar(schema, f.ptype, entry.value) {
-628	          Ok(tv) => {
-629	            typed_append_list(fields, f.number, [tv])
-630	            Ok(())
-631	          }
-632	          Err(e) => Err(e)	<-- UNCOVERED
-633	        }
-634	      }
-635	    _ =>
-636	      // singular：last-wins。
-637	      match typed_interpret_scalar(schema, f.ptype, entry.value) {
-638	        Ok(tv) => {
-639	          fields[f.number] = tv
-640	          Ok(())
-641	        }
-642	        Err(e) => Err(e)
-643	      }
-644	  }
-645	}
    	…
 
 1 uncovered line(s) in src/undirected/hopcroft_karp.mbt:
@@ -19571,4 +19500,4 @@ Total: 904 uncovered line(s) in 206 file(s)
 268	}
    	…
 
-Total: 904 uncovered line(s) in 206 file(s)
+Total: 900 uncovered line(s) in 206 file(s)

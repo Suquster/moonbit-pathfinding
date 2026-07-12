@@ -63,3 +63,45 @@ test "typed_default：浮点/双精度缺省值构造" {
   assert_true(typed_default(PFloat) == TFloatV((0.0 : Float)))
   assert_true(typed_default(PDouble) == TDoubleV(0.0))
 }
+
+///|
+/// 覆盖率审计收口（INFRA 第六十五批）：repeated 字段线型不匹配的错误传播。
+fn tg_schema(ptype : ProtoType) -> ProtoSchema {
+  {
+    messages: [
+      {
+        name: "M",
+        fields: [
+          {
+            name: "xs",
+            number: 1,
+            ptype,
+            label: LRepeated(packed=false),
+            options: [],
+          },
+        ],
+        maps: [],
+        oneofs: [],
+        reserved_numbers: [],
+        reserved_names: [],
+        nested_messages: [],
+        nested_enums: [],
+      },
+    ],
+    enums: [],
+  }
+}
+
+///|
+test "decode_typed：repeated int32 遇 I64 线型即报错" {
+  // tag=(1<<3)|1=0x09（I64）后随 8 字节。
+  let bytes = b"\x09\x00\x00\x00\x00\x00\x00\x00\x00"
+  assert_true(decode_typed(tg_schema(PInt32), "M", bytes) is Err(_))
+}
+
+///|
+test "decode_typed：repeated string 遇 Varint 线型即报错" {
+  // tag=(1<<3)|0=0x08（Varint）后随 varint 1。
+  let bytes = b"\x08\x01"
+  assert_true(decode_typed(tg_schema(PString), "M", bytes) is Err(_))
+}

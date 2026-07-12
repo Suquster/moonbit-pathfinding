@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1067.4826399293286,"min":350.98679540636044,"max":358.44375971731444,"mean":355.82754664310954,"median":358.05208480565375,"variance":17.61300671117205,"std_dev":4.1967852829483725,"std_dev_pct":1.1794436160272026,"median_abs_dev":0.5806972240281338,"median_abs_dev_pct":0.16218233287018258,"quartiles":[354.5194401060071,358.05208480565375,358.24792226148406],"iqr":3.728482155476968,"batch_size":283,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1943.8881448051948,"min":621.4344220779221,"max":674.5856577922078,"mean":647.9627149350649,"median":647.8680649350649,"variance":706.2701834557647,"std_dev":26.575744269084257,"std_dev_pct":4.101431094186882,"median_abs_dev":39.190518899999894,"median_abs_dev_pct":6.04915121166343,"quartiles":[634.6512435064935,647.8680649350649,661.2268613636363],"iqr":26.575617857142788,"batch_size":154,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":298.16875421686746,"min":98.2306732931727,"max":101.48840220883534,"mean":99.38958473895582,"median":98.44967871485944,"variance":3.3157669225856217,"std_dev":1.8209247438006937,"std_dev_pct":1.8321082119251284,"median_abs_dev":0.3246974381927684,"median_abs_dev_pct":0.32981056152879085,"quartiles":[98.34017600401607,98.44967871485944,99.96904046184738],"iqr":1.6288644578313125,"batch_size":996,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":454.3077574766355,"min":151.1863406542056,"max":151.69956635514018,"mean":151.4359191588785,"median":151.42185046728972,"variance":0.06599860108721381,"std_dev":0.2569019289285579,"std_dev_pct":0.1696439856247249,"median_abs_dev":0.3491668488785183,"median_abs_dev_pct":0.23059211586768028,"quartiles":[151.30409556074767,151.42185046728972,151.56070841121493],"iqr":0.25661285046726334,"batch_size":642,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":411.55951506456245,"min":136.54965150645626,"max":138.359893687231,"mean":137.18650502152082,"median":136.64996987087517,"variance":1.0351466641727716,"std_dev":1.01742157642384,"std_dev_pct":0.7416338627944741,"median_abs_dev":0.14873200708747705,"median_abs_dev_pct":0.10884159522905025,"quartiles":[136.5998106886657,136.64996987087517,137.5049317790531],"iqr":0.9051210903873823,"batch_size":697,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":935.0312943925235,"min":309.6233252336449,"max":315.0300626168225,"mean":311.67709813084116,"median":310.3779065420561,"variance":8.574126370939867,"std_dev":2.928160919577315,"std_dev_pct":0.9394854280721265,"median_abs_dev":1.1187422478504723,"median_abs_dev_pct":0.36044519415523635,"quartiles":[310.0006158878505,310.3779065420561,312.7039845794393],"iqr":2.703368691588821,"batch_size":321,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1774.8791080924857,"min":585.521260115607,"max":603.641449132948,"mean":591.6263693641619,"median":585.7163988439306,"variance":108.28112616854288,"std_dev":10.405821744030737,"std_dev_pct":1.7588502275877556,"median_abs_dev":0.2893126786126097,"median_abs_dev_pct":0.049394669362791674,"quartiles":[585.6188294797688,585.7163988439306,594.6789239884392],"iqr":9.060094508670431,"batch_size":173,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":298.54737676470586,"min":97.86624578431373,"max":101.66371725490197,"mean":99.51579225490195,"median":99.0174137254902,"variance":3.791483261416869,"std_dev":1.9471731462345276,"std_dev_pct":1.9566473844141192,"median_abs_dev":1.7067215895882306,"median_abs_dev_pct":1.7236580166796123,"quartiles":[98.44182975490196,99.0174137254902,100.34056549019608],"iqr":1.8987357352941245,"batch_size":1020,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":480.82357147192715,"min":155.61456145675265,"max":162.9630874051593,"mean":160.27452382397573,"median":162.24592261001516,"variance":16.41501828379986,"std_dev":4.051545172375579,"std_dev_pct":2.527878464842771,"median_abs_dev":1.0632685252807272,"median_abs_dev_pct":0.6553437572890313,"quartiles":[158.9302420333839,162.24592261001516,162.60450500758725],"iqr":3.6742629742033444,"batch_size":659,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":419.7248838080959,"min":136.36054542728635,"max":142.6540700149925,"mean":139.90829460269865,"median":140.7102683658171,"variance":10.384484371563214,"std_dev":3.222496605361007,"std_dev_pct":2.3032920346231207,"median_abs_dev":2.8818803250674665,"median_abs_dev_pct":2.0480952517091247,"quartiles":[138.5354068965517,140.7102683658171,141.6821691904048],"iqr":3.146762293853101,"batch_size":667,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 318 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 594 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 98 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 153 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 139 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 309 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 587 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 149 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 715 uncovered line(s) in 170 file(s)
+Total: 714 uncovered line(s) in 170 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -8220,9 +8220,9 @@ Total: 715 uncovered line(s) in 170 file(s)
 266	              Ok(_) => ()
 267	            }
 268	          VBool =>
-269	            match parsed.bool_of(r.name) {	<-- UNCOVERED
+269	            match parsed.bool_of(r.name) {
 270	              Err(e) => errs.push(e)
-271	              Ok(_) => ()
+271	              Ok(_) => ()	<-- UNCOVERED
 272	            }
 273	        }
 274	        if r.choices.length() > 0 {
@@ -8257,9 +8257,9 @@ Total: 715 uncovered line(s) in 170 file(s)
 450	      best_d = d
 451	      best = Some(c)
 452	    } else if d == best_d {
-453	      match best {	<-- UNCOVERED
+453	      match best {
 454	        Some(cur) => if c < cur { best = Some(c) }
-455	        None => best = Some(c)
+455	        None => best = Some(c)	<-- UNCOVERED
 456	      }
 457	    }
 458	  }
@@ -10249,7 +10249,7 @@ Total: 715 uncovered line(s) in 170 file(s)
 751	}
    	…
 
-2 uncovered line(s) in src/infra_diff/diff.mbt:
+1 uncovered line(s) in src/infra_diff/diff.mbt:
 
 326	pub fn semver_compare(a : SemVer, b : SemVer) -> Int {
 327	  if a.major != b.major {
@@ -10305,7 +10305,7 @@ Total: 715 uncovered line(s) in 170 file(s)
 377	        return if xs[j] < ys[j] { -1 } else { 1 }
 378	      }
 379	    }
-380	    return if xs.length() < ys.length() { -1 } else { 1 }	<-- UNCOVERED
+380	    return if xs.length() < ys.length() { -1 } else { 1 }
 381	  }
 382	  // 前缀相同，段多者优先级高。
 383	  if a.prerelease.length() == b.prerelease.length() {
@@ -15386,4 +15386,4 @@ Total: 715 uncovered line(s) in 170 file(s)
 268	}
    	…
 
-Total: 715 uncovered line(s) in 170 file(s)
+Total: 714 uncovered line(s) in 170 file(s)

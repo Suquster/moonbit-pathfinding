@@ -833,6 +833,22 @@
         build_ssa 幽灵后继跳过。另判定 liveness name2id 缺失、gvn
         idom 链尽头、zstd 多帧预算余臂为不可达防御，保留不造假态。
         src/ 未覆盖 327→320 行，3256→3261 三后端全绿。2026-07-12。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第八十一批 余支覆盖收口（actor + logging + parser_combinator +
+        infra_text + codegen_infra + mini_compiler + infra_cli）：
+        replay_consistent 双拒绝路径（trace 异长/同长异序，非确定
+        build 闭包构造）；Future and_then 未就绪透传与 await_within
+        预算耗尽；Router 空 worker 哨兵/空环回退/非一致性哈希游标
+        观测；Scheduler 对未登记 actor 的观测缺省四件套；logfmt
+        截断 JSON/Int64 溢出/值后非空白三重拒绝；env-filter 空目标
+        与无裸级别回退；label 成功透传、op_as_label、Grammar::pure、
+        ParseResult::value 失败态、unexpected_at 换行专名；Rope 叶界
+        代理对不切半与 utf16↔utf8 右子树累计；dom_ncd 树外节点回退；
+        erase_span 元组臂与 expr_span ELet 臂；DuplicateSpec 渲染。
+        另以双精度舍入分析判定 sampling_threshold 封顶臂（rate<1 时
+        乘积必 <10⁶）、retained_count 双夹取臂、search_chars 选择器
+        兜底为不可达防御，保留不造假态。src/ 未覆盖 320→297 行，
+        3261→3286 三后端全绿。2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

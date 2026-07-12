@@ -62,3 +62,39 @@ You can browse and install extra skills here:
   behavior. For solid, well-defined results (e.g. scientific computations),
   prefer assertion tests. You can use `moon coverage analyze > uncovered.log` to
   see which parts of your code are not covered by tests.
+
+## OSC 2026 大赛合规规约（官方验收，必须遵守）
+
+### 提交身份（强制）
+
+- 所有 git 提交的 author 与 committer 必须统一为仓库所有者身份：
+  `Suquster <289166199+Suquster@users.noreply.github.com>`（提交时通过
+  GIT_AUTHOR_NAME/EMAIL 与 GIT_COMMITTER_NAME/EMAIL 环境变量指定）。
+- 官方硬标准：主要贡献者 = 仓库所有者 = 申报人；章程第九条禁止虚假信息。
+  2026-07-12 已用 git-filter-repo 重写全史统一身份，不得再引入其他作者。
+
+### 7·7 预验收未通过的教训（已整改，不得回退）
+
+1. `moon fmt --deny-warn` / `moon info --deny-warn` 在新工具链返回参数错误
+   → `scripts/acceptance.sh` 做版本探测，不支持时以等价语义执行
+   （fmt/info + `git diff --exit-code` 无漂移）。改动验收脚本必须保持该语义。
+2. CI 必须包含 fmt/info 两个 deny-warn 过程 → ci.yml wasm-gc 关卡运行
+   `scripts/acceptance.sh`，不得删除。
+3. actor benchmark regression guard 曾报 `massive_actor_scheduling` FAIL
+   → 基线容差需容纳 runner 波动；出现 FAIL 先复测再调基线，不得删守卫。
+4. 根目录曾同时存在 `moon.mod` 与弃用 `moon.mod.json` 产生警告
+   → 已删除 moon.mod.json；不得再生成。
+
+### 验收硬标准清单（每次推 main 前自查）
+
+- MoonBit 为主要实现语言；GitHub 与 Gitlink 双仓公开且 main 同步
+  （GitHub: Suquster/moonbit-pathfinding；Gitlink: Taoyouce/moonbit-pathfinding）。
+- CI 覆盖 check / fmt / test（四后端矩阵）且最新 run 全绿；本地
+  `bash scripts/acceptance.sh` 全门禁通过（需干净工作区）。
+- README 可复现（安装/示例命令用跨平台正斜杠路径）；至少一个
+  `moon run examples/...` 可运行示例；完整测试覆盖核心路径。
+- 已发布 mooncakes.io（发版后同步刷新 README/申报书版本口径）。
+- 仓库不含临时产物：*.log、缓存、构建产物不入库（.gitignore 已配置）。
+- 第三方数据/代码注明来源与许可（cache/ OSM 数据已注明 ODbL）。
+- 推 main 用 `./push-to-upstream.sh main`（需 GitHubPAT），并同步 Gitlink
+  （需 gitlinktoken，push 到 Taoyouce/moonbit-pathfinding main）。

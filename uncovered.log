@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":970.6624285714287,"min":315.7401842857143,"max":329.6402085714286,"mean":323.5541428571429,"median":325.2820357142857,"variance":50.54187908018593,"std_dev":7.109281192932653,"std_dev_pct":2.1972462259806624,"median_abs_dev":6.461427078000069,"median_abs_dev_pct":1.9864075997346253,"quartiles":[320.51111000000003,325.2820357142857,327.46112214285716],"iqr":6.950012142857133,"batch_size":280,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1786.1494233128833,"min":586.35855398773,"max":611.7444398773006,"mean":595.3831411042944,"median":588.0464294478528,"variance":201.48130404689954,"std_dev":14.194411014441549,"std_dev_pct":2.3840801048068454,"median_abs_dev":2.502444157178016,"median_abs_dev_pct":0.42555213871933384,"quartiles":[587.2024917177914,588.0464294478528,599.8954346625767],"iqr":12.692942944785273,"batch_size":163,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":300.29723951855567,"min":97.25182768304916,"max":105.72929147442328,"mean":100.09907983951855,"median":97.31612036108325,"variance":23.775495677474524,"std_dev":4.876012272079976,"std_dev_pct":4.871185908898788,"median_abs_dev":0.09532032445334611,"median_abs_dev_pct":0.09794916207064984,"quartiles":[97.2839740220662,97.31612036108325,101.52270591775326],"iqr":4.238731895687053,"batch_size":997,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":462.9843471111111,"min":148.58462459259258,"max":160.87796992592592,"mean":154.3281157037037,"median":153.5217525925926,"variance":38.26925097136778,"std_dev":6.186214591441828,"std_dev_pct":4.008481904437175,"median_abs_dev":7.319785972800044,"median_abs_dev_pct":4.767914545780936,"quartiles":[151.0531885925926,153.5217525925926,157.19986125925925],"iqr":6.14667266666666,"batch_size":675,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":408.61052536443145,"min":134.0480303206997,"max":139.70421807580175,"mean":136.20350845481047,"median":134.85827696793004,"variance":9.355350795212551,"std_dev":3.058651793717708,"std_dev_pct":2.2456483158306497,"median_abs_dev":1.201271679183707,"median_abs_dev_pct":0.8907659998276378,"quartiles":[134.45315364431485,134.85827696793004,137.2812475218659],"iqr":2.828093877551055,"batch_size":686,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1024.259399053628,"min":323.8293706624606,"max":361.7309400630915,"mean":341.4197996845426,"median":338.69908832807573,"variance":364.68394347161666,"std_dev":19.096699805767923,"std_dev_pct":5.593319374978388,"median_abs_dev":22.045843411041027,"median_abs_dev_pct":6.5089763069237,"quartiles":[331.2642294952682,338.69908832807573,350.21501419558365],"iqr":18.950784700315467,"batch_size":317,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1819.2230240506328,"min":579.78655,"max":635.0632968354431,"mean":606.4076746835443,"median":604.3731772151899,"variance":766.984070138972,"std_dev":27.69447724978704,"std_dev_pct":4.566973408481265,"median_abs_dev":36.45213350924051,"median_abs_dev_pct":6.031394986323418,"quartiles":[592.0798636075949,604.3731772151899,619.7182370253165],"iqr":27.638373417721596,"batch_size":158,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":294.04534470588237,"min":97.7676487254902,"max":98.24513225490196,"mean":98.01511490196079,"median":98.03256372549019,"variance":0.05722597629679721,"std_dev":0.2392195148745127,"std_dev_pct":0.2440639029131283,"median_abs_dev":0.3151541017058883,"median_abs_dev_pct":0.3214789960898908,"quartiles":[97.90010622549019,98.03256372549019,98.13884799019607],"iqr":0.23874176470587827,"batch_size":1020,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":446.5920315088758,"min":147.63775606508878,"max":151.11154171597633,"mean":148.8640105029586,"median":147.84273372781064,"variance":3.799051375670497,"std_dev":1.9491155367680226,"std_dev_pct":1.3093262301496875,"median_abs_dev":0.3038998827514283,"median_abs_dev_pct":0.2055561846623659,"quartiles":[147.74024489644972,147.84273372781064,149.47713772189348],"iqr":1.7368928254437606,"batch_size":676,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":405.92682839506176,"min":134.37466008230456,"max":137.06556748971195,"mean":135.3089427983539,"median":134.48660082304528,"variance":2.317430412075896,"std_dev":1.5223108789192488,"std_dev_pct":1.1250630205483865,"median_abs_dev":0.1659633422221928,"median_abs_dev_pct":0.12340511337673259,"quartiles":[134.4306304526749,134.48660082304528,135.7760841563786],"iqr":1.345453703703697,"batch_size":729,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 325 | 50% | 2250 | -78% | OK
-massive_actor_scheduling | 4000 | 588 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 142 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 328 | 50% | 2250 | -78% | OK
+massive_actor_scheduling | 4000 | 576 | 50% | 6000 | -86% | OK
+ask_round_trip | 900 | 98 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 147 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 134 | 50% | 1800 | -89% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 769 uncovered line(s) in 190 file(s)
+Total: 760 uncovered line(s) in 189 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -4120,7 +4120,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 650	}
    	…
 
-4 uncovered line(s) in src/codegen_infra/coalescing.mbt:
+3 uncovered line(s) in src/codegen_infra/coalescing.mbt:
 
 44	pub fn can_coalesce_george(
 45	  g : InterferenceGraph,
@@ -4137,7 +4137,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 56	      continue	<-- UNCOVERED
 57	    }
 58	    if degree_of(adj, t) >= k && !interferes(adj, t, b) {
-59	      return false	<-- UNCOVERED
+59	      return false
 60	    }
 61	  }
 62	  true
@@ -4902,197 +4902,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 266	}
    	…
 
-4 uncovered line(s) in src/codegen_infra/evaluate.mbt:
-
-51	fn split_versioned(tok : String) -> (String, Int)? {
-52	  let cs = tok.iter().to_array()
-53	  let mut hash = -1
-54	  for i in 0..<cs.length() {
-55	    if cs[i] == '#' {
-56	      hash = i
-57	    }
-58	  }
-59	  if hash <= 0 || hash + 1 >= cs.length() {
-60	    return None
-61	  }
-62	  let mut n = 0
-63	  let mut j = hash + 1
-64	  while j < cs.length() {
-65	    let c = cs[j]
-66	    if c >= '0' && c <= '9' {
-67	      n = n * 10 + (c.to_int() - '0'.to_int())
-68	    } else {
-69	      return None	<-- UNCOVERED
-70	    }
-71	    j = j + 1
-72	  }
-73	  let name = StringBuilder::new()
-74	  for i in 0..<hash {
-75	    name.write_char(cs[i])
-76	  }
-77	  Some((name.to_string(), n))
-78	}
-  	…
-
-111	fn reconstruct_phi_sites(p : SsaProgram) -> Array[PhiSite] {
-112	  let ver2name : Map[Int, String] = Map([])
-113	  for b in p.blocks {
-114	    for instr in b.instrs {
-115	      for t in tokenize(instr) {
-116	        match split_versioned(t) {
-117	          Some((nm, v)) => if !ver2name.contains(v) { ver2name[v] = nm }
-118	          None => ()
-119	        }
-120	      }
-121	    }
-122	  }
-123	  let preds = preds_in_order(p.blocks)
-124	  let sites : Array[PhiSite] = []
-125	  for phi in p.phis {
-126	    let args : Array[Int] = []
-127	    for a in phi.args {
-128	      args.push(a.id)
-129	    }
-130	    if args.length() == 0 {
-131	      continue	<-- UNCOVERED
-132	    }
-133	    let dest = phi.dest.id
-134	    let name = match ver2name.get(dest) {
-135	      Some(n) => n
-136	      None =>
-137	        match ver2name.get(args[0]) {
-138	          Some(n) => n
-139	          None => ""
-140	        }
-141	    }
-142	    if name == "" {
-143	      continue
-144	    }
-145	    let dest_tok = name + "#" + dest.to_string()
-146	    let mut found = ""
-147	    for b in p.blocks {
-148	      let pcount = preds.get(b.label).unwrap_or([]).length()
-149	      if pcount < 2 {
-150	        continue
-151	      }
-152	      let mut uses = false
-153	      for instr in b.instrs {
-154	        for t in tokenize(instr) {
-155	          if t == dest_tok {
-156	            uses = true
-157	            break
-158	          }
-159	        }
-160	        if uses {
-161	          break
-162	        }
-163	      }
-164	      if uses {
-165	        found = b.label
-166	        break
-167	      }
-168	    }
-169	    if found == "" {
-170	      continue
-171	    }
-172	    sites.push({
-173	      block: found,
-174	      var_name: name,
-175	      dest,
-176	      args,
-177	      preds: preds.get(found).unwrap_or([]),
-178	    })
-179	  }
-180	  sites
-181	}
-   	…
-
-211	pub fn evaluate(
-212	  p : SsaProgram,
-213	  init : Map[String, Int],
-214	  path : Array[String],
-215	) -> EvalResult {
-216	  let by_label : Map[String, BasicBlock] = Map([])
-217	  for b in p.blocks {
-218	    by_label[b.label] = b
-219	  }
-220	  let sites = reconstruct_phi_sites(p)
-221	  let sites_by_block : Map[String, Array[PhiSite]] = Map([])
-222	  for s in sites {
-223	    let lst = sites_by_block.get(s.block).unwrap_or([])
-224	    lst.push(s)
-225	    sites_by_block[s.block] = lst
-226	  }
-227	  // 版本号 → 变量名（含定义与使用记号）：φ 实参经复制传播可能被改写为
-228	  // 其它变量的版本，取实参取值时须按实参自身的变量名定位记号。
-229	  let ver2name : Map[Int, String] = Map([])
-230	  for b in p.blocks {
-231	    for instr in b.instrs {
-232	      for t in tokenize(instr) {
-233	        match split_versioned(t) {
-234	          Some((nm, v)) => if !ver2name.contains(v) { ver2name[v] = nm }
-235	          None => ()
-236	        }
-237	      }
-238	    }
-239	  }
-240	  let values : Map[String, Int] = Map([])
-241	  let output : Array[Int] = []
-242	  let mut prev = ""
-243	  for cur_label in path {
-244	    match by_label.get(cur_label) {
-245	      None => ()	<-- UNCOVERED
-246	      Some(b) => {
-247	        // φ：按来路前驱绑定目标版本取值。
-248	        if prev != "" {
-249	          match sites_by_block.get(cur_label) {
-250	            Some(plist) =>
-251	              for site in plist {
-252	                let mut idx = -1
-253	                for i in 0..<site.preds.length() {
-254	                  if site.preds[i] == prev {
-255	                    idx = i
-256	                    break
-257	                  }
-258	                }
-259	                if idx >= 0 && idx < site.args.length() {
-260	                  let arg_id = site.args[idx]
-261	                  let arg_name = ver2name.get(arg_id).unwrap_or(site.var_name)
-262	                  let arg_tok = arg_name + "#" + arg_id.to_string()
-263	                  let dest_tok = site.var_name + "#" + site.dest.to_string()
-264	                  values[dest_tok] = eval_lookup(arg_tok, values, init)
-265	                }
-266	              }
-267	            None => ()
-268	          }
-269	        }
-270	        for instr in b.instrs {
-271	          let toks = tokenize(instr)
-272	          if toks.length() >= 2 && toks[1] == "=" {
-273	            let lhs = toks[0]
-274	            if toks.length() == 3 {
-275	              values[lhs] = eval_lookup(toks[2], values, init)
-276	            } else if toks.length() == 5 {
-277	              let x = eval_lookup(toks[2], values, init)
-278	              let y = eval_lookup(toks[4], values, init)
-279	              match fold_op(toks[3], x, y) {
-280	                Some(r) => values[lhs] = r
-281	                None => values[lhs] = x	<-- UNCOVERED
-282	              }
-283	            }
-284	          } else if toks.length() >= 2 && toks[0] == "ret" {
-285	            output.push(eval_lookup(toks[1], values, init))
-286	          }
-287	        }
-288	      }
-289	    }
-290	    prev = cur_label
-291	  }
-292	  { values, output }
-293	}
-   	…
-
-5 uncovered line(s) in src/codegen_infra/gvn.mbt:
+4 uncovered line(s) in src/codegen_infra/gvn.mbt:
 
 146	fn dom_ncd(dom : DomTree, a : String, b : String) -> String {
 147	  let anc : Map[String, Bool] = Map([])
@@ -5202,7 +5012,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 267	                  for j in [2, 4] {
 268	                    let t = toks[j]
 269	                    if parse_int(t) is Some(_) {
-270	                      continue	<-- UNCOVERED
+270	                      continue
 271	                    }
 272	                    if defset.contains(t) {
 273	                      if !dom.dominates(block_of.get(t).unwrap_or(""), tgt) {
@@ -5317,7 +5127,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 382	}
    	…
 
-4 uncovered line(s) in src/codegen_infra/ir_interp.mbt:
+3 uncovered line(s) in src/codegen_infra/ir_interp.mbt:
 
 151	fn exec_simple(
 152	  regs : Map[Int, Int],
@@ -5393,7 +5203,7 @@ Total: 769 uncovered line(s) in 190 file(s)
 260	            for ins in block.instrs {
 261	              steps = steps + 1
 262	              if steps > max_steps {
-263	                halt = true	<-- UNCOVERED
+263	                halt = true
 264	                break
 265	              }
 266	              exec_simple(regs, memory, prev, ins)
@@ -8698,65 +8508,97 @@ Total: 769 uncovered line(s) in 190 file(s)
 147	}
    	…
 
-4 uncovered line(s) in src/infra_bench/report.mbt:
+2 uncovered line(s) in src/infra_bench/report.mbt:
 
-585	fn BJParser::parse_hex4(self : BJParser) -> Int? {
-586	  let mut code = 0
-587	  let mut i = 0
-588	  while i < 4 {
-589	    match self.peek() {
-590	      None => return None	<-- UNCOVERED
-591	      Some(c) => {
-592	        let d = bj_hex_value(c)
-593	        if d < 0 {
-594	          return None
-595	        }
-596	        code = code * 16 + d
-597	        self.pos = self.pos + 1
-598	        i = i + 1
-599	      }
-600	    }
-601	  }
-602	  Some(code)
-603	}
+661	fn BJParser::parse_array(self : BJParser) -> BJson? {
+662	  self.pos = self.pos + 1
+663	  let items : Array[BJson] = []
+664	  self.skip_ws()
+665	  if self.peek() == Some(']') {
+666	    self.pos = self.pos + 1	<-- UNCOVERED
+667	    return Some(JArr(items))
+668	  }
+669	  while true {
+670	    let value = match self.parse_value() {
+671	      Some(v) => v
+672	      None => return None
+673	    }
+674	    items.push(value)
+675	    self.skip_ws()
+676	    match self.peek() {
+677	      Some(',') => self.pos = self.pos + 1
+678	      Some(']') => {
+679	        self.pos = self.pos + 1
+680	        return Some(JArr(items))
+681	      }
+682	      _ => return None
+683	    }
+684	  }
+685	  None
+686	}
    	…
 
-713	fn bj_as_int(j : BJson) -> Int? {
-714	  match j {
-715	    JNum(s) => Some(@string.parse_int(s)) catch { _ => None }
-716	    _ => None	<-- UNCOVERED
-717	  }
-718	}
-   	…
-
-962	fn bj_lookup_int(
-963	  fields : Array[(String, BJson)],
-964	  key : String,
-965	) -> Result[Int, @graph.PathError] {
-966	  match bj_obj_get(fields, key) {
-967	    Some(v) =>
-968	      match bj_as_int(v) {
-969	        Some(n) => Ok(n)
-970	        None => Err(report_parse_error(key + " 不是合法整数"))	<-- UNCOVERED
-971	      }
-972	    None => Err(report_parse_error("缺少 " + key + " 字段"))
-973	  }
-974	}
-   	…
-
-978	fn bj_lookup_double(
-979	  fields : Array[(String, BJson)],
-980	  key : String,
-981	) -> Result[Double, @graph.PathError] {
-982	  match bj_obj_get(fields, key) {
-983	    Some(v) =>
-984	      match bj_as_double(v) {
-985	        Some(d) => Ok(d)
-986	        None => Err(report_parse_error(key + " 不是合法浮点数"))	<-- UNCOVERED
-987	      }
-988	    None => Err(report_parse_error("缺少 " + key + " 字段"))
-989	  }
-990	}
+775	pub fn BenchReport::from_json(
+776	  json : String,
+777	) -> Result[BenchReport, @graph.PathError] {
+778	  let root = match bj_parse(json) {
+779	    Some(v) => v
+780	    None => return Err(report_parse_error("JSON 语法非法或非单一值"))
+781	  }
+782	  let fields = match bj_as_obj(root) {
+783	    Some(f) => f
+784	    None => return Err(report_parse_error("顶层不是 JSON 对象"))
+785	  }
+786	  let moon_version = match bj_lookup_string(fields, "moon_version") {
+787	    Ok(s) => s
+788	    Err(e) => return Err(e)
+789	  }
+790	  let backend = match bj_lookup_string(fields, "backend") {
+791	    Ok(s) => s
+792	    Err(e) => return Err(e)	<-- UNCOVERED
+793	  }
+794	  // machine 嵌套对象提供 os / cpu。
+795	  let machine = match bj_obj_get(fields, "machine") {
+796	    Some(m) =>
+797	      match bj_as_obj(m) {
+798	        Some(mf) => mf
+799	        None => return Err(report_parse_error("machine 不是对象"))
+800	      }
+801	    None => return Err(report_parse_error("缺少 machine 字段"))
+802	  }
+803	  let os = match bj_lookup_string(machine, "os") {
+804	    Ok(s) => s
+805	    Err(e) => return Err(e)
+806	  }
+807	  let cpu = match bj_lookup_string(machine, "cpu") {
+808	    Ok(s) => s
+809	    Err(e) => return Err(e)
+810	  }
+811	  let generator = match bj_lookup_string(fields, "generator") {
+812	    Ok(s) => s
+813	    Err(e) => return Err(e)
+814	  }
+815	  let warmup_count = match bj_lookup_int(fields, "warmup_count") {
+816	    Ok(n) => n
+817	    Err(e) => return Err(e)
+818	  }
+819	  let cases_json = match bj_obj_get(fields, "cases") {
+820	    Some(c) =>
+821	      match bj_as_array(c) {
+822	        Some(items) => items
+823	        None => return Err(report_parse_error("cases 不是数组"))
+824	      }
+825	    None => return Err(report_parse_error("缺少 cases 字段"))
+826	  }
+827	  let cases : Array[BenchCase] = []
+828	  for cj in cases_json {
+829	    match parse_case(cj) {
+830	      Ok(c) => cases.push(c)
+831	      Err(e) => return Err(e)
+832	    }
+833	  }
+834	  Ok({ moon_version, backend, os, cpu, generator, warmup_count, cases })
+835	}
    	…
 
 2 uncovered line(s) in src/infra_bench/stats.mbt:
@@ -16866,4 +16708,4 @@ Total: 769 uncovered line(s) in 190 file(s)
 268	}
    	…
 
-Total: 769 uncovered line(s) in 190 file(s)
+Total: 760 uncovered line(s) in 189 file(s)

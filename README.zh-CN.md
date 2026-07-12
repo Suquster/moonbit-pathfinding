@@ -4,7 +4,7 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-v0.0.5-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
 [![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](https://suquster.github.io/moonbit-pathfinding/)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)

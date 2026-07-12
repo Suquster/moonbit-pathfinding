@@ -30,6 +30,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+无。
+
+## [0.1.0] - 2026-07-12
+
+### Added — Real OSM Playground & ecosystem（真实 OSM Playground 与生态）
+
+- feat(playground): real OSM road-network mode — `pg_osm_*` integer-handle
+  wasm export layer (reset/add_edge/build/route/path/cost/settled) running
+  unidirectional and bidirectional Dijkstra on a CSR graph, live at
+  <https://Suquster.github.io/moonbit-pathfinding/osm.html> with the Xiamen
+  driving network (125,639 nodes / 215,947 edges, OpenStreetMap ©
+  contributors, ODbL 1.0) (新增真实 OSM 路网模式：厦门驾车路网在浏览器内
+  点选起终点，单向 vs 双向 Dijkstra 实时对比 settle 节点数与耗时，代价交叉校验)
+- feat(playground): `scripts/build_playground_osm.py` — reproducible network
+  artifact builder from the cached Overpass response (largest SCC, haversine
+  decimeter weights) (可复现的 OSM 路网预处理脚本)
+- feat(wit): 9 new typed component-model exports (`pg-osm-*`) in
+  `wit/playground.wit`, gated end-to-end under wasmtime by
+  `scripts/wit_gate.sh` (WIT 组件模型新增 9 个类型化导出，wasmtime 逐函数门禁)
+- docs: formal 18/18 same-algorithm Rust benchmark chart embedded in both
+  READMEs; downstream consumers
+  [moonbit-pathfinding-demo](https://github.com/Suquster/moonbit-pathfinding-demo)
+  and [moonbit-maze](https://github.com/Suquster/moonbit-maze); 5-minute
+  defense script; community article draft (正式同算法 benchmark 图表、
+  两个下游消费仓、答辩台本与社区文章草稿)
+
 ### Fixed — Pre-acceptance feedback（预验收反馈整改）
 
 - fix(directed): make ALT farthest-first landmark selection prioritize

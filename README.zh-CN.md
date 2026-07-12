@@ -33,10 +33,12 @@
    （双向 Dijkstra → ALT → CH → HL，最高 13279×），全量对拍一致性校验，
    全部可由入库脚本与 artifact 复现。
 
-**下游使用**：见
+**下游使用**：两个独立仓库以常规依赖方式消费已发布的 mooncakes.io 包
+（`moon add Suquster/moonbit-pathfinding`），各自自带测试与 CI：
 [`Suquster/moonbit-pathfinding-demo`](https://github.com/Suquster/moonbit-pathfinding-demo)
-—— 仓库机器人路径规划 demo，以常规依赖方式消费已发布的 mooncakes.io 包
-（`moon add Suquster/moonbit-pathfinding`），自带测试与 CI。
+（仓库机器人路径规划器）与
+[`Suquster/moonbit-maze`](https://github.com/Suquster/moonbit-maze)
+（完美迷宫生成 + A\* 求解 CLI，含 Dijkstra 交叉校验）。
 
 ---
 

@@ -764,6 +764,16 @@
         expr_span ELam、row_poly RFun 归一化与 r_occurs 余臂。
         src/ 未覆盖 405→398 行，3194→3197 三后端全绿。2026-07-12，
         `src/mini_compiler/spans_gaps_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十四批 语义护栏补强（infra_compress + lsp_server）：
+        zstd 两帧串联全量往返与跨帧累计预算拒绝（多帧路径此前无
+        直接测试）；rope_join 规模矩阵（10×10 组合）内容序/元数据
+        一致与倾斜链逐次拼接高度 O(log N) 断言。审计确认 rope 旋转
+        RLeaf/other 兜底臂与 pikevm `_ => ()` 臂为不可达防御分支
+        （过高子树必为 RBranch；指令集穷尽）。src/ 未覆盖 398 行持平，
+        3197→3201 三后端全绿。2026-07-12，
+        `src/infra_compress/zstd_gaps4_wbtest.mbt`、
+        `src/lsp_server/rope_join_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

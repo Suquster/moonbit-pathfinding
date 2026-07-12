@@ -796,6 +796,16 @@
         间隙拷贝。src/ 未覆盖 382→363 行，3209→3222 三后端全绿。
         2026-07-12，`src/mini_compiler/gaps76_wbtest.mbt`、
         `src/infra_diff/unified_gaps2_test.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十七批 余支覆盖收口（logging + hash + text +
+        lsp_binding + serialization + bench）：logfmt 坏值/整数溢出/
+        值后粘连、JSON 日志值缺失/键未闭合/\u 截断、console sink
+        直写与无缓冲 flush；HMAC 超长密钥折叠等价、murmur3 尾部
+        2/3 字节；Rope 空串与孤立高代理项 UTF-8 计长；多头部帧
+        切行/值尾随空白/非法正文错误传播、CancelRegistry 连续取消
+        与 cancel_id_of 余臂；parse_proto 顶层非标识符/匿名嵌套/
+        未闭合块；compute_stats 空样本。src/ 未覆盖 363→351 行，
+        3222→3234 三后端全绿。2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

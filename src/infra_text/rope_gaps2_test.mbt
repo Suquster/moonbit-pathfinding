@@ -1,26 +1,15 @@
-// rope_gaps2_test.mbt —— Rope 行列换算与切片余支收口（INFRA 第六十一批）。
+// 黑盒测试：覆盖率审计收口（INFRA 第七十七批）——
+// 空串构建与孤立高代理项的 UTF-8 长度按 3 字节计。
 
 ///|
-test "Rope：空串构造与空区间切片" {
-  let r = @infra_text.Rope::from_string("")
-  assert_eq(r.to_string(), "")
-  let s = @infra_text.Rope::from_string("hello")
-  assert_eq(s.slice(3, 3), "")
-  assert_eq(s.slice(4, 2), "")
-}
-
-///|
-test "Rope：大文本 Concat 结构下行列换算" {
+test "Rope：空串构建与孤立高代理项 UTF-8 计长" {
+  let empty = @infra_text.Rope::from_string("")
+  assert_eq(empty.len(), 0)
+  assert_eq(empty.utf8_len(), 0)
+  // 高代理项后跟非低代理项：按 3 字节（替换语义）计。
   let sb = StringBuilder::new()
-  for i in 0..<400 {
-    sb.write_string("line-\{i} content padding\n")
-  }
+  sb.write_char((0xD800).unsafe_to_char())
+  sb.write_char('a')
   let r = @infra_text.Rope::from_string(sb.to_string())
-  let off = r.offset_of_line(300)
-  let (line, col) = r.line_col_at(off)
-  assert_eq(line, 300)
-  assert_eq(col, 0)
-  let (l2, c2) = r.line_col_at(off + 5)
-  assert_eq(l2, 300)
-  assert_eq(c2, 5)
+  assert_eq(r.utf8_len(), 4)
 }

@@ -1,14 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":966.576231511254,"min":313.80768681672026,"max":337.3809498392283,"mean":322.19207717041803,"median":315.38759485530545,"variance":173.65041706459613,"std_dev":13.177648389018282,"std_dev_pct":4.089997651322813,"median_abs_dev":2.3423716580063996,"median_abs_dev_pct":0.7426961923093521,"quartiles":[314.59764083601283,315.38759485530545,326.3842723472669],"iqr":11.786631511254086,"batch_size":311,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1813.6684056818185,"min":584.4546079545454,"max":623.7029738636364,"mean":604.5561352272729,"median":605.5108238636365,"variance":385.79212942777633,"std_dev":19.641591825200326,"std_dev_pct":3.248927714184291,"median_abs_dev":26.971681589999953,"median_abs_dev_pct":4.454368200703558,"quartiles":[594.982715909091,605.5108238636365,614.6068988636364],"iqr":19.624182954545404,"batch_size":176,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":312.75958075024676,"min":99.45788904244817,"max":109.31782793682132,"mean":104.25319358341558,"median":103.9838637709773,"variance":24.35900266109411,"std_dev":4.935484035137193,"std_dev_pct":4.734132227026877,"median_abs_dev":6.7102101325172745,"median_abs_dev_pct":6.4531263690070215,"quartiles":[101.72087640671273,103.9838637709773,106.65084585389931],"iqr":4.929969447186579,"batch_size":1013,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":449.2322501567397,"min":147.43847194357366,"max":153.84609952978053,"mean":149.7440833855799,"median":147.94767868338556,"variance":12.684725211429317,"std_dev":3.561562186938383,"std_dev_pct":2.378432660853534,"median_abs_dev":0.7549499124451249,"median_abs_dev_pct":0.5102816882046188,"quartiles":[147.6930753134796,147.94767868338556,150.89688910658305],"iqr":3.20381379310345,"batch_size":638,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":411.0255873786408,"min":134.4700198335645,"max":141.19178529819695,"mean":137.0085291262136,"median":135.36378224687934,"variance":13.324426963191216,"std_dev":3.6502639580160796,"std_dev_pct":2.66426037947858,"median_abs_dev":1.3250921539805907,"median_abs_dev_pct":0.9789118861674976,"quartiles":[134.91690104022192,135.36378224687934,138.27778377253816],"iqr":3.3608827323162416,"batch_size":721,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":966.2091304918033,"min":313.26181147540984,"max":334.1446206557377,"mean":322.0697101639344,"median":318.80269836065577,"variance":117.02795440756792,"std_dev":10.817945942163323,"std_dev_pct":3.358883372378283,"median_abs_dev":8.214918896065608,"median_abs_dev_pct":2.576803439339845,"quartiles":[316.0322549180328,318.80269836065577,326.47365950819676],"iqr":10.441404590163984,"batch_size":305,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1780.8617686046512,"min":584.350673255814,"max":607.602665116279,"mean":593.6205895348837,"median":588.9084302325581,"variance":151.81711533765366,"std_dev":12.321408821139475,"std_dev_pct":2.0756370379257905,"median_abs_dev":6.757330493720868,"median_abs_dev_pct":1.147433140166192,"quartiles":[586.6295517441861,588.9084302325581,598.2555476744185],"iqr":11.62599593023242,"batch_size":172,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":311.12172814667986,"min":99.6830064420218,"max":106.62304380574827,"mean":103.70724271555996,"median":104.81567789890981,"variance":12.962501069245693,"std_dev":3.60034735397096,"std_dev_pct":3.4716450458968504,"median_abs_dev":2.6796006934786942,"median_abs_dev_pct":2.5564884444701614,"quartiles":[102.24934217046581,104.81567789890981,105.71936085232903],"iqr":3.4700186818632233,"batch_size":1009,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":464.5683900914634,"min":151.5273318597561,"max":160.16119237804878,"mean":154.8561300304878,"median":152.87986585365854,"variance":21.56510193479732,"std_dev":4.6438240637213335,"std_dev_pct":2.998798990267331,"median_abs_dev":2.0052668993597793,"median_abs_dev_pct":1.3116618647999627,"quartiles":[152.20359885670732,152.87986585365854,156.52052911585366],"iqr":4.316930259146346,"batch_size":656,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":420.7161645517241,"min":136.02490413793103,"max":148.37396800000002,"mean":140.23872151724137,"median":136.3172924137931,"variance":49.65804922739298,"std_dev":7.0468467577628635,"std_dev_pct":5.024893753681648,"median_abs_dev":0.4334948577930996,"median_abs_dev_pct":0.3180043046022509,"quartiles":[136.17109827586205,136.3172924137931,142.34563020689654],"iqr":6.174531931034494,"batch_size":725,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 332 | 50% | 2250 | -78% | OK
-massive_actor_scheduling | 4000 | 621 | 50% | 6000 | -84% | OK
-ask_round_trip | 900 | 104 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 148 | 50% | 2700 | -92% | OK
+high_frequency_send | 1500 | 314 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 586 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 107 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 158 | 50% | 2700 | -91% | OK
 supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 796 uncovered line(s) in 199 file(s)
+ts=1 level=ERROR
+Total: 784 uncovered line(s) in 194 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -8960,14 +8961,14 @@ Total: 796 uncovered line(s) in 199 file(s)
 990	}
    	…
 
-3 uncovered line(s) in src/infra_bench/stats.mbt:
+2 uncovered line(s) in src/infra_bench/stats.mbt:
 
 111	pub fn compute_stats(
 112	  samples : Array[Double],
 113	) -> Result[BenchStats, @graph.PathError] {
 114	  let n = samples.length()
 115	  if n == 0 {
-116	    return Err(	<-- UNCOVERED
+116	    return Err(
 117	      @graph.PathError::InvalidArgument(
 118	        "compute_stats: 样本数组为空，至少需要一个计时样本",
 119	      ),
@@ -11836,91 +11837,6 @@ Total: 796 uncovered line(s) in 199 file(s)
 266	}
    	…
 
-3 uncovered line(s) in src/infra_hash/hash_family.mbt:
-
-449	fn hmac_generic(
-450	  key : Array[Int],
-451	  message : Array[Int],
-452	  block : Int,
-453	  h : (Array[Int]) -> Array[Int],
-454	) -> Array[Int] {
-455	  let k0 : Array[Int] = []
-456	  if key.length() > block {
-457	    for b in h(key) {	<-- UNCOVERED
-458	      k0.push(b)
-459	    }
-460	  } else {
-461	    for b in key {
-462	      k0.push(b & 0xFF)
-463	    }
-464	  }
-465	  while k0.length() < block {
-466	    k0.push(0x00)
-467	  }
-468	  let inner : Array[Int] = []
-469	  for b in k0 {
-470	    inner.push(b ^ 0x36)
-471	  }
-472	  for b in message {
-473	    inner.push(b & 0xFF)
-474	  }
-475	  let outer : Array[Int] = []
-476	  for b in k0 {
-477	    outer.push(b ^ 0x5C)
-478	  }
-479	  for b in h(inner) {
-480	    outer.push(b)
-481	  }
-482	  h(outer)
-483	}
-   	…
-
-720	pub fn murmur3_32(data : Array[Int], seed : UInt) -> UInt {
-721	  let c1 = 0xcc9e2d51U
-722	  let c2 = 0x1b873593U
-723	  let n = data.length()
-724	  let nblocks = n / 4
-725	  let mut h = seed
-726	  for i in 0..<nblocks {
-727	    let base = i * 4
-728	    let mut k = (data[base] & 0xFF).reinterpret_as_uint() |
-729	      ((data[base + 1] & 0xFF).reinterpret_as_uint() << 8) |
-730	      ((data[base + 2] & 0xFF).reinterpret_as_uint() << 16) |
-731	      ((data[base + 3] & 0xFF).reinterpret_as_uint() << 24)
-732	    k = k * c1
-733	    k = rotl32(k, 15)
-734	    k = k * c2
-735	    h = h ^ k
-736	    h = rotl32(h, 13)
-737	    h = h * 5U + 0xe6546b64U
-738	  }
-739	  // 尾部 1..3 字节。
-740	  let tail = nblocks * 4
-741	  let mut k1 = 0U
-742	  if n % 4 >= 3 {
-743	    k1 = k1 ^ ((data[tail + 2] & 0xFF).reinterpret_as_uint() << 16)	<-- UNCOVERED
-744	  }
-745	  if n % 4 >= 2 {
-746	    k1 = k1 ^ ((data[tail + 1] & 0xFF).reinterpret_as_uint() << 8)	<-- UNCOVERED
-747	  }
-748	  if n % 4 >= 1 {
-749	    k1 = k1 ^ (data[tail] & 0xFF).reinterpret_as_uint()
-750	    k1 = k1 * c1
-751	    k1 = rotl32(k1, 15)
-752	    k1 = k1 * c2
-753	    h = h ^ k1
-754	  }
-755	  // 终混（fmix32）。
-756	  h = h ^ n.reinterpret_as_uint()
-757	  h = h ^ (h >> 16)
-758	  h = h * 0x85ebca6bU
-759	  h = h ^ (h >> 13)
-760	  h = h * 0xc2b2ae35U
-761	  h = h ^ (h >> 16)
-762	  h
-763	}
-   	…
-
 1 uncovered line(s) in src/infra_hash/sha3.mbt:
 
  84	fn sha3_sponge(data : Array[Int], rate : Int, out_len : Int) -> Array[Int] {
@@ -12207,7 +12123,7 @@ Total: 796 uncovered line(s) in 199 file(s)
 134	}
    	…
 
-3 uncovered line(s) in src/infra_text/rope.mbt:
+9 uncovered line(s) in src/infra_text/rope.mbt:
 
 206	fn build_balanced(leaves : Array[RopeNode]) -> RopeNode {
 207	  if leaves.length() == 0 {
@@ -12290,6 +12206,85 @@ Total: 796 uncovered line(s) in 199 file(s)
 477	  }
 478	  u8
 479	}
+   	…
+
+564	pub fn Rope::offset_of_line(self : Rope, line : Int) -> Int {
+565	  let total_nl = self.root.meta().nl
+566	  let mut k = if line < 0 {
+567	    0
+568	  } else if line > total_nl {
+569	    total_nl
+570	  } else {
+571	    line
+572	  }
+573	  if k == 0 {
+574	    return 0
+575	  }
+576	  // 目标：第 k 个 '\n' 之后的位置。
+577	  let mut acc = 0
+578	  let mut node = self.root
+579	  while true {
+580	    match node {
+581	      Leaf(s, _) => {
+582	        let n = s.length()
+583	        let mut seen = 0
+584	        for j in 0..<n {
+585	          if s.at(j).to_int() == 10 {
+586	            seen = seen + 1
+587	            if seen == k {
+588	              return acc + j + 1
+589	            }
+590	          }
+591	        }
+592	        return acc + n
+593	      }
+594	      Concat(l, r, _, _) => {	<-- UNCOVERED
+595	        let lm = l.meta()
+596	        if k <= lm.nl {
+597	          node = l	<-- UNCOVERED
+598	        } else {
+599	          acc = acc + lm.u16	<-- UNCOVERED
+600	          k = k - lm.nl
+601	          node = r
+602	        }
+603	      }
+604	    }
+605	  }
+606	  acc
+607	}
+   	…
+
+612	pub fn Rope::line_col_at(self : Rope, off : Int) -> (Int, Int) {
+613	  let n = self.root.len()
+614	  let p = if off < 0 { 0 } else if off > n { n } else { off }
+615	  // 行号 = [0, p) 内换行数。
+616	  let mut i = p
+617	  let mut line = 0
+618	  let mut node = self.root
+619	  while true {
+620	    match node {
+621	      Leaf(s, _) => {
+622	        for j in 0..<i {
+623	          if s.at(j).to_int() == 10 {
+624	            line = line + 1
+625	          }
+626	        }
+627	        break
+628	      }
+629	      Concat(l, r, _, _) => {	<-- UNCOVERED
+630	        let lm = l.meta()
+631	        if i <= lm.u16 {
+632	          node = l	<-- UNCOVERED
+633	        } else {
+634	          line = line + lm.nl	<-- UNCOVERED
+635	          i = i - lm.u16
+636	          node = r
+637	        }
+638	      }
+639	    }
+640	  }
+641	  (line, p - self.offset_of_line(line))
+642	}
    	…
 
 1 uncovered line(s) in src/infra_text/unicode.mbt:
@@ -12682,121 +12677,6 @@ Total: 796 uncovered line(s) in 199 file(s)
 120	}
    	…
 
-3 uncovered line(s) in src/logging/logging.mbt:
-
-656	fn parse_value(r : JsonReader) -> JVal? {
-657	  r.skip_ws()
-658	  match r.peek() {
-659	    Some('{') => parse_object(r)
-660	    Some('[') => parse_array(r)
-661	    Some('"') =>
-662	      match parse_string(r) {
-663	        Some(s) => Some(JStr(s))
-664	        None => None
-665	      }
-666	    Some('t') => parse_keyword(r, "true", JBool(true))
-667	    Some('f') => parse_keyword(r, "false", JBool(false))
-668	    Some(c) =>
-669	      if c == '-' || (c >= '0' && c <= '9') {
-670	        parse_num(r)
-671	      } else {
-672	        None
-673	      }
-674	    None => None	<-- UNCOVERED
-675	  }
-676	}
-   	…
-
-713	fn parse_object(r : JsonReader) -> JVal? {
-714	  // 已确认当前为 '{'。
-715	  r.pos = r.pos + 1
-716	  let pairs : Array[(String, JVal)] = []
-717	  r.skip_ws()
-718	  if r.peek() == Some('}') {
-719	    r.pos = r.pos + 1
-720	    return Some(JObj(pairs))
-721	  }
-722	  while true {
-723	    r.skip_ws()
-724	    // 键必须为字符串。
-725	    if r.peek() != Some('"') {
-726	      return None
-727	    }
-728	    let key = match parse_string(r) {
-729	      Some(k) => k
-730	      None => return None	<-- UNCOVERED
-731	    }
-732	    r.skip_ws()
-733	    if r.peek() != Some(':') {
-734	      return None
-735	    }
-736	    r.pos = r.pos + 1
-737	    let value = match parse_value(r) {
-738	      Some(v) => v
-739	      None => return None
-740	    }
-741	    pairs.push((key, value))
-742	    r.skip_ws()
-743	    match r.peek() {
-744	      Some(',') => {
-745	        r.pos = r.pos + 1
-746	        continue
-747	      }
-748	      Some('}') => {
-749	        r.pos = r.pos + 1
-750	        break
-751	      }
-752	      _ => return None
-753	    }
-754	  }
-755	  Some(JObj(pairs))
-756	}
-   	…
-
-760	fn parse_string(r : JsonReader) -> String? {
-761	  // 已确认当前为 '"'。
-762	  r.pos = r.pos + 1
-763	  let out = @infra_text.TextBuilder::new()
-764	  while r.pos < r.chars.length() {
-765	    let c = r.chars[r.pos]
-766	    r.pos = r.pos + 1
-767	    if c == '"' {
-768	      return Some(out.build())
-769	    } else if c == '\\' {
-770	      if r.pos >= r.chars.length() {
-771	        return None
-772	      }
-773	      let esc = r.chars[r.pos]
-774	      r.pos = r.pos + 1
-775	      match esc {
-776	        '"' => out.push_str("\"")
-777	        '\\' => out.push_str("\\")
-778	        '/' => out.push_str("/")
-779	        'n' => out.push_str("\n")
-780	        'r' => out.push_str("\r")
-781	        't' => out.push_str("\t")
-782	        'b' => out.push_str("\u{08}")
-783	        'f' => out.push_str("\u{0C}")
-784	        'u' => {
-785	          if r.pos + 4 > r.chars.length() {
-786	            return None	<-- UNCOVERED
-787	          }
-788	          match parse_hex4(r) {
-789	            Some(code) => out.push_str(code.unsafe_to_char().to_string())
-790	            None => return None
-791	          }
-792	        }
-793	        _ => return None
-794	      }
-795	    } else {
-796	      out.push_char(c)
-797	    }
-798	  }
-799	  // 未遇到收尾双引号。
-800	  None
-801	}
-   	…
-
 3 uncovered line(s) in src/logging/otlp_export.mbt:
 
 118	pub fn otlp_schema() -> @serialization.ProtoSchema {
@@ -12886,56 +12766,6 @@ Total: 796 uncovered line(s) in 199 file(s)
 105	    r
 106	  }
 107	}
-   	…
-
-3 uncovered line(s) in src/logging/sink_layer.mbt:
-
-74	pub fn SinkHandle::console(
-75	  formatter : Formatter,
-76	  level? : Level = default_sink_level,
-77	) -> SinkHandle {
-78	  { target: TConsole, formatter, buffer: [], level }	<-- UNCOVERED
-79	}
-  	…
-
-130	pub fn SinkHandle::emit(self : SinkHandle, event : Event) -> Unit {
-131	  // AC6：级别低于生效级别的记录不交付任何下游（含不进入 Buffered 缓冲）。
-132	  if event.level.rank() < self.level.rank() {
-133	    return
-134	  }
-135	  match self.target {
-136	    TConsole =>
-137	      // AC1：经格式器渲染后写入标准输出。
-138	      println(format_event(self.formatter, event))	<-- UNCOVERED
-139	    TCallback(cb) =>
-140	      // AC2：恰好调用一次回调。
-141	      cb(event)
-142	    TBuffered(threshold~, ..) => {
-143	      // AC3：未达阈值时仅暂存，不交付下游。
-144	      self.buffer.push(event)
-145	      // AC4：达到阈值即按到达顺序批量下发并清空缓冲。
-146	      if self.buffer.length() >= threshold {
-147	        self.flush()
-148	      }
-149	    }
-150	  }
-151	}
-   	…
-
-161	pub fn SinkHandle::flush(self : SinkHandle) -> Unit {
-162	  match self.target {
-163	    TBuffered(down~, ..) => {
-164	      // 按到达顺序逐条下发。
-165	      for ev in self.buffer {
-166	        down.emit(ev)
-167	      }
-168	      // 清空缓冲（下游已接收全部记录）。
-169	      self.buffer = []
-170	    }
-171	    // Console / Callback 无缓冲，flush 无需动作。
-172	    _ => ()	<-- UNCOVERED
-173	  }
-174	}
    	…
 
 1 uncovered line(s) in src/logging/trace_context.mbt:
@@ -13088,98 +12918,6 @@ Total: 796 uncovered line(s) in 199 file(s)
 123	      }
 124	  }
 125	}
-   	…
-
-3 uncovered line(s) in src/lsp_binding/cancel.mbt:
-
-67	pub fn CancelRegistry::cancel(self : CancelRegistry, id : Id) -> CancelRegistry {
-68	  let next : Map[String, Bool] = Map([])
-69	  for k, v in self.cancelled {
-70	    next[k] = v	<-- UNCOVERED
-71	  }
-72	  next[id_key(id)] = true
-73	  { cancelled: next }
-74	}
-  	…
-
- 93	pub fn cancel_id_of(params : Json) -> Id? {
- 94	  match params {
- 95	    JObj(fields) =>
- 96	      match json_obj_get(fields, "id") {
- 97	        Some(j) => parse_id(j)
- 98	        None => None	<-- UNCOVERED
- 99	      }
-100	    _ => None	<-- UNCOVERED
-101	  }
-102	}
-   	…
-
-3 uncovered line(s) in src/lsp_binding/framing.mbt:
-
-103	fn frame_split_crlf(s : String) -> Array[String] {
-104	  let chars : Array[Char] = []
-105	  for c in s {
-106	    chars.push(c)
-107	  }
-108	  let lines : Array[String] = []
-109	  let n = chars.length()
-110	  let mut cur = StringBuilder::new()
-111	  let mut i = 0
-112	  while i < n {
-113	    if i + 1 < n && chars[i] == '\r' && chars[i + 1] == '\n' {
-114	      lines.push(cur.to_string())	<-- UNCOVERED
-115	      cur = StringBuilder::new()
-116	      i = i + 2
-117	    } else {
-118	      cur.write_char(chars[i])
-119	      i = i + 1
-120	    }
-121	  }
-122	  lines.push(cur.to_string())
-123	  lines
-124	}
-   	…
-
-177	fn frame_trim_spaces(s : String) -> String {
-178	  let chars : Array[Char] = []
-179	  for c in s {
-180	    chars.push(c)
-181	  }
-182	  let n = chars.length()
-183	  let mut start = 0
-184	  while start < n && (chars[start] == ' ' || chars[start] == '\t') {
-185	    start = start + 1
-186	  }
-187	  let mut end = n
-188	  while end > start && (chars[end - 1] == ' ' || chars[end - 1] == '\t') {
-189	    end = end - 1	<-- UNCOVERED
-190	  }
-191	  let sb = StringBuilder::new()
-192	  let mut i = start
-193	  while i < end {
-194	    sb.write_char(chars[i])
-195	    i = i + 1
-196	  }
-197	  sb.to_string()
-198	}
-   	…
-
-349	pub fn FrameReader::next(
-350	  self : FrameReader,
-351	) -> Result[(JsonRpcMessage, FrameReader)?, RpcError] {
-352	  match frame_scan(self.buf) {
-353	    ScanIncomplete => Ok(None)
-354	    ScanBad(e) => Err(e)
-355	    ScanFrame(body, total) =>
-356	      match decode_message(body) {
-357	        Ok(msg) => {
-358	          let rest = frame_byte_slice(self.buf, total, self.buf.length())
-359	          Ok(Some((msg, { buf: rest })))
-360	        }
-361	        Err(e) => Err(e)	<-- UNCOVERED
-362	      }
-363	  }
-364	}
    	…
 
 1 uncovered line(s) in src/lsp_binding/json.mbt:
@@ -16740,131 +16478,7 @@ Total: 796 uncovered line(s) in 199 file(s)
 1041	}
     	…
 
-3 uncovered line(s) in src/serialization/proto_parser.mbt:
-
-247	fn parse_message_body(
-248	  start : @parser_combinator.Input,
-249	) -> Result[(Array[FieldDef], @parser_combinator.Input), ParseError] {
-250	  let fields : Array[FieldDef] = []
-251	  let mut cur = start
-252	  while true {
-253	    cur = skip_trivia(cur)
-254	    match cur.peek() {
-255	      None => return Err(ParseError::at(start.pos, "message 块未闭合"))
-256	      Some('}') => return Ok((fields, cur.advance()))
-257	      Some(';') => cur = cur.advance() // 容忍空语句。
-258	      _ =>
-259	        match parse_ident(cur) {
-260	          None =>
-261	            return Err(ParseError::at(cur.pos, "字段声明期望标识符"))
-262	          Some((tok, after)) =>
-263	            if tok == "message" || tok == "enum" || tok == "oneof" {
-264	              // 嵌套类型：跳过可选名 + 配平块体（骨架不展开嵌套）。
-265	              let a1 = skip_trivia(after)
-266	              let a2 = match parse_ident(a1) {
-267	                Some((_, r)) => r
-268	                None => a1	<-- UNCOVERED
-269	              }
-270	              let a3 = skip_trivia(a2)
-271	              match a3.peek() {
-272	                Some('{') =>
-273	                  match skip_block(a3.advance()) {
-274	                    Ok(r) => cur = r
-275	                    Err(e) => return Err(e)	<-- UNCOVERED
-276	                  }
-277	                _ =>
-278	                  return Err(ParseError::at(a3.pos, "嵌套类型期望 '{'"))
-279	              }
-280	            } else if tok == "reserved" ||
-281	              tok == "option" ||
-282	              tok == "extensions" {
-283	              match skip_until(after, ';', "声明缺少结尾 ';'") {
-284	                Ok(r) => cur = r
-285	                Err(e) => return Err(e)
-286	              }
-287	            } else {
-288	              // 字段：[repeated/optional/required] 类型 名称 = 字段号 [选项] ;
-289	              let mut repeated = false
-290	              let mut type_name = tok
-291	              let mut tail = after
-292	              if tok == "repeated" || tok == "optional" || tok == "required" {
-293	                repeated = tok == "repeated"
-294	                let a1 = skip_trivia(after)
-295	                match parse_ident(a1) {
-296	                  Some((t2, r2)) => {
-297	                    type_name = t2
-298	                    tail = r2
-299	                  }
-300	                  None =>
-301	                    return Err(ParseError::at(a1.pos, "期望字段类型"))
-302	                }
-303	              }
-304	              let aws = skip_trivia(tail)
-305	              // map<...> 等带尖括号的复合类型：骨架跳过整条声明。
-306	              if aws.peek() == Some('<') {
-307	                match skip_until(aws, ';', "map 字段缺少结尾 ';'") {
-308	                  Ok(r) => {
-309	                    cur = r
-310	                    continue
-311	                  }
-312	                  Err(e) => return Err(e)
-313	                }
-314	              }
-315	              match parse_ident(aws) {
-316	                None => return Err(ParseError::at(aws.pos, "期望字段名"))
-317	                Some((fname, r1)) => {
-318	                  let r2 = skip_trivia(r1)
-319	                  match try_char(r2, '=') {
-320	                    None =>
-321	                      return Err(ParseError::at(r2.pos, "字段期望 '='"))
-322	                    Some(r3) => {
-323	                      let r4 = skip_trivia(r3)
-324	                      match parse_number(r4) {
-325	                        None =>
-326	                          return Err(
-327	                            ParseError::at(r4.pos, "字段期望字段号"),
-328	                          )
-329	                        Some((num, r5)) => {
-330	                          let r6 = skip_trivia(r5)
-331	                          // 可选字段选项 `[...]`。
-332	                          let r7 = if r6.peek() == Some('[') {
-333	                            match
-334	                              skip_until(r6, ']', "字段选项缺少 ']'") {
-335	                              Ok(r) => r
-336	                              Err(e) => return Err(e)
-337	                            }
-338	                          } else {
-339	                            r6
-340	                          }
-341	                          let r8 = skip_trivia(r7)
-342	                          match try_char(r8, ';') {
-343	                            None =>
-344	                              return Err(
-345	                                ParseError::at(r8.pos, "字段期望 ';'"),
-346	                              )
-347	                            Some(r9) => {
-348	                              fields.push({
-349	                                name: fname,
-350	                                number: num,
-351	                                ftype: field_type_of(type_name),
-352	                                repeated,
-353	                              })
-354	                              cur = r9
-355	                            }
-356	                          }
-357	                        }
-358	                      }
-359	                    }
-360	                  }
-361	                }
-362	              }
-363	            }
-364	        }
-365	    }
-366	  }
-367	  Ok((fields, cur))
-368	}
-   	…
+1 uncovered line(s) in src/serialization/proto_parser.mbt:
 
 451	pub fn parse_proto(src : String) -> Result[Schema, ParseError] {
 452	  let messages : Array[MessageDef] = []
@@ -17583,4 +17197,4 @@ Total: 796 uncovered line(s) in 199 file(s)
 268	}
    	…
 
-Total: 796 uncovered line(s) in 199 file(s)
+Total: 784 uncovered line(s) in 194 file(s)

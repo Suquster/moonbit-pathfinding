@@ -774,6 +774,18 @@
         3197→3201 三后端全绿。2026-07-12，
         `src/infra_compress/zstd_gaps4_wbtest.mbt`、
         `src/lsp_server/rope_join_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十五批 余支覆盖收口（数据结构 + 图算法 + 词法）：
+        BTreeMap 深树借位/前后继下潜与 contains；Roaring 位图交集
+        稀疏化/空容器删除；typed_query TargetNotFound；OSM 空白内容
+        合成降级与过小维度钳制；indexed 四入口端点越界拒绝；
+        ch_csr_query_cost 越界；TOML 下划线接字母/双小数点/短日期；
+        CBOR 数组/映射长度头截断。src/ 未覆盖 398→382 行，
+        3201→3209 三后端全绿。2026-07-12，
+        `src/infra_ds/ds_gaps3_test.mbt`、
+        `src/graph/typed_query_gaps2_test.mbt`、
+        `src/directed/indexed_bounds_gaps_test.mbt`、
+        `src/advanced/ch_csr_gaps2_test.mbt` 等。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

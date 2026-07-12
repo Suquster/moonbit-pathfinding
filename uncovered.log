@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":943.9257582802547,"min":307.81963757961785,"max":321.607875477707,"mean":314.6419194267516,"median":314.49824522292994,"variance":47.54435779120841,"std_dev":6.895241677505467,"std_dev_pct":2.1914567804785703,"median_abs_dev":9.901703691974506,"median_abs_dev_pct":3.1484130173622273,"quartiles":[311.15894140127386,314.49824522292994,318.05306035031845],"iqr":6.894118949044582,"batch_size":314,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1833.053198802395,"min":608.14005748503,"max":616.3843269461078,"mean":611.0177329341317,"median":608.5288143712575,"variance":21.63803144618013,"std_dev":4.651669748185068,"std_dev_pct":0.7612986493612162,"median_abs_dev":0.5763709595208878,"median_abs_dev_pct":0.0947154754070938,"quartiles":[608.3344359281436,608.5288143712575,612.4565706586826],"iqr":4.12213473053896,"batch_size":167,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":291.59222103213244,"min":97.13788724440117,"max":97.24295501460566,"mean":97.19740701071082,"median":97.21137877312562,"variance":0.002906216692667386,"std_dev":0.05390933771312152,"std_dev_pct":0.055463761195996615,"median_abs_dev":0.04681493561830567,"median_abs_dev_pct":0.04815787638149188,"quartiles":[97.1746330087634,97.21137877312562,97.22716689386564],"iqr":0.052533885102249656,"batch_size":1027,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":442.2990398230088,"min":147.33175442477875,"max":147.53149336283187,"mean":147.43301327433628,"median":147.43579203539824,"variance":0.009979701978426195,"std_dev":0.09989845833858596,"std_dev_pct":0.06775854072296529,"median_abs_dev":0.1418867880531005,"median_abs_dev_pct":0.09623632504313101,"quartiles":[147.38377323008848,147.43579203539824,147.48364269911505],"iqr":0.09986946902657223,"batch_size":678,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":399.5618935047361,"min":132.99202665764545,"max":133.40264221921515,"mean":133.18729783491202,"median":133.1672246278755,"variance":0.042453485081348594,"std_dev":0.20604243514710407,"std_dev_pct":0.15470126543335783,"median_abs_dev":0.2597485106630641,"median_abs_dev_pct":0.19505438473236134,"quartiles":[133.07962564276048,133.1672246278755,133.28493342354534],"iqr":0.20530778078486378,"batch_size":739,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":977.6192216560509,"min":318.5267732484076,"max":338.93309808917195,"mean":325.87307388535027,"median":320.15935031847135,"variance":128.5895011257299,"std_dev":11.339731087011275,"std_dev_pct":3.479799957636529,"median_abs_dev":2.42045876407651,"median_abs_dev_pct":0.7560168902356944,"quartiles":[319.34306178343945,320.15935031847135,329.5462242038217],"iqr":10.203162420382228,"batch_size":314,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1753.5702658536584,"min":579.2553341463415,"max":592.279431707317,"mean":584.5234219512195,"median":582.0355,"variance":47.04909604597216,"std_dev":6.859234362957149,"std_dev_pct":1.1734746813156063,"median_abs_dev":4.121873894634011,"median_abs_dev_pct":0.7081825583893099,"quartiles":[580.6454170731707,582.0355,587.1574658536586],"iqr":6.512048780487817,"batch_size":164,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":302.0739047318612,"min":98.07616971608833,"max":102.31544794952681,"mean":100.69130157728706,"median":101.68228706624605,"variance":5.229409164621784,"std_dev":2.2867901444211673,"std_dev_pct":2.27109006299408,"median_abs_dev":0.9387243255520636,"median_abs_dev_pct":0.9231935597008005,"quartiles":[99.87922839116719,101.68228706624605,101.99886750788643],"iqr":2.1196391167192417,"batch_size":951,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":463.8331986688852,"min":152.77325524126456,"max":155.746615640599,"mean":154.61106622296174,"median":155.31332778702162,"variance":2.5800964943494464,"std_dev":1.6062678775190167,"std_dev_pct":1.0389087383969318,"median_abs_dev":0.6423925717138279,"median_abs_dev_pct":0.4136107189685159,"quartiles":[154.0432915141431,155.31332778702162,155.5299717138103],"iqr":1.4866801996672052,"batch_size":601,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":429.28650755555554,"min":137.47582385185186,"max":146.58973851851852,"mean":143.09550251851851,"median":145.22094518518517,"variance":24.153990034785714,"std_dev":4.914670897912261,"std_dev_pct":3.4345390396013564,"median_abs_dev":2.029372996000015,"median_abs_dev_pct":1.3974382231241964,"quartiles":[141.34838451851851,145.22094518518517,145.90534185185186],"iqr":4.556957333333344,"batch_size":675,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 306 | 50% | 2250 | -80% | OK
-massive_actor_scheduling | 4000 | 572 | 50% | 6000 | -86% | OK
+high_frequency_send | 1500 | 317 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 584 | 50% | 6000 | -85% | OK
 ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
 router_dispatch | 1800 | 147 | 50% | 2700 | -92% | OK
-supervision_restart | 1200 | 133 | 50% | 1800 | -89% | OK
+supervision_restart | 1200 | 138 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 831 uncovered line(s) in 202 file(s)
+Total: 815 uncovered line(s) in 201 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -3483,7 +3483,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 497	}
    	…
 
-4 uncovered line(s) in src/advanced/ch_csr.mbt:
+3 uncovered line(s) in src/advanced/ch_csr.mbt:
 
 452	pub fn ch_csr_preprocess(g : @graph.CsrGraph[Double]) -> ChCsr {
 453	  let n = g.n
@@ -3686,106 +3686,6 @@ Total: 831 uncovered line(s) in 202 file(s)
 650	    epoch: 0,
 651	  }
 652	}
-   	…
-
-658	pub fn ch_csr_query_cost(g : ChCsr, source : Int, target : Int) -> Double? {
-659	  if source < 0 || source >= g.n || target < 0 || target >= g.n {
-660	    return None	<-- UNCOVERED
-661	  }
-662	  if source == target {
-663	    return Some(0.0)
-664	  }
-665	  g.epoch = g.epoch + 1
-666	  let ep = g.epoch
-667	  g.pq_f.clear()
-668	  g.pq_b.clear()
-669	  g.dist_f[source] = 0.0
-670	  g.stamp_f[source] = ep
-671	  g.pq_f.push(0.0, source)
-672	  g.dist_b[target] = 0.0
-673	  g.stamp_b[target] = ep
-674	  g.pq_b.push(0.0, target)
-675	  let mut best = ch_csr_inf
-676	  while !g.pq_f.is_empty() || !g.pq_b.is_empty() {
-677	    let f_top = g.pq_f.min_key()
-678	    let b_top = g.pq_b.min_key()
-679	    if f_top >= best && b_top >= best {
-680	      break
-681	    }
-682	    if f_top <= b_top {
-683	      let _ = g.pq_f.pop()
-684	      let d = g.pq_f.top_key
-685	      let u = g.pq_f.top_val
-686	      if g.stamp_f[u] == ep && d > g.dist_f[u] {
-687	        continue
-688	      }
-689	      if g.stamp_b[u] == ep {
-690	        let total = d + g.dist_b[u]
-691	        if total < best {
-692	          best = total
-693	        }
-694	      }
-695	      let mut stalled = false
-696	      for k in g.dn_row[u]..<g.dn_row[u + 1] {
-697	        let v = g.dn_col[k]
-698	        if g.stamp_f[v] == ep && g.dist_f[v] + g.dn_w[k] < d {
-699	          stalled = true
-700	          break
-701	        }
-702	      }
-703	      if stalled {
-704	        continue
-705	      }
-706	      for k in g.up_row[u]..<g.up_row[u + 1] {
-707	        let v = g.up_col[k]
-708	        let nd = d + g.up_w[k]
-709	        if g.stamp_f[v] != ep || nd < g.dist_f[v] {
-710	          g.dist_f[v] = nd
-711	          g.stamp_f[v] = ep
-712	          g.pq_f.push(nd, v)
-713	        }
-714	      }
-715	    } else {
-716	      let _ = g.pq_b.pop()
-717	      let d = g.pq_b.top_key
-718	      let u = g.pq_b.top_val
-719	      if g.stamp_b[u] == ep && d > g.dist_b[u] {
-720	        continue
-721	      }
-722	      if g.stamp_f[u] == ep {
-723	        let total = d + g.dist_f[u]
-724	        if total < best {
-725	          best = total
-726	        }
-727	      }
-728	      let mut stalled = false
-729	      for k in g.up_row[u]..<g.up_row[u + 1] {
-730	        let v = g.up_col[k]
-731	        if g.stamp_b[v] == ep && g.dist_b[v] + g.up_w[k] < d {
-732	          stalled = true
-733	          break
-734	        }
-735	      }
-736	      if stalled {
-737	        continue
-738	      }
-739	      for k in g.dn_row[u]..<g.dn_row[u + 1] {
-740	        let v = g.dn_col[k]
-741	        let nd = d + g.dn_w[k]
-742	        if g.stamp_b[v] != ep || nd < g.dist_b[v] {
-743	          g.dist_b[v] = nd
-744	          g.stamp_b[v] = ep
-745	          g.pq_b.push(nd, v)
-746	        }
-747	      }
-748	    }
-749	  }
-750	  if best == ch_csr_inf {
-751	    None
-752	  } else {
-753	    Some(best)
-754	  }
-755	}
    	…
 
 764	fn ch_csr_find_shortcut(
@@ -7849,301 +7749,6 @@ Total: 831 uncovered line(s) in 202 file(s)
 109	}
    	…
 
-4 uncovered line(s) in src/directed/dijkstra_indexed.mbt:
-
-517	pub fn dijkstra_bidirectional_ctx(
-518	  g : WeightedCsr,
-519	  rg : WeightedCsr,
-520	  ctx_f : SearchCtx,
-521	  ctx_b : SearchCtx,
-522	  start : Int,
-523	  target : Int,
-524	) -> (Array[Int], Int)? {
-525	  let n = g.node_count()
-526	  if start < 0 || start >= n || target < 0 || target >= n {
-527	    return None	<-- UNCOVERED
-528	  }
-529	  if start == target {
-530	    return Some(([start], 0))
-531	  }
-532	  if g.max_weight > DIAL_MAX_W || g.max_weight <= 0 {
-533	    // 大权/零权：走堆式双向（零启发式 NBA*，meet-in-the-middle）。
-534	    return astar_biheap_ctx(g, rg, ctx_f, ctx_b, start, target, zero_h, zero_h)
-535	  }
-536	  ctx_f.gen = ctx_f.gen + 1
-537	  ctx_b.gen = ctx_b.gen + 1
-538	  let gf = ctx_f.gen
-539	  let gb = ctx_b.gen
-540	  let df = ctx_f.dist
-541	  let db = ctx_b.dist
-542	  let pf = ctx_f.parent
-543	  let pb = ctx_b.parent
-544	  let sf = ctx_f.stamp
-545	  let sb = ctx_b.stamp
-546	  let m = g.max_weight + 1
-547	  let bf = ctx_f.dial_buckets(m)
-548	  let bb = ctx_b.dial_buckets(m)
-549	  df[start] = 0L
-550	  sf[start] = gf
-551	  pf[start] = -1
-552	  bf[0].push(start.to_int64())
-553	  db[target] = 0L
-554	  sb[target] = gb
-555	  pb[target] = -1
-556	  bb[0].push(target.to_int64())
-557	  let mut pend_f = 1
-558	  let mut pend_b = 1
-559	  let mut d_f = 0L
-560	  let mut d_b = 0L
-561	  let mut cur_f = 0 // d_f 对应的桶下标（增量维护，免逐次取模除法）
-562	  let mut cur_b = 0
-563	  let mut mu = INF_DIST
-564	  let mut meet = -1
-565	  while pend_f > 0 && pend_b > 0 {
-566	    if d_f + d_b > mu {
-567	      break
-568	    }
-569	    if d_f <= d_b {
-570	      // 正向推进一个距离值。
-571	      let b = bf[cur_f]
-572	      let mut bi = 0
-573	      while bi < b.length() {
-574	        let u = b[bi].to_int()
-575	        bi = bi + 1
-576	        pend_f = pend_f - 1
-577	        if df[u] != d_f {
-578	          continue
-579	        }
-580	        let stop = g.offsets[u + 1]
-581	        for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
-582	          let pe = g.packed[ei]
-583	          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
-584	          let nd = d_f + (pe >> NODE_BITS)
-585	          let dv = if sf[v] == gf { df[v] } else { INF_DIST }
-586	          if nd < dv {
-587	            df[v] = nd
-588	            sf[v] = gf
-589	            pf[v] = u
-590	            let mut slot = cur_f + (nd - d_f).to_int()
-591	            if slot >= m {
-592	              slot = slot - m
-593	            }
-594	            bf[slot].push(v.to_int64())
-595	            pend_f = pend_f + 1
-596	            if sb[v] == gb && nd + db[v] < mu {
-597	              mu = nd + db[v]
-598	              meet = v
-599	            }
-600	          }
-601	        }
-602	      }
-603	      b.clear()
-604	      d_f = d_f + 1L
-605	      cur_f = cur_f + 1
-606	      if cur_f == m {
-607	        cur_f = 0
-608	      }
-609	    } else {
-610	      // 反向推进一个距离值（rg 出边 = g 入边）。
-611	      let b = bb[cur_b]
-612	      let mut bi = 0
-613	      while bi < b.length() {
-614	        let u = b[bi].to_int()
-615	        bi = bi + 1
-616	        pend_b = pend_b - 1
-617	        if db[u] != d_b {
-618	          continue
-619	        }
-620	        let stop = rg.offsets[u + 1]
-621	        for ei = rg.offsets[u]; ei < stop; ei = ei + 1 {
-622	          let pe = rg.packed[ei]
-623	          let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
-624	          let nd = d_b + (pe >> NODE_BITS)
-625	          let dv = if sb[v] == gb { db[v] } else { INF_DIST }
-626	          if nd < dv {
-627	            db[v] = nd
-628	            sb[v] = gb
-629	            pb[v] = u
-630	            let mut slot = cur_b + (nd - d_b).to_int()
-631	            if slot >= m {
-632	              slot = slot - m
-633	            }
-634	            bb[slot].push(v.to_int64())
-635	            pend_b = pend_b + 1
-636	            if sf[v] == gf && nd + df[v] < mu {
-637	              mu = nd + df[v]
-638	              meet = v
-639	            }
-640	          }
-641	        }
-642	      }
-643	      b.clear()
-644	      d_b = d_b + 1L
-645	      cur_b = cur_b + 1
-646	      if cur_b == m {
-647	        cur_b = 0
-648	      }
-649	    }
-650	  }
-651	  if meet < 0 {
-652	    return None
-653	  }
-654	  let path = [meet]
-655	  let mut node = meet
-656	  while pf[node] >= 0 {
-657	    node = pf[node]
-658	    path.push(node)
-659	  }
-660	  path.rev_in_place()
-661	  node = meet
-662	  while pb[node] >= 0 {
-663	    node = pb[node]
-664	    path.push(node)
-665	  }
-666	  Some((path, mu.to_int()))
-667	}
-   	…
-
-926	pub fn astar_bidirectional_ctx(
-927	  g : WeightedCsr,
-928	  rg : WeightedCsr,
-929	  ctx_f : SearchCtx,
-930	  ctx_b : SearchCtx,
-931	  start : Int,
-932	  target : Int,
-933	  h_f : (Int) -> Int,
-934	  h_b : (Int) -> Int,
-935	) -> (Array[Int], Int)? {
-936	  let n = g.node_count()
-937	  if start < 0 || start >= n || target < 0 || target >= n {
-938	    return None	<-- UNCOVERED
-939	  }
-940	  if start == target {
-941	    return Some(([start], 0))
-942	  }
-943	  if g.max_weight >= 1 && g.max_weight <= DIAL_MAX_W {
-944	    return astar_bidial_ctx(g, rg, ctx_f, ctx_b, start, target, h_f, h_b)
-945	  }
-946	  astar_biheap_ctx(g, rg, ctx_f, ctx_b, start, target, h_f, h_b)
-947	}
-   	…
-
-1084	pub fn astar_indexed_ctx(
-1085	  g : WeightedCsr,
-1086	  ctx : SearchCtx,
-1087	  start : Int,
-1088	  target : Int,
-1089	  h : (Int) -> Int,
-1090	) -> (Array[Int], Int)? {
-1091	  let n = g.node_count()
-1092	  if start < 0 || start >= n || target < 0 || target >= n {
-1093	    return None	<-- UNCOVERED
-1094	  }
-1095	  if g.max_weight <= DIAL_MAX_W && g.max_weight > 0 {
-1096	    return astar_dial_ctx(g, ctx, start, target, h)
-1097	  }
-1098	  ctx.gen = ctx.gen + 1
-1099	  let gen = ctx.gen
-1100	  let dist = ctx.dist
-1101	  let parent = ctx.parent
-1102	  let stamp = ctx.stamp
-1103	  let closed = ctx.closed
-1104	  let heap = ctx.rheap
-1105	  heap.reset(0L)
-1106	  let inf = 0x3FFF_FFFF_FFFFL
-1107	  dist[start] = 0L
-1108	  stamp[start] = gen
-1109	  parent[start] = -1
-1110	  heap.push((h(start).to_int64() << NODE_BITS) | start.to_int64())
-1111	  while heap.len > 0 {
-1112	    let enc = heap.pop()
-1113	    let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
-1114	    let du = dist[u]
-1115	    // 一致启发式下首次弹出即最优：closed 戳直接跳过陈旧条目，
-1116	    // 免每弹出一次 h(u) 重算。
-1117	    if closed[u] == gen {
-1118	      continue
-1119	    }
-1120	    closed[u] = gen
-1121	    if u == target {
-1122	      let path = [u]
-1123	      let mut node = u
-1124	      while node != start {
-1125	        node = parent[node]
-1126	        path.push(node)
-1127	      }
-1128	      path.rev_in_place()
-1129	      return Some((path, du.to_int()))
-1130	    }
-1131	    let stop = g.offsets[u + 1]
-1132	    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
-1133	      let pe = g.packed[ei]
-1134	      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
-1135	      let nd = du + (pe >> NODE_BITS)
-1136	      let dv = if stamp[v] == gen { dist[v] } else { inf }
-1137	      if nd < dv {
-1138	        dist[v] = nd
-1139	        stamp[v] = gen
-1140	        parent[v] = u
-1141	        heap.push(((nd + h(v).to_int64()) << NODE_BITS) | v.to_int64())
-1142	      }
-1143	    }
-1144	  }
-1145	  None
-1146	}
-    	…
-
-1149	fn astar_indexed_h(
-1150	  g : WeightedCsr,
-1151	  start : Int,
-1152	  target : Int,
-1153	  h : (Int) -> Int,
-1154	) -> (Array[Int], Int)? {
-1155	  let n = g.node_count()
-1156	  if start < 0 || start >= n || target < 0 || target >= n {
-1157	    return None	<-- UNCOVERED
-1158	  }
-1159	  let inf = 0x3FFF_FFFF_FFFFL
-1160	  let dist : Array[Int64] = Array::make(n, inf)
-1161	  let parent = Array::make(n, -1)
-1162	  let heap = EncodedHeap::new(16)
-1163	  dist[start] = 0L
-1164	  heap.push((h(start).to_int64() << NODE_BITS) | start.to_int64())
-1165	  while heap.len > 0 {
-1166	    let enc = heap.pop()
-1167	    let u = (enc & ((1L << NODE_BITS) - 1L)).to_int()
-1168	    let f = enc >> NODE_BITS
-1169	    let du = dist[u]
-1170	    // 陈旧条目：f = g + h(u)，若对应的 g 超过当前 dist 则跳过。
-1171	    if f - h(u).to_int64() > du {
-1172	      continue
-1173	    }
-1174	    if u == target {
-1175	      let path = [u]
-1176	      let mut node = u
-1177	      while node != start {
-1178	        node = parent[node]
-1179	        path.push(node)
-1180	      }
-1181	      path.rev_in_place()
-1182	      return Some((path, du.to_int()))
-1183	    }
-1184	    let stop = g.offsets[u + 1]
-1185	    for ei = g.offsets[u]; ei < stop; ei = ei + 1 {
-1186	      let pe = g.packed[ei]
-1187	      let v = (pe & ((1L << NODE_BITS) - 1L)).to_int()
-1188	      let nd = du + (pe >> NODE_BITS)
-1189	      if nd < dist[v] {
-1190	        dist[v] = nd
-1191	        parent[v] = u
-1192	        heap.push(((nd + h(v).to_int64()) << NODE_BITS) | v.to_int64())
-1193	      }
-1194	    }
-1195	  }
-1196	  None
-1197	}
-    	…
-
 1 uncovered line(s) in src/directed/dinic.mbt:
 
  33	pub fn[N : Eq + Hash] dinic(
@@ -8986,7 +8591,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 187	}
    	…
 
-4 uncovered line(s) in src/graph/osm.mbt:
+3 uncovered line(s) in src/graph/osm.mbt:
 
 401	pub fn load_osm_or_synthetic(
 402	  content : String?,
@@ -9036,7 +8641,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 
 468	fn osm_synthetic_outcome(fallback_dim : Int, reason : String) -> OsmLoadOutcome {
 469	  let dim = if fallback_dim < osm_min_fallback_dim {
-470	    osm_min_fallback_dim	<-- UNCOVERED
+470	    osm_min_fallback_dim
 471	  } else {
 472	    fallback_dim
 473	  }
@@ -9067,7 +8672,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 498	}
    	…
 
-4 uncovered line(s) in src/graph/typed_query.mbt:
+3 uncovered line(s) in src/graph/typed_query.mbt:
 
  57	pub fn[N : Eq + Hash, W : @core.Weight] typed_shortest_path(
  58	  nodes : Array[N],
@@ -9223,7 +8828,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 230	    return Err(SourceNotFound)
 231	  }
 232	  if !(in_graph.get(target) is Some(_)) {
-233	    return Err(TargetNotFound)	<-- UNCOVERED
+233	    return Err(TargetNotFound)
 234	  }
 235	  // —— 阶段二：BFS 逐层扩展，记录前驱用于回溯。 ——
 236	  let pred : Map[N, N] = Map([])
@@ -9485,7 +9090,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 460	}
    	…
 
-4 uncovered line(s) in src/infra_codec/cbor.mbt:
+2 uncovered line(s) in src/infra_codec/cbor.mbt:
 
 288	fn cbor_read_indefinite_chunks(r : ByteReader, major : Int) -> Array[Int]? {
 289	  let bs : Array[Int] = []
@@ -9615,7 +9220,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 425	            }
 426	            Some(CborArray(items))
 427	          }
-428	          None => None	<-- UNCOVERED
+428	          None => None
 429	        }
 430	      }
 431	    5 =>
@@ -9654,7 +9259,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 464	            }
 465	            Some(CborMap(pairs))
 466	          }
-467	          None => None	<-- UNCOVERED
+467	          None => None
 468	        }
 469	      }
 470	    6 =>
@@ -11543,7 +11148,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 94	}
   	…
 
-4 uncovered line(s) in src/infra_config/toml.mbt:
+2 uncovered line(s) in src/infra_config/toml.mbt:
 
 566	fn toml_valid_datetime(tok : String) -> Bool {
 567	  let cs = tok.iter().to_array()
@@ -11576,96 +11181,6 @@ Total: 831 uncovered line(s) in 202 file(s)
 594	  }
 595	  toml_valid_time(cs, 11)
 596	}
-   	…
-
-614	fn parse_number(tok : String) -> TomlValue? {
-615	  let cs = tok.iter().to_array()
-616	  if cs.length() == 0 {
-617	    return None
-618	  }
-619	  let mut i = 0
-620	  let mut sign = 1L
-621	  if cs[0] == '+' {
-622	    i = 1
-623	  } else if cs[0] == '-' {
-624	    sign = -1L
-625	    i = 1
-626	  }
-627	  if i >= cs.length() {
-628	    return None
-629	  }
-630	  // 前缀基数。
-631	  if cs[i] == '0' && i + 1 < cs.length() {
-632	    let p = cs[i + 1]
-633	    if p == 'x' || p == 'o' || p == 'b' {
-634	      if sign < 0L {
-635	        return None
-636	      }
-637	      let radix = if p == 'x' { 16L } else if p == 'o' { 8L } else { 2L }
-638	      let mut v = 0L
-639	      let mut any = false
-640	      let mut k = i + 2
-641	      while k < cs.length() {
-642	        let c = cs[k]
-643	        if c == '_' {
-644	          k = k + 1
-645	          continue
-646	        }
-647	        let d = toml_hex_val(c).to_int64()
-648	        if d < 0L || d >= radix {
-649	          return None
-650	        }
-651	        v = v * radix + d
-652	        any = true
-653	        k = k + 1
-654	      }
-655	      if !any {
-656	        return None
-657	      }
-658	      return Some(TomlInt(v))
-659	    }
-660	  }
-661	  // 判定整数或浮点。
-662	  let mut has_dot = false
-663	  let mut has_exp = false
-664	  for k in i..<cs.length() {
-665	    let c = cs[k]
-666	    if c == '.' {
-667	      has_dot = true
-668	    } else if c == 'e' || c == 'E' {
-669	      has_exp = true
-670	    } else if !is_toml_digit(c) && c != '_' && c != '+' && c != '-' {
-671	      return None
-672	    }
-673	  }
-674	  if has_dot || has_exp {
-675	    // 浮点：去掉下划线后交给 Double 解析（手写十进制累积）。
-676	    let cleaned = StringBuilder::new()
-677	    for c in tok {
-678	      if c != '_' {
-679	        cleaned.write_char(c)
-680	      }
-681	    }
-682	    return parse_float_text(cleaned.to_string())
-683	  }
-684	  let mut v = 0L
-685	  let mut any = false
-686	  for k in i..<cs.length() {
-687	    let c = cs[k]
-688	    if c == '_' {
-689	      continue
-690	    }
-691	    if !is_toml_digit(c) {
-692	      return None	<-- UNCOVERED
-693	    }
-694	    v = v * 10L + (c.to_int() - 48).to_int64()
-695	    any = true
-696	  }
-697	  if !any {
-698	    return None
-699	  }
-700	  Some(TomlInt(sign * v))
-701	}
    	…
 
 706	fn parse_float_text(s : String) -> TomlValue? {
@@ -11708,7 +11223,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 743	    }
 744	  }
 745	  if i != cs.length() {
-746	    return None	<-- UNCOVERED
+746	    return None
 747	  }
 748	  Some(TomlFloat(@string.parse_double(s))) catch {
 749	    _ => None	<-- UNCOVERED
@@ -12060,68 +11575,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 216	}
    	…
 
-4 uncovered line(s) in src/infra_ds/btree.mbt:
-
-86	pub fn[K : Compare, V] BTreeMap::contains(
-87	  self : BTreeMap[K, V],
-88	  key : K,
-89	) -> Bool {
-90	  self.get(key) is Some(_)	<-- UNCOVERED
-91	}
-  	…
-
-211	fn[K, V] ensure_child(node : BNode[K, V], i : Int) -> Int {
-212	  if node.kids[i].keys.length() >= BTREE_T {
-213	    return i
-214	  }
-215	  // 左兄弟借位。
-216	  if i > 0 && node.kids[i - 1].keys.length() >= BTREE_T {
-217	    let child = node.kids[i]
-218	    let left = node.kids[i - 1]
-219	    arr_insert(child.keys, 0, node.keys[i - 1])
-220	    arr_insert(child.vals, 0, node.vals[i - 1])
-221	    node.keys[i - 1] = left.keys[left.keys.length() - 1]
-222	    node.vals[i - 1] = left.vals[left.vals.length() - 1]
-223	    let _ = left.keys.pop()
-224	    let _ = left.vals.pop()
-225	    if left.kids.length() > 0 {
-226	      arr_insert(child.kids, 0, left.kids[left.kids.length() - 1])	<-- UNCOVERED
-227	      let _ = left.kids.pop()
-228	    }
-229	    return i
-230	  }
-231	  // 右兄弟借位。
-232	  if i < node.kids.length() - 1 && node.kids[i + 1].keys.length() >= BTREE_T {
-233	    let child = node.kids[i]
-234	    let right = node.kids[i + 1]
-235	    child.keys.push(node.keys[i])
-236	    child.vals.push(node.vals[i])
-237	    node.keys[i] = arr_remove(right.keys, 0)
-238	    node.vals[i] = arr_remove(right.vals, 0)
-239	    if right.kids.length() > 0 {
-240	      child.kids.push(arr_remove(right.kids, 0))
-241	    }
-242	    return i
-243	  }
-244	  // 与相邻兄弟合并。
-245	  if i > 0 {
-246	    merge_children(node, i - 1)
-247	    i - 1
-248	  } else {
-249	    merge_children(node, i)
-250	    i
-251	  }
-252	}
-   	…
-
-308	fn[K, V] max_entry(node : BNode[K, V]) -> (K, V) {
-309	  let mut n = node
-310	  while n.kids.length() > 0 {
-311	    n = n.kids[n.kids.length() - 1]	<-- UNCOVERED
-312	  }
-313	  (n.keys[n.keys.length() - 1], n.vals[n.vals.length() - 1])
-314	}
-   	…
+1 uncovered line(s) in src/infra_ds/btree.mbt:
 
 318	fn[K, V] min_entry(node : BNode[K, V]) -> (K, V) {
 319	  let mut n = node
@@ -12211,7 +11665,7 @@ Total: 831 uncovered line(s) in 202 file(s)
 387	}
    	…
 
-4 uncovered line(s) in src/infra_ds/roaring.mbt:
+2 uncovered line(s) in src/infra_ds/roaring.mbt:
 
 261	fn container_union(x : Container, y : Container) -> Container {
 262	  match (x, y) {
@@ -12262,61 +11716,6 @@ Total: 831 uncovered line(s) in 202 file(s)
 307	    }
 308	  }
 309	}
-   	…
-
-313	fn container_intersect(x : Container, y : Container) -> Container? {
-314	  match (x, y) {
-315	    (ArrayC(a), ArrayC(b)) => {
-316	      let out : Array[Int] = []
-317	      let mut i = 0
-318	      let mut j = 0
-319	      while i < a.length() && j < b.length() {
-320	        if a[i] < b[j] {
-321	          i = i + 1
-322	        } else if a[i] > b[j] {
-323	          j = j + 1
-324	        } else {
-325	          out.push(a[i])
-326	          i = i + 1
-327	          j = j + 1
-328	        }
-329	      }
-330	      if out.length() == 0 {
-331	        None
-332	      } else {
-333	        Some(Container::ArrayC(out))
-334	      }
-335	    }
-336	    (ArrayC(a), BitmapC(words, _)) | (BitmapC(words, _), ArrayC(a)) => {
-337	      let out : Array[Int] = []
-338	      for v in a {
-339	        if (words[v >> 6] & (1UL << (v & 63))) != 0 {
-340	          out.push(v)
-341	        }
-342	      }
-343	      if out.length() == 0 {
-344	        None	<-- UNCOVERED
-345	      } else {
-346	        Some(Container::ArrayC(out))
-347	      }
-348	    }
-349	    (BitmapC(wa, _), BitmapC(wb, _)) => {
-350	      let words : Array[UInt64] = Array::make(1024, 0UL)
-351	      let mut card = 0
-352	      for i in 0..<1024 {
-353	        words[i] = wa[i] & wb[i]
-354	        card = card + popcount64(words[i])
-355	      }
-356	      if card == 0 {
-357	        None
-358	      } else if card <= ROARING_THRESHOLD {
-359	        Some(Container::ArrayC(array_of_bitmap(words)))	<-- UNCOVERED
-360	      } else {
-361	        Some(Container::BitmapC(words, card))
-362	      }
-363	    }
-364	  }
-365	}
    	…
 
 441	fn container_clone(c : Container) -> Container {
@@ -18607,4 +18006,4 @@ Total: 831 uncovered line(s) in 202 file(s)
 268	}
    	…
 
-Total: 831 uncovered line(s) in 202 file(s)
+Total: 815 uncovered line(s) in 201 file(s)

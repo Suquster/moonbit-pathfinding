@@ -35,3 +35,9 @@ test "cbor_decode：映射键/值缺失拒绝" {
   cg2_none([0xA1]) // 1 对，键缺失
   cg2_none([0xA1, 0x01]) // 键为 1，值缺失
 }
+
+///|
+test "cbor_decode：数组/映射长度头截断拒绝（INFRA 第七十五批）" {
+  cg2_none([0x98]) // major 4, info 24 长度字节缺失
+  cg2_none([0xB8]) // major 5, info 24 长度字节缺失
+}

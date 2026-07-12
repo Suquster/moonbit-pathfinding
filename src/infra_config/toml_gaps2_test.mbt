@@ -31,3 +31,10 @@ test "toml 余支：数值词法拒绝与空数组" {
     None => fail("空数组应可解析")
   }
 }
+
+///|
+test "toml 余支：下划线后接字母/双小数点/过短日期（INFRA 第七十五批）" {
+  assert_true(@infra_config.toml_parse("x = 1_z") is None)
+  assert_true(@infra_config.toml_parse("x = 1.2.3") is None)
+  assert_true(@infra_config.toml_parse("x = 1979-05") is None)
+}

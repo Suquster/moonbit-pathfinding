@@ -99,3 +99,13 @@ test "build_intervals_from_liveness：空指令块占位一个序号槽" {
     assert_true(iv.start >= 1)
   }
 }
+
+///|
+test "build_intervals_from_liveness：live 集缺失块标签安全忽略（INFRA 第六十七批）" {
+  let blocks : Array[BasicBlock] = [
+    { label: "b0", instrs: ["x = 1", "y = x + 1"], succs: [] },
+  ]
+  let empty_live : LivenessResult = { live_in: Map([]), live_out: Map([]) }
+  let intervals = build_intervals_from_liveness(blocks, empty_live)
+  assert_eq(intervals.length(), 2)
+}

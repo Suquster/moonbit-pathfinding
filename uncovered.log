@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1010.1868057692308,"min":330.7163891025641,"max":342.8763237179487,"mean":336.72893525641024,"median":336.59409294871796,"variance":36.97963929856499,"std_dev":6.08108866064005,"std_dev_pct":1.805929940653737,"median_abs_dev":8.714283722307696,"median_abs_dev_pct":2.588959195916539,"quartiles":[333.65524102564103,336.59409294871796,339.73520833333333],"iqr":6.0799673076923,"batch_size":312,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1896.4646420689655,"min":624.7620510344829,"max":643.800384137931,"mean":632.1548806896552,"median":627.9022068965517,"variance":104.17845763237466,"std_dev":10.20678488224253,"std_dev_pct":1.6146019265258766,"median_abs_dev":4.6555950811032165,"median_abs_dev_pct":0.7414522564132724,"quartiles":[626.3321289655173,627.9022068965517,635.8512955172414],"iqr":9.519166551724084,"batch_size":145,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":446.8655764705883,"min":147.5991054901961,"max":150.0551807843137,"mean":148.95519215686275,"median":149.21129019607844,"variance":1.5572661168612987,"std_dev":1.2479046906159534,"std_dev_pct":0.8377718645092957,"median_abs_dev":1.2511521861176091,"median_abs_dev_pct":0.8385103998990097,"quartiles":[148.40519784313727,149.21129019607844,149.63323549019606],"iqr":1.228037647058784,"batch_size":765,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":724.4079176470589,"min":229.5061494117647,"max":250.4473282352941,"mean":241.46930588235296,"median":244.45444,"variance":116.3165119050143,"std_dev":10.785013301105117,"std_dev_pct":4.466411688100731,"median_abs_dev":8.885056097647016,"median_abs_dev_pct":3.63464705228795,"quartiles":[236.98029470588236,244.45444,247.45088411764704],"iqr":10.470589411764678,"batch_size":425,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":633.0477202105262,"min":204.27885221052634,"max":222.04317536842103,"mean":211.01590673684208,"median":206.72569263157894,"variance":92.6972471162777,"std_dev":9.627940959326542,"std_dev_pct":4.562661226925203,"median_abs_dev":3.627685608252583,"median_abs_dev_pct":1.754830549639395,"quartiles":[205.50227242105262,206.72569263157894,214.384434],"iqr":8.882161578947375,"batch_size":475,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":962.901542,"min":313.82977766666664,"max":334.1161976666666,"mean":320.96718066666665,"median":314.95556666666664,"variance":129.98933626784654,"std_dev":11.401286605811054,"std_dev_pct":3.5521658576213144,"median_abs_dev":1.6690947713999962,"median_abs_dev_pct":0.5299461092448267,"quartiles":[314.39267216666667,314.95556666666664,324.5358821666666],"iqr":10.143209999999954,"batch_size":300,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2340.8093520833336,"min":742.7043902777777,"max":804.7604965277778,"mean":780.2697840277779,"median":793.3444652777778,"variance":1090.9505480696507,"std_dev":33.0295405367627,"std_dev_pct":4.233092349964283,"median_abs_dev":16.92540793125009,"median_abs_dev_pct":2.1334248453254046,"quartiles":[768.0244277777778,793.3444652777778,799.0524809027778],"iqr":31.028053125000042,"batch_size":144,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":377.63607783251234,"min":122.13719495073892,"max":130.62934224137933,"mean":125.87869261083745,"median":124.8695406403941,"variance":18.79293217607011,"std_dev":4.335081565100028,"std_dev_pct":3.443856521851738,"median_abs_dev":4.050975719482785,"median_abs_dev_pct":3.2441664305861413,"quartiles":[123.5033677955665,124.8695406403941,127.74944144088673],"iqr":4.246073645320223,"batch_size":812,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":462.68242556390976,"min":149.12154567669174,"max":162.91020883458646,"mean":154.22747518796993,"median":150.65067105263157,"variance":57.12695378740094,"std_dev":7.558237478896846,"std_dev_pct":4.900707522887857,"median_abs_dev":2.267081282368388,"median_abs_dev_pct":1.5048597304796316,"quartiles":[149.88610836466165,150.65067105263157,156.780439943609],"iqr":6.8943315789473445,"batch_size":532,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":442.458475210084,"min":145.6834199579832,"max":150.49360987394957,"mean":147.48615840336132,"median":146.28144537815123,"variance":6.872981861749275,"std_dev":2.6216372483143573,"std_dev_pct":1.7775479927712379,"median_abs_dev":0.8866324879411185,"median_abs_dev_pct":0.6061141149166871,"quartiles":[145.98243266806722,146.28144537815123,148.3875276260504],"iqr":2.405094957983181,"batch_size":476,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 474 | 50% | 2250 | -68% | OK
-massive_actor_scheduling | 4000 | 825 | 50% | 6000 | -79% | OK
-ask_round_trip | 900 | 141 | 50% | 1350 | -84% | OK
-router_dispatch | 1800 | 222 | 50% | 2700 | -88% | OK
-supervision_restart | 1200 | 187 | 50% | 1800 | -84% | OK
+high_frequency_send | 1500 | 339 | 50% | 2250 | -77% | OK
+massive_actor_scheduling | 4000 | 679 | 50% | 6000 | -83% | OK
+ask_round_trip | 900 | 113 | 50% | 1350 | -87% | OK
+router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 161 | 50% | 1800 | -87% | OK
 status: PASS
-Total: 894 uncovered line(s) in 206 file(s)
+Total: 887 uncovered line(s) in 206 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -3315,7 +3315,7 @@ Total: 894 uncovered line(s) in 206 file(s)
 331	}
    	…
 
-5 uncovered line(s) in src/advanced/ch.mbt:
+4 uncovered line(s) in src/advanced/ch.mbt:
 
  63	fn[N : Eq + Hash, W : @core.Weight + Compare] ch_witness(
  64	  src : N,
@@ -3441,28 +3441,6 @@ Total: 894 uncovered line(s) in 206 file(s)
 429	  rev.rev_in_place()
 430	  rev
 431	}
-   	…
-
-436	fn[N : Eq + Hash, W] expand_chain(
-437	  graph : CHGraph[N, W],
-438	  chain : Array[N],
-439	) -> Array[N] {
-440	  if chain.length() == 0 {
-441	    return []	<-- UNCOVERED
-442	  }
-443	  let out : Array[N] = [chain[0]]
-444	  let mut i = 0
-445	  while i < chain.length() - 1 {
-446	    let segment = expand_edge(graph, chain[i], chain[i + 1])
-447	    let mut j = 1 // skip seam (== chain[i])
-448	    while j < segment.length() {
-449	      out.push(segment[j])
-450	      j += 1
-451	    }
-452	    i += 1
-453	  }
-454	  out
-455	}
    	…
 
 460	fn[N : Eq + Hash, W : @core.Weight + Compare] ch_up_dijkstra(
@@ -5582,7 +5560,7 @@ Total: 894 uncovered line(s) in 206 file(s)
 127	}
    	…
 
-8 uncovered line(s) in src/codegen_infra/liveness.mbt:
+6 uncovered line(s) in src/codegen_infra/liveness.mbt:
 
 297	pub fn analyze_liveness(blocks : Array[BasicBlock]) -> LivenessResult {
 298	  let names = collect_var_names(blocks)
@@ -5795,14 +5773,14 @@ Total: 894 uncovered line(s) in 206 file(s)
 515	        for v in vs {
 516	          touch(v.id, bs)
 517	        }
-518	      None => ()	<-- UNCOVERED
+518	      None => ()
 519	    }
 520	    match live.live_out.get(b.label) {
 521	      Some(vs) =>
 522	        for v in vs {
 523	          touch(v.id, be)
 524	        }
-525	      None => ()	<-- UNCOVERED
+525	      None => ()
 526	    }
 527	  }
 528	  let intervals : Array[LiveInterval] = []
@@ -8695,84 +8673,7 @@ Total: 894 uncovered line(s) in 206 file(s)
 129	}
    	…
 
-5 uncovered line(s) in src/dst/des_sim.mbt:
-
-293	fn World::active_group(self : World, tid : Int) -> Int? {
-294	  let mut res : Int? = None
-295	  for p in self.partitions {
-296	    if p.task_id == tid {
-297	      match p.kind {
-298	        Partition(group~, until_step~) =>
-299	          if self.step_no >= p.at_step && self.step_no < until_step {
-300	            res = Some(group)
-301	          }
-302	        _ => ()	<-- UNCOVERED
-303	      }
-304	    }
-305	  }
-306	  res
-307	}
-   	…
-
-312	fn World::is_blocked(self : World, from : Int, to : Int) -> Bool {
-313	  match self.find_node(from) {
-314	    Some(n) => if !n.alive { return true }
-315	    None => return true	<-- UNCOVERED
-316	  }
-317	  match self.find_node(to) {
-318	    Some(n) => if !n.alive { return true }
-319	    None => return true
-320	  }
-321	  match (self.active_group(from), self.active_group(to)) {
-322	    (Some(a), Some(b)) => a != b
-323	    _ => false
-324	  }
-325	}
-   	…
-
-331	fn World::step_with(self : World, chooser : (World) -> Int) -> Bool {
-332	  if self.step_no >= self.max_steps {
-333	    return false
-334	  }
-335	  match self.status {
-336	    Failed(..) => return false	<-- UNCOVERED
-337	    _ => ()
-338	  }
-339	  // 无待调度任务且事件队列为空：无事可做，终止（与既有 `run` 的循环守卫一致）。
-340	  if self.pending.length() == 0 && self.queue.is_empty() {
-341	    return false
-342	  }
-343	  self.apply_faults_at(self.step_no)
-344	  match eval_invariants(self) {
-345	    Some(r) => {
-346	      self.status = Failed(reason=r)
-347	      return false
-348	    }
-349	    None => ()
-350	  }
-351	  if self.pending.length() > 0 {
-352	    self.do_wake(chooser(self))
-353	  } else if !self.queue.is_empty() {
-354	    self.do_deliver_step()
-355	  } else {
-356	    return false
-357	  }
-358	  match eval_invariants(self) {
-359	    Some(r) => {
-360	      self.status = Failed(reason=r)
-361	      return false
-362	    }
-363	    None => ()
-364	  }
-365	  self.step_no = self.step_no + 1
-366	  true
-367	}
-   	…
-
-393	pub fn World::clock_now(self : World) -> LogicalTime {
-394	  self.clock	<-- UNCOVERED
-395	}
-   	…
+1 uncovered line(s) in src/dst/des_sim.mbt:
 
 447	pub fn run_des_with_order(
 448	  seed : UInt64,
@@ -19411,4 +19312,4 @@ Total: 894 uncovered line(s) in 206 file(s)
 268	}
    	…
 
-Total: 894 uncovered line(s) in 206 file(s)
+Total: 887 uncovered line(s) in 206 file(s)

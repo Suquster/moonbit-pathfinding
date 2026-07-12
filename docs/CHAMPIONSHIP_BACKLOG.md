@@ -709,6 +709,15 @@
         467→461 行，3156→3162 三后端全绿。2026-07-12，
         `src/mini_compiler/spans_gaps_wbtest.mbt`、
         `src/regex_engine/search_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十七批 余支覆盖收口（dst + advanced + codegen_infra）：
+        DES 逻辑时钟读数、未知发送方阻断、Failed 终态 step 短路、
+        分区分组忽略非分区故障策略；CH 空链展开；活跃区间构建对
+        live 集缺失块标签的安全忽略。src/ 未覆盖 461→454 行，
+        3162→3168 三后端全绿。2026-07-12，
+        `src/dst/coverage_gaps4_wbtest.mbt`、
+        `src/advanced/ch_gaps_wbtest.mbt`、
+        `src/codegen_infra/liveness_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

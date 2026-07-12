@@ -36,3 +36,10 @@ test "ch_shortcut_mid：层级不变量违例与缺失均降级" {
   g.level[3] = -1
   assert_true(ch_shortcut_mid(g, 1, 2) is Some(3))
 }
+
+///|
+test "expand_chain：空链直接返回空（INFRA 第六十七批）" {
+  let g = chg_empty()
+  let out : Array[Int] = expand_chain(g, ([] : Array[Int]))
+  assert_eq(out.length(), 0)
+}

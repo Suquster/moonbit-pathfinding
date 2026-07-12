@@ -39,3 +39,9 @@ test "rewrite_row：深层缺失标签的错误经外层字段传播" {
   let row = RExtend("a", RInt, REmpty)
   assert_true(rewrite_row(s, fresh, row, "b") is Err(_))
 }
+
+///|
+test "parse_ml：应用参数原子解析失败即报错（INFRA 第六十八批）" {
+  guard lex_ml("f (") is Ok(tokens)
+  assert_true(parse_ml(tokens) is Err(_))
+}

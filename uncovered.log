@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":962.901542,"min":313.82977766666664,"max":334.1161976666666,"mean":320.96718066666665,"median":314.95556666666664,"variance":129.98933626784654,"std_dev":11.401286605811054,"std_dev_pct":3.5521658576213144,"median_abs_dev":1.6690947713999962,"median_abs_dev_pct":0.5299461092448267,"quartiles":[314.39267216666667,314.95556666666664,324.5358821666666],"iqr":10.143209999999954,"batch_size":300,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2340.8093520833336,"min":742.7043902777777,"max":804.7604965277778,"mean":780.2697840277779,"median":793.3444652777778,"variance":1090.9505480696507,"std_dev":33.0295405367627,"std_dev_pct":4.233092349964283,"median_abs_dev":16.92540793125009,"median_abs_dev_pct":2.1334248453254046,"quartiles":[768.0244277777778,793.3444652777778,799.0524809027778],"iqr":31.028053125000042,"batch_size":144,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":377.63607783251234,"min":122.13719495073892,"max":130.62934224137933,"mean":125.87869261083745,"median":124.8695406403941,"variance":18.79293217607011,"std_dev":4.335081565100028,"std_dev_pct":3.443856521851738,"median_abs_dev":4.050975719482785,"median_abs_dev_pct":3.2441664305861413,"quartiles":[123.5033677955665,124.8695406403941,127.74944144088673],"iqr":4.246073645320223,"batch_size":812,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":462.68242556390976,"min":149.12154567669174,"max":162.91020883458646,"mean":154.22747518796993,"median":150.65067105263157,"variance":57.12695378740094,"std_dev":7.558237478896846,"std_dev_pct":4.900707522887857,"median_abs_dev":2.267081282368388,"median_abs_dev_pct":1.5048597304796316,"quartiles":[149.88610836466165,150.65067105263157,156.780439943609],"iqr":6.8943315789473445,"batch_size":532,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":442.458475210084,"min":145.6834199579832,"max":150.49360987394957,"mean":147.48615840336132,"median":146.28144537815123,"variance":6.872981861749275,"std_dev":2.6216372483143573,"std_dev_pct":1.7775479927712379,"median_abs_dev":0.8866324879411185,"median_abs_dev_pct":0.6061141149166871,"quartiles":[145.98243266806722,146.28144537815123,148.3875276260504],"iqr":2.405094957983181,"batch_size":476,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":997.6079233082708,"min":316.8140661654135,"max":343.99818045112784,"mean":332.53597443609027,"median":336.79567669172934,"variance":198.35281485471694,"std_dev":14.0837784296231,"std_dev_pct":4.235264606635769,"median_abs_dev":10.67843207368421,"median_abs_dev_pct":3.170596540482979,"quartiles":[326.80487142857146,336.79567669172934,340.3969285714286],"iqr":13.59205714285713,"batch_size":266,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1829.1753736526948,"min":599.8461443113773,"max":619.803283233533,"mean":609.7251245508983,"median":609.5259461077844,"variance":99.60160252870593,"std_dev":9.980060246747307,"std_dev_pct":1.6368130235896485,"median_abs_dev":14.351274143353173,"median_abs_dev_pct":2.3544976608453334,"quartiles":[604.6860452095809,609.5259461077844,614.6646146706587],"iqr":9.978569461077768,"batch_size":167,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":349.3951541516245,"min":105.26797593261131,"max":125.63782322503006,"mean":116.46505138387484,"median":118.48935499398314,"variance":106.80602350853803,"std_dev":10.334699971868464,"std_dev_pct":8.873649089635274,"median_abs_dev":10.598318999350163,"median_abs_dev_pct":8.94453261213916,"quartiles":[111.87866546329722,118.48935499398314,122.06358910950661],"iqr":10.184923646209384,"batch_size":831,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":467.73750902255637,"min":155.15141383458646,"max":157.1172290225564,"mean":155.91250300751878,"median":155.46886616541354,"variance":1.1137175740681478,"std_dev":1.0553281831108974,"std_dev_pct":0.67687206782897,"median_abs_dev":0.4706548256842298,"median_abs_dev_pct":0.30273252599878686,"quartiles":[155.31014,155.46886616541354,156.29304759398497],"iqr":0.9829075939849758,"batch_size":665,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":430.0590013432836,"min":142.89979268656717,"max":144.0748608955224,"mean":143.35300044776122,"median":143.08434776119404,"variance":0.3993270234241244,"std_dev":0.6319232733679971,"std_dev_pct":0.4408162168871199,"median_abs_dev":0.27362135364179946,"median_abs_dev_pct":0.19123080750835866,"quartiles":[142.9920702238806,143.08434776119404,143.57960432835822],"iqr":0.5875341044776121,"batch_size":670,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 339 | 50% | 2250 | -77% | OK
-massive_actor_scheduling | 4000 | 679 | 50% | 6000 | -83% | OK
-ask_round_trip | 900 | 113 | 50% | 1350 | -87% | OK
-router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 161 | 50% | 1800 | -87% | OK
+high_frequency_send | 1500 | 324 | 50% | 2250 | -78% | OK
+massive_actor_scheduling | 4000 | 598 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 127 | 50% | 1350 | -86% | OK
+router_dispatch | 1800 | 173 | 50% | 2700 | -90% | OK
+supervision_restart | 1200 | 165 | 50% | 1800 | -86% | OK
 status: PASS
-Total: 887 uncovered line(s) in 206 file(s)
+Total: 885 uncovered line(s) in 205 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -11116,7 +11116,7 @@ Total: 887 uncovered line(s) in 206 file(s)
 887	}
    	…
 
-7 uncovered line(s) in src/infra_compress/zstd_encode.mbt:
+6 uncovered line(s) in src/infra_compress/zstd_encode.mbt:
 
 151	fn zstd_ll_encode(ll : Int) -> (Int, Int, Int) {
 152	  if ll < 16 {
@@ -11300,7 +11300,7 @@ Total: 887 uncovered line(s) in 206 file(s)
 768	        out.push(((regen & 0x0F) << 4) | (1 << 2) | 0) // size_format 01，12 位。
 769	        out.push((regen >> 4) & 0xFF)
 770	      } else {
-771	        out.push(((regen & 0x0F) << 4) | (3 << 2) | 0) // size_format 11，20 位。	<-- UNCOVERED
+771	        out.push(((regen & 0x0F) << 4) | (3 << 2) | 0) // size_format 11，20 位。
 772	        out.push((regen >> 4) & 0xFF)
 773	        out.push((regen >> 12) & 0xFF)
 774	      }
@@ -15905,30 +15905,6 @@ Total: 887 uncovered line(s) in 206 file(s)
 175	}
    	…
 
-1 uncovered line(s) in src/mini_compiler/ml_parser.mbt:
-
-411	fn ml_parse_app(
-412	  tokens : Array[MlToken],
-413	  pos : Int,
-414	) -> Result[(Expr, Int), Diagnostic] {
-415	  let (first, p0) = match ml_parse_atom(tokens, pos) {
-416	    Err(d) => return Err(d)
-417	    Ok(pair) => pair
-418	  }
-419	  let mut acc = first
-420	  let mut cur = p0
-421	  while ml_starts_atom(ml_peek_tok(tokens, cur)) {
-422	    let (arg, p) = match ml_parse_atom(tokens, cur) {
-423	      Err(d) => return Err(d)	<-- UNCOVERED
-424	      Ok(pair) => pair
-425	    }
-426	    acc = EApp(acc, arg, ml_expr_span(acc))
-427	    cur = p
-428	  }
-429	  Ok((acc, cur))
-430	}
-   	…
-
 1 uncovered line(s) in src/mini_compiler/ml_printer.mbt:
 
  98	pub fn erase_span(e : Expr) -> Expr {
@@ -19312,4 +19288,4 @@ Total: 887 uncovered line(s) in 206 file(s)
 268	}
    	…
 
-Total: 887 uncovered line(s) in 206 file(s)
+Total: 885 uncovered line(s) in 205 file(s)

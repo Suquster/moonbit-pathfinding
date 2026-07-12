@@ -718,6 +718,13 @@
         `src/dst/coverage_gaps4_wbtest.mbt`、
         `src/advanced/ch_gaps_wbtest.mbt`、
         `src/codegen_infra/liveness_gaps_wbtest.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十八批 余支覆盖收口（infra_compress + mini_compiler）：
+        zstd 大字面量（size_format 11）编码往返、解压输出超 max_out
+        预算拒绝；MiniML 应用参数原子解析失败错误传播。src/ 未覆盖
+        454→452 行，3168→3171 三后端全绿。2026-07-12，
+        `src/infra_compress/zstd_gaps3_wbtest.mbt`、
+        `src/mini_compiler/spans_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

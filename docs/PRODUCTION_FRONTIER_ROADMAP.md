@@ -426,8 +426,13 @@ Hewitt 1973、Agha 1986《Actors》、OTP 监督原则。
   一致，**每用例中位加速比中位数 0.2498× → 31.7×**（BFS 22-76×、
   Dijkstra 9.9-45×、A* 8.1-32×；Dial 桶下标增量循环维护免取模除法
   + 双向 A* 首次会合前跳过 h_other 闭包调用，全部快于 Rust `pathfinding` 4.11.0；
-  benches/results/rust-comparison-indexed-20260705.md、
-  latest-rust-comparison.md）。
+  benches/results/rust-comparison-indexed-20260705.md）。
+- 口径修正（2026-07-12）✅：上述 31.7× 是本库**双向变体** vs Rust 单向 API
+  的混合口径（Rust crate 无双向 API，非同算法对齐）。正式发布报告
+  latest-rust-comparison.md 已改为诚实两层：**同算法对齐层**（两侧均单向，
+  18/18 用例、最大 10 万节点 / 160 万边）中位加速 **≈2.7×**；本库双向
+  变体单独列为 bonus 表（相对本库单向基线 8–68×，签名逐元素交叉校验），
+  不进入同算法加速比。
 
 ### E1 · 核心数据结构库 — 对标 Rust `std::collections` / `im`
 

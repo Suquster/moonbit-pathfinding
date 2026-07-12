@@ -27,6 +27,27 @@
 
 ---
 
+## Why this project (three stories)
+
+1. **Filling an ecosystem gap** — a production-grade pathfinding / graph
+   algorithms library for MoonBit: 38+ algorithms (BFS → A\* → JPS → ALT →
+   CH → Hub Labels → PHAST) plus 20 infra directions, published on
+   [mooncakes.io](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
+   with a [live in-browser playground](https://suquster.github.io/moonbit-pathfinding/).
+2. **An engineering benchmark for the ecosystem** — 3331 tests across four
+   backends (wasm-gc / native / js / wasm), executable proof predicates,
+   executable README (`moon test README.mbt.md`), DST + differential PBT,
+   zero-warning `--deny-warn` CI gates, and a published
+   [head-to-head vs Rust's `pathfinding` crate](./benches/results/latest-rust-comparison.md)
+   (≈2.7× median same-algorithm speedup; bidirectional variants reported
+   separately).
+3. **Real data, end to end** — real OSM road networks (Beijing / Xiamen)
+   drive the point-to-point hierarchy (bidirectional Dijkstra → ALT → CH →
+   HL, up to 13279×) with full cross-validation, all reproducible from
+   checked-in scripts and artifacts.
+
+---
+
 ## Ported from
 
 本库 **API 哲学** 参考自 Rust 社区的

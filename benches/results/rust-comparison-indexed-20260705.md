@@ -1,5 +1,11 @@
 # Rust `pathfinding` Comparison Report — indexed 快路径接入后同机重跑
 
+> ⚠️ **口径说明（2026-07-12 追加）**：本历史报告中 MoonBit 侧使用了
+> **双向变体**（双向 BFS / 双向 Dial Dijkstra / NBA\*），而 Rust
+> `pathfinding` crate 只有单向 API，因此加速比是混合口径、**非同算法对齐**。
+> 正式口径见 `latest-rust-comparison.md`：同算法对齐层（两侧均单向）中位
+> 加速 ≈2.7×；本库双向变体单独列为 bonus 表，不进入同算法加速比。
+
 - Generated at: `2026-07-05T21:47 UTC`
 - Sides: MoonBit `bench_rust/moon_side`（已接入 indexed 快路径：CSR +
   扁平数组 + 4 叉编码堆 + 可复用 SearchCtx/BfsCtx + 小整数权 Dial 桶队列）

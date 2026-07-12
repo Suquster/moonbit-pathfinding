@@ -18,6 +18,23 @@
 
 ---
 
+## 为什么是这个项目（三个故事）
+
+1. **填补生态空白** — 面向 MoonBit 的生产级寻路 / 图算法库：38+ 算法
+   （BFS → A\* → JPS → ALT → CH → Hub Labels → PHAST）+ 20 个 INFRA 方向，
+   已发布 [mooncakes.io](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)，
+   并提供[打开即玩的浏览器 playground](https://suquster.github.io/moonbit-pathfinding/)。
+2. **生态工程标杆** — 3331 个测试跨四后端（wasm-gc / native / js / wasm）、
+   可执行 proof predicates、可执行 README（`moon test README.mbt.md`）、
+   DST + 差分 PBT、零警告 `--deny-warn` CI 门禁，以及已发布的
+   [对标 Rust `pathfinding` crate 正面对比](./benches/results/latest-rust-comparison.md)
+   （同算法中位加速 ≈2.7×；双向变体单独列报）。
+3. **真实数据端到端** — 真实 OSM 路网（北京 / 厦门）驱动点到点谱系
+   （双向 Dijkstra → ALT → CH → HL，最高 13279×），全量对拍一致性校验，
+   全部可由入库脚本与 artifact 复现。
+
+---
+
 ## 项目溯源 · Ported from
 
 本库 **API 设计哲学** 参考自 Rust 社区的

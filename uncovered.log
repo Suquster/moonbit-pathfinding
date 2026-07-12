@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1053.9289054054054,"min":347.9603885135135,"max":353.10492229729726,"mean":351.3096351351351,"median":352.8635945945946,"variance":8.42764946435573,"std_dev":2.903041416231558,"std_dev_pct":0.8263483622118338,"median_abs_dev":0.35779245202698823,"median_abs_dev_pct":0.10139681664753668,"quartiles":[350.41199155405405,352.8635945945946,352.9842584459459],"iqr":2.572266891891843,"batch_size":296,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1876.4038346153848,"min":615.960367948718,"max":636.7044217948719,"mean":625.4679448717949,"median":623.7390448717948,"variance":109.82076390053297,"std_dev":10.479540252345661,"std_dev_pct":1.6754719947308732,"median_abs_dev":11.532666406153623,"median_abs_dev_pct":1.8489569477767875,"quartiles":[619.8497064102564,623.7390448717948,630.2217333333333],"iqr":10.372026923076874,"batch_size":156,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":325.82999324758845,"min":106.30327202572347,"max":111.09912315112541,"mean":108.60999774919615,"median":108.42759807073956,"variance":5.774999236280559,"std_dev":2.4031228092381296,"std_dev_pct":2.21261657217548,"median_abs_dev":3.1495257943408554,"median_abs_dev_pct":2.9047270716871036,"quartiles":[107.36543504823152,108.42759807073956,109.7633606109325],"iqr":2.3979255627009763,"batch_size":933,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":495.5396181364393,"min":162.7407823627288,"max":167.80224009983363,"mean":165.17987271214642,"median":164.99659567387687,"variance":6.4297814606922365,"std_dev":2.5357013745100656,"std_dev_pct":1.5351152249214708,"median_abs_dev":3.3444688151081348,"median_abs_dev_pct":2.026992618513552,"quartiles":[163.86868901830283,164.99659567387687,166.39941788685525],"iqr":2.5307288685524156,"batch_size":601,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":449.1539470866142,"min":147.41773118110237,"max":151.57628677165354,"mean":149.71798236220474,"median":150.15992913385827,"variance":4.4698838616573475,"std_dev":2.1142099852326277,"std_dev_pct":1.4121282907205042,"median_abs_dev":2.0998918337952706,"median_abs_dev_pct":1.3984368838662324,"quartiles":[148.78883015748033,150.15992913385827,150.8681079527559],"iqr":2.0792777952755728,"batch_size":635,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1081.9401219512195,"min":355.28747682926826,"max":365.76905975609753,"mean":360.64670731707315,"median":360.8835853658536,"variance":27.507978570495276,"std_dev":5.244804912529662,"std_dev_pct":1.4542777754847314,"median_abs_dev":7.243204330975647,"median_abs_dev_pct":2.0070750304790645,"quartiles":[358.08553109756093,360.8835853658536,363.32632256097554],"iqr":5.2407914634146096,"batch_size":246,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2055.48698503937,"min":661.3601724409449,"max":730.8093244094488,"mean":685.1623283464568,"median":663.3174881889763,"variance":1563.6939584154861,"std_dev":39.54357038022093,"std_dev_pct":5.7714163117598405,"median_abs_dev":2.9019163280313824,"median_abs_dev_pct":0.43748527359867206,"quartiles":[662.3388303149607,663.3174881889763,697.0634062992126],"iqr":34.72457598425194,"batch_size":127,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":349.4657004739336,"min":115.86134751184835,"max":117.07435770142179,"mean":116.48856682464454,"median":116.5299952606635,"variance":0.3691356664854796,"std_dev":0.6075653598465597,"std_dev_pct":0.5215665162755029,"median_abs_dev":0.8070717546682432,"median_abs_dev_pct":0.6925871342077389,"quartiles":[116.19567138625592,116.5299952606635,116.80217648104264],"iqr":0.6065050947867121,"batch_size":844,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":548.3662868327401,"min":179.15415765124555,"max":188.818043772242,"mean":182.78876227758005,"median":180.39408540925265,"variance":27.648531717673684,"std_dev":5.25818711322388,"std_dev_pct":2.876646817728807,"median_abs_dev":1.8383168940213244,"median_abs_dev_pct":1.0190560792782148,"quartiles":[179.7741215302491,180.39408540925265,184.60606459074734],"iqr":4.831943060498247,"batch_size":562,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":456.70658138801264,"min":150.5559548895899,"max":153.3805239747634,"mean":152.23552712933756,"median":152.7701025236593,"variance":2.20887576839015,"std_dev":1.4862287066229578,"std_dev_pct":0.9762692944599423,"median_abs_dev":0.9050108434069629,"median_abs_dev_pct":0.592400494898408,"quartiles":[151.6630287066246,152.7701025236593,153.07531324921135],"iqr":1.4122845425867467,"batch_size":634,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 351 | 50% | 2250 | -77% | OK
-massive_actor_scheduling | 4000 | 685 | 50% | 6000 | -83% | OK
-ask_round_trip | 900 | 107 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 166 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 149 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 354 | 50% | 2250 | -76% | OK
+massive_actor_scheduling | 4000 | 651 | 50% | 6000 | -84% | OK
+ask_round_trip | 900 | 110 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 170 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 155 | 50% | 1800 | -87% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 715 uncovered line(s) in 173 file(s)
+Total: 708 uncovered line(s) in 170 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -11507,23 +11507,6 @@ Total: 715 uncovered line(s) in 173 file(s)
 176	}
    	…
 
-2 uncovered line(s) in src/infra_time/time.mbt:
-
-28	pub impl Show for DateTime with fn output(self, logger) {
-29	  logger.write_string(format_iso8601(self))	<-- UNCOVERED
-30	}
-  	…
-
-40	pub fn days_in_month(y : Int, m : Int) -> Int {
-41	  match m {
-42	    1 | 3 | 5 | 7 | 8 | 10 | 12 => 31
-43	    4 | 6 | 9 | 11 => 30
-44	    2 => if is_leap_year(y) { 29 } else { 28 }
-45	    _ => 0	<-- UNCOVERED
-46	  }
-47	}
-  	…
-
 1 uncovered line(s) in src/infra_time/time_ext.mbt:
 
 297	pub fn parse_duration(text : String) -> Duration? {
@@ -11640,71 +11623,6 @@ Total: 715 uncovered line(s) in 173 file(s)
 408	}
    	…
 
-2 uncovered line(s) in src/infra_time/timezone.mbt:
-
-39	fn parse_transition(text : String) -> TzTransition? {
-40	  if text.length() < 6 || text.get_char(0).unwrap() != 'M' {
-41	    return None
-42	  }
-43	  // 拆 `/` 时刻后缀。
-44	  let mut main = text
-45	  let mut at = 7200
-46	  let mut slash = -1
-47	  for i in 0..<text.length() {
-48	    if text.get_char(i).unwrap() == '/' {
-49	      slash = i
-50	      break
-51	    }
-52	  }
-53	  if slash >= 0 {
-54	    main = text[:slash].to_owned()
-55	    let hh_text = text[slash + 1:].to_owned()
-56	    let mut hh = 0
-57	    for c in hh_text {
-58	      if c < '0' || c > '9' {
-59	        return None
-60	      }
-61	      hh = hh * 10 + (c.to_int() - 48)
-62	    }
-63	    at = hh * 3600
-64	  }
-65	  // M月.周.日 三段。
-66	  let parts : Array[Int] = []
-67	  let mut cur = 0
-68	  let mut has = false
-69	  for i in 1..<main.length() {
-70	    let c = main.get_char(i).unwrap()
-71	    if c == '.' {
-72	      if !has {
-73	        return None	<-- UNCOVERED
-74	      }
-75	      parts.push(cur)
-76	      cur = 0
-77	      has = false
-78	    } else if c >= '0' && c <= '9' {
-79	      cur = cur * 10 + (c.to_int() - 48)
-80	      has = true
-81	    } else {
-82	      return None
-83	    }
-84	  }
-85	  if !has {
-86	    return None	<-- UNCOVERED
-87	  }
-88	  parts.push(cur)
-89	  if parts.length() != 3 {
-90	    return None
-91	  }
-92	  let m = parts[0]
-93	  let w = parts[1]
-94	  let d = parts[2]
-95	  if m < 1 || m > 12 || w < 1 || w > 5 || d < 0 || d > 6 {
-96	    return None
-97	  }
-98	  Some({ month: m, week: w, weekday: d, at_seconds: at })
-99	}
-  	…
-
 1 uncovered line(s) in src/infra_timer/priority_sched.mbt:
 
 141	pub fn[T] PrioritySched::pick_next(self : PrioritySched[T]) -> (Int, T)? {
@@ -11724,78 +11642,6 @@ Total: 715 uncovered line(s) in 173 file(s)
 155	    }
 156	  }
 157	}
-   	…
-
-3 uncovered line(s) in src/logging/logfmt.mbt:
-
- 53	pub fn parse_logfmt(s : String) -> Event? {
- 54	  let chars : Array[Char] = []
- 55	  for c in s {
- 56	    chars.push(c)
- 57	  }
- 58	  let reader : JsonReader = { chars, pos: 0 }
- 59	  let mut ts_val : Int64? = None
- 60	  let mut level_val : Level? = None
- 61	  let fields : Map[String, Value] = Map([])
- 62	  reader.skip_ws()
- 63	  while reader.pos < reader.chars.length() {
- 64	    // 读取键：到 '=' 为止；键中不得含空格（裸键约定）。
- 65	    let key_buf = @infra_text.TextBuilder::new()
- 66	    let mut saw_eq = false
- 67	    while reader.pos < reader.chars.length() {
- 68	      let c = reader.chars[reader.pos]
- 69	      if c == '=' {
- 70	        saw_eq = true
- 71	        reader.pos = reader.pos + 1
- 72	        break
- 73	      }
- 74	      if c == ' ' {
- 75	        break
- 76	      }
- 77	      key_buf.push_char(c)
- 78	      reader.pos = reader.pos + 1
- 79	    }
- 80	    let key = key_buf.build()
- 81	    if !saw_eq || key == "" {
- 82	      return None
- 83	    }
- 84	    if key == "ts" {
- 85	      let tok = logfmt_read_bare(reader)
- 86	      match parse_int64(tok) {
- 87	        Some(n) => ts_val = Some(n)
- 88	        None => return None
- 89	      }
- 90	    } else if key == "level" {
- 91	      let tok = logfmt_read_bare(reader)
- 92	      match Level::from_label(tok) {
- 93	        Some(lv) => level_val = Some(lv)
- 94	        None => return None
- 95	      }
- 96	    } else {
- 97	      let jv = match parse_value(reader) {
- 98	        Some(v) => v
- 99	        None => return None	<-- UNCOVERED
-100	      }
-101	      match jval_to_value(jv) {
-102	        Some(v) => fields[key] = v
-103	        None => return None	<-- UNCOVERED
-104	      }
-105	    }
-106	    // 值之后必须是空白分隔或行尾。
-107	    if reader.pos < reader.chars.length() {
-108	      let c = reader.chars[reader.pos]
-109	      if c == ' ' {
-110	        reader.skip_ws()
-111	      } else {
-112	        return None	<-- UNCOVERED
-113	      }
-114	    }
-115	  }
-116	  match (ts_val, level_val) {
-117	    (Some(ts), Some(level)) => Some(Event::new(ts, level, fields))
-118	    _ => None
-119	  }
-120	}
    	…
 
 3 uncovered line(s) in src/logging/otlp_export.mbt:
@@ -15837,4 +15683,4 @@ Total: 715 uncovered line(s) in 173 file(s)
 268	}
    	…
 
-Total: 715 uncovered line(s) in 173 file(s)
+Total: 708 uncovered line(s) in 170 file(s)

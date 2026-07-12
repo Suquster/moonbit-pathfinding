@@ -6,7 +6,7 @@
 ///|
 /// 两次构造投递条数不同 → trace 长度不同 → false。
 test "replay_consistent：trace 长度不一致被拒绝" {
-  let calls = Ref::new(0)
+  let calls : Ref[Int] = Ref::{ val: 0 }
   let build = fn(s : UInt64) -> ActorSystem[Int, Int] {
     let sys : ActorSystem[Int, Int] = ActorSystem::with_seed(s)
     let a = sys.spawn(0, Behavior::new(fn(_c, st, m) { Updated(st + m) }))
@@ -24,7 +24,7 @@ test "replay_consistent：trace 长度不一致被拒绝" {
 ///|
 /// 两次构造投递条数相同但目标 actor 不同 → 长度相同、逐事件不同 → false。
 test "replay_consistent：trace 同长异序被拒绝" {
-  let calls = Ref::new(0)
+  let calls : Ref[Int] = Ref::{ val: 0 }
   let build = fn(s : UInt64) -> ActorSystem[Int, Int] {
     let sys : ActorSystem[Int, Int] = ActorSystem::with_seed(s)
     let a = sys.spawn(0, Behavior::new(fn(_c, st, m) { Updated(st + m) }))

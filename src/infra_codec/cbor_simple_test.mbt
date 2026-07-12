@@ -7,7 +7,7 @@ test "cbor simple：内联 0..19 编解码 roundtrip" {
     @infra_codec.cbor_decode([0xF0]) == Some(@infra_codec.CborSimple(16)),
   )
   let enc = @infra_codec.cbor_encode(@infra_codec.CborSimple(0))
-  assert_eq(enc, [0xE0])
+  assert_true(enc == [0xE0])
   assert_true(@infra_codec.cbor_decode(enc) == Some(@infra_codec.CborSimple(0)))
 }
 
@@ -18,7 +18,7 @@ test "cbor simple：0xF8 扩展 32..255 与畸形拒绝" {
     @infra_codec.cbor_decode([0xF8, 0xFF]) == Some(@infra_codec.CborSimple(255)),
   )
   let enc = @infra_codec.cbor_encode(@infra_codec.CborSimple(32))
-  assert_eq(enc, [0xF8, 0x20])
+  assert_true(enc == [0xF8, 0x20])
   assert_true(
     @infra_codec.cbor_decode(enc) == Some(@infra_codec.CborSimple(32)),
   )

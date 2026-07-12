@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":935.0312943925235,"min":309.6233252336449,"max":315.0300626168225,"mean":311.67709813084116,"median":310.3779065420561,"variance":8.574126370939867,"std_dev":2.928160919577315,"std_dev_pct":0.9394854280721265,"median_abs_dev":1.1187422478504723,"median_abs_dev_pct":0.36044519415523635,"quartiles":[310.0006158878505,310.3779065420561,312.7039845794393],"iqr":2.703368691588821,"batch_size":321,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1774.8791080924857,"min":585.521260115607,"max":603.641449132948,"mean":591.6263693641619,"median":585.7163988439306,"variance":108.28112616854288,"std_dev":10.405821744030737,"std_dev_pct":1.7588502275877556,"median_abs_dev":0.2893126786126097,"median_abs_dev_pct":0.049394669362791674,"quartiles":[585.6188294797688,585.7163988439306,594.6789239884392],"iqr":9.060094508670431,"batch_size":173,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":298.54737676470586,"min":97.86624578431373,"max":101.66371725490197,"mean":99.51579225490195,"median":99.0174137254902,"variance":3.791483261416869,"std_dev":1.9471731462345276,"std_dev_pct":1.9566473844141192,"median_abs_dev":1.7067215895882306,"median_abs_dev_pct":1.7236580166796123,"quartiles":[98.44182975490196,99.0174137254902,100.34056549019608],"iqr":1.8987357352941245,"batch_size":1020,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":480.82357147192715,"min":155.61456145675265,"max":162.9630874051593,"mean":160.27452382397573,"median":162.24592261001516,"variance":16.41501828379986,"std_dev":4.051545172375579,"std_dev_pct":2.527878464842771,"median_abs_dev":1.0632685252807272,"median_abs_dev_pct":0.6553437572890313,"quartiles":[158.9302420333839,162.24592261001516,162.60450500758725],"iqr":3.6742629742033444,"batch_size":659,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":419.7248838080959,"min":136.36054542728635,"max":142.6540700149925,"mean":139.90829460269865,"median":140.7102683658171,"variance":10.384484371563214,"std_dev":3.222496605361007,"std_dev_pct":2.3032920346231207,"median_abs_dev":2.8818803250674665,"median_abs_dev_pct":2.0480952517091247,"quartiles":[138.5354068965517,140.7102683658171,141.6821691904048],"iqr":3.146762293853101,"batch_size":667,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":951.3590041139239,"min":311.3138743670886,"max":324.1742563291139,"mean":317.11966803797463,"median":315.8708734177215,"variance":42.51697205497647,"std_dev":6.520503972468422,"std_dev_pct":2.0561651104174343,"median_abs_dev":6.756206792468332,"median_abs_dev_pct":2.1389141453171048,"quartiles":[313.592373892405,315.8708734177215,320.0225648734177],"iqr":6.430190981012686,"batch_size":316,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1952.256832075472,"min":629.982283018868,"max":677.8624358490567,"mean":650.7522773584907,"median":644.4121132075471,"variance":603.27551985624,"std_dev":24.561667692895774,"std_dev_pct":3.7743498636064063,"median_abs_dev":21.393666237735705,"median_abs_dev_pct":3.319873385254849,"quartiles":[637.1971981132076,644.4121132075471,661.137274528302],"iqr":23.94007641509438,"batch_size":159,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":298.12193232104124,"min":98.91321811279826,"max":99.73471312364426,"mean":99.37397744034708,"median":99.47400108459871,"variance":0.17621706026824785,"std_dev":0.4197821581109038,"std_dev_pct":0.42242664420159054,"median_abs_dev":0.3865316690889228,"median_abs_dev_pct":0.3885755723851832,"quartiles":[99.19360959869849,99.47400108459871,99.60435710412148],"iqr":0.41074750542298943,"batch_size":922,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":453.471619266055,"min":149.355252293578,"max":153.33830275229357,"mean":151.15720642201833,"median":150.77806422018347,"variance":4.07398434607775,"std_dev":2.018411342139592,"std_dev_pct":1.335306063082666,"median_abs_dev":2.109460962385279,"median_abs_dev_pct":1.399050301710202,"quartiles":[150.06665825688071,150.77806422018347,152.05818348623853],"iqr":1.9915252293578192,"batch_size":654,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":410.4937196556671,"min":136.7375645624103,"max":137.0138968436155,"mean":136.83123988522237,"median":136.7422582496413,"variance":0.025028181012026335,"std_dev":0.15820297409349274,"std_dev_pct":0.11561904593292989,"median_abs_dev":0.006958860688676236,"median_abs_dev_pct":0.005089034492886539,"quartiles":[136.7399114060258,136.7422582496413,136.8780775466284],"iqr":0.13816614060257848,"batch_size":697,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 309 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 587 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 149 | 50% | 2700 | -92% | OK
-supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
+high_frequency_send | 1500 | 316 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 679 | 50% | 6000 | -83% | OK
+ask_round_trip | 900 | 99 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 150 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 138 | 50% | 1800 | -88% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 714 uncovered line(s) in 170 file(s)
+Total: 712 uncovered line(s) in 169 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -12328,176 +12328,6 @@ Total: 714 uncovered line(s) in 170 file(s)
 439	}
    	…
 
-2 uncovered line(s) in src/mini_compiler/infer.mbt:
-
-169	fn infer_w(
-170	  env : TyEnv,
-171	  e : Expr,
-172	  fresh : FreshGen,
-173	) -> Result[(Subst, TExpr), Diagnostic] {
-174	  match e {
-175	    EInt(n, sp) => Ok((subst_empty(), TEInt(n, TyInt, sp)))
-176	    EBool(b, sp) => Ok((subst_empty(), TEBool(b, TyBool, sp)))
-177	    EVar(x, sp) =>
-178	      match tyenv_lookup(env, x) {
-179	        None =>
-180	          Err(
-181	            Diagnostic::new(
-182	              TypeError,
-183	              sp.line,
-184	              sp.col,
-185	              "未绑定变量 '\{x}'",
-186	            ),
-187	          )
-188	        Some(sc) => {
-189	          let t = instantiate(sc, fresh)
-190	          Ok((subst_empty(), TEVar(x, t, sp)))
-191	        }
-192	      }
-193	    EArith(op, l, r, sp) =>
-194	      infer_binop(env, l, r, fresh, TyInt, sp, fn(tl, tr) {
-195	        TEArith(op, tl, tr, TyInt, sp)
-196	      })
-197	    ECmp(op, l, r, sp) =>
-198	      infer_binop(env, l, r, fresh, TyInt, sp, fn(tl, tr) {
-199	        TECmp(op, tl, tr, TyBool, sp)
-200	      })
-201	    ELogic(op, l, r, sp) =>
-202	      infer_binop(env, l, r, fresh, TyBool, sp, fn(tl, tr) {
-203	        TELogic(op, tl, tr, TyBool, sp)
-204	      })
-205	    EIf(c, a, b, sp) =>
-206	      match infer_w(env, c, fresh) {
-207	        Err(d) => Err(d)
-208	        Ok((s1, tc)) =>
-209	          match unify(apply_subst(s1, type_of(tc)), TyBool) {
-210	            Err(d) => Err(with_span(d, sp))
-211	            Ok(s1b) => {
-212	              let sa = compose(s1b, s1)
-213	              match infer_w(tyenv_apply(sa, env), a, fresh) {
-214	                Err(d) => Err(d)
-215	                Ok((s2, ta)) => {
-216	                  let sb = compose(s2, sa)
-217	                  match infer_w(tyenv_apply(sb, env), b, fresh) {
-218	                    Err(d) => Err(d)
-219	                    Ok((s3, tb)) => {
-220	                      let sc2 = compose(s3, sb)
-221	                      match
-222	                        unify(
-223	                          apply_subst(sc2, type_of(ta)),
-224	                          apply_subst(sc2, type_of(tb)),
-225	                        ) {
-226	                        Err(d) => Err(with_span(d, sp))
-227	                        Ok(s4) => {
-228	                          let s = compose(s4, sc2)
-229	                          let rt = apply_subst(s, type_of(ta))
-230	                          Ok((s, TEIf(tc, ta, tb, rt, sp)))
-231	                        }
-232	                      }
-233	                    }
-234	                  }
-235	                }
-236	              }
-237	            }
-238	          }
-239	      }
-240	    ELam(x, body, sp) => {
-241	      let tv = fresh.fresh()
-242	      let env1 = tyenv_extend(env, x, Scheme::{ vars: [], body: tv })
-243	      match infer_w(env1, body, fresh) {
-244	        Err(d) => Err(d)
-245	        Ok((s1, tbody)) => {
-246	          let fn_ty = TyFun(
-247	            apply_subst(s1, tv),
-248	            apply_subst(s1, type_of(tbody)),
-249	          )
-250	          Ok((s1, TELam(x, tbody, fn_ty, sp)))
-251	        }
-252	      }
-253	    }
-254	    EApp(f, a, sp) =>
-255	      match infer_w(env, f, fresh) {
-256	        Err(d) => Err(d)
-257	        Ok((s1, tf)) =>
-258	          match infer_w(tyenv_apply(s1, env), a, fresh) {
-259	            Err(d) => Err(d)
-260	            Ok((s2, ta)) => {
-261	              let s12 = compose(s2, s1)
-262	              let r = fresh.fresh()
-263	              match
-264	                unify(
-265	                  apply_subst(s12, type_of(tf)),
-266	                  TyFun(apply_subst(s12, type_of(ta)), r),
-267	                ) {
-268	                Err(d) => Err(with_span(d, sp))
-269	                Ok(s3) => {
-270	                  let s = compose(s3, s12)
-271	                  let rt = apply_subst(s, r)
-272	                  Ok((s, TEApp(tf, ta, rt, sp)))
-273	                }
-274	              }
-275	            }
-276	          }
-277	      }
-278	    ELet(x, e1, e2, sp) =>
-279	      match infer_w(env, e1, fresh) {
-280	        Err(d) => Err(d)
-281	        Ok((s1, t1)) => {
-282	          let env1 = tyenv_apply(s1, env)
-283	          let sc = generalize(env1, apply_subst(s1, type_of(t1)))
-284	          match infer_w(tyenv_extend(env1, x, sc), e2, fresh) {
-285	            Err(d) => Err(d)
-286	            Ok((s2, t2)) => {
-287	              let s = compose(s2, s1)
-288	              let rt = apply_subst(s, type_of(t2))
-289	              Ok((s, TELet(x, t1, t2, rt, sp)))
-290	            }
-291	          }
-292	        }
-293	      }
-294	    ELetRec(f, e1, e2, sp) => {
-295	      let tv = fresh.fresh()
-296	      let env_f = tyenv_extend(env, f, Scheme::{ vars: [], body: tv })
-297	      match infer_w(env_f, e1, fresh) {
-298	        Err(d) => Err(d)
-299	        Ok((s1, t1)) =>
-300	          match unify(apply_subst(s1, tv), apply_subst(s1, type_of(t1))) {
-301	            Err(d) => Err(with_span(d, sp))	<-- UNCOVERED
-302	            Ok(s1b) => {
-303	              let s = compose(s1b, s1)
-304	              let env1 = tyenv_apply(s, env)
-305	              let sc = generalize(env1, apply_subst(s, type_of(t1)))
-306	              match infer_w(tyenv_extend(env1, f, sc), e2, fresh) {
-307	                Err(d) => Err(d)
-308	                Ok((s2, t2)) => {
-309	                  let sfinal = compose(s2, s)
-310	                  let rt = apply_subst(sfinal, type_of(t2))
-311	                  Ok((sfinal, TELetRec(f, t1, t2, rt, sp)))
-312	                }
-313	              }
-314	            }
-315	          }
-316	      }
-317	    }
-318	    ETuple(items, sp) => {
-319	      let mut s = subst_empty()
-320	      let typed : Array[TExpr] = []
-321	      for it in items {
-322	        match infer_w(tyenv_apply(s, env), it, fresh) {
-323	          Err(d) => return Err(d)	<-- UNCOVERED
-324	          Ok((si, ti)) => {
-325	            s = compose(si, s)
-326	            typed.push(ti)
-327	          }
-328	        }
-329	      }
-330	      let tys = typed.map(fn(te) { apply_subst(s, type_of(te)) })
-331	      Ok((s, TETuple(typed, TyTuple(tys), sp)))
-332	    }
-333	  }
-334	}
-   	…
-
 2 uncovered line(s) in src/mini_compiler/js_backend.mbt:
 
 156	pub fn compile_ml_to_js(src : String) -> Result[String, Diagnostic] {
@@ -14656,9 +14486,9 @@ Total: 714 uncovered line(s) in 170 file(s)
 1030	    }
 1031	  }
 1032	  for ne_name in m.nested_enums {
-1033	    match schema.enum_def(ne_name) {	<-- UNCOVERED
+1033	    match schema.enum_def(ne_name) {
 1034	      Some(ne) => out.push_str(pg_print_enum(ne, level + 1))
-1035	      None => ()
+1035	      None => ()	<-- UNCOVERED
 1036	    }
 1037	  }
 1038	  out.push_str(pad)
@@ -15386,4 +15216,4 @@ Total: 714 uncovered line(s) in 170 file(s)
 268	}
    	…
 
-Total: 714 uncovered line(s) in 170 file(s)
+Total: 712 uncovered line(s) in 169 file(s)

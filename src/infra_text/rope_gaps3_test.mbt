@@ -45,7 +45,7 @@ test "Rope::line_col_at：跨 Concat 结点行列换算" {
         col = col + 1
       }
     }
-    assert_eq(r.line_col_at(off), (line, col))
+    assert_true(r.line_col_at(off) == (line, col))
   }
 }
 

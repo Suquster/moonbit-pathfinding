@@ -20,7 +20,7 @@ test "apply_unified：中段修改时前导与尾随行原样拷贝" {
   let ops = @infra_diff.diff_lines(old, new_)
   let hunks = @infra_diff.hunks_of(ops, context=1)
   guard @infra_diff.apply_unified(old, hunks) is Some(applied)
-  assert_eq(applied, new_)
+  assert_true(applied == new_)
 }
 
 ///|

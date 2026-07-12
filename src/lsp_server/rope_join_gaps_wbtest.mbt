@@ -34,7 +34,7 @@ test "rope_join：规模矩阵拼接内容与元数据一致" {
       for x in rjg_content(r) {
         expect.push(x)
       }
-      assert_eq(rjg_content(j), expect)
+      assert_true(rjg_content(j) == expect)
     }
   }
 }

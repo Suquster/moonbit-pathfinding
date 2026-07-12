@@ -25,8 +25,8 @@ test "zstd 字典压缩：原始内容字典往返" {
     let data = zsd_text(size)
     match @infra_compress.zstd_compress_with_dict(data, dict, false) {
       Some(frame) =>
-        assert_eq(
-          @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20),
+        assert_true(
+          @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20) ==
           Some(data),
         )
       None => fail("原始字典压缩失败 size=\{size}")
@@ -45,8 +45,8 @@ test "zstd 字典压缩：结构化字典往返（Dictionary_ID + 初始 rep）"
   }
   match @infra_compress.zstd_compress_with_dict(data, dict, true) {
     Some(frame) => {
-      assert_eq(
-        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20),
+      assert_true(
+        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20) ==
         Some(data),
       )
       // 帧头声明了 Dictionary_ID：换一个 id 不同的字典应拒绝。
@@ -83,8 +83,8 @@ test "zstd 字典压缩：带校验和往返与畸形字典拒绝" {
   let data = zsd_text(257) // fcs_flag=1 分支。
   match @infra_compress.zstd_compress_with_dict(data, dict, true) {
     Some(frame) =>
-      assert_eq(
-        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20),
+      assert_true(
+        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20) ==
         Some(data),
       )
     None => fail("带校验和字典压缩失败")
@@ -100,8 +100,8 @@ test "zstd 字典压缩：大输入跨块历史累积往返" {
   let data = zsd_text(70000) // 跨 64KB 块边界。
   match @infra_compress.zstd_compress_with_dict(data, dict, true) {
     Some(frame) =>
-      assert_eq(
-        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20),
+      assert_true(
+        @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20) ==
         Some(data),
       )
     None => fail("跨块字典压缩失败")

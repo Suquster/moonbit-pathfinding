@@ -17,7 +17,7 @@ test "des_sim：DiskFault 丢失末尾条目保留日志前缀" {
   let w = gaps3_world([10, 20, 30])
   w.apply_fault(FaultPolicyEx::new(0, 1, DiskFault(lose=1)))
   guard w.find_node(1) is Some(n)
-  assert_eq(n.app.log, [10, 20])
+  assert_true(n.app.log == [10, 20])
 }
 
 ///|
@@ -25,7 +25,7 @@ test "des_sim：apply_actions 未知节点 ActAppend 安全忽略" {
   let w = gaps3_world([])
   w.apply_actions(99, [ActAppend(value=5)])
   guard w.find_node(1) is Some(n)
-  assert_eq(n.app.log, [])
+  assert_true(n.app.log == [])
 }
 
 ///|

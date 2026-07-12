@@ -9,5 +9,5 @@ test "LeftmostLongest：后到候选起点更靠左时取而代之" {
     )
     is Ok(p)
   guard p.find("ba") is Some(m)
-  assert_eq((m.start, m.end), (0, 2))
+  assert_true((m.start, m.end) == (0, 2))
 }

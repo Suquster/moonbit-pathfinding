@@ -16,8 +16,8 @@ test "rope：叶界代理对不被切半" {
   assert_eq(r.len(), s.length())
   assert_eq(r.to_string(), s)
   // 代理对完整：charcode 在 511/512 处分别是高/低代理项。
-  assert_eq(r.charcode_at(511), Some(0xD83D))
-  assert_eq(r.charcode_at(512), Some(0xDE00))
+  assert_true(r.charcode_at(511) == Some(0xD83D))
+  assert_true(r.charcode_at(512) == Some(0xDE00))
 }
 
 ///|

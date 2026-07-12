@@ -17,7 +17,7 @@ test "zstd_compress_entropy：regen ≥ 4096 大字面量往返一致" {
   let data = zg3_prng_bytes(5000)
   let enc = zstd_compress_entropy(data, false)
   guard zstd_decompress(enc, 1 << 20) is Some(dec)
-  assert_eq(dec, data)
+  assert_true(dec == data)
 }
 
 ///|
@@ -26,5 +26,5 @@ test "zstd_decompress：输出超过 max_out 预算即拒绝" {
   let enc = zstd_compress(data, false)
   assert_true(zstd_decompress(enc, 100) is None)
   guard zstd_decompress(enc, 600) is Some(dec)
-  assert_eq(dec, data)
+  assert_true(dec == data)
 }

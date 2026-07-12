@@ -32,7 +32,7 @@ test "zstd 块：尾部剩余字面量超预算拒绝" {
       zstd_block_ctx(),
     ),
   )
-  assert_eq(out2, [0x41])
+  assert_true(out2 == [0x41])
 }
 
 ///|
@@ -61,7 +61,7 @@ test "zstd 块：序列后尾部字面量超预算拒绝" {
       zstd_block_ctx(),
     ),
   )
-  assert_eq(ok, src)
+  assert_true(ok == src)
   // 预算差 1 字节：序列全部执行成功，尾部字面量超预算 → 拒绝。
   let bad : Array[Int] = []
   assert_false(

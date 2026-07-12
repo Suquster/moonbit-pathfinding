@@ -20,10 +20,10 @@ test "many1：不推进游标的成功解析器立即返回避免死循环" {
   })
   match many1(epsilon).parse(Input::from_string("xy")) {
     Ok(vs, rest) => {
-      assert_eq(vs, [7])
+      assert_true(vs == [7])
       assert_eq(rest.pos.offset, 0)
     }
-    Fail(_, expected~) => fail("不应失败：\{expected}")
+    Fail(_, ..) => fail("不应失败")
   }
 }
 
@@ -39,7 +39,7 @@ test "many1：中途停止推进时保留已收集结果" {
     }
   })
   match many1(stalling).parse(Input::from_string("xy")) {
-    Ok(vs, _) => assert_eq(vs, [1, 2])
+    Ok(vs, _) => assert_true(vs == [1, 2])
     Fail(_, ..) => fail("不应失败")
   }
 }

@@ -5,7 +5,7 @@
 test "MsgView::zigzag_field：字段缺失" {
   let v = MsgView::over([0x08, 0x02]) // 字段 1 varint=2
   assert_true(v.zigzag_field(2) is None)
-  assert_eq(v.zigzag_field(1), Some(1L)) // zigzag(2)=1
+  assert_true(v.zigzag_field(1) == Some(1L)) // zigzag(2)=1
 }
 
 ///|

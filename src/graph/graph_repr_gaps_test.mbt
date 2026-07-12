@@ -11,7 +11,7 @@ test "GraphRepr::neighbors：畸形短行矩阵按行长裁剪" {
   ]
   let g : @graph.GraphRepr[Int] = @graph.GraphRepr::AdjMatrix(3, ragged)
   guard g.neighbors(1) is Ok(ns)
-  assert_eq(ns, [(0, 1)])
+  assert_true(ns == [(0, 1)])
 }
 
 ///|
@@ -24,15 +24,15 @@ test "GraphRepr::neighbors：畸形 CSR 边数按较短数组裁剪" {
   }
   let g : @graph.GraphRepr[Int] = @graph.GraphRepr::Csr(csr)
   guard g.neighbors(0) is Ok(ns)
-  assert_eq(ns, [(1, 5)])
+  assert_true(ns == [(1, 5)])
 }
 
 ///|
 test "GraphRepr::to_successors：闭包投影越界返回空" {
   let g : @graph.GraphRepr[Int] = @graph.GraphRepr::EdgeList(2, [(0, 1, 4)])
   let succ = g.to_successors()
-  assert_eq(succ(0), [(1, 4)])
-  assert_eq(succ(9), [])
+  assert_true(succ(0) == [(1, 4)])
+  assert_true(succ(9) == [])
 }
 
 ///|

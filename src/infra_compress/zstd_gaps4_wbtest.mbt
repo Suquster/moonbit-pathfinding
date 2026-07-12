@@ -31,7 +31,7 @@ test "zstd_decompress：两帧串联全量往返一致" {
   for x in b {
     expect.push(x)
   }
-  assert_eq(dec, expect)
+  assert_true(dec == expect)
 }
 
 ///|

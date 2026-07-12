@@ -15,8 +15,8 @@ test "parse_rules_full_with_includes：变量合并且父定义优先" {
       "CC = gcc\ninclude vars.mk\napp: util.o\n", resolve,
     ) {
     Ok(rs) => {
-      assert_eq(rs.variables.get("CC"), Some("gcc"))
-      assert_eq(rs.variables.get("EXTRA"), Some("-O2"))
+      assert_true(rs.variables.get("CC") == Some("gcc"))
+      assert_true(rs.variables.get("EXTRA") == Some("-O2"))
     }
     Err(_) => fail("合法规则不应解析失败")
   }

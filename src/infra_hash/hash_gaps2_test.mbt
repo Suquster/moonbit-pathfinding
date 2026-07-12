@@ -10,7 +10,7 @@ test "hmac_sha1：超过分组长度的密钥先经哈希折叠" {
   let msg = [1, 2, 3]
   let direct = @infra_hash.hmac_sha1(key, msg)
   let folded = @infra_hash.hmac_sha1(@infra_hash.sha1(key), msg)
-  assert_eq(direct, folded)
+  assert_true(direct == folded)
 }
 
 ///|

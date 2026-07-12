@@ -30,8 +30,8 @@ test "zstd 字典：结构化字典逐长度截断——要么拒绝要么往返
     match @infra_compress.zstd_compress_with_dict(data, trunc, false) {
       None => rejected = rejected + 1
       Some(frame) =>
-        assert_eq(
-          @infra_compress.zstd_decompress_with_dict(frame, trunc, 1 << 20),
+        assert_true(
+          @infra_compress.zstd_decompress_with_dict(frame, trunc, 1 << 20) ==
           Some(data),
         )
     }
@@ -47,8 +47,8 @@ test "zstd 字典：极短原始字典（read_le 越界走 raw 路径）" {
   for d in [[], [0x37], [0x37, 0xA4, 0x30]] {
     match @infra_compress.zstd_compress_with_dict(data, d, false) {
       Some(frame) =>
-        assert_eq(
-          @infra_compress.zstd_decompress_with_dict(frame, d, 1 << 20),
+        assert_true(
+          @infra_compress.zstd_decompress_with_dict(frame, d, 1 << 20) ==
           Some(data),
         )
       None => fail("原始短字典应可压缩")
@@ -134,8 +134,8 @@ test "zstd 字典压缩：全同字节块走 RLE 路径" {
   guard @infra_compress.zstd_compress_with_dict(data, dict, false)
     is Some(frame)
   assert_true(frame.length() < 40)
-  assert_eq(
-    @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20),
+  assert_true(
+    @infra_compress.zstd_decompress_with_dict(frame, dict, 1 << 20) ==
     Some(data),
   )
 }
@@ -151,7 +151,7 @@ test "zstd 压缩：不可压缩长块（20 位 Raw 字面量布局）往返" {
     data.push((x >> 16) & 0xFF)
   }
   let frame = @infra_compress.zstd_compress(data, true)
-  assert_eq(@infra_compress.zstd_decompress(frame, 1 << 20), Some(data))
+  assert_true(@infra_compress.zstd_decompress(frame, 1 << 20) == Some(data))
 }
 
 ///|

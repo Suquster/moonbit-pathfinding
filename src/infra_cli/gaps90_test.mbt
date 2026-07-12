@@ -16,5 +16,5 @@ test "validate_rules：VBool 规则畸形值上报" {
 ///|
 /// suggest_option：等距候选取字典序较小者。
 test "suggest_option：等距候选字典序决胜" {
-  assert_eq(suggest_option("ab", ["ay", "ax"]), Some("ax"))
+  assert_true(suggest_option("ab", ["ay", "ax"]) == Some("ax"))
 }

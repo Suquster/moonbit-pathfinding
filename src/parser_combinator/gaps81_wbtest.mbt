@@ -16,7 +16,7 @@ test "label：成功路径原样透传" {
 /// `<?>` 别名与 label 语义一致。
 test "op_as_label：与 label 等价" {
   match op_as_label(pchar('z'), "NAME").parse_string("a") {
-    Fail(_, expected~) => assert_eq(expected, ["NAME"])
+    Fail(_, expected~) => assert_true(expected == ["NAME"])
     Ok(_, _) => fail("应当失败")
   }
 }

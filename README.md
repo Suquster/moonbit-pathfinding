@@ -46,6 +46,12 @@
    HL, up to 13279×) with full cross-validation, all reproducible from
    checked-in scripts and artifacts.
 
+**Downstream usage**: see
+[`Suquster/moonbit-pathfinding-demo`](https://github.com/Suquster/moonbit-pathfinding-demo) —
+a warehouse robot route planner that consumes the published mooncakes.io
+package (`moon add Suquster/moonbit-pathfinding`) as a regular dependency,
+with its own tests and CI.
+
 ---
 
 ## Ported from

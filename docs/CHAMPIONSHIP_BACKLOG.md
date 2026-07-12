@@ -682,6 +682,18 @@
         `src/actor/supervision_gaps_wbtest.mbt`、
         `src/infra_bench/regression_gaps_wbtest.mbt`、
         `src/directed/cch_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十四批 余支覆盖收口（lsp_server + parser_combinator +
+        regex_engine）：DSL 格式化非法键（空/数字开头/非法字符）与无
+        等号行不动、server 整数解析余支、补全重名去重、重命名缺符号
+        仅引用侧、工作区编辑越界忽略与乱序重排、位置编码行/下标越界
+        拒绝；组合子 cut 别名直通、recover 成功直通与同步点缺失 EOF
+        兜底；两代正则解析器裸 '|' 空分支语义（均合法，与主流引擎
+        一致）与初代字符类未闭合 EOF 报错。src/ 未覆盖 490→471 行，
+        3140→3152 三后端全绿。2026-07-12，
+        `src/lsp_server/lsp_gaps3_wbtest.mbt`、
+        `src/parser_combinator/commit_gaps_wbtest.mbt`、
+        `src/regex_engine/coverage_gaps2_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

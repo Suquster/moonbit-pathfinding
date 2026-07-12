@@ -354,12 +354,44 @@ if ($null -ne $rustReport -and $null -ne $moonReport) {
     }
 }
 
+# ───────── 本库双向变体 bonus（moon-only 用例，不进入同算法加速比） ─────────
+# Rust `pathfinding` crate 没有双向 BFS/Dijkstra/A* API，因此这些用例无法配对；
+# 仅作为本库额外能力展示，并用同规模单向用例的签名做正确性交叉校验。
+$bonusCases = New-Object System.Collections.Generic.List[object]
+if ($null -ne $moonReport) {
+    $moonUniByKey = @{}
+    foreach ($c in $moonReport.cases) {
+        if ($c.algorithm -notmatch '-bidir$') { $moonUniByKey[(Get-CaseKey $c)] = $c }
+    }
+    foreach ($mc in $moonReport.cases) {
+        if ($mc.algorithm -match '-bidir$') {
+            $uniAlgo = $mc.algorithm -replace '-bidir$', ''
+            $uniKey = "$uniAlgo|$($mc.graph_size)|$($mc.avg_out_degree)"
+            $uni = $moonUniByKey[$uniKey]
+            $consistent = ($null -ne $uni) -and (Signatures-Equal -A $mc.signatures -B $uni.signatures)
+            $vsUni = $null
+            if ($null -ne $uni -and [double]$mc.stats.median_ms -gt 0) {
+                $vsUni = [double]$uni.stats.median_ms / [double]$mc.stats.median_ms
+            }
+            $bonusCases.Add([ordered]@{
+                algorithm = $mc.algorithm; graph_size = $mc.graph_size; avg_out_degree = $mc.avg_out_degree
+                edge_count = $mc.edge_count; query_count = $mc.query_count
+                moon_median_ms = [double]$mc.stats.median_ms
+                moon_uni_median_ms = $(if ($null -ne $uni) { [double]$uni.stats.median_ms } else { $null })
+                speedup_vs_uni = $vsUni
+                signatures_match_uni = $consistent
+            })
+        }
+    }
+}
+
 # ─────────────────────────── 方法学声明（R6.4） ───────────────────────────
 $methodology = @(
     "输入生成：两侧共享逐位一致的 xorshift64 随机源与完全相同的确定性生成算法；边数 = 节点数 × 平均出度，按 (u,v,w) 顺序生成（自环改写为 (u+1)%n），查询按 (s,t) 顺序生成。",
     "随机种子：$Seed（十进制，64 位）；两侧用同一种子产出逐元素相同的图与查询集（黄金 JSON 交叉校验，R6.2）。",
     "工作负载矩阵：BFS/Dijkstra/A* × 规模 {$Sizes} × 平均出度 {$Degrees} × 每组 $Queries 查询。",
     "A* 启发式：一般图上使用零启发式（admissible），等价一致代价搜索；两侧一致。",
+    "同算法对齐：主对比表中两侧均为单向 BFS/Dijkstra/A*（本库使用 CSR indexed 快路径，Rust 侧使用 pathfinding crate 公开 API + 预构建邻接表）；本库双向变体（Rust crate 无对应 API）单独列为 bonus 表，不进入同算法加速比。",
     "预热/测量：每用例 ≥$Warmup 预热 + ≥$Samples 计时采样；单次采样 = 运行该用例全部查询一遍；计时单位毫秒。",
     "加速比口径：统一以中位计时计算（本库中位 ÷ Rust 中位 → 本库相对 Rust 的加速；>1 表示本库更快）（R6.6）。",
     "排除规则：失败 / 超时（单次采样 >${TimeoutSec}s）/ 两库结果不一致（结果签名不同）的用例标注并排除出加速比（R6.7）。",
@@ -393,6 +425,7 @@ $artifact = [ordered]@{
     degradations = $degradations.ToArray()
     aggregate_median_speedup_moon_over_rust = $aggregateMedianSpeedup
     comparisons = $comparisons.ToArray()
+    moon_bidirectional_bonus = $bonusCases.ToArray()
     rust_report_present = ($null -ne $rustReport)
     moon_report_present = ($null -ne $moonReport)
 }
@@ -470,6 +503,22 @@ foreach ($c in $comparisons) {
     $md.Add("| $($c.algorithm) | $($c.graph_size) | $($c.avg_out_degree) | $($c.edge_count) | $(Fmt $c.rust_median_ms) | $(Fmt $c.moon_median_ms) | $sp | $inc | $note |")
 }
 $md.Add("")
+
+# 本库双向变体 bonus 表（moon-only，不进入加速比）。
+if ($bonusCases.Count -gt 0) {
+    $md.Add("## MoonBit bidirectional bonus (no Rust counterpart; excluded from speedup)")
+    $md.Add("")
+    $md.Add("Rust ``pathfinding`` crate 不提供双向 BFS/Dijkstra/A* API；以下为本库双向变体在同一工作负载上的计时，仅展示库能力，不计入同算法加速比。签名与本库单向结果逐元素交叉校验。")
+    $md.Add("")
+    $md.Add("| Algorithm | Nodes | Deg | Edges | Moon uni median ms | Moon bidir median ms | Bidir vs uni | Signatures match |")
+    $md.Add("|---|---:|---:|---:|---:|---:|---:|:--:|")
+    foreach ($b in $bonusCases) {
+        $sm = if ($b.signatures_match_uni) { "✅" } else { "❌" }
+        $sp = if ($null -ne $b.speedup_vs_uni) { "$(Fmt $b.speedup_vs_uni)×" } else { "-" }
+        $md.Add("| $($b.algorithm) | $($b.graph_size) | $($b.avg_out_degree) | $($b.edge_count) | $(Fmt $b.moon_uni_median_ms) | $(Fmt $b.moon_median_ms) | $sp | $sm |")
+    }
+    $md.Add("")
+}
 
 # 方法学声明。
 $md.Add("## Methodology (R6.4)")

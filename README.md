@@ -5,9 +5,9 @@
 <!-- Tier-1 6 badges (per tasks.md 10.1): License / CI / Version / mooncakes.io / Playground / Formally verified -->
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-v0.0.1-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.0.5-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
-[![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](#playground)
+[![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](https://suquster.github.io/moonbit-pathfinding/)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
 
 [![OSC 2026](https://img.shields.io/badge/OSC_2026-participant-brightgreen)](https://moonbitlang.github.io/OSC2026/)
@@ -359,14 +359,29 @@ median `moon bench` mean timing，生成
 [`benches/results/latest-guard.md`](./benches/results/latest-guard.md) 与
 [`benches/results/latest-guard.json`](./benches/results/latest-guard.json)。
 
-### 对标 Rust `pathfinding` crate
+### 对标 Rust `pathfinding` crate（✅ published head-to-head）
 
-Current benchmark tests and checked-in `benches/results/*.json` artifacts are
-local regression evidence, not a published Rust comparison yet. Native artifacts
-record `moon bench` statistics from `@bench.T` blocks; smoke artifacts record
-end-to-end package timing. Both include machine, backend, input size, command
-output, and methodology so regressions can be discussed with concrete data,
-while avoiding unsupported speedup claims.
+A reproducible head-to-head comparison against Rust's `pathfinding` crate
+(v4.11.0, `cargo --release`) is published in
+[`benches/results/latest-rust-comparison.md`](./benches/results/latest-rust-comparison.md)
+(run via `pwsh scripts/rust_comparison.ps1`; native backend, bit-identical
+xorshift64 workloads with a golden element-wise cross-check, per-query result
+signatures verified equal on both sides):
+
+- **Same-algorithm tier** (unidirectional BFS / Dijkstra / A\* on both sides,
+  18/18 cases included, up to 100k nodes / 1.6M edges): median speedup
+  **≈2.7× over Rust** (range 2.1–3.6×).
+- **Library-capability bonus tier**: this library's bidirectional variants
+  (no counterpart API in the Rust crate) reach **8–68× over its own
+  unidirectional baseline** on the same workloads, with signatures
+  cross-checked element-wise — reported separately and *excluded* from the
+  same-algorithm speedup, so no unsupported claims.
+
+Beyond the Rust comparison, checked-in `benches/results/*.json` artifacts are
+local regression evidence. Native artifacts record `moon bench` statistics from
+`@bench.T` blocks; smoke artifacts record end-to-end package timing. Both
+include machine, backend, input size, command output, and methodology so
+regressions can be discussed with concrete data.
 
 The native guard defaults to a 25% regression tolerance. The smoke guard remains
 available with a deliberately loose 50% default because it times end-to-end

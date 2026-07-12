@@ -4,9 +4,9 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-v0.0.1-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.0.5-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
-[![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](#playground)
+[![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](https://suquster.github.io/moonbit-pathfinding/)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
 [![OSC 2026](https://img.shields.io/badge/OSC_2026-participant-brightgreen)](https://moonbitlang.github.io/OSC2026/)
 
@@ -283,6 +283,19 @@ median `moon bench` mean timing，并生成
 [`benches/results/latest-guard.json`](./benches/results/latest-guard.json)。
 这些是本地回归证据，不是跨语言加速比声明；native artifact 更接近算法级，
 smoke artifact 用于端到端包执行守卫。
+
+### 对标 Rust `pathfinding` crate（✅ 已发布正面对比）
+
+与 Rust `pathfinding` crate（v4.11.0，`cargo --release`）的可复现正面对比
+已发布：[`benches/results/latest-rust-comparison.md`](./benches/results/latest-rust-comparison.md)
+（`pwsh scripts/rust_comparison.ps1` 生成；native 后端，两侧共享逐位一致的
+xorshift64 工作负载并做黄金逐元素交叉校验，每条查询的结果签名两侧逐元素相等）：
+
+- **同算法对齐层**（两侧均为单向 BFS / Dijkstra / A\*，18/18 用例全部纳入，
+  最大 10 万节点 / 160 万边）：中位加速 **≈2.7×**（区间 2.1–3.6×）。
+- **库能力 bonus 层**：本库双向变体（Rust crate 无对应 API）在同一工作负载上
+  相对本库单向基线达 **8–68×**，签名逐元素交叉校验；单独列表、**不计入**
+  同算法加速比，杜绝不当宣传。
 
 真实 OSM 路网基准已落库（北京 / 厦门驾车网，osmnx 提取）：四档
 点到点谱系（双向 Dijkstra → ALT 6.5× → CH 46.7× → HL 13279×）与批量

@@ -97,7 +97,66 @@ fn build_unweighted_reverse_adjacency(w : Workload) -> @unweighted.CsrGraph {
 }
 
 ///|
-/// BFS 跳数签名：可达取边数，不可达取 -1。
+/// BFS 跳数签名（单向，与 Rust `pathfinding::bfs` 同算法）：可达取边数，
+/// 不可达取 -1。这是「同算法对齐」主对比路径（R6.1）。
+fn bfs_uni_signatures(
+  g : @unweighted.CsrGraph,
+  queries : Array[(Int, Int)],
+) -> Array[Int] {
+  let ctx = @unweighted.BfsCtx::new(g.node_count())
+  let out : Array[Int] = []
+  for qr in queries {
+    let (s, t) = qr
+    let res = @unweighted.bfs_indexed_ctx(g, ctx, s, t)
+    match res {
+      Some(path) => out.push(path.length() - 1)
+      None => out.push(-1)
+    }
+  }
+  out
+}
+
+///|
+/// Dijkstra 代价签名（单向，与 Rust `pathfinding::dijkstra` 同算法）。
+fn dijkstra_uni_signatures(
+  g : @directed.WeightedCsr,
+  queries : Array[(Int, Int)],
+) -> Array[Int] {
+  let ctx = @directed.SearchCtx::new(g.node_count())
+  let out : Array[Int] = []
+  for qr in queries {
+    let (s, t) = qr
+    let res = @directed.dijkstra_indexed_ctx(g, ctx, s, t)
+    match res {
+      Some((_path, cost)) => out.push(cost)
+      None => out.push(-1)
+    }
+  }
+  out
+}
+
+///|
+/// A*（零启发式，单向，与 Rust `pathfinding::astar` 同算法）。
+fn astar_uni_signatures(
+  g : @directed.WeightedCsr,
+  queries : Array[(Int, Int)],
+) -> Array[Int] {
+  let ctx = @directed.SearchCtx::new(g.node_count())
+  let out : Array[Int] = []
+  for qr in queries {
+    let (s, t) = qr
+    let res = @directed.astar_indexed_ctx(g, ctx, s, t, fn(_node) { 0 })
+    match res {
+      Some((_path, cost)) => out.push(cost)
+      None => out.push(-1)
+    }
+  }
+  out
+}
+
+///|
+/// BFS 跳数签名（双向，本库独有能力，Rust `pathfinding` crate 无对应 API；
+/// 仅作为 library-capability bonus 上报，不进入同算法加速比）。
 fn bfs_signatures(
   g : @unweighted.CsrGraph,
   rg : @unweighted.CsrGraph,
@@ -433,9 +492,15 @@ fn run_bench(map : Map[String, String]) -> Unit {
       let queries = w.queries
       // 三种算法的「整批查询」工作闭包。
       let algos : Array[(String, () -> Array[Int])] = [
-        ("BFS", fn() { bfs_signatures(uadj, uradj, queries) }),
-        ("Dijkstra", fn() { dijkstra_signatures(wadj, wradj, queries) }),
-        ("A*", fn() { astar_signatures(wadj, wradj, queries) }),
+        // 「同算法对齐」主对比：与 Rust 侧完全相同的单向算法（R6.1）。
+        ("BFS", fn() { bfs_uni_signatures(uadj, queries) }),
+        ("Dijkstra", fn() { dijkstra_uni_signatures(wadj, queries) }),
+        ("A*", fn() { astar_uni_signatures(wadj, queries) }),
+        // 「库能力 bonus」：双向变体（Rust `pathfinding` crate 无对应 API，
+        // 不与 Rust 配对、不进入同算法加速比，仅展示本库额外能力）。
+        ("BFS-bidir", fn() { bfs_signatures(uadj, uradj, queries) }),
+        ("Dijkstra-bidir", fn() { dijkstra_signatures(wadj, wradj, queries) }),
+        ("A*-bidir", fn() { astar_signatures(wadj, wradj, queries) }),
       ]
       for entry in algos {
         let (algo, work) = entry

@@ -5,3 +5,10 @@ _build/
 playground/web/playground.wasm
 playground/web/playground.js
 case-studies/h6-fixed-point/_build/
+
+# 本地诊断/覆盖日志（验收要求仓库不含临时产物）
+err*.log
+fmt.log
+uncovered.log
+*.log
+!docs/**/*.log

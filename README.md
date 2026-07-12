@@ -156,9 +156,9 @@ stories instead of isolated snippets:
 
 | Example | Command | Algorithm | What it proves |
 |---|---|---|---|
-| Maze solver | `moon run examples\maze_solver` | BFS | ASCII maze shortest paths, including an unreachable goal |
-| Network routing | `moon run examples\network_routing` | Dijkstra | Minimum-latency routes over routers A..J, including asymmetric unreachable routing |
-| Eight puzzle | `moon run examples\eight_puzzle` | A* | Sliding-tile solution traces with Manhattan heuristic and a 20-move scenario |
+| Maze solver | `moon run examples/maze_solver` | BFS | ASCII maze shortest paths, including an unreachable goal |
+| Network routing | `moon run examples/network_routing` | Dijkstra | Minimum-latency routes over routers A..J, including asymmetric unreachable routing |
+| Eight puzzle | `moon run examples/eight_puzzle` | A* | Sliding-tile solution traces with Manhattan heuristic and a 20-move scenario |
 
 Verify all example outputs with checked markers:
 

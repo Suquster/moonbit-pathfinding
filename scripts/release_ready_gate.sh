@@ -29,7 +29,7 @@ for entry in "${directions[@]}"; do
       exit 1
     fi
   done
-  if rg -n '^- \[ \]' ".kiro/specs/$spec/tasks.md"; then
+  if grep -nE '^- \[ \]' ".kiro/specs/$spec/tasks.md"; then
     echo "release-ready blocked by open tasks: $spec" >&2
     exit 1
   fi

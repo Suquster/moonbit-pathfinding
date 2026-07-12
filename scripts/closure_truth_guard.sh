@@ -17,19 +17,19 @@ proof_files=(
   src/proofs/serialization_proof.mbt
   src/proofs/direction_proofs_test.mbt
 )
-if rg -n '证明谓词占位|（占位）|升级路径：任务 .*引入真实' "${proof_files[@]}"; then
+if grep -nE '证明谓词占位|（占位）|升级路径：任务 .*引入真实' "${proof_files[@]}"; then
   echo "已落地证明契约不得继续声明为占位" >&2
   fail=1
 fi
 
-if rg -n '桩当前为占位|接口桩' src/dst/dst_test.mbt; then
+if grep -nE '桩当前为占位|接口桩' src/dst/dst_test.mbt; then
   echo "DST 真实执行测试不得继续声明为接口桩" >&2
   fail=1
 fi
 
 if [[ ! -f scripts/release_ready_gate.sh ]] ||
   [[ ! -f cmd/release_gate/main.mbt ]] ||
-  ! rg -q '^  release-ready:' .github/workflows/ci.yml; then
+  ! grep -qE '^  release-ready:' .github/workflows/ci.yml; then
   echo "release-ready 必须由真实 CI 证据接入聚合器" >&2
   fail=1
 fi

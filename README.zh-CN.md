@@ -103,9 +103,9 @@ path = [0, 1, 2, 3]
 
 | 示例 | 命令 | 算法 | 覆盖点 |
 |---|---|---|---|
-| 迷宫求解 | `moon run examples\maze_solver` | BFS | ASCII 迷宫最短路、不可达目标 |
-| 网络路由 | `moon run examples\network_routing` | Dijkstra | A..J 路由器最小延迟路径、非对称不可达路由 |
-| 八数码 | `moon run examples\eight_puzzle` | A* | Manhattan 启发式、解题轨迹、20 步挑战局面 |
+| 迷宫求解 | `moon run examples/maze_solver` | BFS | ASCII 迷宫最短路、不可达目标 |
+| 网络路由 | `moon run examples/network_routing` | Dijkstra | A..J 路由器最小延迟路径、非对称不可达路由 |
+| 八数码 | `moon run examples/eight_puzzle` | A* | Manhattan 启发式、解题轨迹、20 步挑战局面 |
 
 一键验证示例输出 marker：
 

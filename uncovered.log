@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":966.2091304918033,"min":313.26181147540984,"max":334.1446206557377,"mean":322.0697101639344,"median":318.80269836065577,"variance":117.02795440756792,"std_dev":10.817945942163323,"std_dev_pct":3.358883372378283,"median_abs_dev":8.214918896065608,"median_abs_dev_pct":2.576803439339845,"quartiles":[316.0322549180328,318.80269836065577,326.47365950819676],"iqr":10.441404590163984,"batch_size":305,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1780.8617686046512,"min":584.350673255814,"max":607.602665116279,"mean":593.6205895348837,"median":588.9084302325581,"variance":151.81711533765366,"std_dev":12.321408821139475,"std_dev_pct":2.0756370379257905,"median_abs_dev":6.757330493720868,"median_abs_dev_pct":1.147433140166192,"quartiles":[586.6295517441861,588.9084302325581,598.2555476744185],"iqr":11.62599593023242,"batch_size":172,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":311.12172814667986,"min":99.6830064420218,"max":106.62304380574827,"mean":103.70724271555996,"median":104.81567789890981,"variance":12.962501069245693,"std_dev":3.60034735397096,"std_dev_pct":3.4716450458968504,"median_abs_dev":2.6796006934786942,"median_abs_dev_pct":2.5564884444701614,"quartiles":[102.24934217046581,104.81567789890981,105.71936085232903],"iqr":3.4700186818632233,"batch_size":1009,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":464.5683900914634,"min":151.5273318597561,"max":160.16119237804878,"mean":154.8561300304878,"median":152.87986585365854,"variance":21.56510193479732,"std_dev":4.6438240637213335,"std_dev_pct":2.998798990267331,"median_abs_dev":2.0052668993597793,"median_abs_dev_pct":1.3116618647999627,"quartiles":[152.20359885670732,152.87986585365854,156.52052911585366],"iqr":4.316930259146346,"batch_size":656,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":420.7161645517241,"min":136.02490413793103,"max":148.37396800000002,"mean":140.23872151724137,"median":136.3172924137931,"variance":49.65804922739298,"std_dev":7.0468467577628635,"std_dev_pct":5.024893753681648,"median_abs_dev":0.4334948577930996,"median_abs_dev_pct":0.3180043046022509,"quartiles":[136.17109827586205,136.3172924137931,142.34563020689654],"iqr":6.174531931034494,"batch_size":725,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":970.6624285714287,"min":315.7401842857143,"max":329.6402085714286,"mean":323.5541428571429,"median":325.2820357142857,"variance":50.54187908018593,"std_dev":7.109281192932653,"std_dev_pct":2.1972462259806624,"median_abs_dev":6.461427078000069,"median_abs_dev_pct":1.9864075997346253,"quartiles":[320.51111000000003,325.2820357142857,327.46112214285716],"iqr":6.950012142857133,"batch_size":280,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1786.1494233128833,"min":586.35855398773,"max":611.7444398773006,"mean":595.3831411042944,"median":588.0464294478528,"variance":201.48130404689954,"std_dev":14.194411014441549,"std_dev_pct":2.3840801048068454,"median_abs_dev":2.502444157178016,"median_abs_dev_pct":0.42555213871933384,"quartiles":[587.2024917177914,588.0464294478528,599.8954346625767],"iqr":12.692942944785273,"batch_size":163,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":300.29723951855567,"min":97.25182768304916,"max":105.72929147442328,"mean":100.09907983951855,"median":97.31612036108325,"variance":23.775495677474524,"std_dev":4.876012272079976,"std_dev_pct":4.871185908898788,"median_abs_dev":0.09532032445334611,"median_abs_dev_pct":0.09794916207064984,"quartiles":[97.2839740220662,97.31612036108325,101.52270591775326],"iqr":4.238731895687053,"batch_size":997,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":462.9843471111111,"min":148.58462459259258,"max":160.87796992592592,"mean":154.3281157037037,"median":153.5217525925926,"variance":38.26925097136778,"std_dev":6.186214591441828,"std_dev_pct":4.008481904437175,"median_abs_dev":7.319785972800044,"median_abs_dev_pct":4.767914545780936,"quartiles":[151.0531885925926,153.5217525925926,157.19986125925925],"iqr":6.14667266666666,"batch_size":675,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":408.61052536443145,"min":134.0480303206997,"max":139.70421807580175,"mean":136.20350845481047,"median":134.85827696793004,"variance":9.355350795212551,"std_dev":3.058651793717708,"std_dev_pct":2.2456483158306497,"median_abs_dev":1.201271679183707,"median_abs_dev_pct":0.8907659998276378,"quartiles":[134.45315364431485,134.85827696793004,137.2812475218659],"iqr":2.828093877551055,"batch_size":686,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 314 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 586 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 107 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 158 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
+high_frequency_send | 1500 | 325 | 50% | 2250 | -78% | OK
+massive_actor_scheduling | 4000 | 588 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 142 | 50% | 1800 | -88% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 784 uncovered line(s) in 194 file(s)
+Total: 769 uncovered line(s) in 190 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -8324,51 +8324,7 @@ Total: 784 uncovered line(s) in 194 file(s)
 142	}
    	…
 
-3 uncovered line(s) in src/dst/messaging.mbt:
-
-27	pub fn World::schedule_send(
-28	  self : World,
-29	  from : Int,
-30	  to : Int,
-31	  payload : Int,
-32	  after : LogicalTime,
-33	) -> World {
-34	  let mid = self.msg_seq
-35	  self.msg_seq = self.msg_seq + 1
-36	  let (skew, reorder, duplicate, byzantine) = match self.find_node(from) {
-37	    Some(n) => (n.skew, n.reorder, n.duplicate, n.byzantine)
-38	    None => (0L, false, false, false)	<-- UNCOVERED
-39	  }
-40	  // 拜占庭：向不同对端发送相互矛盾内容（负载因 `to` 而异），默认关闭。
-41	  let actual_payload = if byzantine { payload + to } else { payload }
-42	  let msg : Message = { id: mid, payload: actual_payload }
-43	  let t = self.clock
-44	  self.trace.push(EvSend(time=t, from~, to~, msg~))
-45	  // 投递时间 = 当前虚拟时间 + max(after, 1)，经时钟偏移调整后仍 >= 1。
-46	  let base = if after < 1UL { 1UL } else { after }
-47	  let adj0 = skewed_time(base, skew)
-48	  let adj = if adj0 < 1UL { 1UL } else { adj0 }
-49	  let dtime = t + adj
-50	  let okey = self.next_order_key(reorder)
-51	  self.queue = self.queue.push({
-52	    time: dtime,
-53	    task_id: to,
-54	    order_key: okey,
-55	    pending: PDeliver(from~, to~, msg~),
-56	  })
-57	  // 重复故障：为受影响消息额外入队一条独立投递（不同次序键）。
-58	  if duplicate {
-59	    let okey2 = self.next_order_key(reorder)
-60	    self.queue = self.queue.push({
-61	      time: dtime,
-62	      task_id: to,
-63	      order_key: okey2,
-64	      pending: PDeliver(from~, to~, msg~),
-65	    })
-66	  }
-67	  self
-68	}
-  	…
+2 uncovered line(s) in src/dst/messaging.mbt:
 
 73	pub fn World::deliver(
 74	  self : World,
@@ -8434,164 +8390,6 @@ Total: 784 uncovered line(s) in 194 file(s)
 97	}
   	…
 
-3 uncovered line(s) in src/dst/trace_codec.mbt:
-
-438	fn parse_result(r : TokenReader) -> DesResult? {
-439	  let seed = match r.u64() {
-440	    Some(s) => s
-441	    None => return None
-442	  }
-443	  let status : SimStatus = match r.int() {
-444	    Some(0) => Completed
-445	    Some(1) =>
-446	      match r.str() {
-447	        Some(reason) => Failed(reason~)
-448	        None => return None
-449	      }
-450	    _ => return None
-451	  }
-452	  let trace_len = match r.int() {
-453	    Some(n) => if n < 0 { return None } else { n }
-454	    None => return None	<-- UNCOVERED
-455	  }
-456	  let trace : Array[SimEvent] = []
-457	  let mut i = 0
-458	  while i < trace_len {
-459	    match r.event() {
-460	      Some(e) => trace.push(e)
-461	      None => return None
-462	    }
-463	    i = i + 1
-464	  }
-465	  let finals_len = match r.int() {
-466	    Some(n) => if n < 0 { return None } else { n }
-467	    None => return None
-468	  }
-469	  let finals : Array[(Int, NodeApp)] = []
-470	  let mut f = 0
-471	  while f < finals_len {
-472	    let id = match r.int() {
-473	      Some(v) => v
-474	      None => return None
-475	    }
-476	    let log_len = match r.int() {
-477	      Some(n) => if n < 0 { return None } else { n }
-478	      None => return None	<-- UNCOVERED
-479	    }
-480	    let log : Array[Int] = []
-481	    let mut k = 0
-482	    while k < log_len {
-483	      match r.int() {
-484	        Some(v) => log.push(v)
-485	        None => return None
-486	      }
-487	      k = k + 1
-488	    }
-489	    let kv_len = match r.int() {
-490	      Some(n) => if n < 0 { return None } else { n }
-491	      None => return None	<-- UNCOVERED
-492	    }
-493	    let kv : Array[(String, Int)] = []
-494	    let mut j = 0
-495	    while j < kv_len {
-496	      let key = match r.str() {
-497	        Some(s) => s
-498	        None => return None
-499	      }
-500	      let value = match r.int() {
-501	        Some(v) => v
-502	        None => return None
-503	      }
-504	      kv.push((key, value))
-505	      j = j + 1
-506	    }
-507	    finals.push((id, { log, kv }))
-508	    f = f + 1
-509	  }
-510	  Some({ seed, trace, status, finals })
-511	}
-   	…
-
-3 uncovered line(s) in src/graph/graph_repr.mbt:
-
-106	pub fn[W] GraphRepr::neighbors(
-107	  self : GraphRepr[W],
-108	  node : Int,
-109	) -> Result[Array[(Int, W)], PathError] {
-110	  let n = self.node_count()
-111	  // 越界检查（R15.5）：先于任何读取做边界判定，失败路径不接触底层存储。
-112	  if node < 0 || node >= n {
-113	    let tb = @infra_text.TextBuilder::new()
-114	    tb.push_str("neighbors: 节点标识 ")
-115	    tb.push_str(node.to_string())
-116	    tb.push_str(" 越界，合法范围为 0..")
-117	    tb.push_str((n - 1).to_string())
-118	    tb.push_str("（共 ")
-119	    tb.push_str(n.to_string())
-120	    tb.push_str(" 个节点）")
-121	    return Err(InvalidArgument(tb.build()))
-122	  }
-123	  let out : Array[(Int, W)] = []
-124	  match self {
-125	    AdjMatrix(_, matrix) => {
-126	      // 读取第 node 行；仅遍历 [0, min(n, 行长)) 内的列，规避畸形（非 n x n）矩阵越界。
-127	      let row = matrix[node]
-128	      let cols = if row.length() < n { row.length() } else { n }	<-- UNCOVERED
-129	      for j in 0..<cols {
-130	        match row[j] {
-131	          Some(w) => out.push((j, w))
-132	          None => ()
-133	        }
-134	      }
-135	    }
-136	    EdgeList(_, edges) =>
-137	      // 扫描三元组序列，收集源等于 node 的出边；目标越界（不在 0..N-1）者跳过，
-138	      // 以保证仅产出合法邻居（与邻接矩阵/CSR 的语义口径一致）。
-139	      for e in edges {
-140	        let (s, t, w) = e
-141	        if s == node && t >= 0 && t < n {
-142	          out.push((t, w))
-143	        }
-144	      }
-145	    Csr(g) =>
-146	      // 取第 node 行的边区间 [row_ptr[node], row_ptr[node+1])；对畸形 CSR 做防御性
-147	      // 边界裁剪，避免 row_ptr / col_idx / weights 长度不一致时越界访问。
-148	      if node + 1 < g.row_ptr.length() {
-149	        let start = g.row_ptr[node]
-150	        let stop = g.row_ptr[node + 1]
-151	        let edge_count = if g.col_idx.length() < g.weights.length() {
-152	          g.col_idx.length()	<-- UNCOVERED
-153	        } else {
-154	          g.weights.length()
-155	        }
-156	        let lo = if start < 0 { 0 } else { start }
-157	        let hi = if stop > edge_count { edge_count } else { stop }
-158	        for k in lo..<hi {
-159	          let t = g.col_idx[k]
-160	          if t >= 0 && t < n {
-161	            out.push((t, g.weights[k]))
-162	          }
-163	        }
-164	      }
-165	  }
-166	  // 统一升序后处理：保证三表一致、升序、对重复调用顺序稳定（R15.2 / R15.3）。
-167	  sort_neighbors_by_target(out)
-168	  Ok(out)
-169	}
-   	…
-
-178	pub fn[W] GraphRepr::to_successors(
-179	  self : GraphRepr[W],
-180	) -> (Int) -> Array[(Int, W)] {
-181	  fn(node) {	<-- UNCOVERED
-182	    match self.neighbors(node) {
-183	      Ok(ns) => ns
-184	      Err(_) => []
-185	    }
-186	  }
-187	}
-   	…
-
 3 uncovered line(s) in src/graph/osm.mbt:
 
 401	pub fn load_osm_or_synthetic(
@@ -8601,7 +8399,7 @@ Total: 784 uncovered line(s) in 194 file(s)
 405	  match content {
 406	    Some(s) =>
 407	      if osm_trim(s).length() == 0 {
-408	        osm_synthetic_outcome(	<-- UNCOVERED
+408	        osm_synthetic_outcome(
 409	          fallback_dim, "OSM 数据为空（内容仅含空白）",
 410	        )
 411	      } else {
@@ -8610,7 +8408,7 @@ Total: 784 uncovered line(s) in 194 file(s)
 414	            if g.n > 0 {
 415	              osm_real_outcome(g)
 416	            } else {
-417	              osm_synthetic_outcome(
+417	              osm_synthetic_outcome(	<-- UNCOVERED
 418	                fallback_dim, "OSM 数据为空（无有效边）",
 419	              )
 420	            }
@@ -9530,15 +9328,7 @@ Total: 784 uncovered line(s) in 194 file(s)
 104	}
    	…
 
-3 uncovered line(s) in src/infra_compress/deflate.mbt:
-
-339	pub fn inflate_preset(data : Array[Int], dict : Array[Int]) -> Array[Int]? {
-340	  match inflate_at(data, 0, preset=dict) {
-341	    Some((out, _)) => Some(out)
-342	    None => None	<-- UNCOVERED
-343	  }
-344	}
-   	…
+2 uncovered line(s) in src/infra_compress/deflate.mbt:
 
 350	fn inflate_at(
 351	  data : Array[Int],
@@ -9690,7 +9480,7 @@ Total: 784 uncovered line(s) in 194 file(s)
 706	}
    	…
 
-3 uncovered line(s) in src/infra_compress/deflate_dynamic.mbt:
+2 uncovered line(s) in src/infra_compress/deflate_dynamic.mbt:
 
 119	fn limited_huffman_lengths(freqs : Array[Int], max_bits : Int) -> Array[Int] {
 120	  let n = freqs.length()
@@ -9841,37 +9631,6 @@ Total: 784 uncovered line(s) in 194 file(s)
 478	  }
 479	  out
 480	}
-   	…
-
-530	pub fn zlib_decompress(data : Array[Int]) -> Array[Int]? {
-531	  if data.length() < 6 {
-532	    return None
-533	  }
-534	  let cmf = data[0] & 0xFF
-535	  let flg = data[1] & 0xFF
-536	  if (cmf & 0x0F) != 8 {
-537	    return None // CM 必须是 deflate	<-- UNCOVERED
-538	  }
-539	  if (cmf * 256 + flg) % 31 != 0 {
-540	    return None // FCHECK
-541	  }
-542	  if (flg & 0x20) != 0 {
-543	    return None // FDICT 帧需提供字典，走 zlib_decompress_with_dict
-544	  }
-545	  let body : Array[Int] = []
-546	  for i in 2..<(data.length() - 4) {
-547	    body.push(data[i])
-548	  }
-549	  guard inflate(body) is Some(raw) else { return None }
-550	  let mut expected = 0U
-551	  for i in (data.length() - 4)..<data.length() {
-552	    expected = (expected << 8) | (data[i] & 0xFF).reinterpret_as_uint()
-553	  }
-554	  if @infra_hash.adler32(raw) != expected {
-555	    return None
-556	  }
-557	  Some(raw)
-558	}
    	…
 
 1 uncovered line(s) in src/infra_compress/lz4.mbt:
@@ -13435,39 +13194,6 @@ Total: 784 uncovered line(s) in 194 file(s)
 242	}
    	…
 
-3 uncovered line(s) in src/lsp_server/references.mbt:
-
-151	pub fn document_highlights(a : Analysis, pos : Position) -> Array[Range] {
-152	  // 确定 pos 处的目标符号名。
-153	  let name = match symbol_at(a, pos) {
-154	    Some(s) => Some(s.name)
-155	    None =>
-156	      match reference_at(a, pos) {	<-- UNCOVERED
-157	        Some(r) => Some(r.name)
-158	        None => None
-159	      }
-160	  }
-161	  let result : Array[Range] = []
-162	  match name {
-163	    None => result	<-- UNCOVERED
-164	    Some(n) => {
-165	      // 定义范围（若存在）在前。
-166	      match lookup_symbol(a, n) {
-167	        Some(s) => result.push(s.range)
-168	        None => ()	<-- UNCOVERED
-169	      }
-170	      // 全部同名引用范围，按出现顺序。
-171	      for r in a.references {
-172	        if r.name == n {
-173	          result.push(r.range)
-174	        }
-175	      }
-176	      result
-177	    }
-178	  }
-179	}
-   	…
-
 6 uncovered line(s) in src/lsp_server/rope_sync.mbt:
 
  95	fn rope_join_right(l : Rope, r : Rope) -> Rope {
@@ -15118,63 +14844,6 @@ Total: 784 uncovered line(s) in 194 file(s)
 294	    _ => false	<-- UNCOVERED
 295	  }
 296	}
-   	…
-
-3 uncovered line(s) in src/parser_combinator/combinators.mbt:
-
-52	pub fn[T] alt(ps : Array[Parser[T]]) -> Parser[T] {
-53	  Parser::new(fn(input) {
-54	    let mut acc : FarthestError? = None
-55	    for p in ps {
-56	      match p.parse(input) {
-57	        Ok(v, rest) => return ParseResult::Ok(v, rest)
-58	        Fail(pos, expected~) => {
-59	          let here : FarthestError = { pos, expected }
-60	          acc = match acc {
-61	            None => Some(here)
-62	            Some(prev) => Some(merge_farthest(prev, here))
-63	          }
-64	        }
-65	      }
-66	    }
-67	    match acc {
-68	      Some(fe) =>
-69	        ParseResult::Fail(fe.pos, expected=normalize_expected(fe.expected))
-70	      // 空分支列表：在起始位置失败且无期望符号（退化边界）。
-71	      None => ParseResult::Fail(input.pos, expected=[])	<-- UNCOVERED
-72	    }
-73	  })
-74	}
-  	…
-
-108	pub fn[T] many1(p : Parser[T]) -> Parser[Array[T]] {
-109	  Parser::new(fn(input) {
-110	    match p.parse(input) {
-111	      Fail(pos, expected~) => ParseResult::Fail(pos, expected~)
-112	      Ok(first, rest0) => {
-113	        let acc : Array[T] = [first]
-114	        let mut cur = rest0
-115	        // 首次成功未推进游标 → 直接返回，避免无限循环。
-116	        if rest0.pos.offset == input.pos.offset {
-117	          return ParseResult::Ok(acc, cur)	<-- UNCOVERED
-118	        }
-119	        while true {
-120	          match p.parse(cur) {
-121	            Ok(v, rest) => {
-122	              acc.push(v)
-123	              if rest.pos.offset == cur.pos.offset {
-124	                break	<-- UNCOVERED
-125	              }
-126	              cur = rest
-127	            }
-128	            Fail(_, ..) => break
-129	          }
-130	        }
-131	        ParseResult::Ok(acc, cur)
-132	      }
-133	    }
-134	  })
-135	}
    	…
 
 1 uncovered line(s) in src/parser_combinator/commit.mbt:
@@ -17197,4 +16866,4 @@ Total: 784 uncovered line(s) in 194 file(s)
 268	}
    	…
 
-Total: 784 uncovered line(s) in 194 file(s)
+Total: 769 uncovered line(s) in 190 file(s)

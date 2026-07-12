@@ -657,6 +657,20 @@
         `src/lsp_server/rope_sync_gaps_wbtest.mbt`、
         `src/logging/logging_gaps2_test.mbt`、
         `src/infra_text/rope_gaps2_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INFRA
+        第六十二批 余支覆盖收口（dst + cli + compress + ds + compiler）：
+        DES 仿真磁盘故障日志前缀保留、未知节点动作/唤醒余支、空队列
+        无操作与 PWake 投递臂；mini_compiler_backend_cli 字节渲染工具
+        （hex_digit/bytes_hex/bytes_text）全值域；zstd 字典权重可读但
+        Huffman 建表失败拒绝；skiplist set_forward 头指针回落；TCO
+        非尾位置调用无 Ret 帧弹出续接；Rope 负行列位置拒绝。src/ 未
+        覆盖 523→508 行，3120→3132 三后端全绿。2026-07-12，
+        `src/dst/coverage_gaps3_wbtest.mbt`、
+        `src/mini_compiler_backend_cli/helpers_wbtest.mbt`、
+        `src/infra_compress/zstd_block_gaps_wbtest.mbt`、
+        `src/infra_ds/coverage_gaps2_wbtest.mbt`、
+        `src/mini_compiler/tco_gaps_test.mbt`、
+        `src/lsp_server/rope_sync_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

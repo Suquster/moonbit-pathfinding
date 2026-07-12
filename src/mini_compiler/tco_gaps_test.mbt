@@ -20,3 +20,11 @@ test "run_tco：被调帧字节码耗尽（无 Ret）时安全弹帧" {
   let bc = Bytecode::{ instrs: [MkClosure("x", body), PushInt(0), Call, Ret] }
   assert_true(run_tco(bc, ml_env_empty()) == VInt(7))
 }
+
+///|
+test "run_tco：非尾位置调用且被调帧无 Ret 时弹帧续接调用者" {
+  // Call 为最后一条指令（非尾位置判定为假）：被调帧耗尽走弹帧余支。
+  let body = Bytecode::{ instrs: [PushInt(7)] }
+  let bc = Bytecode::{ instrs: [MkClosure("x", body), PushInt(0), Call] }
+  assert_true(run_tco(bc, ml_env_empty()) == VInt(7))
+}

@@ -189,3 +189,10 @@ test "zstd 块：权重合法但建表失败与重复偏移下溢拒绝" {
   // 三表全 RLE：首序列 ll=0 且 of_value=3 → offset=rep0-1=0 下溢拒绝。
   assert_true(zb_must_reject([0x00, 0x01, 0x54, 0x00, 0x01, 0x00, 0x03]))
 }
+
+///|
+test "zstd_parse_dict：权重可读但 Huffman 建表失败即拒绝" {
+  // 合法魔数 + id 后，直存 2 个权重 (0,0) → total=0 → huf_build_table 拒绝。
+  let dict = [0x37, 0xA4, 0x30, 0xEC, 1, 0, 0, 0, 0x81, 0x00]
+  assert_true(zstd_parse_dict(dict) is None)
+}

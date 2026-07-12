@@ -25,3 +25,11 @@ test "roaring：位图容器重复 add / remove 命中分支" {
   assert_false(rb.contains(100))
   assert_true(rb.add(100))
 }
+
+///|
+test "skiplist：set_forward 空节点回落头指针" {
+  let sl : SkipList[Int, Int] = SkipList::new()
+  let _ = sl.insert(1, 10)
+  sl.set_forward(None, 0, None)
+  assert_true(sl.get(1) is None)
+}

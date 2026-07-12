@@ -57,3 +57,10 @@ test "nth_newline：叶内换行数不足时返回叶长" {
   let leaf = rs_leaf(3) // 无换行。
   assert_eq(leaf.nth_newline(0), 3)
 }
+
+///|
+test "position_to_index：负行/负列直接拒绝" {
+  let doc = RopeDocument::from_string("ab\ncd")
+  assert_true(doc.position_to_index({ line: -1, character: 0 }, Utf16) is None)
+  assert_true(doc.position_to_index({ line: 0, character: -1 }, Utf16) is None)
+}

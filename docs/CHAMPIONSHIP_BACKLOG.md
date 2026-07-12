@@ -758,6 +758,12 @@
         `src/infra_metrics/hdr_gaps_test.mbt`、
         `src/infra_resilience/limiter_gaps_test.mbt`、
         `src/infra_fuzz/gen_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十三批 余支覆盖收口（mini_compiler）：
+        try_run_demo 词法/语法/类型错误传播与 run_demo 确定性降级、
+        expr_span ELam、row_poly RFun 归一化与 r_occurs 余臂。
+        src/ 未覆盖 405→398 行，3194→3197 三后端全绿。2026-07-12，
+        `src/mini_compiler/spans_gaps_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

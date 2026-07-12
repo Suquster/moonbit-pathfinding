@@ -45,3 +45,30 @@ test "parse_ml：应用参数原子解析失败即报错（INFRA 第六十八批
   guard lex_ml("f (") is Ok(tokens)
   assert_true(parse_ml(tokens) is Err(_))
 }
+
+///|
+test "expr_span：ELam 提取（INFRA 第七十三批）" {
+  let sp = Span::{ line: 4, col: 2 }
+  let z = Span::{ line: 0, col: 0 }
+  assert_true(expr_span(ELam("x", EInt(1, z), sp)) == sp)
+}
+
+///|
+test "row_poly 辅助：RFun 归一化与出现检查余臂（INFRA 第七十三批）" {
+  let s = RSubst::empty()
+  assert_true(normalize_rty(s, RFun(RInt, RBool)) == RFun(RInt, RBool))
+  assert_false(r_occurs_ty_row(0, REmpty))
+  assert_false(r_occurs_ty_row(0, RowVar(1)))
+  assert_true(r_occurs_ty_row(0, RExtend("a", RVar(0), REmpty)))
+  assert_false(r_occurs_row_ty(0, RFun(RInt, RBool)))
+  assert_true(r_occurs_row_ty(0, RRecord(RowVar(0))))
+}
+
+///|
+test "try_run_demo/run_demo：词法/语法/类型错误传播与降级（INFRA 第七十三批）" {
+  assert_true(try_run_demo("let x = \u0001") is Err(_))
+  assert_true(try_run_demo("f (") is Err(_))
+  assert_true(try_run_demo("x") is Err(_))
+  let trace = run_demo("x")
+  assert_true(trace.optimized_form.length() > 0)
+}

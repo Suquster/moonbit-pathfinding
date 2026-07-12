@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1039.157012455516,"min":341.8885629893238,"max":350.92100462633454,"mean":346.38567081850533,"median":346.34744483985764,"variance":20.397346400583906,"std_dev":4.516342148308065,"std_dev_pct":1.3038478576888013,"median_abs_dev":6.610738231601453,"median_abs_dev_pct":1.9087013142707296,"quartiles":[344.11800391459076,346.34744483985764,348.63422473309606],"iqr":4.516220818505303,"batch_size":281,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1947.4505980132449,"min":637.1504417218543,"max":667.8236397350994,"mean":649.1501993377483,"median":642.4765165562914,"variance":268.6148004905717,"std_dev":16.38947224563902,"std_dev_pct":2.5247581010310514,"median_abs_dev":7.896438549536309,"median_abs_dev_pct":1.22906259544888,"quartiles":[639.8134791390728,642.4765165562914,655.1500781456954],"iqr":15.336599006622578,"batch_size":151,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":333.0499860515022,"min":110.04704527896995,"max":112.86251373390559,"mean":111.01666201716739,"median":110.14042703862661,"variance":2.557556458398178,"std_dev":1.599236210945143,"std_dev_pct":1.4405371066712853,"median_abs_dev":0.13844779686697228,"median_abs_dev_pct":0.12570116222485517,"quartiles":[110.09373615879828,110.14042703862661,111.5014703862661],"iqr":1.4077342274678273,"batch_size":932,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":506.75142545454537,"min":166.51170760330578,"max":172.7421294214876,"mean":168.9171418181818,"median":167.49758842975206,"variance":11.215887875070777,"std_dev":3.3490129702750893,"std_dev_pct":1.9826365366043688,"median_abs_dev":1.4616669132892497,"median_abs_dev_pct":0.8726495270720079,"quartiles":[167.0046480165289,167.49758842975206,170.11985892561984],"iqr":3.1152109090909335,"batch_size":605,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":446.41846143079306,"min":148.2846418351477,"max":149.7312021772939,"mean":148.80615381026436,"median":148.40261741835147,"variance":0.6452654205660898,"std_dev":0.8032841468410103,"std_dev_pct":0.539819171635361,"median_abs_dev":0.17491059965789243,"median_abs_dev_pct":0.11786220667848071,"quartiles":[148.3436296267496,148.40261741835147,149.0669097978227],"iqr":0.7232801710730996,"batch_size":643,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1053.9289054054054,"min":347.9603885135135,"max":353.10492229729726,"mean":351.3096351351351,"median":352.8635945945946,"variance":8.42764946435573,"std_dev":2.903041416231558,"std_dev_pct":0.8263483622118338,"median_abs_dev":0.35779245202698823,"median_abs_dev_pct":0.10139681664753668,"quartiles":[350.41199155405405,352.8635945945946,352.9842584459459],"iqr":2.572266891891843,"batch_size":296,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1876.4038346153848,"min":615.960367948718,"max":636.7044217948719,"mean":625.4679448717949,"median":623.7390448717948,"variance":109.82076390053297,"std_dev":10.479540252345661,"std_dev_pct":1.6754719947308732,"median_abs_dev":11.532666406153623,"median_abs_dev_pct":1.8489569477767875,"quartiles":[619.8497064102564,623.7390448717948,630.2217333333333],"iqr":10.372026923076874,"batch_size":156,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":325.82999324758845,"min":106.30327202572347,"max":111.09912315112541,"mean":108.60999774919615,"median":108.42759807073956,"variance":5.774999236280559,"std_dev":2.4031228092381296,"std_dev_pct":2.21261657217548,"median_abs_dev":3.1495257943408554,"median_abs_dev_pct":2.9047270716871036,"quartiles":[107.36543504823152,108.42759807073956,109.7633606109325],"iqr":2.3979255627009763,"batch_size":933,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":495.5396181364393,"min":162.7407823627288,"max":167.80224009983363,"mean":165.17987271214642,"median":164.99659567387687,"variance":6.4297814606922365,"std_dev":2.5357013745100656,"std_dev_pct":1.5351152249214708,"median_abs_dev":3.3444688151081348,"median_abs_dev_pct":2.026992618513552,"quartiles":[163.86868901830283,164.99659567387687,166.39941788685525],"iqr":2.5307288685524156,"batch_size":601,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":449.1539470866142,"min":147.41773118110237,"max":151.57628677165354,"mean":149.71798236220474,"median":150.15992913385827,"variance":4.4698838616573475,"std_dev":2.1142099852326277,"std_dev_pct":1.4121282907205042,"median_abs_dev":2.0998918337952706,"median_abs_dev_pct":1.3984368838662324,"quartiles":[148.78883015748033,150.15992913385827,150.8681079527559],"iqr":2.0792777952755728,"batch_size":635,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 353 | 50% | 2250 | -76% | OK
-massive_actor_scheduling | 4000 | 688 | 50% | 6000 | -83% | OK
-ask_round_trip | 900 | 109 | 50% | 1350 | -88% | OK
+high_frequency_send | 1500 | 351 | 50% | 2250 | -77% | OK
+massive_actor_scheduling | 4000 | 685 | 50% | 6000 | -83% | OK
+ask_round_trip | 900 | 107 | 50% | 1350 | -88% | OK
 router_dispatch | 1800 | 166 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 152 | 50% | 1800 | -87% | OK
+supervision_restart | 1200 | 149 | 50% | 1800 | -88% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 716 uncovered line(s) in 173 file(s)
+Total: 715 uncovered line(s) in 173 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -9500,7 +9500,7 @@ Total: 716 uncovered line(s) in 173 file(s)
 554	}
    	…
 
-10 uncovered line(s) in src/infra_compress/zstd_block.mbt:
+9 uncovered line(s) in src/infra_compress/zstd_block.mbt:
 
 265	fn huf_build_table(weights : Array[Int]) -> ZstdHuffTable? {
 266	  let mut total = 0
@@ -10027,7 +10027,7 @@ Total: 716 uncovered line(s) in 173 file(s)
 878	  // 尾部剩余字面量。
 879	  let rest = lits.length() - lit_pos
 880	  if out.length() + rest > max_out {
-881	    return false	<-- UNCOVERED
+881	    return false
 882	  }
 883	  for k in lit_pos..<lits.length() {
 884	    out.push(lits[k])
@@ -15837,4 +15837,4 @@ Total: 716 uncovered line(s) in 173 file(s)
 268	}
    	…
 
-Total: 716 uncovered line(s) in 173 file(s)
+Total: 715 uncovered line(s) in 173 file(s)

@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1081.9401219512195,"min":355.28747682926826,"max":365.76905975609753,"mean":360.64670731707315,"median":360.8835853658536,"variance":27.507978570495276,"std_dev":5.244804912529662,"std_dev_pct":1.4542777754847314,"median_abs_dev":7.243204330975647,"median_abs_dev_pct":2.0070750304790645,"quartiles":[358.08553109756093,360.8835853658536,363.32632256097554],"iqr":5.2407914634146096,"batch_size":246,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2055.48698503937,"min":661.3601724409449,"max":730.8093244094488,"mean":685.1623283464568,"median":663.3174881889763,"variance":1563.6939584154861,"std_dev":39.54357038022093,"std_dev_pct":5.7714163117598405,"median_abs_dev":2.9019163280313824,"median_abs_dev_pct":0.43748527359867206,"quartiles":[662.3388303149607,663.3174881889763,697.0634062992126],"iqr":34.72457598425194,"batch_size":127,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":349.4657004739336,"min":115.86134751184835,"max":117.07435770142179,"mean":116.48856682464454,"median":116.5299952606635,"variance":0.3691356664854796,"std_dev":0.6075653598465597,"std_dev_pct":0.5215665162755029,"median_abs_dev":0.8070717546682432,"median_abs_dev_pct":0.6925871342077389,"quartiles":[116.19567138625592,116.5299952606635,116.80217648104264],"iqr":0.6065050947867121,"batch_size":844,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":548.3662868327401,"min":179.15415765124555,"max":188.818043772242,"mean":182.78876227758005,"median":180.39408540925265,"variance":27.648531717673684,"std_dev":5.25818711322388,"std_dev_pct":2.876646817728807,"median_abs_dev":1.8383168940213244,"median_abs_dev_pct":1.0190560792782148,"quartiles":[179.7741215302491,180.39408540925265,184.60606459074734],"iqr":4.831943060498247,"batch_size":562,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":456.70658138801264,"min":150.5559548895899,"max":153.3805239747634,"mean":152.23552712933756,"median":152.7701025236593,"variance":2.20887576839015,"std_dev":1.4862287066229578,"std_dev_pct":0.9762692944599423,"median_abs_dev":0.9050108434069629,"median_abs_dev_pct":0.592400494898408,"quartiles":[151.6630287066246,152.7701025236593,153.07531324921135],"iqr":1.4122845425867467,"batch_size":634,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":963.0865413461538,"min":312.93098365384617,"max":334.61235576923076,"mean":321.0288471153846,"median":315.54320192307694,"variance":140.08970158336044,"std_dev":11.835949542954314,"std_dev_pct":3.6868803689471,"median_abs_dev":3.8728748059615334,"median_abs_dev_pct":1.2273675307717966,"quartiles":[314.23709278846155,315.54320192307694,325.0777788461538],"iqr":10.840686057692267,"batch_size":312,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1773.0359833333332,"min":589.9014129629629,"max":592.5108851851852,"mean":591.0119944444444,"median":590.6236851851852,"variance":1.8154243802572685,"std_dev":1.3473768516110363,"std_dev_pct":0.22797791995365174,"median_abs_dev":1.0708407966667417,"median_abs_dev_pct":0.1813067818861664,"quartiles":[590.2625490740741,590.6236851851852,591.5672851851853],"iqr":1.3047361111111968,"batch_size":162,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":295.63113,"min":98.45975377551021,"max":98.60075071428571,"mean":98.54370999999999,"median":98.57062551020408,"variance":0.005513367703175132,"std_dev":0.07425205521179283,"std_dev_pct":0.07534936041254468,"median_abs_dev":0.04466362757142167,"median_abs_dev_pct":0.045311295672764165,"quartiles":[98.51518964285714,98.57062551020408,98.5856881122449],"iqr":0.07049846938775772,"batch_size":980,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":454.90048604651156,"min":150.94517674418603,"max":152.19675581395347,"mean":151.6334953488372,"median":151.7585534883721,"variance":0.4033421956679317,"std_dev":0.6350922733492604,"std_dev_pct":0.4188337622160675,"median_abs_dev":0.6496787679069632,"median_abs_dev_pct":0.42810026385546845,"quartiles":[151.35186511627904,151.7585534883721,151.97765465116277],"iqr":0.6257895348837224,"batch_size":645,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":416.4460437325905,"min":136.41158495821725,"max":142.23315097493037,"mean":138.8153479108635,"median":137.8013077994429,"variance":9.243865732414706,"std_dev":3.0403726305199346,"std_dev_pct":2.1902280088454105,"median_abs_dev":2.060403084401146,"median_abs_dev_pct":1.4951984979706237,"quartiles":[137.10644637883007,137.8013077994429,140.01722938718663],"iqr":2.9107830083565602,"batch_size":718,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
 high_frequency_send | 1500 | 354 | 50% | 2250 | -76% | OK
-massive_actor_scheduling | 4000 | 651 | 50% | 6000 | -84% | OK
-ask_round_trip | 900 | 110 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 170 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 155 | 50% | 1800 | -87% | OK
+massive_actor_scheduling | 4000 | 653 | 50% | 6000 | -84% | OK
+ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 151 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 138 | 50% | 1800 | -89% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 708 uncovered line(s) in 170 file(s)
+Total: 717 uncovered line(s) in 170 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -1458,6 +1458,96 @@ Total: 708 uncovered line(s) in 170 file(s)
 156	  (tb.build(), speedup)	<-- UNCOVERED
 157	}
    	…
+
+17 uncovered line(s) in benches/advanced_bench/osm_showcase_bench.mbt:
+
+13	fn csr_edge_weight(g : @graph.CsrGraph[Double], u : Int, v : Int) -> Double? {
+14	  let mut best : Double? = None	<-- UNCOVERED
+15	  for k in g.row_ptr[u]..<g.row_ptr[u + 1] {
+16	    if g.col_idx[k] == v {	<-- UNCOVERED
+17	      match best {
+18	        Some(b) => if g.weights[k] < b { best = Some(g.weights[k]) }
+19	        None => best = Some(g.weights[k])
+20	      }
+21	    }
+22	  }
+23	  best
+24	}
+  	…
+
+28	fn run_osm_showcase() -> (String, Bool) {
+29	  let g = build_osm_csr()	<-- UNCOVERED
+30	  let n = g.n
+31	  let ch = @advanced.ch_csr_preprocess(g)	<-- UNCOVERED
+32	  let dij = CsrDijkstra::new(g)
+33	  let qrng = Lcg::new(query_seed_int)
+34	  let qcount = 32
+35	  let mut ok = true
+36	  let mut reachable = 0
+37	  let mut total_hops = 0
+38	  let mut max_hops = 0
+39	  let mut max_pair = (0, 0)
+40	  let mut max_cost = 0.0
+41	  for _ in 0..<qcount {
+42	    let s = qrng.next() % n	<-- UNCOVERED
+43	    let t = qrng.next() % n
+44	    match @advanced.ch_csr_query(ch, s, t) {
+45	      Some((path, cost)) => {
+46	        reachable = reachable + 1
+47	        // 路径端点正确。
+48	        if path.length() < 1 || path[0] != s || path[path.length() - 1] != t {	<-- UNCOVERED
+49	          ok = false
+50	        }
+51	        // 逐边存在性 + 权重求和。
+52	        let mut sum = 0.0
+53	        for i in 0..<(path.length() - 1) {	<-- UNCOVERED
+54	          match csr_edge_weight(g, path[i], path[i + 1]) {
+55	            Some(w) => sum = sum + w
+56	            None => ok = false
+57	          }
+58	        }
+59	        if sum != cost {
+60	          ok = false	<-- UNCOVERED
+61	        }
+62	        // 与独立 Dijkstra 代价三方一致。
+63	        match dij.query(s, t) {	<-- UNCOVERED
+64	          Some(d) => if d != cost { ok = false }
+65	          None => ok = false
+66	        }
+67	        let hops = path.length() - 1	<-- UNCOVERED
+68	        total_hops = total_hops + hops
+69	        if hops > max_hops {
+70	          max_hops = hops	<-- UNCOVERED
+71	          max_pair = (s, t)
+72	          max_cost = cost
+73	        }
+74	      }
+75	      None =>
+76	        // CH 不可达必须与 Dijkstra 不可达一致。
+77	        if dij.query(s, t) is Some(_) {	<-- UNCOVERED
+78	          ok = false
+79	        }
+80	    }
+81	  }
+82	  let tb = @infra_text.TextBuilder::new()	<-- UNCOVERED
+83	  tb.push_str(
+84	    "# 真实 OSM 路网端到端 showcase（厦门驾车网，路径级校验）\n\n",
+85	  )
+86	  tb.push_str(	<-- UNCOVERED
+87	    "- 数据集: OpenStreetMap 厦门驾车网（osmnx 提取，权重=道路分米）\n",
+88	  )
+89	  tb.push_str("- 节点数: \{n}; 有向边数: \{g.col_idx.length()}\n")	<-- UNCOVERED
+90	  tb.push_str("- 随机查询对: \{qcount}; 可达: \{reachable}\n")
+91	  tb.push_str(
+92	    "- 路径级校验（端点/逐边存在/权重求和=代价=Dijkstra）: \{ok}\n",
+93	  )
+94	  tb.push_str("- 可达路径总跳数: \{total_hops}\n")	<-- UNCOVERED
+95	  tb.push_str(
+96	    "- 最长路径样例: \{max_pair.0}→\{max_pair.1}，\{max_hops} 跳，代价 \{max_cost} 分米（约 \{max_cost / 10000.0} km）\n",
+97	  )
+98	  (tb.build(), ok)	<-- UNCOVERED
+99	}
+  	…
 
 1 uncovered line(s) in benches/bfs_bench/bfs_bench.mbt:
 
@@ -3799,7 +3889,7 @@ Total: 708 uncovered line(s) in 170 file(s)
 246	}
    	…
 
-3 uncovered line(s) in src/build_tool/rule_grammar.mbt:
+1 uncovered line(s) in src/build_tool/rule_grammar.mbt:
 
 155	fn parse_names(s : String) -> Array[String] {
 156	  match names_parser().parse_string(s).value() {
@@ -3807,179 +3897,6 @@ Total: 708 uncovered line(s) in 170 file(s)
 158	    None => tokenize_ws(s.iter().to_array())	<-- UNCOVERED
 159	  }
 160	}
-   	…
-
-480	pub fn parse_rules_full_with_includes(
-481	  src : String,
-482	  resolve : (String) -> String?,
-483	) -> Result[RuleSet, GrammarError] {
-484	  let full_input = @parser_combinator.Input::from_string(src)
-485	  let lines = split_lines(src.iter().to_array())
-486	  let variables : Map[String, String] = Map([])
-487	  // ── 预扫描：收集变量定义（文件内顺序无关；跳过 recipe / 注释 / 空行）──
-488	  for line in lines {
-489	    if line.length() > 0 && line[0] == '\t' {
-490	      continue
-491	    }
-492	    let trimmed = trim_chars(line)
-493	    if trimmed.length() == 0 || trimmed[0] == '#' {
-494	      continue
-495	    }
-496	    let colon = first_index_char(line, ':')
-497	    let eq = first_index_char(line, '=')
-498	    if eq >= 0 && (colon < 0 || eq < colon) {
-499	      let name = chars_to_string(trim_chars(slice_chars(line, 0, eq)))
-500	      let value = chars_to_string(
-501	        trim_chars(slice_chars(line, eq + 1, line.length())),
-502	      )
-503	      if name != "" {
-504	        variables[name] = value
-505	      }
-506	    }
-507	  }
-508	  // ── 主扫描：构造规则 / 模式规则 / phony / include 合并 ──
-509	  let rules : Array[Rule] = []
-510	  let pattern_rules : Array[PatternRule] = []
-511	  let phony : Array[String] = []
-512	  let mut idx = 0
-513	  let mut offset = 0
-514	  while idx < lines.length() {
-515	    let line = lines[idx]
-516	    let line_len = line.length()
-517	    let line_start = offset
-518	    // 游离 recipe 行（TAB 起始，无所属规则）：忽略。
-519	    if line_len > 0 && line[0] == '\t' {
-520	      offset = offset + line_len + 1
-521	      idx = idx + 1
-522	      continue
-523	    }
-524	    let trimmed = trim_chars(line)
-525	    if trimmed.length() == 0 || trimmed[0] == '#' {
-526	      offset = offset + line_len + 1
-527	      idx = idx + 1
-528	      continue
-529	    }
-530	    let colon = first_index_char(line, ':')
-531	    let eq = first_index_char(line, '=')
-532	    // 变量定义（已在预扫描登记），仅校验名非空。
-533	    if eq >= 0 && (colon < 0 || eq < colon) {
-534	      let name = chars_to_string(trim_chars(slice_chars(line, 0, eq)))
-535	      if name == "" {
-536	        return Err({
-537	          pos: make_pos(full_input, line_start),
-538	          expected: ["variable name"],
-539	          message: "变量定义名为空",
-540	        })
-541	      }
-542	      offset = offset + line_len + 1
-543	      idx = idx + 1
-544	      continue
-545	    }
-546	    // .PHONY 声明。
-547	    if is_phony_line(line) {
-548	      let c = first_index_char(line, ':')
-549	      let names = parse_names(
-550	        expand_vars(
-551	          chars_to_string(slice_chars(line, c + 1, line_len)),
-552	          variables,
-553	        ),
-554	      )
-555	      for nm in names {
-556	        if !list_contains(phony, nm) {
-557	          phony.push(nm)
-558	        }
-559	      }
-560	      offset = offset + line_len + 1
-561	      idx = idx + 1
-562	      continue
-563	    }
-564	    // include 指令（无 `:`，首 token 为 include）。
-565	    let toks = tokenize_ws(trimmed)
-566	    if colon < 0 && toks.length() >= 1 && toks[0] == "include" {
-567	      let path = if toks.length() >= 2 { toks[1] } else { "" }
-568	      match resolve(path) {
-569	        Some(text) =>
-570	          match parse_rules_full_with_includes(text, resolve) {
-571	            Ok(sub) => {
-572	              for r in sub.rules {
-573	                rules.push(r)
-574	              }
-575	              for pr in sub.pattern_rules {
-576	                pattern_rules.push(pr)
-577	              }
-578	              for p in sub.phony {
-579	                if !list_contains(phony, p) {
-580	                  phony.push(p)
-581	                }
-582	              }
-583	              for k, v in sub.variables {
-584	                if !variables.contains(k) {
-585	                  variables[k] = v	<-- UNCOVERED
-586	                }
-587	              }
-588	            }
-589	            Err(e) => return Err(e)	<-- UNCOVERED
-590	          }
-591	        None =>
-592	          return Err({
-593	            pos: make_pos(full_input, line_start),
-594	            expected: ["resolvable include path"],
-595	            message: "无法解析 include '" + path + "'",
-596	          })
-597	      }
-598	      offset = offset + line_len + 1
-599	      idx = idx + 1
-600	      continue
-601	    }
-602	    // 规则行：缺 `:` 即错。
-603	    if colon < 0 {
-604	      return Err({
-605	        pos: make_pos(full_input, line_start + leading_ws_count(line)),
-606	        expected: [":"],
-607	        message: "规则缺少 ':' 依赖分隔符",
-608	      })
-609	    }
-610	    let left = expand_vars(
-611	      chars_to_string(slice_chars(line, 0, colon)),
-612	      variables,
-613	    )
-614	    let right = expand_vars(
-615	      chars_to_string(slice_chars(line, colon + 1, line_len)),
-616	      variables,
-617	    )
-618	    let targets = parse_names(left)
-619	    let deps = parse_names(right)
-620	    if targets.length() == 0 {
-621	      return Err({
-622	        pos: make_pos(full_input, line_start + leading_ws_count(line)),
-623	        expected: ["target name"],
-624	        message: "规则目标名为空",
-625	      })
-626	    }
-627	    // 收集紧随的 TAB 缩进 recipe 行（原文保留，变量展开）。
-628	    let recipe_lines : Array[String] = []
-629	    let mut k = idx + 1
-630	    let mut off2 = offset + line_len + 1
-631	    while k < lines.length() && lines[k].length() > 0 && lines[k][0] == '\t' {
-632	      let rline = lines[k]
-633	      let raw = chars_to_string(slice_chars(rline, 1, rline.length()))
-634	      recipe_lines.push(expand_vars(raw, variables))
-635	      off2 = off2 + rline.length() + 1
-636	      k = k + 1
-637	    }
-638	    let recipe : Recipe = { lines: recipe_lines }
-639	    for t in targets {
-640	      if contains_char(t, '%') {
-641	        pattern_rules.push({ target_pattern: t, dep_patterns: deps, recipe })
-642	      } else {
-643	        rules.push({ target: t, deps, recipe })
-644	      }
-645	    }
-646	    idx = k
-647	    offset = off2
-648	  }
-649	  Ok({ rules, pattern_rules, variables, phony })
-650	}
    	…
 
 3 uncovered line(s) in src/codegen_infra/coalescing.mbt:
@@ -4369,7 +4286,7 @@ Total: 708 uncovered line(s) in 170 file(s)
 875	}
    	…
 
-3 uncovered line(s) in src/codegen_infra/coloring.mbt:
+1 uncovered line(s) in src/codegen_infra/coloring.mbt:
 
 32	pub fn spill_cost(
 33	  g : InterferenceGraph,
@@ -4393,110 +4310,6 @@ Total: 708 uncovered line(s) in 170 file(s)
 51	  { cost, }
 52	}
   	…
-
- 56	pub fn allocate_coloring_briggs(
- 57	  g : InterferenceGraph,
- 58	  k : Int,
- 59	  cost? : SpillCost = SpillCost::uniform(),
- 60	) -> Map[Var, Location] {
- 61	  let result : Map[Var, Location] = Map([])
- 62	  // 退化：k ≤ 0，全部溢出。
- 63	  if k <= 0 {
- 64	    let nodes = g.nodes.copy()	<-- UNCOVERED
- 65	    nodes.sort()
- 66	    let mut sp = 0
- 67	    for v in nodes {
- 68	      result[v] = Location::Spill(sp)	<-- UNCOVERED
- 69	      sp = sp + 1
- 70	    }
- 71	    return result
- 72	  }
- 73	  let adj = build_adjacency(g)
- 74	  let nodes = g.nodes.copy()
- 75	  nodes.sort() // 按 id 升序，保证确定性
- 76	  // 工作度数（随移除递减）。
- 77	  let working : Map[Var, Int] = Map([])
- 78	  for v in nodes {
- 79	    working[v] = adj.get(v).unwrap_or([]).length()
- 80	  }
- 81	  let removed : Map[Var, Bool] = Map([])
- 82	  let stack : Array[Var] = [] // 入栈顺序（底→顶）；select 逆序出栈
- 83	  let total = nodes.length()
- 84	  while removed.length() < total {
- 85	    // simplify：取最小 id 的未移除、工作度 < k 的节点。
- 86	    let mut chosen : Var? = None
- 87	    for v in nodes {
- 88	      if !removed.contains(v) && working.get(v).unwrap_or(0) < k {
- 89	        chosen = Some(v)
- 90	        break
- 91	      }
- 92	    }
- 93	    let pick = match chosen {
- 94	      Some(v) => v
- 95	      None => {
- 96	        // potential-spill：未移除节点中溢出代价最低者（tie：最小 id）。
- 97	        let mut best : Var? = None
- 98	        let mut best_cost = 0.0
- 99	        for v in nodes {
-100	          if removed.contains(v) {
-101	            continue
-102	          }
-103	          let c = cost.cost.get(v).unwrap_or(1.0)
-104	          match best {
-105	            None => {
-106	              best = Some(v)
-107	              best_cost = c
-108	            }
-109	            Some(_) =>
-110	              if c < best_cost {
-111	                best = Some(v)
-112	                best_cost = c
-113	              }
-114	          }
-115	        }
-116	        best.unwrap()
-117	      }
-118	    }
-119	    removed[pick] = true
-120	    stack.push(pick)
-121	    for u in adj.get(pick).unwrap_or([]) {
-122	      if !removed.contains(u) {
-123	        working[u] = working.get(u).unwrap_or(1) - 1
-124	      }
-125	    }
-126	  }
-127	  // select：逆序出栈回填最小可用寄存器；无可用则实际溢出。
-128	  let color_of : Map[Var, Int] = Map([])
-129	  let mut next_spill = 0
-130	  let mut idx = stack.length() - 1
-131	  while idx >= 0 {
-132	    let v = stack[idx]
-133	    let forbidden : Map[Int, Bool] = Map([])
-134	    for u in adj.get(v).unwrap_or([]) {
-135	      match color_of.get(u) {
-136	        Some(c) => forbidden[c] = true
-137	        None => ()
-138	      }
-139	    }
-140	    let mut chosen = -1
-141	    for c in 0..<k {
-142	      if !forbidden.contains(c) {
-143	        chosen = c
-144	        break
-145	      }
-146	    }
-147	    if chosen >= 0 {
-148	      result[v] = Location::Reg(chosen)
-149	      color_of[v] = chosen
-150	    } else {
-151	      result[v] = Location::Spill(next_spill)
-152	      next_spill = next_spill + 1
-153	    }
-154	    idx = idx - 1
-155	  }
-156	  result
-157	}
-   	…
 
 2 uncovered line(s) in src/codegen_infra/consistency.mbt:
 
@@ -5054,17 +4867,6 @@ Total: 708 uncovered line(s) in 170 file(s)
 317	}
    	…
 
-1 uncovered line(s) in src/codegen_infra/ir_validator.mbt:
-
-121	fn operand_kind_name(op : Operand) -> String {
-122	  match op {
-123	    Reg(_) => "Reg"	<-- UNCOVERED
-124	    Imm(_) => "Imm"
-125	    Mem(_) => "Mem"
-126	  }
-127	}
-   	…
-
 6 uncovered line(s) in src/codegen_infra/liveness.mbt:
 
 297	pub fn analyze_liveness(blocks : Array[BasicBlock]) -> LivenessResult {
@@ -5301,7 +5103,7 @@ Total: 708 uncovered line(s) in 170 file(s)
 538	}
    	…
 
-3 uncovered line(s) in src/codegen_infra/out_of_ssa.mbt:
+1 uncovered line(s) in src/codegen_infra/out_of_ssa.mbt:
 
 127	pub fn destruct_ssa(p : SsaProgram) -> SsaProgram {
 128	  let sites = reconstruct_phi_sites(p)
@@ -5357,18 +5159,6 @@ Total: 708 uncovered line(s) in 170 file(s)
 178	  }
 179	  { blocks: new_blocks, phis: [] }
 180	}
-   	…
-
-185	fn token_of(id : Int, id2name : Map[Int, String]) -> String {
-186	  if id < 0 {
-187	    "tmp" + (-id).to_string()	<-- UNCOVERED
-188	  } else {
-189	    match id2name.get(id) {
-190	      Some(name) => name + "#" + id.to_string()
-191	      None => "v" + id.to_string()	<-- UNCOVERED
-192	    }
-193	  }
-194	}
    	…
 
 2 uncovered line(s) in src/codegen_infra/sccp.mbt:
@@ -7994,44 +7784,7 @@ Total: 708 uncovered line(s) in 170 file(s)
 97	}
   	…
 
-3 uncovered line(s) in src/graph/osm.mbt:
-
-401	pub fn load_osm_or_synthetic(
-402	  content : String?,
-403	  fallback_dim : Int,
-404	) -> OsmLoadOutcome {
-405	  match content {
-406	    Some(s) =>
-407	      if osm_trim(s).length() == 0 {
-408	        osm_synthetic_outcome(
-409	          fallback_dim, "OSM 数据为空（内容仅含空白）",
-410	        )
-411	      } else {
-412	        match CsrGraph::from_osm_edge_list(s) {
-413	          Ok(g) =>
-414	            if g.n > 0 {
-415	              osm_real_outcome(g)
-416	            } else {
-417	              osm_synthetic_outcome(	<-- UNCOVERED
-418	                fallback_dim, "OSM 数据为空（无有效边）",
-419	              )
-420	            }
-421	          Err(e) => {
-422	            // 将结构化解析错误的诊断并入降级诊断（单次顺序拼接，非循环）。
-423	            let tb = @infra_text.TextBuilder::new()
-424	            tb.push_str("OSM 数据解析失败，改用合成网格：")
-425	            tb.push_str(e.message())
-426	            osm_synthetic_outcome(fallback_dim, tb.build())
-427	          }
-428	        }
-429	      }
-430	    None =>
-431	      osm_synthetic_outcome(
-432	        fallback_dim, "OSM 数据缺失（未提供数据源）",
-433	      )
-434	  }
-435	}
-   	…
+2 uncovered line(s) in src/graph/osm.mbt:
 
 439	fn osm_edge_count(g : CsrGraph[Double]) -> Int {
 440	  if g.col_idx.length() < g.weights.length() {
@@ -15683,4 +15436,4 @@ Total: 708 uncovered line(s) in 170 file(s)
 268	}
    	…
 
-Total: 708 uncovered line(s) in 170 file(s)
+Total: 717 uncovered line(s) in 170 file(s)

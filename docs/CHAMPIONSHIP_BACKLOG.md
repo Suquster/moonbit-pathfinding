@@ -901,6 +901,15 @@
         过渡规则空段/非数字/点结尾三重拒绝。logfmt.mbt 与
         timezone.mbt 全行覆盖归零。src/ 未覆盖 282→275 行，
         3306→3315 三后端全绿。2026-07-12。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第八十八批 余支覆盖收口（codegen_infra/build_tool/graph）：
+        allocate_coloring_briggs k≤0 全溢出退化；token_of 临时/无名
+        回退记号；operand_kind_name Reg 臂；include 变量合并父定义
+        优先与嵌套 include 错误传播；load_osm_or_synthetic 仅表头
+        无有效边降级。另判定 osm_edge_count col_idx<weights 与
+        synthetic_grid_csr Err 兜底（参数已守卫）为不可达防御，保留
+        不造假态。src/ 未覆盖 275→267 行，3315→3321 三后端全绿。
+        2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

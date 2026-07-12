@@ -26,6 +26,8 @@ pub fn convert_position(String, Position, from~ : PositionEncoding, to~ : Positi
 
 pub fn decode_frame(String) -> Result[(String, String), FrameError]
 
+pub fn demo_capability_router(String, String) -> @lsp_binding.Router
+
 pub fn diagnostic_to_json(Diagnostic) -> @lsp_binding.Json
 
 pub fn document_highlights(Analysis, Position) -> Array[Range]

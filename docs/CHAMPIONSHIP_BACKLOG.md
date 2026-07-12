@@ -739,6 +739,14 @@
         3178→3183 三后端全绿。2026-07-12，
         `src/regex_engine/atoms_gaps_wbtest.mbt`、
         `src/infra_ds/coverage_gaps2_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十一批 demo 能力路由器提取重构 + 余支覆盖收口
+        （lsp_server）：将 run_session_demo 内联的六方法路由器提取为
+        pub demo_capability_router(uri, text)，使通知无响应、缺失位置
+        参数 (0,0) 回退、定义未命中 JSON null 三类分支可测。src/ 未
+        覆盖 430→420 行，3183→3186 三后端全绿。2026-07-12，
+        `src/lsp_server/demo.mbt`、
+        `src/lsp_server/demo_router_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

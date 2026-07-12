@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":928.6679800664451,"min":306.9015534883721,"max":314.56991827242524,"mean":309.5559933554817,"median":307.1965083056478,"variance":18.876331890618943,"std_dev":4.34469007992733,"std_dev_pct":1.403523166465739,"median_abs_dev":0.4373000120929662,"median_abs_dev_pct":0.14235188235208418,"quartiles":[307.04903089700997,307.1965083056478,310.8832132890365],"iqr":3.8341823920265483,"batch_size":301,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1764.5068953488371,"min":577.2945284883721,"max":603.4386808139535,"mean":588.1689651162791,"median":583.7736860465117,"variance":185.36803378165303,"std_dev":13.614992977657133,"std_dev_pct":2.314809822542319,"median_abs_dev":9.605998995697778,"median_abs_dev_pct":1.6455005124935398,"quartiles":[580.5341072674419,583.7736860465117,593.6061834302326],"iqr":13.072076162790722,"batch_size":172,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":329.82253935281835,"min":106.72348674321503,"max":111.76083653444677,"mean":109.94084645093945,"median":111.33821607515658,"variance":7.808204629819118,"std_dev":2.7943164870535186,"std_dev_pct":2.5416545144578895,"median_abs_dev":0.6265770929436305,"median_abs_dev_pct":0.5627691147132019,"quartiles":[109.0308514091858,111.33821607515658,111.54952630480167],"iqr":2.5186748956158738,"batch_size":958,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":727.501573926868,"min":234.57087170111285,"max":246.52452575516693,"mean":242.50052464228932,"median":246.40617647058826,"variance":47.1630484639219,"std_dev":6.867535836376968,"std_dev_pct":2.831967413887957,"median_abs_dev":0.17546464931633646,"median_abs_dev_pct":0.07120951748434781,"quartiles":[240.48852408585054,246.40617647058826,246.4653511128776],"iqr":5.9768270270270705,"batch_size":629,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":637.9435352941176,"min":212.21222483660134,"max":213.46457189542483,"mean":212.6478450980392,"median":212.2667385620915,"variance":0.5010249327425179,"std_dev":0.7078311470559331,"std_dev_pct":0.3328654220453513,"median_abs_dev":0.0808220494117013,"median_abs_dev_pct":0.03807570133653301,"quartiles":[212.2394816993464,212.2667385620915,212.86565522875816],"iqr":0.6261735294117443,"batch_size":459,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":947.6436096463021,"min":313.3593762057877,"max":320.688136977492,"mean":315.881203215434,"median":313.5960964630225,"variance":17.34396826465551,"std_dev":4.164609017021347,"std_dev_pct":1.3184098878403483,"median_abs_dev":0.3509614533762627,"median_abs_dev_pct":0.11191512181901352,"quartiles":[313.4777363344051,313.5960964630225,317.14211672025726],"iqr":3.664380385852155,"batch_size":311,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1743.051615882353,"min":580.3506123529412,"max":582.1841505882353,"mean":581.0172052941176,"median":580.5168529411765,"variance":1.0282299728916873,"std_dev":1.014016751780604,"std_dev_pct":0.17452439317477647,"median_abs_dev":0.24646829611760931,"median_abs_dev_pct":0.04245669955469559,"quartiles":[580.4337326470588,580.5168529411765,581.3505017647059],"iqr":0.9167691176470498,"batch_size":170,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":302.29309803108805,"min":100.05049626943006,"max":101.23310746113988,"mean":100.76436601036268,"median":101.00949430051813,"variance":0.3947082166652299,"std_dev":0.6282580812574001,"std_dev_pct":0.6234923179021338,"median_abs_dev":0.33152887193781044,"median_abs_dev_pct":0.3282155546205025,"quartiles":[100.52999528497409,101.00949430051813,101.12130088082901],"iqr":0.5913055958549194,"batch_size":965,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":460.54682178517396,"min":153.05983464447806,"max":153.845465204236,"mean":153.51560726172465,"median":153.64152193645992,"variance":0.1661947230916615,"std_dev":0.40766987022793516,"std_dev_pct":0.2655559766851,"median_abs_dev":0.3023662888048204,"median_abs_dev_pct":0.19679985266604375,"quartiles":[153.35067829046898,153.64152193645992,153.74349357034797],"iqr":0.3928152798789881,"batch_size":661,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":407.0320128630706,"min":134.91231479944676,"max":136.24809778699864,"mean":135.67733762102353,"median":135.87160027662517,"variance":0.47438253197931,"std_dev":0.6887543335466645,"std_dev_pct":0.5076413980575784,"median_abs_dev":0.5581952088797043,"median_abs_dev_pct":0.4108255203760443,"quartiles":[135.39195753803597,135.87160027662517,136.0598490318119],"iqr":0.6678914937759259,"batch_size":723,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 520 | 50% | 2250 | -65% | OK
-massive_actor_scheduling | 4000 | 612 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 103 | 50% | 1350 | -89% | OK
+high_frequency_send | 1500 | 310 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 579 | 50% | 6000 | -86% | OK
+ask_round_trip | 900 | 102 | 50% | 1350 | -89% | OK
 router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 135 | 50% | 1800 | -89% | OK
+supervision_restart | 1200 | 146 | 50% | 1800 | -88% | OK
 status: PASS
-Total: 863 uncovered line(s) in 203 file(s)
+Total: 853 uncovered line(s) in 203 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -13977,302 +13977,193 @@ Total: 863 uncovered line(s) in 203 file(s)
 286	}
    	…
 
-13 uncovered line(s) in src/lsp_server/demo.mbt:
+3 uncovered line(s) in src/lsp_server/demo.mbt:
 
-268	pub fn run_session_demo() -> Array[SessionStep] {
-269	  let steps : Array[SessionStep] = []
-270	  let uri = "file:///demo.conf"
-271	
-272	  // ── 1. initialize（任务 5：生命周期会话句柄） ──────────────────────
-273	  let session = LspSession::new()
-274	  let init_caps = [
-275	    "diagnostic", "completion", "definition", "hover", "documentSymbol", "references",
-276	    "rename", "formatting", "codeAction", "signatureHelp", "semanticTokens", "foldingRange",
-277	    "documentHighlight",
-278	  ]
-279	  let cap_json : Array[@lsp_binding.Json] = []
-280	  for c in init_caps {
-281	    cap_json.push(@lsp_binding.JStr(c))
-282	  }
-283	  let init_params = @lsp_binding.JObj([
-284	    ("capabilities", @lsp_binding.JArr(cap_json)),
-285	    ("positionEncodings", @lsp_binding.JArr([@lsp_binding.JStr("utf-16")])),
-286	  ])
-287	  let init_request = @lsp_binding.Request(
-288	    id=@lsp_binding.IdNum(1),
-289	    method_name="initialize",
-290	    params=init_params,
-291	  )
-292	  let (session, init_reply) = session.handle(init_request)
-293	  steps.push({ label: "initialize", output: demo_result_of(init_reply) })
-294	
-295	  // ── 2. initialized 通知 ────────────────────────────────────────────
-296	  let initialized_note = @lsp_binding.Notification(
-297	    method_name="initialized",
-298	    params=@lsp_binding.JNull,
-299	  )
-300	  let (session, _) = session.handle(initialized_note)
-301	  steps.push({
-302	    label: "initialized",
-303	    output: @lsp_binding.JStr(session.state().to_string()),
-304	  })
-305	
-306	  // ── 3. didOpen（任务 7：带版本文档） ───────────────────────────────
-307	  let open_text = demo_open_text()
-308	  let doc_v1 : VersionedDocument = { uri, text: open_text, version: 1 }
-309	  steps.push({
-310	    label: "didOpen",
-311	    output: @lsp_binding.JObj([
-312	      ("uri", @lsp_binding.JStr(doc_v1.uri)),
-313	      ("version", demo_jint(doc_v1.version)),
-314	      ("text", @lsp_binding.JStr(doc_v1.text)),
-315	    ]),
-316	  })
-317	
-318	  // ── 4. 增量 didChange（任务 6 协商编码 + 任务 7 增量应用 + 等价断言） ─
-319	  let encoding = negotiate_encoding([Utf16])
-320	  // 将 line 2 的 `8080`（列 [7,11)）替换为 `9090`。
-321	  let change : ContentChange = { range: Some(span(2, 7, 11)), text: "9090" }
-322	  // 全函数降级（不可达于本 demo 的合法变更）：增量应用失败时回退为「仅版本号
-323	  // 递增、文本不变」的文档，绝不 `abort`（占位失败一律以确定性回退替代）。
-324	  let doc_v2 = match doc_v1.apply([change], 2, encoding) {
-325	    Ok(d) => d
-326	    Err(_) => { uri, text: open_text, version: 2 }	<-- UNCOVERED
-327	  }
-328	  // 全量替换基线：以变更后全文做一次 Full 替换。
-329	  let full_text = demo_full_text()
-330	  let full_change : ContentChange = { range: None, text: full_text }
-331	  // 全函数降级（同上）：全量替换失败时回退为 open_text，绝不 `abort`。
-332	  let full_applied = match apply_changes(open_text, [full_change], encoding) {
-333	    Ok(t) => t
-334	    Err(_) => open_text	<-- UNCOVERED
-335	  }
-336	  // 内部断言（Requirement 9.3 / Property 5 投影）：增量结果文本与全量替换文本
-337	  // 逐字符相等，且二者诊断逐条相等。该不变量经下方 didChange 步骤的
-338	  // `incrementalEqualsFullText` / `incrementalEqualsFullDiagnostics` 字段**可见
-339	  // 外化**（由 demo_test.mbt 单元断言为 true），无需以 `abort` 强制——脚本保持
-340	  // 全函数，违例时如实在步骤输出中暴露为 false，而非中止进程。
-341	  let changed_text = doc_v2.text
-342	  let text_equal = changed_text == full_applied
-343	  let diags_incremental = pull_diagnostics({ uri, text: changed_text })
-344	  let diags_full = pull_diagnostics({ uri, text: full_applied })
-345	  let diags_equal = diags_incremental == diags_full
-346	  steps.push({
-347	    label: "didChange",
-348	    output: @lsp_binding.JObj([
-349	      ("version", demo_jint(doc_v2.version)),
-350	      ("text", @lsp_binding.JStr(changed_text)),
-351	      ("incrementalEqualsFullText", @lsp_binding.JBool(text_equal)),
-352	      ("incrementalEqualsFullDiagnostics", @lsp_binding.JBool(diags_equal)),
-353	    ]),
-354	  })
-355	
-356	  // ── 协议层 Router + dispatch：注册各能力请求处理器（任务 9/10/13 + 既有） ─
-357	  let analysis = analyze({ uri, text: changed_text })
-358	  let router = @lsp_binding.Router::new()
-359	
-360	  // 诊断拉取（任务 13）。
-361	  router.register("textDocument/diagnostic", fn(msg) {
-362	    match msg {
-363	      @lsp_binding.Request(id~, ..) => {
-364	        let diags = pull_diagnostics({ uri, text: changed_text })
-365	        Some(
-366	          @lsp_binding.Response(
-367	            id~,
-368	            result=Some(demo_diags_to_json(diags)),
-369	            error=None,
-370	          ),
-371	        )
-372	      }
-373	      _ => None	<-- UNCOVERED
-374	    }
-375	  })
-376	  // 补全（既有 server.mbt）。
-377	  router.register("textDocument/completion", fn(msg) {
-378	    match msg {
-379	      @lsp_binding.Request(id~, params~, ..) => {
-380	        let pos : Position = match position_from_json(params) {
-381	          Some(p) => p
-382	          None => { line: 0, character: 0 }	<-- UNCOVERED
-383	        }
-384	        let items = on_completion(analysis, pos)
-385	        Some(
-386	          @lsp_binding.Response(
-387	            id~,
-388	            result=Some(demo_completion_to_json(items)),
-389	            error=None,
-390	          ),
-391	        )
-392	      }
-393	      _ => None	<-- UNCOVERED
-394	    }
-395	  })
-396	  // 跳转定义（既有 server.mbt）。
-397	  router.register("textDocument/definition", fn(msg) {
-398	    match msg {
-399	      @lsp_binding.Request(id~, params~, ..) => {
-400	        let pos : Position = match position_from_json(params) {
-401	          Some(p) => p
-402	          None => { line: 0, character: 0 }	<-- UNCOVERED
-403	        }
-404	        let result = match on_definition(analysis, pos) {
-405	          Some(loc) => demo_location_to_json(loc)
-406	          None => @lsp_binding.JNull	<-- UNCOVERED
-407	        }
-408	        Some(@lsp_binding.Response(id~, result=Some(result), error=None))
-409	      }
-410	      _ => None	<-- UNCOVERED
-411	    }
-412	  })
-413	  // 引用查找（任务 9）。
-414	  router.register("textDocument/references", fn(msg) {
-415	    match msg {
-416	      @lsp_binding.Request(id~, params~, ..) => {
-417	        let name = demo_str_field(params, "name")
-418	        let locs = references(analysis, name)
-419	        Some(
-420	          @lsp_binding.Response(
-421	            id~,
-422	            result=Some(demo_locations_to_json(locs)),
-423	            error=None,
-424	          ),
-425	        )
-426	      }
-427	      _ => None	<-- UNCOVERED
-428	    }
-429	  })
-430	  // 重命名（任务 10）。
-431	  router.register("textDocument/rename", fn(msg) {
-432	    match msg {
-433	      @lsp_binding.Request(id~, params~, ..) => {
-434	        let name = demo_str_field(params, "name")
-435	        let new_name = demo_str_field(params, "newName")
-436	        let edit = rename(analysis, name, new_name)
-437	        Some(
-438	          @lsp_binding.Response(
-439	            id~,
-440	            result=Some(demo_workspace_edit_to_json(edit)),
-441	            error=None,
-442	          ),
-443	        )
-444	      }
-445	      _ => None	<-- UNCOVERED
-446	    }
-447	  })
-448	  // 悬停（既有 server.mbt）。
-449	  router.register("textDocument/hover", fn(msg) {
-450	    match msg {
-451	      @lsp_binding.Request(id~, params~, ..) => {
-452	        let pos : Position = match position_from_json(params) {
-453	          Some(p) => p
-454	          None => { line: 0, character: 0 }	<-- UNCOVERED
-455	        }
-456	        Some(
-457	          @lsp_binding.Response(
-458	            id~,
-459	            result=Some(demo_hover_to_json(on_hover(analysis, pos))),
-460	            error=None,
-461	          ),
-462	        )
-463	      }
-464	      _ => None	<-- UNCOVERED
-465	    }
-466	  })
-467	
-468	  // ── 5. diagnostics（dispatch） ─────────────────────────────────────
-469	  let req_diag = @lsp_binding.Request(
-470	    id=@lsp_binding.IdNum(2),
-471	    method_name="textDocument/diagnostic",
-472	    params=@lsp_binding.JNull,
-473	  )
-474	  steps.push({
-475	    label: "diagnostics",
-476	    output: demo_result_of(@lsp_binding.dispatch(req_diag, router)),
-477	  })
-478	
-479	  // ── 6. completion（dispatch） ──────────────────────────────────────
-480	  let req_comp = @lsp_binding.Request(
-481	    id=@lsp_binding.IdNum(3),
-482	    method_name="textDocument/completion",
-483	    params=demo_position_to_json({ line: 3, character: 8 }),
-484	  )
-485	  steps.push({
-486	    label: "completion",
-487	    output: demo_result_of(@lsp_binding.dispatch(req_comp, router)),
-488	  })
-489	
-490	  // ── 7. definition（dispatch；位置落在 line 3 的 ${host} 引用上） ────
-491	  let req_def = @lsp_binding.Request(
-492	    id=@lsp_binding.IdNum(4),
-493	    method_name="textDocument/definition",
-494	    params=demo_position_to_json({ line: 3, character: 8 }),
-495	  )
-496	  steps.push({
-497	    label: "definition",
-498	    output: demo_result_of(@lsp_binding.dispatch(req_def, router)),
-499	  })
-500	
-501	  // ── 8. references（dispatch；键 host） ─────────────────────────────
-502	  let req_refs = @lsp_binding.Request(
-503	    id=@lsp_binding.IdNum(5),
-504	    method_name="textDocument/references",
-505	    params=@lsp_binding.JObj([("name", @lsp_binding.JStr("host"))]),
-506	  )
-507	  steps.push({
-508	    label: "references",
-509	    output: demo_result_of(@lsp_binding.dispatch(req_refs, router)),
-510	  })
-511	
-512	  // ── 9. rename（dispatch；键 port → PORT） ──────────────────────────
-513	  let req_rename = @lsp_binding.Request(
-514	    id=@lsp_binding.IdNum(6),
-515	    method_name="textDocument/rename",
-516	    params=@lsp_binding.JObj([
-517	      ("name", @lsp_binding.JStr("port")),
-518	      ("newName", @lsp_binding.JStr("PORT")),
-519	    ]),
-520	  )
-521	  steps.push({
-522	    label: "rename",
-523	    output: demo_result_of(@lsp_binding.dispatch(req_rename, router)),
-524	  })
-525	
-526	  // ── 10. hover（dispatch；位置落在 line 1 的 host 定义上） ──────────
-527	  let req_hover = @lsp_binding.Request(
-528	    id=@lsp_binding.IdNum(7),
-529	    method_name="textDocument/hover",
-530	    params=demo_position_to_json({ line: 1, character: 1 }),
-531	  )
-532	  steps.push({
-533	    label: "hover",
-534	    output: demo_result_of(@lsp_binding.dispatch(req_hover, router)),
-535	  })
-536	
-537	  // ── 11. shutdown（任务 5） ─────────────────────────────────────────
-538	  let shutdown_request = @lsp_binding.Request(
-539	    id=@lsp_binding.IdNum(10),
-540	    method_name="shutdown",
-541	    params=@lsp_binding.JNull,
-542	  )
-543	  let (session, shutdown_reply) = session.handle(shutdown_request)
-544	  steps.push({ label: "shutdown", output: demo_result_of(shutdown_reply) })
-545	
-546	  // ── 12. exit（任务 5；退出码经纯状态转移 step 计算） ───────────────
-547	  // 已收到 shutdown，故 shutdown_seen=true → 退出码 0。
-548	  let exit_step = step(session.state(), true, EvExit, @lsp_binding.IdNull)
-549	  let exit_code = match exit_step.exit_code {
-550	    Some(code) => code
-551	    None => -1	<-- UNCOVERED
-552	  }
-553	  steps.push({
-554	    label: "exit",
-555	    output: @lsp_binding.JObj([
-556	      ("state", @lsp_binding.JStr(exit_step.state.to_string())),
-557	      ("exitCode", demo_jint(exit_code)),
-558	    ]),
-559	  })
-560	  steps
-561	}
+389	pub fn run_session_demo() -> Array[SessionStep] {
+390	  let steps : Array[SessionStep] = []
+391	  let uri = "file:///demo.conf"
+392	
+393	  // ── 1. initialize（任务 5：生命周期会话句柄） ──────────────────────
+394	  let session = LspSession::new()
+395	  let init_caps = [
+396	    "diagnostic", "completion", "definition", "hover", "documentSymbol", "references",
+397	    "rename", "formatting", "codeAction", "signatureHelp", "semanticTokens", "foldingRange",
+398	    "documentHighlight",
+399	  ]
+400	  let cap_json : Array[@lsp_binding.Json] = []
+401	  for c in init_caps {
+402	    cap_json.push(@lsp_binding.JStr(c))
+403	  }
+404	  let init_params = @lsp_binding.JObj([
+405	    ("capabilities", @lsp_binding.JArr(cap_json)),
+406	    ("positionEncodings", @lsp_binding.JArr([@lsp_binding.JStr("utf-16")])),
+407	  ])
+408	  let init_request = @lsp_binding.Request(
+409	    id=@lsp_binding.IdNum(1),
+410	    method_name="initialize",
+411	    params=init_params,
+412	  )
+413	  let (session, init_reply) = session.handle(init_request)
+414	  steps.push({ label: "initialize", output: demo_result_of(init_reply) })
+415	
+416	  // ── 2. initialized 通知 ────────────────────────────────────────────
+417	  let initialized_note = @lsp_binding.Notification(
+418	    method_name="initialized",
+419	    params=@lsp_binding.JNull,
+420	  )
+421	  let (session, _) = session.handle(initialized_note)
+422	  steps.push({
+423	    label: "initialized",
+424	    output: @lsp_binding.JStr(session.state().to_string()),
+425	  })
+426	
+427	  // ── 3. didOpen（任务 7：带版本文档） ───────────────────────────────
+428	  let open_text = demo_open_text()
+429	  let doc_v1 : VersionedDocument = { uri, text: open_text, version: 1 }
+430	  steps.push({
+431	    label: "didOpen",
+432	    output: @lsp_binding.JObj([
+433	      ("uri", @lsp_binding.JStr(doc_v1.uri)),
+434	      ("version", demo_jint(doc_v1.version)),
+435	      ("text", @lsp_binding.JStr(doc_v1.text)),
+436	    ]),
+437	  })
+438	
+439	  // ── 4. 增量 didChange（任务 6 协商编码 + 任务 7 增量应用 + 等价断言） ─
+440	  let encoding = negotiate_encoding([Utf16])
+441	  // 将 line 2 的 `8080`（列 [7,11)）替换为 `9090`。
+442	  let change : ContentChange = { range: Some(span(2, 7, 11)), text: "9090" }
+443	  // 全函数降级（不可达于本 demo 的合法变更）：增量应用失败时回退为「仅版本号
+444	  // 递增、文本不变」的文档，绝不 `abort`（占位失败一律以确定性回退替代）。
+445	  let doc_v2 = match doc_v1.apply([change], 2, encoding) {
+446	    Ok(d) => d
+447	    Err(_) => { uri, text: open_text, version: 2 }	<-- UNCOVERED
+448	  }
+449	  // 全量替换基线：以变更后全文做一次 Full 替换。
+450	  let full_text = demo_full_text()
+451	  let full_change : ContentChange = { range: None, text: full_text }
+452	  // 全函数降级（同上）：全量替换失败时回退为 open_text，绝不 `abort`。
+453	  let full_applied = match apply_changes(open_text, [full_change], encoding) {
+454	    Ok(t) => t
+455	    Err(_) => open_text	<-- UNCOVERED
+456	  }
+457	  // 内部断言（Requirement 9.3 / Property 5 投影）：增量结果文本与全量替换文本
+458	  // 逐字符相等，且二者诊断逐条相等。该不变量经下方 didChange 步骤的
+459	  // `incrementalEqualsFullText` / `incrementalEqualsFullDiagnostics` 字段**可见
+460	  // 外化**（由 demo_test.mbt 单元断言为 true），无需以 `abort` 强制——脚本保持
+461	  // 全函数，违例时如实在步骤输出中暴露为 false，而非中止进程。
+462	  let changed_text = doc_v2.text
+463	  let text_equal = changed_text == full_applied
+464	  let diags_incremental = pull_diagnostics({ uri, text: changed_text })
+465	  let diags_full = pull_diagnostics({ uri, text: full_applied })
+466	  let diags_equal = diags_incremental == diags_full
+467	  steps.push({
+468	    label: "didChange",
+469	    output: @lsp_binding.JObj([
+470	      ("version", demo_jint(doc_v2.version)),
+471	      ("text", @lsp_binding.JStr(changed_text)),
+472	      ("incrementalEqualsFullText", @lsp_binding.JBool(text_equal)),
+473	      ("incrementalEqualsFullDiagnostics", @lsp_binding.JBool(diags_equal)),
+474	    ]),
+475	  })
+476	
+477	  // ── 协议层 Router + dispatch：注册各能力请求处理器（任务 9/10/13 + 既有） ─
+478	  let router = demo_capability_router(uri, changed_text)
+479	
+480	  // ── 5. diagnostics（dispatch） ─────────────────────────────────────
+481	  let req_diag = @lsp_binding.Request(
+482	    id=@lsp_binding.IdNum(2),
+483	    method_name="textDocument/diagnostic",
+484	    params=@lsp_binding.JNull,
+485	  )
+486	  steps.push({
+487	    label: "diagnostics",
+488	    output: demo_result_of(@lsp_binding.dispatch(req_diag, router)),
+489	  })
+490	
+491	  // ── 6. completion（dispatch） ──────────────────────────────────────
+492	  let req_comp = @lsp_binding.Request(
+493	    id=@lsp_binding.IdNum(3),
+494	    method_name="textDocument/completion",
+495	    params=demo_position_to_json({ line: 3, character: 8 }),
+496	  )
+497	  steps.push({
+498	    label: "completion",
+499	    output: demo_result_of(@lsp_binding.dispatch(req_comp, router)),
+500	  })
+501	
+502	  // ── 7. definition（dispatch；位置落在 line 3 的 ${host} 引用上） ────
+503	  let req_def = @lsp_binding.Request(
+504	    id=@lsp_binding.IdNum(4),
+505	    method_name="textDocument/definition",
+506	    params=demo_position_to_json({ line: 3, character: 8 }),
+507	  )
+508	  steps.push({
+509	    label: "definition",
+510	    output: demo_result_of(@lsp_binding.dispatch(req_def, router)),
+511	  })
+512	
+513	  // ── 8. references（dispatch；键 host） ─────────────────────────────
+514	  let req_refs = @lsp_binding.Request(
+515	    id=@lsp_binding.IdNum(5),
+516	    method_name="textDocument/references",
+517	    params=@lsp_binding.JObj([("name", @lsp_binding.JStr("host"))]),
+518	  )
+519	  steps.push({
+520	    label: "references",
+521	    output: demo_result_of(@lsp_binding.dispatch(req_refs, router)),
+522	  })
+523	
+524	  // ── 9. rename（dispatch；键 port → PORT） ──────────────────────────
+525	  let req_rename = @lsp_binding.Request(
+526	    id=@lsp_binding.IdNum(6),
+527	    method_name="textDocument/rename",
+528	    params=@lsp_binding.JObj([
+529	      ("name", @lsp_binding.JStr("port")),
+530	      ("newName", @lsp_binding.JStr("PORT")),
+531	    ]),
+532	  )
+533	  steps.push({
+534	    label: "rename",
+535	    output: demo_result_of(@lsp_binding.dispatch(req_rename, router)),
+536	  })
+537	
+538	  // ── 10. hover（dispatch；位置落在 line 1 的 host 定义上） ──────────
+539	  let req_hover = @lsp_binding.Request(
+540	    id=@lsp_binding.IdNum(7),
+541	    method_name="textDocument/hover",
+542	    params=demo_position_to_json({ line: 1, character: 1 }),
+543	  )
+544	  steps.push({
+545	    label: "hover",
+546	    output: demo_result_of(@lsp_binding.dispatch(req_hover, router)),
+547	  })
+548	
+549	  // ── 11. shutdown（任务 5） ─────────────────────────────────────────
+550	  let shutdown_request = @lsp_binding.Request(
+551	    id=@lsp_binding.IdNum(10),
+552	    method_name="shutdown",
+553	    params=@lsp_binding.JNull,
+554	  )
+555	  let (session, shutdown_reply) = session.handle(shutdown_request)
+556	  steps.push({ label: "shutdown", output: demo_result_of(shutdown_reply) })
+557	
+558	  // ── 12. exit（任务 5；退出码经纯状态转移 step 计算） ───────────────
+559	  // 已收到 shutdown，故 shutdown_seen=true → 退出码 0。
+560	  let exit_step = step(session.state(), true, EvExit, @lsp_binding.IdNull)
+561	  let exit_code = match exit_step.exit_code {
+562	    Some(code) => code
+563	    None => -1	<-- UNCOVERED
+564	  }
+565	  steps.push({
+566	    label: "exit",
+567	    output: @lsp_binding.JObj([
+568	      ("state", @lsp_binding.JStr(exit_step.state.to_string())),
+569	      ("exitCode", demo_jint(exit_code)),
+570	    ]),
+571	  })
+572	  steps
+573	}
    	…
 
 2 uncovered line(s) in src/lsp_server/dsl.mbt:
@@ -18889,4 +18780,4 @@ Total: 863 uncovered line(s) in 203 file(s)
 268	}
    	…
 
-Total: 863 uncovered line(s) in 203 file(s)
+Total: 853 uncovered line(s) in 203 file(s)

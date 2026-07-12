@@ -254,114 +254,21 @@ fn demo_full_text() -> String {
 // ───────────────────────────── 会话脚本 ───────────────────────────────
 
 ///|
-/// 驱动内置 DSL 文档完整走过一遍 LSP 会话，产出确定性的步骤序列
-/// （Requirement 9.1 / 9.2）。
-///
-/// 串联：
-///   * 任务 5（生命周期）：`LspSession::new`/`handle` 处理 initialize / initialized
-///     / shutdown；`step` 计算 exit 退出码；
-///   * 任务 6（位置编码）：`negotiate_encoding` 协商位置编码；
-///   * 任务 7（增量同步）：`VersionedDocument::apply` / `apply_changes` 应用增量
-///     与全量变更，并内部断言二者诊断等价（Requirement 9.3）；
-///   * 任务 9 / 10 / 13 与既有 completion / definition / hover：经 `@lsp_binding`
-///     的 `Router` + `dispatch` 路由各能力请求。
-pub fn run_session_demo() -> Array[SessionStep] {
-  let steps : Array[SessionStep] = []
-  let uri = "file:///demo.conf"
-
-  // ── 1. initialize（任务 5：生命周期会话句柄） ──────────────────────
-  let session = LspSession::new()
-  let init_caps = [
-    "diagnostic", "completion", "definition", "hover", "documentSymbol", "references",
-    "rename", "formatting", "codeAction", "signatureHelp", "semanticTokens", "foldingRange",
-    "documentHighlight",
-  ]
-  let cap_json : Array[@lsp_binding.Json] = []
-  for c in init_caps {
-    cap_json.push(@lsp_binding.JStr(c))
-  }
-  let init_params = @lsp_binding.JObj([
-    ("capabilities", @lsp_binding.JArr(cap_json)),
-    ("positionEncodings", @lsp_binding.JArr([@lsp_binding.JStr("utf-16")])),
-  ])
-  let init_request = @lsp_binding.Request(
-    id=@lsp_binding.IdNum(1),
-    method_name="initialize",
-    params=init_params,
-  )
-  let (session, init_reply) = session.handle(init_request)
-  steps.push({ label: "initialize", output: demo_result_of(init_reply) })
-
-  // ── 2. initialized 通知 ────────────────────────────────────────────
-  let initialized_note = @lsp_binding.Notification(
-    method_name="initialized",
-    params=@lsp_binding.JNull,
-  )
-  let (session, _) = session.handle(initialized_note)
-  steps.push({
-    label: "initialized",
-    output: @lsp_binding.JStr(session.state().to_string()),
-  })
-
-  // ── 3. didOpen（任务 7：带版本文档） ───────────────────────────────
-  let open_text = demo_open_text()
-  let doc_v1 : VersionedDocument = { uri, text: open_text, version: 1 }
-  steps.push({
-    label: "didOpen",
-    output: @lsp_binding.JObj([
-      ("uri", @lsp_binding.JStr(doc_v1.uri)),
-      ("version", demo_jint(doc_v1.version)),
-      ("text", @lsp_binding.JStr(doc_v1.text)),
-    ]),
-  })
-
-  // ── 4. 增量 didChange（任务 6 协商编码 + 任务 7 增量应用 + 等价断言） ─
-  let encoding = negotiate_encoding([Utf16])
-  // 将 line 2 的 `8080`（列 [7,11)）替换为 `9090`。
-  let change : ContentChange = { range: Some(span(2, 7, 11)), text: "9090" }
-  // 全函数降级（不可达于本 demo 的合法变更）：增量应用失败时回退为「仅版本号
-  // 递增、文本不变」的文档，绝不 `abort`（占位失败一律以确定性回退替代）。
-  let doc_v2 = match doc_v1.apply([change], 2, encoding) {
-    Ok(d) => d
-    Err(_) => { uri, text: open_text, version: 2 }
-  }
-  // 全量替换基线：以变更后全文做一次 Full 替换。
-  let full_text = demo_full_text()
-  let full_change : ContentChange = { range: None, text: full_text }
-  // 全函数降级（同上）：全量替换失败时回退为 open_text，绝不 `abort`。
-  let full_applied = match apply_changes(open_text, [full_change], encoding) {
-    Ok(t) => t
-    Err(_) => open_text
-  }
-  // 内部断言（Requirement 9.3 / Property 5 投影）：增量结果文本与全量替换文本
-  // 逐字符相等，且二者诊断逐条相等。该不变量经下方 didChange 步骤的
-  // `incrementalEqualsFullText` / `incrementalEqualsFullDiagnostics` 字段**可见
-  // 外化**（由 demo_test.mbt 单元断言为 true），无需以 `abort` 强制——脚本保持
-  // 全函数，违例时如实在步骤输出中暴露为 false，而非中止进程。
-  let changed_text = doc_v2.text
-  let text_equal = changed_text == full_applied
-  let diags_incremental = pull_diagnostics({ uri, text: changed_text })
-  let diags_full = pull_diagnostics({ uri, text: full_applied })
-  let diags_equal = diags_incremental == diags_full
-  steps.push({
-    label: "didChange",
-    output: @lsp_binding.JObj([
-      ("version", demo_jint(doc_v2.version)),
-      ("text", @lsp_binding.JStr(changed_text)),
-      ("incrementalEqualsFullText", @lsp_binding.JBool(text_equal)),
-      ("incrementalEqualsFullDiagnostics", @lsp_binding.JBool(diags_equal)),
-    ]),
-  })
-
-  // ── 协议层 Router + dispatch：注册各能力请求处理器（任务 9/10/13 + 既有） ─
-  let analysis = analyze({ uri, text: changed_text })
+/// 构建 demo 的能力路由器：为诊断 / 补全 / 定义 / 引用 / 重命名 / 悬停
+/// 六个方法注册请求处理器。缺失位置参数回退 (0,0)；通知与非请求消息
+/// 一律返回 `None`（JSON-RPC 通知无响应）。
+pub fn demo_capability_router(
+  uri : String,
+  text : String,
+) -> @lsp_binding.Router {
+  let analysis = analyze({ uri, text })
   let router = @lsp_binding.Router::new()
 
   // 诊断拉取（任务 13）。
   router.register("textDocument/diagnostic", fn(msg) {
     match msg {
       @lsp_binding.Request(id~, ..) => {
-        let diags = pull_diagnostics({ uri, text: changed_text })
+        let diags = pull_diagnostics({ uri, text })
         Some(
           @lsp_binding.Response(
             id~,
@@ -464,6 +371,111 @@ pub fn run_session_demo() -> Array[SessionStep] {
       _ => None
     }
   })
+  router
+}
+
+///|
+/// 驱动内置 DSL 文档完整走过一遍 LSP 会话，产出确定性的步骤序列
+/// （Requirement 9.1 / 9.2）。
+///
+/// 串联：
+///   * 任务 5（生命周期）：`LspSession::new`/`handle` 处理 initialize / initialized
+///     / shutdown；`step` 计算 exit 退出码；
+///   * 任务 6（位置编码）：`negotiate_encoding` 协商位置编码；
+///   * 任务 7（增量同步）：`VersionedDocument::apply` / `apply_changes` 应用增量
+///     与全量变更，并内部断言二者诊断等价（Requirement 9.3）；
+///   * 任务 9 / 10 / 13 与既有 completion / definition / hover：经 `@lsp_binding`
+///     的 `Router` + `dispatch` 路由各能力请求。
+pub fn run_session_demo() -> Array[SessionStep] {
+  let steps : Array[SessionStep] = []
+  let uri = "file:///demo.conf"
+
+  // ── 1. initialize（任务 5：生命周期会话句柄） ──────────────────────
+  let session = LspSession::new()
+  let init_caps = [
+    "diagnostic", "completion", "definition", "hover", "documentSymbol", "references",
+    "rename", "formatting", "codeAction", "signatureHelp", "semanticTokens", "foldingRange",
+    "documentHighlight",
+  ]
+  let cap_json : Array[@lsp_binding.Json] = []
+  for c in init_caps {
+    cap_json.push(@lsp_binding.JStr(c))
+  }
+  let init_params = @lsp_binding.JObj([
+    ("capabilities", @lsp_binding.JArr(cap_json)),
+    ("positionEncodings", @lsp_binding.JArr([@lsp_binding.JStr("utf-16")])),
+  ])
+  let init_request = @lsp_binding.Request(
+    id=@lsp_binding.IdNum(1),
+    method_name="initialize",
+    params=init_params,
+  )
+  let (session, init_reply) = session.handle(init_request)
+  steps.push({ label: "initialize", output: demo_result_of(init_reply) })
+
+  // ── 2. initialized 通知 ────────────────────────────────────────────
+  let initialized_note = @lsp_binding.Notification(
+    method_name="initialized",
+    params=@lsp_binding.JNull,
+  )
+  let (session, _) = session.handle(initialized_note)
+  steps.push({
+    label: "initialized",
+    output: @lsp_binding.JStr(session.state().to_string()),
+  })
+
+  // ── 3. didOpen（任务 7：带版本文档） ───────────────────────────────
+  let open_text = demo_open_text()
+  let doc_v1 : VersionedDocument = { uri, text: open_text, version: 1 }
+  steps.push({
+    label: "didOpen",
+    output: @lsp_binding.JObj([
+      ("uri", @lsp_binding.JStr(doc_v1.uri)),
+      ("version", demo_jint(doc_v1.version)),
+      ("text", @lsp_binding.JStr(doc_v1.text)),
+    ]),
+  })
+
+  // ── 4. 增量 didChange（任务 6 协商编码 + 任务 7 增量应用 + 等价断言） ─
+  let encoding = negotiate_encoding([Utf16])
+  // 将 line 2 的 `8080`（列 [7,11)）替换为 `9090`。
+  let change : ContentChange = { range: Some(span(2, 7, 11)), text: "9090" }
+  // 全函数降级（不可达于本 demo 的合法变更）：增量应用失败时回退为「仅版本号
+  // 递增、文本不变」的文档，绝不 `abort`（占位失败一律以确定性回退替代）。
+  let doc_v2 = match doc_v1.apply([change], 2, encoding) {
+    Ok(d) => d
+    Err(_) => { uri, text: open_text, version: 2 }
+  }
+  // 全量替换基线：以变更后全文做一次 Full 替换。
+  let full_text = demo_full_text()
+  let full_change : ContentChange = { range: None, text: full_text }
+  // 全函数降级（同上）：全量替换失败时回退为 open_text，绝不 `abort`。
+  let full_applied = match apply_changes(open_text, [full_change], encoding) {
+    Ok(t) => t
+    Err(_) => open_text
+  }
+  // 内部断言（Requirement 9.3 / Property 5 投影）：增量结果文本与全量替换文本
+  // 逐字符相等，且二者诊断逐条相等。该不变量经下方 didChange 步骤的
+  // `incrementalEqualsFullText` / `incrementalEqualsFullDiagnostics` 字段**可见
+  // 外化**（由 demo_test.mbt 单元断言为 true），无需以 `abort` 强制——脚本保持
+  // 全函数，违例时如实在步骤输出中暴露为 false，而非中止进程。
+  let changed_text = doc_v2.text
+  let text_equal = changed_text == full_applied
+  let diags_incremental = pull_diagnostics({ uri, text: changed_text })
+  let diags_full = pull_diagnostics({ uri, text: full_applied })
+  let diags_equal = diags_incremental == diags_full
+  steps.push({
+    label: "didChange",
+    output: @lsp_binding.JObj([
+      ("version", demo_jint(doc_v2.version)),
+      ("text", @lsp_binding.JStr(changed_text)),
+      ("incrementalEqualsFullText", @lsp_binding.JBool(text_equal)),
+      ("incrementalEqualsFullDiagnostics", @lsp_binding.JBool(diags_equal)),
+    ]),
+  })
+
+  // ── 协议层 Router + dispatch：注册各能力请求处理器（任务 9/10/13 + 既有） ─
+  let router = demo_capability_router(uri, changed_text)
 
   // ── 5. diagnostics（dispatch） ─────────────────────────────────────
   let req_diag = @lsp_binding.Request(

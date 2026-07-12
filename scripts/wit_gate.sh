@@ -35,11 +35,13 @@ wasm-tools component wit "$component" > "$tmpdir/roundtrip.wit"
 for f in pg-reset pg-set-obstacle pg-set-start pg-set-goal pg-select-algo \
   pg-compute pg-step-visited-len pg-step-visited-at pg-step-frontier-len \
   pg-step-frontier-at pg-step-current pg-step-flags pg-final-path-len \
-  pg-final-path-at pg-last-error; do
+  pg-final-path-at pg-last-error pg-osm-reset pg-osm-add-edge pg-osm-build \
+  pg-osm-route pg-osm-path-len pg-osm-path-at pg-osm-cost pg-osm-settled \
+  pg-osm-last-error; do
   grep -q "export ${f}:" "$tmpdir/roundtrip.wit" \
     || { echo "MISSING EXPORT: $f"; exit 1; }
 done
-echo "   OK: all 15 typed exports present"
+echo "   OK: all 24 typed exports present"
 
 echo "== wit gate: typed invocations under wasmtime =="
 # 说明：`wasmtime run --invoke` 每次调用都会实例化一个全新组件实例，
@@ -66,8 +68,14 @@ expect "pg-set-obstacle(4,1) 与起终点冲突/越界协议" "5" \
 expect "pg-final-path-len() 未计算" "-1" "$(invoke 'pg-final-path-len()')"
 expect "pg-step-visited-len(0) 未计算" "-1" "$(invoke 'pg-step-visited-len(0)')"
 expect "pg-last-error() 初始"    "0"  "$(invoke 'pg-last-error()')"
+expect "pg-osm-reset(0) 非法"    "5"  "$(invoke 'pg-osm-reset(0)')"
+expect "pg-osm-reset(4)"          "0"  "$(invoke 'pg-osm-reset(4)')"
+expect "pg-osm-build() 未 reset 拒绝" "5" "$(invoke 'pg-osm-build()')"
+expect "pg-osm-path-len() 未路由" "-1" "$(invoke 'pg-osm-path-len()')"
+expect "pg-osm-cost() 未路由"    "-1" "$(invoke 'pg-osm-cost()')"
+expect "pg-osm-last-error() 初始" "0"  "$(invoke 'pg-osm-last-error()')"
 compute_frames="$(invoke 'pg-compute()')"
 [[ "$compute_frames" -gt 0 ]] || { echo "pg-compute returned $compute_frames"; exit 1; }
 echo "   OK: pg-compute() = $compute_frames frames (默认会话)"
 
-echo "wit gate: ALL GREEN (typed WIT world, 15 exports, typed invoke)"
+echo "wit gate: ALL GREEN (typed WIT world, 24 exports, typed invoke)"

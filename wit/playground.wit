@@ -37,4 +37,22 @@ world playground {
   export pg-final-path-at: func(i: s32) -> s32;
   /// 最近一次操作错误码。
   export pg-last-error: func() -> s32;
+  /// OSM 图模式：重置为 n 个节点的空图，返回错误码。
+  export pg-osm-reset: func(n: s32) -> s32;
+  /// OSM 图模式：注入一条有向边 src -> dst（非负权 w）。
+  export pg-osm-add-edge: func(src: s32, dst: s32, w: s32) -> s32;
+  /// OSM 图模式：物化正向与反向邻接。
+  export pg-osm-build: func() -> s32;
+  /// OSM 图模式：路由（algo 0=单向 Dijkstra 1=双向 Dijkstra）。
+  export pg-osm-route: func(algo: s32, src: s32, t: s32) -> s32;
+  /// OSM 图模式：最近一次路径节点数（-1 = 不可达/未路由）。
+  export pg-osm-path-len: func() -> s32;
+  /// OSM 图模式：路径第 i 项节点 id。
+  export pg-osm-path-at: func(i: s32) -> s32;
+  /// OSM 图模式：最近一次路由总权（-1 = 不可达）。
+  export pg-osm-cost: func() -> s32;
+  /// OSM 图模式：最近一次路由 settle 节点数。
+  export pg-osm-settled: func() -> s32;
+  /// OSM 图模式：最近一次操作错误码。
+  export pg-osm-last-error: func() -> s32;
 }

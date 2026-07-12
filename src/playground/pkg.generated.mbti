@@ -16,6 +16,24 @@ pub fn pg_final_path_len() -> Int
 
 pub fn pg_last_error() -> Int
 
+pub fn pg_osm_add_edge(Int, Int, Int) -> Int
+
+pub fn pg_osm_build() -> Int
+
+pub fn pg_osm_cost() -> Int
+
+pub fn pg_osm_last_error() -> Int
+
+pub fn pg_osm_path_at(Int) -> Int
+
+pub fn pg_osm_path_len() -> Int
+
+pub fn pg_osm_reset(Int) -> Int
+
+pub fn pg_osm_route(Int, Int, Int) -> Int
+
+pub fn pg_osm_settled() -> Int
+
 pub fn pg_reset(Int, Int) -> Int
 
 pub fn pg_select_algo(Int) -> Int

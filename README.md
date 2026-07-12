@@ -304,6 +304,15 @@ Interactive grid pathfinding visualiser, powered by the very library in
 - Bridge correctness is test-gated: `playground/solver_test.mbt` and
   `src/playground/*_test.mbt` assert the playground answers are identical to
   the library's
+- **Real OSM road network mode**
+  (<https://Suquster.github.io/moonbit-pathfinding/osm.html>): the Xiamen
+  driving network (125k nodes / 216k edges, OpenStreetMap © contributors,
+  ODbL 1.0) is loaded into the same wasm-gc engine via the `pg_osm_*` graph
+  export layer; click any two points to snap to the nearest road nodes and
+  run unidirectional vs. bidirectional Dijkstra with live settled-node and
+  timing comparison (identical costs cross-checked on every query). The
+  network artifact is reproducible via
+  `python3 scripts/build_playground_osm.py`
 
 对应需求: R16 (WASM Playground) · R26 (实时 JPS Playground 杀手锏)。
 

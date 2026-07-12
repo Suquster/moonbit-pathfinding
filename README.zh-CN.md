@@ -237,6 +237,13 @@ CH **16–27×**，RPHAST 目标子集限定再提 **7.2–9.4×**，见
   （`playground/web/` + 构建好的 `.wasm` 配 `python -m http.server`）
 - 桥接正确性受测试门禁：`playground/solver_test.mbt` 与
   `src/playground/*_test.mbt` 断言 Playground 的答案与算法库逐字节一致
+- **真实 OSM 路网模式**
+  （<https://Suquster.github.io/moonbit-pathfinding/osm.html>）：厦门驾车路网
+  （12.5 万节点 / 21.6 万边，OpenStreetMap © 贡献者，ODbL 1.0）通过
+  `pg_osm_*` 图模式导出层注入同一个 wasm-gc 引擎；点击地图任意两点自动吸附
+  最近路网节点，运行单向 vs 双向 Dijkstra 并实时对比 settle 节点数与耗时
+  （每次查询交叉校验两者代价一致）。路网产物可用
+  `python3 scripts/build_playground_osm.py` 复现
 
 ---
 

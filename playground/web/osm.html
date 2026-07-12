@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MoonBit Pathfinding · 真实 OSM 路网</title>
+    <!--
+      真实 OSM 路网模式宿主页面。加载同目录 osm-xiamen.json（厦门驾车路网，
+      OpenStreetMap © 贡献者，ODbL 1.0）与 playground.wasm（pg_osm_* 图模式
+      导出层），在 MoonBit 侧运行单向/双向 Dijkstra，点击地图选起终点。
+      全部资源同源，不请求任何外部服务（Requirement 4.3 一致）。
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>MoonBit Pathfinding · 真实 OSM 路网</h1>
+      <p class="subtitle">
+        厦门驾车路网 · 单向 vs 双向 Dijkstra（MoonBit wasm-gc 引擎）
+        · <a class="mode-link" href="index.html">← 网格模式</a>
+      </p>
+    </header>
+
+    <main class="app-main">
+      <section class="panel" aria-label="控制面板">
+        <div class="control-group">
+          <label for="osm-algo-select">算法</label>
+          <select id="osm-algo-select" aria-label="选择路由算法">
+            <option value="0">Dijkstra（单向）</option>
+            <option value="1" selected>双向 Dijkstra</option>
+            <option value="2">两者对比（先单向后双向）</option>
+          </select>
+          <button id="osm-random-btn" type="button">🎲 随机起终点</button>
+          <button id="osm-clear-btn" type="button">清除选点</button>
+        </div>
+      </section>
+
+      <section class="hud" aria-label="运行状态" aria-live="polite">
+        <div class="hud-item">
+          <span class="hud-label">路网</span>
+          <span id="osm-hud-net" class="hud-value mono">加载中…</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">路径长度</span>
+          <span id="osm-hud-dist" class="hud-value mono">—</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">settle 节点</span>
+          <span id="osm-hud-settled" class="hud-value mono">—</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">求解耗时</span>
+          <span id="osm-hud-time" class="hud-value mono">—</span>
+        </div>
+        <div class="hud-item hud-status">
+          <span class="hud-label">状态</span>
+          <span id="osm-hud-state" class="hud-value">初始化…</span>
+        </div>
+      </section>
+
+      <section class="canvas-wrap">
+        <canvas id="osm-canvas" width="960" height="640">
+          您的浏览器不支持 Canvas，无法显示路网可视化。
+        </canvas>
+        <p id="osm-status-line" class="status-line" role="status"></p>
+      </section>
+
+      <section class="legend" aria-label="图例">
+        <span class="legend-item"><i class="sw sw-start"></i>起点</span>
+        <span class="legend-item"><i class="sw sw-goal"></i>终点</span>
+        <span class="legend-item"><i class="sw sw-path"></i>最短路径</span>
+      </section>
+
+      <p class="hint">
+        操作：点击地图两次分别设置<b>起点</b>与<b>终点</b>（自动吸附最近路网节点），
+        自动求解并绘制最短路径；再次点击重新设置起点。对比模式会依次跑单向与双向
+        Dijkstra 并显示两者的 settle 节点数与耗时差异（结果代价一致）。
+      </p>
+      <p class="hint">
+        数据：OpenStreetMap © 贡献者，
+        <a href="https://opendatacommons.org/licenses/odbl/">ODbL 1.0</a>
+        · 厦门驾车路网（最大强连通分量）· 距离权重（分米）由经纬度球面距离计算。
+      </p>
+    </main>
+
+    <footer class="app-footer">
+      <span id="osm-engine-state" class="mono">引擎加载中…</span>
+    </footer>
+
+    <script src="osm.js" defer></script>
+  </body>
+</html>

@@ -67,14 +67,16 @@ jobs:
           $moonDir = Join-Path $HOME ".moon"
           New-Item -ItemType Directory -Force -Path $moonDir | Out-Null
           $credentialsPath = Join-Path $moonDir "credentials.json"
+          # 无 BOM UTF-8：带 BOM 会让 moon 端 JSON 解析失败（failed to parse credentials file）
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
           if (-not [string]::IsNullOrWhiteSpace($env:MOONCAKES_CREDENTIALS_JSON)) {
-            [IO.File]::WriteAllText($credentialsPath, $env:MOONCAKES_CREDENTIALS_JSON, [Text.Encoding]::UTF8)
+            [IO.File]::WriteAllText($credentialsPath, $env:MOONCAKES_CREDENTIALS_JSON, $utf8NoBom)
           } elseif (-not [string]::IsNullOrWhiteSpace($env:MOONCAKES_USERNAME) -and -not [string]::IsNullOrWhiteSpace($env:MOONCAKES_TOKEN)) {
             $credentials = [ordered]@{
               username = $env:MOONCAKES_USERNAME
               token = $env:MOONCAKES_TOKEN
             } | ConvertTo-Json -Depth 4
-            [IO.File]::WriteAllText($credentialsPath, $credentials + "`n", [Text.Encoding]::UTF8)
+            [IO.File]::WriteAllText($credentialsPath, $credentials + "`n", $utf8NoBom)
           } else {
             throw "Missing mooncakes credentials. Set MOONCAKES_CREDENTIALS_JSON or MOONCAKES_USERNAME + MOONCAKES_TOKEN."
           }
@@ -84,7 +86,14 @@ jobs:
       - name: moon publish
         run: |
           moon package
-          moon publish
+          # 幂等发布：该版本已在 mooncakes.io 索引中则跳过（支持工作流重跑）
+          tag_version="${GITHUB_REF_NAME#v}"
+          published="$(curl -fsSL https://mooncakes.io/api/v0/modules/Suquster/moonbit-pathfinding | jq -r '.metadata.version' || echo '')"
+          if [ "$published" = "$tag_version" ]; then
+            echo "version $tag_version already published on mooncakes.io; skipping moon publish"
+          else
+            moon publish
+          fi
 
   # ───────────────────────────────────────────────────────────────────────────
   # Job 2 · github-release

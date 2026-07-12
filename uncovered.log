@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":977.6192216560509,"min":318.5267732484076,"max":338.93309808917195,"mean":325.87307388535027,"median":320.15935031847135,"variance":128.5895011257299,"std_dev":11.339731087011275,"std_dev_pct":3.479799957636529,"median_abs_dev":2.42045876407651,"median_abs_dev_pct":0.7560168902356944,"quartiles":[319.34306178343945,320.15935031847135,329.5462242038217],"iqr":10.203162420382228,"batch_size":314,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1753.5702658536584,"min":579.2553341463415,"max":592.279431707317,"mean":584.5234219512195,"median":582.0355,"variance":47.04909604597216,"std_dev":6.859234362957149,"std_dev_pct":1.1734746813156063,"median_abs_dev":4.121873894634011,"median_abs_dev_pct":0.7081825583893099,"quartiles":[580.6454170731707,582.0355,587.1574658536586],"iqr":6.512048780487817,"batch_size":164,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":302.0739047318612,"min":98.07616971608833,"max":102.31544794952681,"mean":100.69130157728706,"median":101.68228706624605,"variance":5.229409164621784,"std_dev":2.2867901444211673,"std_dev_pct":2.27109006299408,"median_abs_dev":0.9387243255520636,"median_abs_dev_pct":0.9231935597008005,"quartiles":[99.87922839116719,101.68228706624605,101.99886750788643],"iqr":2.1196391167192417,"batch_size":951,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":463.8331986688852,"min":152.77325524126456,"max":155.746615640599,"mean":154.61106622296174,"median":155.31332778702162,"variance":2.5800964943494464,"std_dev":1.6062678775190167,"std_dev_pct":1.0389087383969318,"median_abs_dev":0.6423925717138279,"median_abs_dev_pct":0.4136107189685159,"quartiles":[154.0432915141431,155.31332778702162,155.5299717138103],"iqr":1.4866801996672052,"batch_size":601,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":429.28650755555554,"min":137.47582385185186,"max":146.58973851851852,"mean":143.09550251851851,"median":145.22094518518517,"variance":24.153990034785714,"std_dev":4.914670897912261,"std_dev_pct":3.4345390396013564,"median_abs_dev":2.029372996000015,"median_abs_dev_pct":1.3974382231241964,"quartiles":[141.34838451851851,145.22094518518517,145.90534185185186],"iqr":4.556957333333344,"batch_size":675,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":966.576231511254,"min":313.80768681672026,"max":337.3809498392283,"mean":322.19207717041803,"median":315.38759485530545,"variance":173.65041706459613,"std_dev":13.177648389018282,"std_dev_pct":4.089997651322813,"median_abs_dev":2.3423716580063996,"median_abs_dev_pct":0.7426961923093521,"quartiles":[314.59764083601283,315.38759485530545,326.3842723472669],"iqr":11.786631511254086,"batch_size":311,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1813.6684056818185,"min":584.4546079545454,"max":623.7029738636364,"mean":604.5561352272729,"median":605.5108238636365,"variance":385.79212942777633,"std_dev":19.641591825200326,"std_dev_pct":3.248927714184291,"median_abs_dev":26.971681589999953,"median_abs_dev_pct":4.454368200703558,"quartiles":[594.982715909091,605.5108238636365,614.6068988636364],"iqr":19.624182954545404,"batch_size":176,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":312.75958075024676,"min":99.45788904244817,"max":109.31782793682132,"mean":104.25319358341558,"median":103.9838637709773,"variance":24.35900266109411,"std_dev":4.935484035137193,"std_dev_pct":4.734132227026877,"median_abs_dev":6.7102101325172745,"median_abs_dev_pct":6.4531263690070215,"quartiles":[101.72087640671273,103.9838637709773,106.65084585389931],"iqr":4.929969447186579,"batch_size":1013,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":449.2322501567397,"min":147.43847194357366,"max":153.84609952978053,"mean":149.7440833855799,"median":147.94767868338556,"variance":12.684725211429317,"std_dev":3.561562186938383,"std_dev_pct":2.378432660853534,"median_abs_dev":0.7549499124451249,"median_abs_dev_pct":0.5102816882046188,"quartiles":[147.6930753134796,147.94767868338556,150.89688910658305],"iqr":3.20381379310345,"batch_size":638,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":411.0255873786408,"min":134.4700198335645,"max":141.19178529819695,"mean":137.0085291262136,"median":135.36378224687934,"variance":13.324426963191216,"std_dev":3.6502639580160796,"std_dev_pct":2.66426037947858,"median_abs_dev":1.3250921539805907,"median_abs_dev_pct":0.9789118861674976,"quartiles":[134.91690104022192,135.36378224687934,138.27778377253816],"iqr":3.3608827323162416,"batch_size":721,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 317 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 584 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 147 | 50% | 2700 | -92% | OK
-supervision_restart | 1200 | 138 | 50% | 1800 | -89% | OK
+high_frequency_send | 1500 | 332 | 50% | 2250 | -78% | OK
+massive_actor_scheduling | 4000 | 621 | 50% | 6000 | -84% | OK
+ask_round_trip | 900 | 104 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 148 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 815 uncovered line(s) in 201 file(s)
+Total: 796 uncovered line(s) in 199 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -11300,7 +11300,7 @@ Total: 815 uncovered line(s) in 201 file(s)
 390	}
    	…
 
-4 uncovered line(s) in src/infra_diff/unified.mbt:
+2 uncovered line(s) in src/infra_diff/unified.mbt:
 
  26	pub fn hunks_of(ops : Array[DiffOp], context? : Int = 3) -> Array[Hunk] {
  27	  // 标记需要保留的 Keep 下标：距任一编辑 ≤ context。
@@ -11387,48 +11387,6 @@ Total: 815 uncovered line(s) in 201 file(s)
 108	  }
 109	  hunks
 110	}
-   	…
-
-278	pub fn apply_unified(
-279	  old : Array[String],
-280	  hunks : Array[Hunk],
-281	) -> Array[String]? {
-282	  let out : Array[String] = []
-283	  let mut cursor = 0 // old 中已消费到的下标
-284	  for h in hunks {
-285	    let hstart = if h.old_count == 0 { h.old_start } else { h.old_start - 1 }
-286	    if hstart < cursor || hstart > old.length() {
-287	      return None
-288	    }
-289	    while cursor < hstart {
-290	      out.push(old[cursor])	<-- UNCOVERED
-291	      cursor = cursor + 1
-292	    }
-293	    for l in h.lines {
-294	      match l {
-295	        Keep(s) => {
-296	          if cursor >= old.length() || old[cursor] != s {
-297	            return None
-298	          }
-299	          out.push(s)
-300	          cursor = cursor + 1
-301	        }
-302	        Delete(s) => {
-303	          if cursor >= old.length() || old[cursor] != s {
-304	            return None
-305	          }
-306	          cursor = cursor + 1
-307	        }
-308	        Insert(s) => out.push(s)
-309	      }
-310	    }
-311	  }
-312	  while cursor < old.length() {
-313	    out.push(old[cursor])	<-- UNCOVERED
-314	    cursor = cursor + 1
-315	  }
-316	  Some(out)
-317	}
    	…
 
 374	pub fn diff3_merge(
@@ -14112,141 +14070,7 @@ Total: 815 uncovered line(s) in 201 file(s)
 122	}
    	…
 
-5 uncovered line(s) in src/mini_compiler/exhaustive.mbt:
-
-161	fn missing_witness(
-162	  matrix : Array[Array[Pattern]],
-163	  tys : Array[TyX],
-164	) -> Array[Pattern]? {
-165	  if tys.length() == 0 {
-166	    // 零列：矩阵非空 ⇒ 无用（穷尽）；空矩阵 ⇒ 有用，见证为空向量。
-167	    return if matrix.length() == 0 { Some([]) } else { None }
-168	  }
-169	  let ty = tys[0]
-170	  let rest_tys : Array[TyX] = []
-171	  for i in 1..<tys.length() {
-172	    rest_tys.push(tys[i])
-173	  }
-174	  // 收集首列出现的根构造子。
-175	  let heads : Array[Pattern] = []
-176	  let present : Array[PatCtor] = []
-177	  for row in matrix {
-178	    heads.push(row[0])
-179	    match root_ctor(row[0]) {
-180	      Some(c) => if !present.contains(c) { present.push(c) }
-181	      None => ()
-182	    }
-183	  }
-184	  fn try_ctor(c : PatCtor) -> Array[Pattern]? {
-185	    let arg_tys = ctor_arg_tys(c, ty)
-186	    let arity = arg_tys.length()
-187	    let spec : Array[Array[Pattern]] = []
-188	    for row in matrix {
-189	      match specialize_row(c, arity, row) {
-190	        Some(r) => spec.push(r)
-191	        None => ()
-192	      }
-193	    }
-194	    let sub_tys : Array[TyX] = []
-195	    for t in arg_tys {
-196	      sub_tys.push(t)
-197	    }
-198	    for t in rest_tys {
-199	      sub_tys.push(t)
-200	    }
-201	    match missing_witness(spec, sub_tys) {
-202	      None => None
-203	      Some(sub) => {
-204	        let (head, rest) = rebuild_witness(c, arity, sub)
-205	        let out : Array[Pattern] = [head]
-206	        for p in rest {
-207	          out.push(p)
-208	        }
-209	        Some(out)
-210	      }
-211	    }
-212	  }
-213	
-214	  match full_signature(ty) {
-215	    Some(sig) => {
-216	      // 签名可完整枚举：全部构造子都在首列出现 ⇒ 逐构造子递归；
-217	      // 否则任一缺失构造子即可作为见证头（子列全通配）。
-218	      let mut all_present = true
-219	      for c in sig {
-220	        if !present.contains(c) {
-221	          all_present = false
-222	        }
-223	      }
-224	      if all_present {
-225	        for c in sig {
-226	          match try_ctor(c) {
-227	            Some(w) => return Some(w)
-228	            None => ()
-229	          }
-230	        }
-231	        None
-232	      } else {
-233	        // 用默认矩阵检查剩余列，再补缺失构造子头。
-234	        let dm : Array[Array[Pattern]] = []
-235	        for row in matrix {
-236	          match default_row(row) {
-237	            Some(r) => dm.push(r)
-238	            None => ()
-239	          }
-240	        }
-241	        match missing_witness(dm, rest_tys) {
-242	          None => None
-243	          Some(rest) => {
-244	            let mut missing_head : Pattern = PWild
-245	            for c in sig {
-246	              if !present.contains(c) {
-247	                let arg_tys = ctor_arg_tys(c, ty)
-248	                let ws : Array[Pattern] = []
-249	                for _t in arg_tys {
-250	                  ws.push(PWild)
-251	                }
-252	                let (head, _r) = rebuild_witness(c, arg_tys.length(), ws)
-253	                missing_head = head
-254	                break
-255	              }
-256	            }
-257	            let out : Array[Pattern] = [missing_head]
-258	            for p in rest {
-259	              out.push(p)
-260	            }
-261	            Some(out)
-262	          }
-263	        }
-264	      }
-265	    }
-266	    None => {
-267	      // Int / Fun：签名永不完整 ⇒ 只需检查默认矩阵；见证头取未出现的字面量
-268	      // （Int）或通配（Fun）。
-269	      let dm : Array[Array[Pattern]] = []
-270	      for row in matrix {
-271	        match default_row(row) {
-272	          Some(r) => dm.push(r)
-273	          None => ()
-274	        }
-275	      }
-276	      match missing_witness(dm, rest_tys) {
-277	        None => None
-278	        Some(rest) => {
-279	          let head : Pattern = match ty {
-280	            TXInt => fresh_int_not_in(heads)
-281	            _ => PWild	<-- UNCOVERED
-282	          }
-283	          let out : Array[Pattern] = [head]
-284	          for p in rest {
-285	            out.push(p)	<-- UNCOVERED
-286	          }
-287	          Some(out)
-288	        }
-289	      }
-290	    }
-291	  }
-292	}
-   	…
+2 uncovered line(s) in src/mini_compiler/exhaustive.mbt:
 
 338	fn useful(
 339	  matrix : Array[Array[Pattern]],
@@ -14326,7 +14150,7 @@ Total: 815 uncovered line(s) in 201 file(s)
 413	                ws.push(q[i])
 414	              }
 415	              if useful(spec_all(c, arity), ws, sub_tys_of(c)) {
-416	                return true	<-- UNCOVERED
+416	                return true
 417	              }
 418	            }
 419	            false
@@ -14583,7 +14407,7 @@ Total: 815 uncovered line(s) in 201 file(s)
 56	}
   	…
 
-5 uncovered line(s) in src/mini_compiler/match_ext.mbt:
+2 uncovered line(s) in src/mini_compiler/match_ext.mbt:
 
 321	fn expr_span(e : Expr) -> Span {
 322	  match e {
@@ -14595,8 +14419,8 @@ Total: 815 uncovered line(s) in 201 file(s)
 328	    ELogic(_, _, _, sp) => sp
 329	    EIf(_, _, _, sp) => sp
 330	    ELam(_, _, sp) => sp
-331	    EApp(_, _, sp) => sp	<-- UNCOVERED
-332	    ELet(_, _, _, sp) => sp
+331	    EApp(_, _, sp) => sp
+332	    ELet(_, _, _, sp) => sp	<-- UNCOVERED
 333	    ELetRec(_, _, _, sp) => sp
 334	    ETuple(_, sp) => sp
 335	  }
@@ -14646,34 +14470,6 @@ Total: 815 uncovered line(s) in 201 file(s)
 682	    None => Ok(scrut_ty)	<-- UNCOVERED
 683	  }
 684	}
-   	…
-
-824	fn eval_base(e : Expr, env : Map[String, ValX]) -> ValX {
-825	  match e {
-826	    EVar(name, _) =>
-827	      match env.get(name) {
-828	        Some(v) => v
-829	        None => eval_base_closed(e)	<-- UNCOVERED
-830	      }
-831	    _ => {
-832	      let closed = subst_var(e, fn(n : String, s : Span) -> Expr? {
-833	        match env.get(n) {
-834	          Some(v) => valx_to_expr(v, s)
-835	          None => None	<-- UNCOVERED
-836	        }
-837	      })
-838	      eval_base_closed(closed)
-839	    }
-840	  }
-841	}
-   	…
-
-847	fn eval_base_closed(e : Expr) -> ValX {
-848	  match infer(e) {
-849	    Ok((te, _)) => val_to_valx(eval_ml(te))
-850	    Err(_) => VXInt(placeholder_int_lit)	<-- UNCOVERED
-851	  }
-852	}
    	…
 
 2 uncovered line(s) in src/mini_compiler/ml_eval.mbt:
@@ -14914,124 +14710,6 @@ Total: 815 uncovered line(s) in 201 file(s)
 114	}
    	…
 
-4 uncovered line(s) in src/mini_compiler/optimize.mbt:
-
-145	fn occurs_free(name : String, e : Expr) -> Bool {
-146	  match e {
-147	    EInt(_, _) => false
-148	    EBool(_, _) => false
-149	    EVar(x, _) => x == name
-150	    EArith(_, l, r, _) => occurs_free(name, l) || occurs_free(name, r)
-151	    ECmp(_, l, r, _) => occurs_free(name, l) || occurs_free(name, r)
-152	    ELogic(_, l, r, _) => occurs_free(name, l) || occurs_free(name, r)
-153	    EIf(c, a, b, _) =>
-154	      occurs_free(name, c) || occurs_free(name, a) || occurs_free(name, b)
-155	    ELam(x, body, _) => if x == name { false } else { occurs_free(name, body) }
-156	    EApp(f, a, _) => occurs_free(name, f) || occurs_free(name, a)
-157	    ELet(x, e1, e2, _) =>
-158	      occurs_free(name, e1) ||
-159	      (if x == name { false } else { occurs_free(name, e2) })
-160	    ELetRec(f, e1, e2, _) =>
-161	      if f == name {
-162	        false
-163	      } else {
-164	        occurs_free(name, e1) || occurs_free(name, e2)	<-- UNCOVERED
-165	      }
-166	    ETuple(items, _) => {
-167	      for it in items {
-168	        if occurs_free(name, it) {
-169	          return true
-170	        }
-171	      }
-172	      false
-173	    }
-174	  }
-175	}
-   	…
-
-227	fn fresh_name(base : String, avoid : (String) -> Bool) -> String {
-228	  let mut i = 0
-229	  let mut candidate = base + "#" + i.to_string()
-230	  while avoid(candidate) {
-231	    i = i + 1	<-- UNCOVERED
-232	    candidate = base + "#" + i.to_string()
-233	  }
-234	  candidate
-235	}
-   	…
-
-246	fn subst_expr(x : String, arg : Expr, body : Expr) -> Expr {
-247	  match body {
-248	    EInt(_, _) | EBool(_, _) => body
-249	    EVar(y, _) => if y == x { arg } else { body }
-250	    EArith(op, l, r, sp) =>
-251	      EArith(op, subst_expr(x, arg, l), subst_expr(x, arg, r), sp)
-252	    ECmp(op, l, r, sp) =>
-253	      ECmp(op, subst_expr(x, arg, l), subst_expr(x, arg, r), sp)
-254	    ELogic(op, l, r, sp) =>
-255	      ELogic(op, subst_expr(x, arg, l), subst_expr(x, arg, r), sp)
-256	    EIf(c, a, b, sp) =>
-257	      EIf(
-258	        subst_expr(x, arg, c),
-259	        subst_expr(x, arg, a),
-260	        subst_expr(x, arg, b),
-261	        sp,
-262	      )
-263	    EApp(f, a, sp) => EApp(subst_expr(x, arg, f), subst_expr(x, arg, a), sp)
-264	    ELam(y, lbody, sp) =>
-265	      if y == x {
-266	        // x 被形参 y 遮蔽，停止替换。
-267	        body	<-- UNCOVERED
-268	      } else if occurs_free(y, arg) {
-269	        // 避免捕获：alpha 重命名形参 y -> y'。
-270	        let yp = fresh_name(y, fn(n) {
-271	          n == x || occurs_free(n, arg) || occurs_free(n, lbody)
-272	        })
-273	        let renamed = subst_expr(y, EVar(yp, sp), lbody)
-274	        ELam(yp, subst_expr(x, arg, renamed), sp)
-275	      } else {
-276	        ELam(y, subst_expr(x, arg, lbody), sp)
-277	      }
-278	    ELet(y, e1, e2, sp) => {
-279	      // e1 不在 y 的作用域内：始终替换。
-280	      let e1s = subst_expr(x, arg, e1)
-281	      if y == x {
-282	        // body e2 中 x 被遮蔽。
-283	        ELet(y, e1s, e2, sp)
-284	      } else if occurs_free(y, arg) {
-285	        let yp = fresh_name(y, fn(n) {
-286	          n == x || occurs_free(n, arg) || occurs_free(n, e2)
-287	        })
-288	        let e2r = subst_expr(y, EVar(yp, sp), e2)
-289	        ELet(yp, e1s, subst_expr(x, arg, e2r), sp)
-290	      } else {
-291	        ELet(y, e1s, subst_expr(x, arg, e2), sp)	<-- UNCOVERED
-292	      }
-293	    }
-294	    ELetRec(f, e1, e2, sp) =>
-295	      if f == x {
-296	        // f 在 e1 与 e2 均遮蔽 x。
-297	        body
-298	      } else if occurs_free(f, arg) {
-299	        // f 在 e1 与 e2 均绑定：一并 alpha 重命名。
-300	        let fp = fresh_name(f, fn(n) {
-301	          n == x ||
-302	          occurs_free(n, arg) ||
-303	          occurs_free(n, e1) ||
-304	          occurs_free(n, e2)
-305	        })
-306	        let e1r = subst_expr(f, EVar(fp, sp), e1)
-307	        let e2r = subst_expr(f, EVar(fp, sp), e2)
-308	        ELetRec(fp, subst_expr(x, arg, e1r), subst_expr(x, arg, e2r), sp)
-309	      } else {
-310	        ELetRec(f, subst_expr(x, arg, e1), subst_expr(x, arg, e2), sp)
-311	      }
-312	    ETuple(items, sp) =>
-313	      ETuple(items.map(fn(it) { subst_expr(x, arg, it) }), sp)
-314	  }
-315	}
-   	…
-
 1 uncovered line(s) in src/mini_compiler/parser.mbt:
 
 201	fn parse_atom(input : @pc.Input) -> Result[(Ast, @pc.Input), Diagnostic] {
@@ -15066,32 +14744,12 @@ Total: 815 uncovered line(s) in 201 file(s)
 230	}
    	…
 
-4 uncovered line(s) in src/mini_compiler/peephole.mbt:
-
-134	fn resolve_jump_target(instrs : Array[Instr], t : Int) -> Int {
-135	  let n = instrs.length()
-136	  let mut cur = t
-137	  let mut steps = 0
-138	  while cur >= 0 && cur < n && steps < n {
-139	    match instrs[cur] {
-140	      Jump(next) =>
-141	        if next == cur {	<-- UNCOVERED
-142	          break // 自环：保持原地，交由可达性分析处理，避免死循环
-143	        } else {
-144	          cur = next	<-- UNCOVERED
-145	          steps = steps + 1
-146	        }
-147	      _ => break
-148	    }
-149	  }
-150	  cur
-151	}
-   	…
+1 uncovered line(s) in src/mini_compiler/peephole.mbt:
 
 199	fn remove_unreachable(instrs : Array[Instr]) -> Array[Instr] {
 200	  let n = instrs.length()
 201	  if n == 0 {
-202	    return instrs	<-- UNCOVERED
+202	    return instrs
 203	  }
 204	  let reachable = Array::make(n, false)
 205	  let worklist : Array[Int] = [0]
@@ -15166,87 +14824,6 @@ Total: 815 uncovered line(s) in 201 file(s)
 347	    (REmpty, RExtend(l, _, _)) => Err("record lacks field '" + l + "'")
 348	  }
 349	}
-   	…
-
-4 uncovered line(s) in src/mini_compiler/semantics.mbt:
-
- 62	fn check_scoped(
- 63	  ast : Ast,
- 64	  scope : Array[String],
- 65	) -> Result[TypedAst, Diagnostic] {
- 66	  match ast {
- 67	    Int(n) => Ok(TInt(n))
- 68	    Var(name) =>
- 69	      // 作用域检查：自由变量 → 类型错误（缺类型，与 Int 上下文冲突，R1.5）。
- 70	      if scope_contains(scope, name) {
- 71	        Ok(TVar(name, IntT))
- 72	      } else {
- 73	        Err(
- 74	          Diagnostic::new(
- 75	            TypeError,
- 76	            NO_SPAN,
- 77	            NO_SPAN,
- 78	            "未绑定变量 '\{name}'：自由变量无类型，与期望的 Int 上下文冲突",
- 79	          ),
- 80	        )
- 81	      }
- 82	    Bin(op, lhs, rhs) =>
- 83	      // 子表达式逐一检查并向上传播首个诊断。
- 84	      match check_scoped(lhs, scope) {
- 85	        Err(d) => Err(d)	<-- UNCOVERED
- 86	        Ok(tl) =>
- 87	          match check_scoped(rhs, scope) {
- 88	            Err(d) => Err(d)
- 89	            Ok(tr) => Ok(TBin(op, tl, tr, IntT))
- 90	          }
- 91	      }
- 92	    Let(name, bound, body) =>
- 93	      // 非递归 let：被绑定表达式在**外层**作用域检查；body 在引入 `name`
- 94	      // 后的扩展作用域检查。
- 95	      match check_scoped(bound, scope) {
- 96	        Err(d) => Err(d)
- 97	        Ok(tbound) =>
- 98	          match check_scoped(body, scope_extend(scope, name)) {
- 99	            Err(d) => Err(d)	<-- UNCOVERED
-100	            Ok(tbody) => Ok(TLet(name, tbound, tbody, IntT))
-101	          }
-102	      }
-103	  }
-104	}
-   	…
-
-285	fn push_uleb(out : Array[Byte], value : Int) -> Unit {
-286	  let mut v = value
-287	  while true {
-288	    let mut byte = v & 0x7f
-289	    v = v >> 7
-290	    if v != 0 {
-291	      byte = byte | 0x80	<-- UNCOVERED
-292	    }
-293	    out.push(byte.to_byte())
-294	    if v == 0 {
-295	      break
-296	    }
-297	  }
-298	}
-   	…
-
-302	fn push_sleb_i32(out : Array[Byte], value : Int) -> Unit {
-303	  let mut v = value
-304	  while true {
-305	    let mut byte = v & 0x7f
-306	    v = v >> 7
-307	    let sign_set = (byte & 0x40) != 0
-308	    let done = (v == 0 && !sign_set) || (v == -1 && sign_set)
-309	    if !done {
-310	      byte = byte | 0x80	<-- UNCOVERED
-311	    }
-312	    out.push(byte.to_byte())
-313	    if done {
-314	      break
-315	    }
-316	  }
-317	}
    	…
 
 1 uncovered line(s) in src/mini_compiler/tco.mbt:
@@ -18006,4 +17583,4 @@ Total: 815 uncovered line(s) in 201 file(s)
 268	}
    	…
 
-Total: 815 uncovered line(s) in 201 file(s)
+Total: 796 uncovered line(s) in 199 file(s)

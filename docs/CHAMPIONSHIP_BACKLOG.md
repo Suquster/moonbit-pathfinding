@@ -786,6 +786,16 @@
         `src/graph/typed_query_gaps2_test.mbt`、
         `src/directed/indexed_bounds_gaps_test.mbt`、
         `src/advanced/ch_csr_gaps2_test.mbt` 等。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十六批 余支覆盖收口（mini_compiler + infra_diff）：
+        check Bin/Let 作用域错误传播、LEB128 多字节续标志、peephole
+        跳转链折叠/自环/空程序、subst_expr 遮蔽与直替、fresh_name
+        冲突递增、expr_span EApp、eval_base 自由变量闭式兜底、
+        check_exhaustive 函数类型/元组尾证据、redundant_arms 完整
+        签名深列可用性；apply_unified 前导/尾随拷贝与 diff3_merge
+        间隙拷贝。src/ 未覆盖 382→363 行，3209→3222 三后端全绿。
+        2026-07-12，`src/mini_compiler/gaps76_wbtest.mbt`、
+        `src/infra_diff/unified_gaps2_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

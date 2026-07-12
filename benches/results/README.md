@@ -7,6 +7,7 @@ This directory stores reproducible benchmark evidence for
 
 | direction | artifact | headline |
 | --- | --- | --- |
+| OSM 端到端 showcase · 路径级 | `osm-showcase-path-native-2026-07-12.md` | 厦门 32 随机查询：CH 展开路径逐边存在于原图、权重求和=代价=Dijkstra 三方一致，最长样例 183 跳 41.8 km |
 | OSM 加速结构全家福 · 复测 | `osm-suite-native-2026-07-12.md` | 北京 HL 查询 0.64 µs（vs 双向 Dijkstra 11242×）、CH 99.7×、CCH 换权 13.2× 快于重建、many-to-many bucket 16×、RPHAST 10×；合成 250k CH 184×；全部代价对拍一致 |
 | CH · 真实 OSM 路网 | `osm-real-networks-ch-native-2026-07-05.md` | 北京 104×、厦门 45×（≥100× PASS，48 组代价逐位一致）；预处理 9.4s→6.6s（活跃前缀分区） |
 | CH · 250k 合成路网 | `ch-csr-large-scale-native-2026-07-05.md` | 中位加速 160.8×；预处理 28s→20s（排序权重 2·ED-deg+2·DN + 活跃前缀分区） |

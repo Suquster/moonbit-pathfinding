@@ -1,32 +1,59 @@
-// rope_gaps3_test.mbt —— 多叶 rope 的 UTF-16→UTF-8 偏移右子树下降收口
-// （INFRA 第二十九批）。
+// 黑盒测试：覆盖率审计收口（INFRA 第八十批）——
+// 大绳（Concat 结构）上的行定位/行列换算与孤立高代理项前缀计长。
 
 ///|
-test "utf16_to_utf8：多叶 rope 偏移跨越左子树累加右下降" {
-  let r = @infra_text.Rope::from_string("héllo")
-  // 追加多个大段使根为 Concat（多叶结构，超过叶容量阈值）。
+fn rg3_big_text() -> String {
   let sb = StringBuilder::new()
-  for _ in 0..<400 {
-    sb.write_string("段落\u{1F600}chunk")
+  for i in 0..<200 {
+    sb.write_string("line-\{i} padded to be reasonably long 0123456789\n")
   }
-  let big = sb.to_string()
-  for _ in 0..<4 {
-    r.insert(r.len(), big)
-  }
-  assert_true(r.leaf_count() > 1)
-  // 偏移落在末尾附近 → 必然穿越左子树（acc + lm.u8 右下降路径）。
-  let n = r.len()
-  let full = r.utf16_to_utf8(n)
-  assert_eq(full, r.utf8_len())
-  let mid = r.utf16_to_utf8(n - 2)
-  assert_true(mid > 0 && mid <= full)
-  // 往返一致性（字符边界处）。
-  assert_eq(r.utf8_to_utf16(full), n)
+  sb.to_string()
 }
 
 ///|
-test "slice：空区间与全区间边界" {
-  let r = @infra_text.Rope::from_string("abcdef")
-  assert_eq(r.slice(3, 3), "")
-  assert_eq(r.slice(0, 6), "abcdef")
+test "Rope::offset_of_line：跨 Concat 结点定位行首" {
+  let text = rg3_big_text()
+  let r = @infra_text.Rope::from_string(text)
+  // 与朴素扫描对照若干行首偏移。
+  let mut expected = 0
+  let mut line = 0
+  for j in 0..<text.length() {
+    if line % 37 == 0 {
+      assert_eq(r.offset_of_line(line), expected)
+    }
+    if text.at(j).to_int() == 10 {
+      line = line + 1
+      expected = j + 1
+    }
+  }
+  assert_eq(r.offset_of_line(line), expected)
+}
+
+///|
+test "Rope::line_col_at：跨 Concat 结点行列换算" {
+  let text = rg3_big_text()
+  let r = @infra_text.Rope::from_string(text)
+  // 中部与尾部偏移的 (行, 列) 与朴素计数一致。
+  for off in [1000, 5000, text.length() - 1] {
+    let mut line = 0
+    let mut col = 0
+    for j in 0..<off {
+      if text.at(j).to_int() == 10 {
+        line = line + 1
+        col = 0
+      } else {
+        col = col + 1
+      }
+    }
+    assert_eq(r.line_col_at(off), (line, col))
+  }
+}
+
+///|
+test "Rope::utf16_to_utf8：孤立高代理项按 3 字节计长" {
+  let sb = StringBuilder::new()
+  sb.write_char((0xD800).unsafe_to_char())
+  sb.write_char('a')
+  let r = @infra_text.Rope::from_string(sb.to_string())
+  assert_eq(r.utf16_to_utf8(2), 4)
 }

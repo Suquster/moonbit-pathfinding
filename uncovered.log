@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1024.259399053628,"min":323.8293706624606,"max":361.7309400630915,"mean":341.4197996845426,"median":338.69908832807573,"variance":364.68394347161666,"std_dev":19.096699805767923,"std_dev_pct":5.593319374978388,"median_abs_dev":22.045843411041027,"median_abs_dev_pct":6.5089763069237,"quartiles":[331.2642294952682,338.69908832807573,350.21501419558365],"iqr":18.950784700315467,"batch_size":317,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1819.2230240506328,"min":579.78655,"max":635.0632968354431,"mean":606.4076746835443,"median":604.3731772151899,"variance":766.984070138972,"std_dev":27.69447724978704,"std_dev_pct":4.566973408481265,"median_abs_dev":36.45213350924051,"median_abs_dev_pct":6.031394986323418,"quartiles":[592.0798636075949,604.3731772151899,619.7182370253165],"iqr":27.638373417721596,"batch_size":158,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":294.04534470588237,"min":97.7676487254902,"max":98.24513225490196,"mean":98.01511490196079,"median":98.03256372549019,"variance":0.05722597629679721,"std_dev":0.2392195148745127,"std_dev_pct":0.2440639029131283,"median_abs_dev":0.3151541017058883,"median_abs_dev_pct":0.3214789960898908,"quartiles":[97.90010622549019,98.03256372549019,98.13884799019607],"iqr":0.23874176470587827,"batch_size":1020,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":446.5920315088758,"min":147.63775606508878,"max":151.11154171597633,"mean":148.8640105029586,"median":147.84273372781064,"variance":3.799051375670497,"std_dev":1.9491155367680226,"std_dev_pct":1.3093262301496875,"median_abs_dev":0.3038998827514283,"median_abs_dev_pct":0.2055561846623659,"quartiles":[147.74024489644972,147.84273372781064,149.47713772189348],"iqr":1.7368928254437606,"batch_size":676,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":405.92682839506176,"min":134.37466008230456,"max":137.06556748971195,"mean":135.3089427983539,"median":134.48660082304528,"variance":2.317430412075896,"std_dev":1.5223108789192488,"std_dev_pct":1.1250630205483865,"median_abs_dev":0.1659633422221928,"median_abs_dev_pct":0.12340511337673259,"quartiles":[134.4306304526749,134.48660082304528,135.7760841563786],"iqr":1.345453703703697,"batch_size":729,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":950.7709211180124,"min":310.4012220496895,"max":328.3479599378882,"mean":316.92364037267083,"median":312.0217391304348,"variance":98.5428270484031,"std_dev":9.926873981692479,"std_dev_pct":3.1322604934171077,"median_abs_dev":2.4025786239129627,"median_abs_dev_pct":0.7700035999442366,"quartiles":[311.21148059006214,312.0217391304348,320.1848495341615],"iqr":8.973368944099377,"batch_size":322,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1861.047770909091,"min":603.7509842424242,"max":651.7338351515151,"mean":620.349256969697,"median":605.5629515151516,"variance":739.5646170873503,"std_dev":27.194937342956873,"std_dev_pct":4.383810738453951,"median_abs_dev":2.686422678545518,"median_abs_dev_pct":0.44362401494740417,"quartiles":[604.6569678787879,605.5629515151516,628.6483933333334],"iqr":23.991425454545492,"batch_size":165,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":305.36552699696665,"min":97.71521456016177,"max":106.9120970677452,"mean":101.78850899898889,"median":100.73821536905966,"variance":21.97299949637591,"std_dev":4.687536612803777,"std_dev_pct":4.605172684915092,"median_abs_dev":4.481900999272012,"median_abs_dev_pct":4.449057373959164,"quartiles":[99.22671496461072,100.73821536905966,103.82515621840243],"iqr":4.598441253791705,"batch_size":989,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":453.18866844444443,"min":148.07370814814817,"max":156.58563881481479,"mean":151.06288948148148,"median":148.52932148148147,"variance":22.9274660265029,"std_dev":4.788263362274772,"std_dev_pct":3.169715195247709,"median_abs_dev":0.675492327999956,"median_abs_dev_pct":0.45478719034219506,"quartiles":[148.30151481481482,148.52932148148147,152.55748014814813],"iqr":4.255965333333307,"batch_size":675,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":405.3476468838527,"min":134.86765651558073,"max":135.5752056657224,"mean":135.11588229461756,"median":134.9047847025496,"variance":0.15857809499922104,"std_dev":0.398218652249265,"std_dev_pct":0.2947237922637081,"median_abs_dev":0.055046250000027885,"median_abs_dev_pct":0.04080377884401869,"quartiles":[134.88622060906516,134.9047847025496,135.23999518413598],"iqr":0.35377457507081544,"batch_size":706,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 328 | 50% | 2250 | -78% | OK
-massive_actor_scheduling | 4000 | 576 | 50% | 6000 | -86% | OK
-ask_round_trip | 900 | 98 | 50% | 1350 | -89% | OK
-router_dispatch | 1800 | 147 | 50% | 2700 | -92% | OK
-supervision_restart | 1200 | 134 | 50% | 1800 | -89% | OK
+high_frequency_send | 1500 | 310 | 50% | 2250 | -79% | OK
+massive_actor_scheduling | 4000 | 603 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 97 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 148 | 50% | 2700 | -92% | OK
+supervision_restart | 1200 | 136 | 50% | 1800 | -89% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 760 uncovered line(s) in 189 file(s)
+Total: 753 uncovered line(s) in 189 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -4225,7 +4225,7 @@ Total: 760 uncovered line(s) in 189 file(s)
 194	}
    	…
 
-7 uncovered line(s) in src/codegen_infra/codegen_infra.mbt:
+4 uncovered line(s) in src/codegen_infra/codegen_infra.mbt:
 
 161	pub fn allocate_coloring(g : InterferenceGraph, k : Int) -> Map[Var, Location] {
 162	  let result : Map[Var, Location] = Map([])
@@ -4436,7 +4436,7 @@ Total: 760 uncovered line(s) in 189 file(s)
 804	            if parse_int(toks[2]) is None {
 805	              replace[dst] = toks[2]
 806	            }
-807	          _ => ()	<-- UNCOVERED
+807	          _ => ()
 808	        }
 809	      }
 810	    }
@@ -4495,7 +4495,7 @@ Total: 760 uncovered line(s) in 189 file(s)
 863	      match replace.get(a.id) {
 864	        Some(tok) =>
 865	          match version_id(tok) {
-866	            Some(v) => new_args.push({ id: v })	<-- UNCOVERED
+866	            Some(v) => new_args.push({ id: v })
 867	            None => new_args.push(a)
 868	          }
 869	        None => new_args.push(a)
@@ -4505,45 +4505,6 @@ Total: 760 uncovered line(s) in 189 file(s)
 873	  }
 874	  { blocks: new_blocks, phis: new_phis }
 875	}
-   	…
-
-906	fn select_node(
-907	  rules : Array[IselRule],
-908	  ir : IrNode,
-909	  out : Array[TargetInstr],
-910	  counter : Array[Int],
-911	) -> String {
-912	  match ir {
-913	    Const(n) => {
-914	      let dst = fresh_temp(counter)
-915	      let op = lookup_rule(rules, "Const").unwrap_or("li")
-916	      out.push({ op, operands: [dst, n.to_string()] })
-917	      dst
-918	    }
-919	    VarRef(v) => {
-920	      let name = "v" + v.id.to_string()
-921	      match lookup_rule(rules, "VarRef") {
-922	        Some(tmpl) => {	<-- UNCOVERED
-923	          let dst = fresh_temp(counter)
-924	          out.push({ op: tmpl, operands: [dst, name] })
-925	          dst
-926	        }
-927	        None => name
-928	      }
-929	    }
-930	    BinOp(op, l, r) => {
-931	      let lo = select_node(rules, l, out, counter)
-932	      let ro = select_node(rules, r, out, counter)
-933	      let dst = fresh_temp(counter)
-934	      let tmpl = match lookup_rule(rules, "BinOp:" + op) {
-935	        Some(t) => t
-936	        None => lookup_rule(rules, "BinOp").unwrap_or(op)
-937	      }
-938	      out.push({ op: tmpl, operands: [dst, lo, ro] })
-939	      dst
-940	    }
-941	  }
-942	}
    	…
 
 3 uncovered line(s) in src/codegen_infra/coloring.mbt:
@@ -11724,7 +11685,30 @@ Total: 760 uncovered line(s) in 189 file(s)
 134	}
    	…
 
-9 uncovered line(s) in src/infra_text/rope.mbt:
+5 uncovered line(s) in src/infra_text/rope.mbt:
+
+182	fn chunk_leaves(s : String) -> Array[RopeNode] {
+183	  let n = s.length()
+184	  if n == 0 {
+185	    return [mk_leaf("")]
+186	  }
+187	  let out : Array[RopeNode] = []
+188	  let mut i = 0
+189	  while i < n {
+190	    let mut j = if i + ROPE_LEAF_MAX < n { i + ROPE_LEAF_MAX } else { n }
+191	    // 避免把代理对切成两半。
+192	    if j < n {
+193	      let c = s.at(j - 1).to_int()
+194	      if c >= 0xD800 && c < 0xDC00 {
+195	        j = j - 1	<-- UNCOVERED
+196	      }
+197	    }
+198	    out.push(mk_leaf(s[i:j].to_owned()))
+199	    i = j
+200	  }
+201	  out
+202	}
+   	…
 
 206	fn build_balanced(leaves : Array[RopeNode]) -> RopeNode {
 207	  if leaves.length() == 0 {
@@ -11780,112 +11764,80 @@ Total: 760 uncovered line(s) in 189 file(s)
 431	}
    	…
 
-453	fn prefix_u8(s : String, upto16 : Int) -> Int {
-454	  let mut u8 = 0
-455	  let mut i = 0
-456	  while i < upto16 {
-457	    let c = s.at(i).to_int()
-458	    if c < 0x80 {
-459	      u8 = u8 + 1
-460	      i = i + 1
-461	    } else if c < 0x800 {
-462	      u8 = u8 + 2
-463	      i = i + 1
-464	    } else if c >= 0xD800 && c < 0xDC00 && i + 1 < upto16 {
-465	      let d = s.at(i + 1).to_int()
-466	      if d >= 0xDC00 && d < 0xE000 {
-467	        u8 = u8 + 4
-468	        i = i + 2
-469	      } else {
-470	        u8 = u8 + 3	<-- UNCOVERED
-471	        i = i + 1
-472	      }
-473	    } else {
-474	      u8 = u8 + 3
-475	      i = i + 1
-476	    }
-477	  }
-478	  u8
-479	}
+484	pub fn Rope::utf16_to_utf8(self : Rope, off : Int) -> Int {
+485	  let n = self.root.len()
+486	  let mut i = if off < 0 { 0 } else if off > n { n } else { off }
+487	  let mut acc = 0
+488	  let mut node = self.root
+489	  while true {
+490	    match node {
+491	      Leaf(s, _) => return acc + prefix_u8(s, i)
+492	      Concat(l, r, _, _) => {
+493	        let lm = l.meta()
+494	        if i <= lm.u16 {
+495	          node = l
+496	        } else {
+497	          acc = acc + lm.u8	<-- UNCOVERED
+498	          i = i - lm.u16
+499	          node = r
+500	        }
+501	      }
+502	    }
+503	  }
+504	  acc
+505	}
    	…
 
-564	pub fn Rope::offset_of_line(self : Rope, line : Int) -> Int {
-565	  let total_nl = self.root.meta().nl
-566	  let mut k = if line < 0 {
-567	    0
-568	  } else if line > total_nl {
-569	    total_nl
-570	  } else {
-571	    line
-572	  }
-573	  if k == 0 {
-574	    return 0
-575	  }
-576	  // 目标：第 k 个 '\n' 之后的位置。
-577	  let mut acc = 0
-578	  let mut node = self.root
-579	  while true {
-580	    match node {
-581	      Leaf(s, _) => {
-582	        let n = s.length()
-583	        let mut seen = 0
-584	        for j in 0..<n {
-585	          if s.at(j).to_int() == 10 {
-586	            seen = seen + 1
-587	            if seen == k {
-588	              return acc + j + 1
-589	            }
-590	          }
-591	        }
-592	        return acc + n
-593	      }
-594	      Concat(l, r, _, _) => {	<-- UNCOVERED
-595	        let lm = l.meta()
-596	        if k <= lm.nl {
-597	          node = l	<-- UNCOVERED
-598	        } else {
-599	          acc = acc + lm.u16	<-- UNCOVERED
-600	          k = k - lm.nl
-601	          node = r
-602	        }
-603	      }
-604	    }
-605	  }
-606	  acc
-607	}
-   	…
-
-612	pub fn Rope::line_col_at(self : Rope, off : Int) -> (Int, Int) {
-613	  let n = self.root.len()
-614	  let p = if off < 0 { 0 } else if off > n { n } else { off }
-615	  // 行号 = [0, p) 内换行数。
-616	  let mut i = p
-617	  let mut line = 0
-618	  let mut node = self.root
-619	  while true {
-620	    match node {
-621	      Leaf(s, _) => {
-622	        for j in 0..<i {
-623	          if s.at(j).to_int() == 10 {
-624	            line = line + 1
-625	          }
-626	        }
-627	        break
-628	      }
-629	      Concat(l, r, _, _) => {	<-- UNCOVERED
-630	        let lm = l.meta()
-631	        if i <= lm.u16 {
-632	          node = l	<-- UNCOVERED
-633	        } else {
-634	          line = line + lm.nl	<-- UNCOVERED
-635	          i = i - lm.u16
-636	          node = r
-637	        }
-638	      }
-639	    }
-640	  }
-641	  (line, p - self.offset_of_line(line))
-642	}
+510	pub fn Rope::utf8_to_utf16(self : Rope, off : Int) -> Int {
+511	  let total = self.root.meta().u8
+512	  let mut i = if off < 0 { 0 } else if off > total { total } else { off }
+513	  let mut acc = 0
+514	  let mut node = self.root
+515	  while true {
+516	    match node {
+517	      Leaf(s, _) => {
+518	        // 叶内扫描：累计字节直到覆盖 i。
+519	        let n16 = s.length()
+520	        let mut u8 = 0
+521	        let mut j = 0
+522	        while j < n16 {
+523	          let c = s.at(j).to_int()
+524	          let (step8, step16) = if c < 0x80 {
+525	            (1, 1)
+526	          } else if c < 0x800 {
+527	            (2, 1)
+528	          } else if c >= 0xD800 && c < 0xDC00 && j + 1 < n16 {
+529	            let d = s.at(j + 1).to_int()
+530	            if d >= 0xDC00 && d < 0xE000 {
+531	              (4, 2)
+532	            } else {
+533	              (3, 1)
+534	            }
+535	          } else {
+536	            (3, 1)
+537	          }
+538	          if u8 + step8 > i {
+539	            break
+540	          }
+541	          u8 = u8 + step8
+542	          j = j + step16
+543	        }
+544	        return acc + j
+545	      }
+546	      Concat(l, r, _, _) => {
+547	        let lm = l.meta()
+548	        if i <= lm.u8 {
+549	          node = l
+550	        } else {
+551	          acc = acc + lm.u16	<-- UNCOVERED
+552	          i = i - lm.u8
+553	          node = r
+554	        }
+555	      }
+556	    }
+557	  }
+558	  acc
+559	}
    	…
 
 1 uncovered line(s) in src/infra_text/unicode.mbt:
@@ -16708,4 +16660,4 @@ Total: 760 uncovered line(s) in 189 file(s)
 268	}
    	…
 
-Total: 760 uncovered line(s) in 189 file(s)
+Total: 753 uncovered line(s) in 189 file(s)

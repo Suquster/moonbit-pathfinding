@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":997.6079233082708,"min":316.8140661654135,"max":343.99818045112784,"mean":332.53597443609027,"median":336.79567669172934,"variance":198.35281485471694,"std_dev":14.0837784296231,"std_dev_pct":4.235264606635769,"median_abs_dev":10.67843207368421,"median_abs_dev_pct":3.170596540482979,"quartiles":[326.80487142857146,336.79567669172934,340.3969285714286],"iqr":13.59205714285713,"batch_size":266,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1829.1753736526948,"min":599.8461443113773,"max":619.803283233533,"mean":609.7251245508983,"median":609.5259461077844,"variance":99.60160252870593,"std_dev":9.980060246747307,"std_dev_pct":1.6368130235896485,"median_abs_dev":14.351274143353173,"median_abs_dev_pct":2.3544976608453334,"quartiles":[604.6860452095809,609.5259461077844,614.6646146706587],"iqr":9.978569461077768,"batch_size":167,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":349.3951541516245,"min":105.26797593261131,"max":125.63782322503006,"mean":116.46505138387484,"median":118.48935499398314,"variance":106.80602350853803,"std_dev":10.334699971868464,"std_dev_pct":8.873649089635274,"median_abs_dev":10.598318999350163,"median_abs_dev_pct":8.94453261213916,"quartiles":[111.87866546329722,118.48935499398314,122.06358910950661],"iqr":10.184923646209384,"batch_size":831,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":467.73750902255637,"min":155.15141383458646,"max":157.1172290225564,"mean":155.91250300751878,"median":155.46886616541354,"variance":1.1137175740681478,"std_dev":1.0553281831108974,"std_dev_pct":0.67687206782897,"median_abs_dev":0.4706548256842298,"median_abs_dev_pct":0.30273252599878686,"quartiles":[155.31014,155.46886616541354,156.29304759398497],"iqr":0.9829075939849758,"batch_size":665,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":430.0590013432836,"min":142.89979268656717,"max":144.0748608955224,"mean":143.35300044776122,"median":143.08434776119404,"variance":0.3993270234241244,"std_dev":0.6319232733679971,"std_dev_pct":0.4408162168871199,"median_abs_dev":0.27362135364179946,"median_abs_dev_pct":0.19123080750835866,"quartiles":[142.9920702238806,143.08434776119404,143.57960432835822],"iqr":0.5875341044776121,"batch_size":670,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":943.4713695238095,"min":313.67571079365075,"max":315.93029365079366,"mean":314.49045650793647,"median":313.8653650793651,"variance":1.5638404354857343,"std_dev":1.2505360592504857,"std_dev_pct":0.397638794237601,"median_abs_dev":0.28118144400012285,"median_abs_dev_pct":0.08958664296362305,"quartiles":[313.77053793650794,313.8653650793651,314.89782936507936],"iqr":1.127291428571425,"batch_size":315,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1803.1075580838324,"min":592.8079233532934,"max":606.7893532934131,"mean":601.0358526946108,"median":603.5102814371257,"variance":53.462193993957186,"std_dev":7.311784597070484,"std_dev_pct":1.216530522146012,"median_abs_dev":4.8615519341316595,"median_abs_dev_pct":0.8055458347047465,"quartiles":[598.1591023952096,603.5102814371257,605.1498173652694],"iqr":6.990714970059798,"batch_size":167,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":301.9308734452122,"min":98.90667216189536,"max":103.79139772951629,"mean":100.6436244817374,"median":99.23280355380058,"variance":7.457947735770815,"std_dev":2.7309243372475214,"std_dev_pct":2.7134598453805383,"median_abs_dev":0.4835224016386811,"median_abs_dev_pct":0.48726064801397256,"quartiles":[99.06973785784797,99.23280355380058,101.51210064165844],"iqr":2.4423627838104665,"batch_size":1013,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":454.31333847305393,"min":150.11122979041915,"max":152.57897994011975,"mean":151.43777949101798,"median":151.62312874251498,"variance":1.5482134591097205,"std_dev":1.2442722608455596,"std_dev_pct":0.8216392666529817,"median_abs_dev":1.4171449855688356,"median_abs_dev_pct":0.9346496127087698,"quartiles":[150.86717926646708,151.62312874251498,152.10105434131737],"iqr":1.233875074850289,"batch_size":668,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":419.42605154185026,"min":139.31028032305434,"max":140.41734243759177,"mean":139.80868384728342,"median":139.69842878120411,"variance":0.3155137660581323,"std_dev":0.5617061207234013,"std_dev_pct":0.40176769086601744,"median_abs_dev":0.5754689040528513,"median_abs_dev_pct":0.4119365615444048,"quartiles":[139.50435455212923,139.69842878120411,140.05788560939794],"iqr":0.5535310572687138,"batch_size":681,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 324 | 50% | 2250 | -78% | OK
+high_frequency_send | 1500 | 314 | 50% | 2250 | -79% | OK
 massive_actor_scheduling | 4000 | 598 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 127 | 50% | 1350 | -86% | OK
-router_dispatch | 1800 | 173 | 50% | 2700 | -90% | OK
-supervision_restart | 1200 | 165 | 50% | 1800 | -86% | OK
+ask_round_trip | 900 | 106 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 160 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 139 | 50% | 1800 | -88% | OK
 status: PASS
-Total: 885 uncovered line(s) in 205 file(s)
+Total: 872 uncovered line(s) in 205 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -15396,102 +15396,17 @@ Total: 885 uncovered line(s) in 205 file(s)
 334	}
    	…
 
-4 uncovered line(s) in src/mini_compiler/js_backend.mbt:
-
- 27	pub fn emit_js_expr(te : TExpr) -> String {
- 28	  match te {
- 29	    TEInt(n, _, _) =>
- 30	      if n < 0 {
- 31	        "(" + n.to_string() + ")"	<-- UNCOVERED
- 32	      } else {
- 33	        n.to_string()
- 34	      }
- 35	    TEBool(b, _, _) => if b { "true" } else { "false" }
- 36	    TEVar(x, _, _) => js_ident(x)
- 37	    TEArith(op, l, r, _, _) => {
- 38	      let a = emit_js_expr(l)
- 39	      let b = emit_js_expr(r)
- 40	      match op {
- 41	        Add => "((" + a + " + " + b + ") | 0)"
- 42	        Sub => "((" + a + " - " + b + ") | 0)"
- 43	        Mul => "Math.imul(" + a + ", " + b + ")"
- 44	        Div => "__div(" + a + ", " + b + ")"
- 45	      }
- 46	    }
- 47	    TECmp(op, l, r, _, _) => {
- 48	      let a = emit_js_expr(l)
- 49	      let b = emit_js_expr(r)
- 50	      let sym = match op {
- 51	        Lt => "<"
- 52	        Le => "<="
- 53	        Gt => ">"
- 54	        Ge => ">="
- 55	        Eq_ => "==="
- 56	        Ne => "!=="
- 57	      }
- 58	      "(" + a + " " + sym + " " + b + ")"
- 59	    }
- 60	    TELogic(op, l, r, _, _) => {
- 61	      let a = emit_js_expr(l)
- 62	      let b = emit_js_expr(r)
- 63	      let sym = match op {
- 64	        And => "&&"
- 65	        Or => "||"
- 66	      }
- 67	      "(" + a + " " + sym + " " + b + ")"
- 68	    }
- 69	    TEIf(c, t, e, _, _) =>
- 70	      "(" +
- 71	      emit_js_expr(c) +
- 72	      " ? " +
- 73	      emit_js_expr(t) +
- 74	      " : " +
- 75	      emit_js_expr(e) +
- 76	      ")"
- 77	    TELam(x, body, _, _) =>
- 78	      "((" + js_ident(x) + ") => " + emit_js_expr(body) + ")"
- 79	    TEApp(f, a, _, _) => "(" + emit_js_expr(f) + ")(" + emit_js_expr(a) + ")"
- 80	    TELet(x, e1, e2, _, _) =>
- 81	      "((" +
- 82	      js_ident(x) +
- 83	      ") => " +
- 84	      emit_js_expr(e2) +
- 85	      ")(" +
- 86	      emit_js_expr(e1) +
- 87	      ")"
- 88	    TELetRec(f, e1, e2, _, _) =>
- 89	      "(() => { const " +
- 90	      js_ident(f) +
- 91	      " = " +
- 92	      emit_js_expr(e1) +
- 93	      "; return " +
- 94	      emit_js_expr(e2) +
- 95	      "; })()"
- 96	    TETuple(items, _, _) => {
- 97	      let sb = StringBuilder::new()
- 98	      sb.write_string("[")
- 99	      for i in 0..<items.length() {
-100	        if i > 0 {
-101	          sb.write_string(", ")
-102	        }
-103	        sb.write_string(emit_js_expr(items[i]))
-104	      }
-105	      sb.write_string("]")
-106	      sb.to_string()
-107	    }
-108	  }
-109	}
-   	…
+2 uncovered line(s) in src/mini_compiler/js_backend.mbt:
 
 156	pub fn compile_ml_to_js(src : String) -> Result[String, Diagnostic] {
-157	  match lex_ml(src) {	<-- UNCOVERED
-158	    Err(d) => Err(d)
+157	  match lex_ml(src) {
+158	    Err(d) => Err(d)	<-- UNCOVERED
 159	    Ok(toks) =>
-160	      match parse_ml(toks) {	<-- UNCOVERED
+160	      match parse_ml(toks) {
 161	        Err(d) => Err(d)
 162	        Ok(e) =>
-163	          match infer(e) {	<-- UNCOVERED
-164	            Err(d) => Err(d)
+163	          match infer(e) {
+164	            Err(d) => Err(d)	<-- UNCOVERED
 165	            Ok((te, _)) => Ok(emit_js_program(te))
 166	          }
 167	      }
@@ -15635,7 +15550,7 @@ Total: 885 uncovered line(s) in 205 file(s)
 852	}
    	…
 
-4 uncovered line(s) in src/mini_compiler/ml_eval.mbt:
+2 uncovered line(s) in src/mini_compiler/ml_eval.mbt:
 
 158	fn eval_env(te : TExpr, env : Env) -> Val {
 159	  match te {
@@ -15704,59 +15619,6 @@ Total: 885 uncovered line(s) in 205 file(s)
 230	    _ => ml_env_extend(env, f, eval_env(e1, env))	<-- UNCOVERED
 231	  }
 232	}
-   	…
-
-269	fn scope_check_go(
-270	  e : Expr,
-271	  scope : @list.List[String],
-272	) -> Result[Unit, Diagnostic] {
-273	  match e {
-274	    EInt(_, _) => Ok(())
-275	    EBool(_, _) => Ok(())
-276	    EVar(x, sp) =>
-277	      if scope_has(scope, x) {
-278	        Ok(())
-279	      } else {
-280	        Err(
-281	          Diagnostic::new(TypeError, sp.line, sp.col, "未绑定变量 '\{x}'"),
-282	        )
-283	      }
-284	    EArith(_, l, r, _) => check_two(l, r, scope)
-285	    ECmp(_, l, r, _) => check_two(l, r, scope)
-286	    ELogic(_, l, r, _) => check_two(l, r, scope)
-287	    EIf(c, a, b, _) =>
-288	      match scope_check_go(c, scope) {
-289	        Err(d) => Err(d)
-290	        Ok(_) => check_two(a, b, scope)
-291	      }
-292	    // 形参在函数体内可见。
-293	    ELam(x, body, _) => scope_check_go(body, scope.prepend(x))
-294	    EApp(f, a, _) => check_two(f, a, scope)
-295	    // 非递归 let：e1 在外层作用域检查；body 在引入 name 后检查。
-296	    ELet(name, e1, e2, _) =>
-297	      match scope_check_go(e1, scope) {
-298	        Err(d) => Err(d)
-299	        Ok(_) => scope_check_go(e2, scope.prepend(name))
-300	      }
-301	    // 递归 let：name 在 e1 与 e2 **均**可见（R5.6 的静态对应）。
-302	    ELetRec(name, e1, e2, _) => {
-303	      let scope1 = scope.prepend(name)
-304	      match scope_check_go(e1, scope1) {
-305	        Err(d) => Err(d)
-306	        Ok(_) => scope_check_go(e2, scope1)
-307	      }
-308	    }
-309	    ETuple(items, _) => {	<-- UNCOVERED
-310	      for it in items {
-311	        match scope_check_go(it, scope) {	<-- UNCOVERED
-312	          Err(d) => return Err(d)
-313	          Ok(_) => continue
-314	        }
-315	      }
-316	      Ok(())
-317	    }
-318	  }
-319	}
    	…
 
 1 uncovered line(s) in src/mini_compiler/ml_lexer.mbt:
@@ -16289,7 +16151,7 @@ Total: 885 uncovered line(s) in 205 file(s)
 317	}
    	…
 
-5 uncovered line(s) in src/mini_compiler/tco.mbt:
+1 uncovered line(s) in src/mini_compiler/tco.mbt:
 
 104	pub fn run_tco_with_depth(bc : Bytecode, env : Env) -> (Val, Int) {
 105	  let vm = VM::{ stack: [], frames: [] }
@@ -16399,16 +16261,16 @@ Total: 885 uncovered line(s) in 205 file(s)
 209	      Ret =>
 210	        // 结束当前帧：体结果此刻位于栈顶，弹出本帧后该值留给调用者。
 211	        vm.frames.pop() |> ignore
-212	      MkTuple(n) => {	<-- UNCOVERED
+212	      MkTuple(n) => {
 213	        let collected : Array[SVal] = []
 214	        for _ in 0..<n {
-215	          collected.push(pop_s(vm.stack))	<-- UNCOVERED
+215	          collected.push(pop_s(vm.stack))
 216	        }
 217	        let items : Array[SVal] = []
-218	        for i = collected.length() - 1; i >= 0; i = i - 1 {	<-- UNCOVERED
+218	        for i = collected.length() - 1; i >= 0; i = i - 1 {
 219	          items.push(collected[i])
 220	        }
-221	        vm.stack.push(STuple(items))	<-- UNCOVERED
+221	        vm.stack.push(STuple(items))
 222	        frame.pc += 1
 223	      }
 224	    }
@@ -16417,36 +16279,7 @@ Total: 885 uncovered line(s) in 205 file(s)
 227	}
    	…
 
-4 uncovered line(s) in src/mini_compiler/text_backend.mbt:
-
- 79	pub fn emit_js(te : TExpr) -> String {
- 80	  match te {
- 81	    TEInt(n, _, _) => n.to_string()
- 82	    TEBool(b, _, _) => if b { "true" } else { "false" }
- 83	    TEVar(x, _, _) => x
- 84	    TEArith(op, l, r, _, _) =>
- 85	      "(" + emit_js(l) + " " + js_binop_sym(op) + " " + emit_js(r) + ")"
- 86	    TECmp(op, l, r, _, _) =>
- 87	      "(" + emit_js(l) + " " + js_cmpop_sym(op) + " " + emit_js(r) + ")"
- 88	    TELogic(op, l, r, _, _) =>
- 89	      "(" + emit_js(l) + " " + js_logicop_sym(op) + " " + emit_js(r) + ")"
- 90	    TEIf(c, a, b, _, _) =>
- 91	      "(" + emit_js(c) + " ? " + emit_js(a) + " : " + emit_js(b) + ")"
- 92	    TELam(x, body, _, _) => "((" + x + ") => " + emit_js(body) + ")"	<-- UNCOVERED
- 93	    TEApp(f, a, _, _) => emit_js(f) + "(" + emit_js(a) + ")"
- 94	    TELet(x, e1, e2, _, _) =>
- 95	      "((" + x + ") => " + emit_js(e2) + ")(" + emit_js(e1) + ")"
- 96	    TELetRec(f, e1, e2, _, _) =>
- 97	      // 命名函数表达式承载自指递归（展示用）。若 e1 为 lambda，则渲染为
- 98	      // `function f(x){ return <body> }`；否则退化为普通值绑定。
- 99	      "((" + f + ") => " + emit_js(e2) + ")(" + js_rec_binding(f, e1) + ")"
-100	    TETuple(items, _, _) => {
-101	      let parts = items.map(emit_js)
-102	      "[" + parts.join(", ") + "]"
-103	    }
-104	  }
-105	}
-   	…
+1 uncovered line(s) in src/mini_compiler/text_backend.mbt:
 
 111	fn js_rec_binding(f : String, e1 : TExpr) -> String {
 112	  match e1 {
@@ -16455,67 +16288,6 @@ Total: 885 uncovered line(s) in 205 file(s)
 115	    _ => emit_js(e1)	<-- UNCOVERED
 116	  }
 117	}
-   	…
-
-125	fn wat_arith_op(op : BinOp) -> String {
-126	  match op {
-127	    Add => "i32.add"
-128	    Sub => "i32.sub"
-129	    Mul => "i32.mul"	<-- UNCOVERED
-130	    Div => "i32.div_s"
-131	  }
-132	}
-   	…
-
-172	pub fn emit_wat(te : TExpr) -> String {
-173	  match te {
-174	    TEInt(n, _, _) => "(i32.const " + n.to_string() + ")"
-175	    TEBool(b, _, _) => if b { "(i32.const 1)" } else { "(i32.const 0)" }
-176	    TEVar(x, _, _) => "(local.get $" + x + ")"
-177	    TEArith(op, l, r, _, _) =>
-178	      "(" + wat_arith_op(op) + " " + emit_wat(l) + " " + emit_wat(r) + ")"
-179	    TECmp(op, l, r, _, _) =>
-180	      "(" + wat_cmp_op(op) + " " + emit_wat(l) + " " + emit_wat(r) + ")"
-181	    TELogic(op, l, r, _, _) =>
-182	      "(" + wat_logic_op(op) + " " + emit_wat(l) + " " + emit_wat(r) + ")"
-183	    TEIf(c, a, b, _, _) =>
-184	      "(if (result i32) " +
-185	      emit_wat(c) +
-186	      " (then " +
-187	      emit_wat(a) +
-188	      ") (else " +
-189	      emit_wat(b) +
-190	      "))"
-191	    TELam(x, body, _, _) =>
-192	      // 闭包非核心 wasm 一等公民：以可读 func 占位符呈现。
-193	      "(; lambda $" +
-194	      x +
-195	      " ;) (func (param $" +
-196	      x +
-197	      " i32) (result i32) " +
-198	      emit_wat(body) +
-199	      ")"
-200	    TEApp(f, a, _, _) =>
-201	      // 调用结构占位符（无真实函数索引）。
-202	      "(call (; closure ;) " + emit_wat(f) + " " + emit_wat(a) + ")"
-203	    TELet(x, e1, e2, _, _) =>
-204	      // 可读嵌套形：声明局部并初始化，再求值体。
-205	      "(local $" + x + " (; = ;) " + emit_wat(e1) + ") " + emit_wat(e2)	<-- UNCOVERED
-206	    TELetRec(f, e1, e2, _, _) =>
-207	      "(; letrec $" +
-208	      f +
-209	      " ;) (local $" +
-210	      f +
-211	      " " +
-212	      emit_wat(e1) +
-213	      ") " +
-214	      emit_wat(e2)
-215	    TETuple(items, _, _) => {
-216	      let parts = items.map(emit_wat)
-217	      "(; tuple ;) (" + parts.join(" ") + ")"
-218	    }
-219	  }
-220	}
    	…
 
 1 uncovered line(s) in src/mini_compiler/unify.mbt:
@@ -16662,7 +16434,7 @@ Total: 885 uncovered line(s) in 205 file(s)
 209	}
    	…
 
-5 uncovered line(s) in src/mini_compiler/wasm_backend.mbt:
+3 uncovered line(s) in src/mini_compiler/wasm_backend.mbt:
 
  69	fn wat_expr(
  70	  te : TExpr,
@@ -16812,34 +16584,15 @@ Total: 885 uncovered line(s) in 205 file(s)
 214	}
    	…
 
-324	pub fn ty_shape(ty : Ty) -> String {
-325	  match ty {
-326	    TyInt => "\"int\""
-327	    TyBool => "\"bool\""
-328	    TyFun(_, _) => "\"fun\""
-329	    TyVar(_) => "\"fun\""	<-- UNCOVERED
-330	    TyTuple(items) => {
-331	      let sb = StringBuilder::new()
-332	      sb.write_string("[\"tuple\"")
-333	      for t in items {
-334	        sb.write_string(", " + ty_shape(t))
-335	      }
-336	      sb.write_string("]")
-337	      sb.to_string()
-338	    }
-339	  }
-340	}
-   	…
-
 344	pub fn compile_ml_to_wat(src : String) -> Result[(String, String), Diagnostic] {
-345	  match lex_ml(src) {	<-- UNCOVERED
-346	    Err(d) => Err(d)
+345	  match lex_ml(src) {
+346	    Err(d) => Err(d)	<-- UNCOVERED
 347	    Ok(toks) =>
-348	      match parse_ml(toks) {	<-- UNCOVERED
+348	      match parse_ml(toks) {
 349	        Err(d) => Err(d)
 350	        Ok(e) =>
-351	          match infer(e) {	<-- UNCOVERED
-352	            Err(d) => Err(d)
+351	          match infer(e) {
+352	            Err(d) => Err(d)	<-- UNCOVERED
 353	            Ok((te, ty)) => Ok((emit_wat_module(te), ty_shape(ty)))
 354	          }
 355	      }
@@ -19288,4 +19041,4 @@ Total: 885 uncovered line(s) in 205 file(s)
 268	}
    	…
 
-Total: 885 uncovered line(s) in 205 file(s)
+Total: 872 uncovered line(s) in 205 file(s)

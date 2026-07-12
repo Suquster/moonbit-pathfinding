@@ -725,6 +725,13 @@
         454→452 行，3168→3171 三后端全绿。2026-07-12，
         `src/infra_compress/zstd_gaps3_wbtest.mbt`、
         `src/mini_compiler/spans_gaps_wbtest.mbt`。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第六十九批 余支覆盖收口（mini_compiler 后端全链）：
+        compile_ml_to_js/compile_ml_to_wat 全链编译入口成功与错误传播、
+        emit_js_expr 负整数括号、ty_shape TyVar 形状、emit_js Lambda 与
+        emit_wat let/乘法渲染、TCO MkTuple 元组构造、元组元素作用域
+        检查。src/ 未覆盖 452→439 行，3171→3178 三后端全绿。
+        2026-07-12，`src/mini_compiler/backends_gaps_test.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

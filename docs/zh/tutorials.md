@@ -35,6 +35,9 @@
 - 时间/韧性/CLI/PBT+fuzz 原生基准（含解读）：
   [`benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`](../../benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md)
   —— 韧性原语单次调用个位数纳秒级；完整子命令解析单次约 1.2 µs。
+- 配置/diff 原生基准（含解读）：
+  [`benches/results/infra-config-diff-native-2026-07-12.md`](../../benches/results/infra-config-diff-native-2026-07-12.md)
+  —— 稀疏改动下 Myers 最快、patience 扩展性最好；补丁往返远快于重算 diff。
 - 其余方向基准见 `benches/`（timer/metrics/text/parser/codec/actor/dst 等），
   结果归档于 `benches/results/`。
 - 20 个 demo 输出快照守卫：`bash scripts/demos_guard.sh`（已接入验收门禁），

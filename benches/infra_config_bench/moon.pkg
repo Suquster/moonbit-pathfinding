@@ -1,0 +1,10 @@
+// Package: benches/infra_config_bench
+//
+// 配置方向基准：TOML / INI 解析与按路径取值在真实形状配置文本上的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_config_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_config" @config,
+}

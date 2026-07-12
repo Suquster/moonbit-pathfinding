@@ -212,4 +212,7 @@ let g = @fuzz.fuzz_graph_gen(5, 42)   // seeded, reproducible graphs
 - Native benchmark results for the time / resilience / CLI / PBT+fuzz
   directions:
   [`benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`](../../benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md).
+- Native benchmark results for the config / diff directions (TOML/INI
+  parsing, Myers vs patience vs histogram, patch round-trip, diff3):
+  [`benches/results/infra-config-diff-native-2026-07-12.md`](../../benches/results/infra-config-diff-native-2026-07-12.md).
 - Full acceptance gate: `bash scripts/acceptance.sh`.

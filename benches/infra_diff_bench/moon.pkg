@@ -1,0 +1,11 @@
+// Package: benches/infra_diff_bench
+//
+// diff 方向基准：Myers / histogram / patience 三种行 diff 算法、
+// unified 补丁往返与 diff3 三方合并在确定性文本上的吞吐。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_diff_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_diff" @diff,
+}

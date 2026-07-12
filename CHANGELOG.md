@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   help 生成）、`benches/infra_pbt_bench`（属性检查/失败缩小/加权生成/
   种子化图 fuzz），measured native results archived in
   `benches/results/infra-time-resilience-cli-pbt-native-2026-07-12.md`
+- feat(bench): `benches/infra_config_bench`（TOML/INI 解析与取值）与
+  `benches/infra_diff_bench`（Myers/histogram/patience、补丁往返、diff3），
+  measured native results archived in
+  `benches/results/infra-config-diff-native-2026-07-12.md` — all INFRA
+  directions now have native benchmark coverage
+  （全部 INFRA 方向均有原生基准覆盖）
 - feat(scripts): `scripts/demos_guard.sh` — runs all 20
   `moon run examples/...` demos and checks deterministic output markers,
   wired into `scripts/acceptance.sh` as gate 6; evidence written to

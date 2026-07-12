@@ -910,6 +910,14 @@
         synthetic_grid_csr Err 兜底（参数已守卫）为不可达防御，保留
         不造假态。src/ 未覆盖 275→267 行，3315→3321 三后端全绿。
         2026-07-12。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第八十九批 余支覆盖收口（infra_codec 惰性视图）：
+        MsgView zigzag_field 字段缺失、locate 跳过未命中 varint 字段
+        载荷截断、string_field 孤立代理项码点拒绝。另判定
+        serialization/typed packed 解码 typed_interpret_scalar Err 臂
+        （wt=proto_wire_type(t) 保证标量解释恒成功）与 Ok(_) 线型
+        不符臂为不可达防御，保留不造假态。src/ 未覆盖 267→265 行，
+        3321→3324 三后端全绿。2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

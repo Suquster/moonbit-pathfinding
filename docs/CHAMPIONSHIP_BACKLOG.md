@@ -732,6 +732,13 @@
         emit_wat let/乘法渲染、TCO MkTuple 元组构造、元组元素作用域
         检查。src/ 未覆盖 452→439 行，3171→3178 三后端全绿。
         2026-07-12，`src/mini_compiler/backends_gaps_test.mbt`。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第七十批 余支覆盖收口（regex_engine + infra_ds）：
+        两代原子解析器空输入/裸 ')'/'|' 兜底报错、字符类内 EOF 未闭合；
+        skiplist 空表 to_array/range。src/ 未覆盖 439→430 行，
+        3178→3183 三后端全绿。2026-07-12，
+        `src/regex_engine/atoms_gaps_wbtest.mbt`、
+        `src/infra_ds/coverage_gaps2_wbtest.mbt`。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

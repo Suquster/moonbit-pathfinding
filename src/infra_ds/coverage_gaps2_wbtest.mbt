@@ -33,3 +33,10 @@ test "skiplist：set_forward 空节点回落头指针" {
   sl.set_forward(None, 0, None)
   assert_true(sl.get(1) is None)
 }
+
+///|
+test "skiplist：空表 to_array 与 range 均为空（INFRA 第七十批）" {
+  let sl : SkipList[Int, Int] = SkipList::new()
+  assert_eq(sl.to_array().length(), 0)
+  assert_eq(sl.range(0, 10).length(), 0)
+}

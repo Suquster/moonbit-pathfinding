@@ -1,14 +1,14 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":943.4713695238095,"min":313.67571079365075,"max":315.93029365079366,"mean":314.49045650793647,"median":313.8653650793651,"variance":1.5638404354857343,"std_dev":1.2505360592504857,"std_dev_pct":0.397638794237601,"median_abs_dev":0.28118144400012285,"median_abs_dev_pct":0.08958664296362305,"quartiles":[313.77053793650794,313.8653650793651,314.89782936507936],"iqr":1.127291428571425,"batch_size":315,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1803.1075580838324,"min":592.8079233532934,"max":606.7893532934131,"mean":601.0358526946108,"median":603.5102814371257,"variance":53.462193993957186,"std_dev":7.311784597070484,"std_dev_pct":1.216530522146012,"median_abs_dev":4.8615519341316595,"median_abs_dev_pct":0.8055458347047465,"quartiles":[598.1591023952096,603.5102814371257,605.1498173652694],"iqr":6.990714970059798,"batch_size":167,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":301.9308734452122,"min":98.90667216189536,"max":103.79139772951629,"mean":100.6436244817374,"median":99.23280355380058,"variance":7.457947735770815,"std_dev":2.7309243372475214,"std_dev_pct":2.7134598453805383,"median_abs_dev":0.4835224016386811,"median_abs_dev_pct":0.48726064801397256,"quartiles":[99.06973785784797,99.23280355380058,101.51210064165844],"iqr":2.4423627838104665,"batch_size":1013,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":454.31333847305393,"min":150.11122979041915,"max":152.57897994011975,"mean":151.43777949101798,"median":151.62312874251498,"variance":1.5482134591097205,"std_dev":1.2442722608455596,"std_dev_pct":0.8216392666529817,"median_abs_dev":1.4171449855688356,"median_abs_dev_pct":0.9346496127087698,"quartiles":[150.86717926646708,151.62312874251498,152.10105434131737],"iqr":1.233875074850289,"batch_size":668,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":419.42605154185026,"min":139.31028032305434,"max":140.41734243759177,"mean":139.80868384728342,"median":139.69842878120411,"variance":0.3155137660581323,"std_dev":0.5617061207234013,"std_dev_pct":0.40176769086601744,"median_abs_dev":0.5754689040528513,"median_abs_dev_pct":0.4119365615444048,"quartiles":[139.50435455212923,139.69842878120411,140.05788560939794],"iqr":0.5535310572687138,"batch_size":681,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":928.6679800664451,"min":306.9015534883721,"max":314.56991827242524,"mean":309.5559933554817,"median":307.1965083056478,"variance":18.876331890618943,"std_dev":4.34469007992733,"std_dev_pct":1.403523166465739,"median_abs_dev":0.4373000120929662,"median_abs_dev_pct":0.14235188235208418,"quartiles":[307.04903089700997,307.1965083056478,310.8832132890365],"iqr":3.8341823920265483,"batch_size":301,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":1764.5068953488371,"min":577.2945284883721,"max":603.4386808139535,"mean":588.1689651162791,"median":583.7736860465117,"variance":185.36803378165303,"std_dev":13.614992977657133,"std_dev_pct":2.314809822542319,"median_abs_dev":9.605998995697778,"median_abs_dev_pct":1.6455005124935398,"quartiles":[580.5341072674419,583.7736860465117,593.6061834302326],"iqr":13.072076162790722,"batch_size":172,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":329.82253935281835,"min":106.72348674321503,"max":111.76083653444677,"mean":109.94084645093945,"median":111.33821607515658,"variance":7.808204629819118,"std_dev":2.7943164870535186,"std_dev_pct":2.5416545144578895,"median_abs_dev":0.6265770929436305,"median_abs_dev_pct":0.5627691147132019,"quartiles":[109.0308514091858,111.33821607515658,111.54952630480167],"iqr":2.5186748956158738,"batch_size":958,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":727.501573926868,"min":234.57087170111285,"max":246.52452575516693,"mean":242.50052464228932,"median":246.40617647058826,"variance":47.1630484639219,"std_dev":6.867535836376968,"std_dev_pct":2.831967413887957,"median_abs_dev":0.17546464931633646,"median_abs_dev_pct":0.07120951748434781,"quartiles":[240.48852408585054,246.40617647058826,246.4653511128776],"iqr":5.9768270270270705,"batch_size":629,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":637.9435352941176,"min":212.21222483660134,"max":213.46457189542483,"mean":212.6478450980392,"median":212.2667385620915,"variance":0.5010249327425179,"std_dev":0.7078311470559331,"std_dev_pct":0.3328654220453513,"median_abs_dev":0.0808220494117013,"median_abs_dev_pct":0.03807570133653301,"quartiles":[212.2394816993464,212.2667385620915,212.86565522875816],"iqr":0.6261735294117443,"batch_size":459,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 314 | 50% | 2250 | -79% | OK
-massive_actor_scheduling | 4000 | 598 | 50% | 6000 | -85% | OK
-ask_round_trip | 900 | 106 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 160 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 139 | 50% | 1800 | -88% | OK
+high_frequency_send | 1500 | 520 | 50% | 2250 | -65% | OK
+massive_actor_scheduling | 4000 | 612 | 50% | 6000 | -85% | OK
+ask_round_trip | 900 | 103 | 50% | 1350 | -89% | OK
+router_dispatch | 1800 | 154 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 135 | 50% | 1800 | -89% | OK
 status: PASS
-Total: 872 uncovered line(s) in 205 file(s)
+Total: 863 uncovered line(s) in 203 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -12327,7 +12327,7 @@ Total: 872 uncovered line(s) in 205 file(s)
 446	}
    	…
 
-5 uncovered line(s) in src/infra_ds/skiplist.mbt:
+4 uncovered line(s) in src/infra_ds/skiplist.mbt:
 
  76	pub fn[K : Compare, V] SkipList::get(self : SkipList[K, V], key : K) -> V? {
  77	  let mut cur = self.head
@@ -12431,25 +12431,6 @@ Total: 872 uncovered line(s) in 205 file(s)
 258	    None => None
 259	  }
 260	}
-   	…
-
-295	pub fn[K, V] SkipList::to_array(self : SkipList[K, V]) -> Array[(K, V)] {
-296	  let out : Array[(K, V)] = []
-297	  let mut cur = match self.head {
-298	    Some(h) => h.forward[0]
-299	    None => None	<-- UNCOVERED
-300	  }
-301	  while true {
-302	    match cur {
-303	      Some(n) => {
-304	        out.push((n.key, n.value))
-305	        cur = n.forward[0]
-306	      }
-307	      None => break
-308	    }
-309	  }
-310	  out
-311	}
    	…
 
 1 uncovered line(s) in src/infra_fuzz/diff.mbt:
@@ -17405,139 +17386,6 @@ Total: 872 uncovered line(s) in 205 file(s)
 64	}
   	…
 
-4 uncovered line(s) in src/regex_engine/parser.mbt:
-
-143	fn parse_atom(input : @pc.Input) -> Result[(Regex, @pc.Input), ParseError] {
-144	  let off = input.pos.offset
-145	  match input.peek() {
-146	    None => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-147	    Some('(') => {
-148	      let inner = input.advance()
-149	      let (r, rest) = match parse_alt(inner) {
-150	        Err(e) => return Err(e)
-151	        Ok(pair) => pair
-152	      }
-153	      match rest.peek() {
-154	        Some(')') => Ok((Group(r), rest.advance()))
-155	        _ => Err(Unbalanced(pos=rest.pos.offset, what="("))
-156	      }
-157	    }
-158	    Some('[') => parse_class(input)
-159	    Some('^') => Ok((Anchor(Start), input.advance()))
-160	    Some('$') => Ok((Anchor(End), input.advance()))
-161	    Some('*') => Err(DanglingQuantifier(pos=off))
-162	    Some('+') => Err(DanglingQuantifier(pos=off))
-163	    Some('?') => Err(DanglingQuantifier(pos=off))
-164	    Some('{') => Err(DanglingQuantifier(pos=off))
-165	    Some('\\') => {
-166	      let esc = input.advance()
-167	      match esc.peek() {
-168	        Some(c) => Ok((Char(c), esc.advance()))
-169	        None =>
-170	          Err(Unexpected(pos=esc.pos.offset, expected=["escaped character"]))
-171	      }
-172	    }
-173	    // 元字符 ')' / ']' / '}' / '|' 出现在原子位置即为非法（正常路径不会到达
-174	    // ')' 与 '|'，因 concat 已在其前停止；此处兜底以给出明确错误）。
-175	    Some(')') => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-176	    Some(']') => Err(Unexpected(pos=off, expected=["expression"]))
-177	    Some('}') => Err(Unexpected(pos=off, expected=["expression"]))
-178	    Some('|') => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-179	    Some(c) => Ok((Char(c), input.advance()))
-180	  }
-181	}
-   	…
-
-243	fn read_class_char(input : @pc.Input) -> Result[(Char, @pc.Input), ParseError] {
-244	  match input.peek() {
-245	    None => Err(Unbalanced(pos=input.pos.offset, what="["))	<-- UNCOVERED
-246	    Some('\\') => {
-247	      let esc = input.advance()
-248	      match esc.peek() {
-249	        Some(c) => Ok((c, esc.advance()))
-250	        None =>
-251	          Err(Unexpected(pos=esc.pos.offset, expected=["escaped character"]))
-252	      }
-253	    }
-254	    Some(c) => Ok((c, input.advance()))
-255	  }
-256	}
-   	…
-
-4 uncovered line(s) in src/regex_engine/pattern_parser.mbt:
-
-189	fn p_atom(
-190	  st : PState,
-191	  input : @pc.Input,
-192	) -> Result[(Ast, @pc.Input), ParseError] {
-193	  let off = input.pos.offset
-194	  match input.peek() {
-195	    None => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-196	    Some('(') => p_group(st, input)
-197	    Some('[') => p_class(st, input)
-198	    Some('.') => Ok((Set(st.flags.dot_set()), input.advance()))
-199	    Some('^') =>
-200	      Ok(
-201	        (
-202	          Assert(if st.flags.multiline { LineStart } else { TextStart }),
-203	          input.advance(),
-204	        ),
-205	      )
-206	    Some('$') =>
-207	      Ok(
-208	        (
-209	          Assert(if st.flags.multiline { LineEnd } else { TextEnd }),
-210	          input.advance(),
-211	        ),
-212	      )
-213	    Some('*') => Err(DanglingQuantifier(pos=off))
-214	    Some('+') => Err(DanglingQuantifier(pos=off))
-215	    Some('?') => Err(DanglingQuantifier(pos=off))
-216	    Some('{') => Err(DanglingQuantifier(pos=off))
-217	    Some('\\') => p_escape(st, input)
-218	    Some(')') => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-219	    Some(']') => Err(Unexpected(pos=off, expected=["expression"]))
-220	    Some('}') => Err(Unexpected(pos=off, expected=["expression"]))
-221	    Some('|') => Err(Unexpected(pos=off, expected=["expression"]))	<-- UNCOVERED
-222	    Some(c) => Ok((make_lit(st, c), input.advance()))
-223	  }
-224	}
-   	…
-
-584	fn read_class_token(
-585	  input : @pc.Input,
-586	  open : Int,
-587	) -> Result[(ClassTok, @pc.Input), ParseError] {
-588	  match input.peek() {
-589	    None => Err(Unbalanced(pos=open, what="["))	<-- UNCOVERED
-590	    Some('\\') => {
-591	      let after = input.advance()
-592	      match after.peek() {
-593	        None => Err(Unbalanced(pos=open, what="["))
-594	        Some('d') => Ok((ClassSet(predef_digit()), after.advance()))
-595	        Some('D') => Ok((ClassSet(predef_non_digit()), after.advance()))
-596	        Some('w') => Ok((ClassSet(predef_word()), after.advance()))
-597	        Some('W') => Ok((ClassSet(predef_non_word()), after.advance()))
-598	        Some('s') => Ok((ClassSet(predef_space()), after.advance()))
-599	        Some('S') => Ok((ClassSet(predef_non_space()), after.advance()))
-600	        Some('p') =>
-601	          match p_unicode_prop(after.advance(), open, false) {
-602	            Ok((set, rest)) => Ok((ClassSet(set), rest))
-603	            Err(e) => Err(e)
-604	          }
-605	        Some('P') =>
-606	          match p_unicode_prop(after.advance(), open, true) {
-607	            Ok((set, rest)) => Ok((ClassSet(set), rest))
-608	            Err(e) => Err(e)
-609	          }
-610	        Some(c) => Ok((ClassChar(c), after.advance()))
-611	      }
-612	    }
-613	    Some(c) => Ok((ClassChar(c), input.advance()))
-614	  }
-615	}
-   	…
-
 5 uncovered line(s) in src/regex_engine/pikevm.mbt:
 
 146	fn Program::run_bool(
@@ -19041,4 +18889,4 @@ Total: 872 uncovered line(s) in 205 file(s)
 268	}
    	…
 
-Total: 872 uncovered line(s) in 205 file(s)
+Total: 863 uncovered line(s) in 203 file(s)

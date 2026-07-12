@@ -1,15 +1,15 @@
-{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1090.4024787985866,"min":354.0529395759717,"max":371.51708339222614,"mean":363.46749293286217,"median":364.8324558303887,"variance":77.64642259242237,"std_dev":8.81172075093295,"std_dev_pct":2.424349060717957,"median_abs_dev":9.910628823180174,"median_abs_dev_pct":2.7164877095769255,"quartiles":[359.4426977031802,364.8324558303887,368.1747696113074],"iqr":8.732071908127182,"batch_size":283,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2042.0370020833334,"min":673.0854819444445,"max":687.3728256944445,"mean":680.6790006944444,"median":681.5786944444445,"variance":51.63913449050777,"std_dev":7.186037467930972,"std_dev_pct":1.0557160512663988,"median_abs_dev":8.590378991249946,"median_abs_dev_pct":1.2603649529056908,"quartiles":[677.3320881944445,681.5786944444445,684.4757600694445],"iqr":7.1436718749999955,"batch_size":144,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":332.0049053038674,"min":109.52401922651933,"max":111.4309203314917,"mean":110.66830176795581,"median":111.04996574585635,"variance":1.0183185000563766,"std_dev":1.0091176839479015,"std_dev_pct":0.911839856424085,"median_abs_dev":0.5648032686629713,"median_abs_dev_pct":0.5086028301490457,"quartiles":[110.28699248618784,111.04996574585635,111.24044303867403],"iqr":0.9534505524861885,"batch_size":905,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":524.8859408233276,"min":172.93302933104633,"max":178.66454271012006,"mean":174.96198027444254,"median":173.28836878216123,"variance":10.313292973947354,"std_dev":3.211431608169066,"std_dev_pct":1.8355025492576535,"median_abs_dev":0.5268262702229519,"median_abs_dev_pct":0.3040170981615154,"quartiles":[173.11069905660378,173.28836878216123,175.97645574614063],"iqr":2.865756689536852,"batch_size":583,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":476.6769409756097,"min":156.6977014634146,"max":161.53168341463413,"mean":158.89231365853655,"median":158.44755609756098,"variance":5.990202342212758,"std_dev":2.447488987148412,"std_dev_pct":1.5403444828729256,"median_abs_dev":2.5943344805854136,"median_abs_dev_pct":1.6373458477251635,"quartiles":[157.57262878048778,158.44755609756098,159.98961975609757],"iqr":2.4169909756097923,"batch_size":615,"runs":3}}]}
+{"schema":"moonbit-pathfinding.actor-bench.v1","machine_id":"b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027","backend_target":"wasm-gc","generator":"benches/actor_bench/actor_bench.mbt","timing_unit":"microseconds","samples":3,"workloads":[{"workload":"high_frequency_send","load_scale":"messages=5000","timing_us":{"name":"actor_send","sum":1071.19501875,"min":350.126556617647,"max":366.63691433823533,"mean":357.06500624999995,"median":354.43154779411765,"variance":73.34930559459134,"std_dev":8.564420914141909,"std_dev_pct":2.39856070021757,"median_abs_dev":6.382579918235386,"median_abs_dev_pct":1.8007933994473035,"quartiles":[352.2790522058823,354.43154779411765,360.5342310661765],"iqr":8.255178860294222,"batch_size":272,"runs":3}},{"workload":"massive_actor_scheduling","load_scale":"actors=200,msgs_per_actor=50,total=10000","timing_us":{"name":"actor_scheduling","sum":2014.2789592105264,"min":657.405002631579,"max":684.4489960526315,"mean":671.4263197368422,"median":672.4249605263158,"variance":183.59235760928325,"std_dev":13.549625736871231,"std_dev_pct":2.018036132718457,"median_abs_dev":17.82683507131572,"median_abs_dev_pct":2.6511263141336134,"quartiles":[664.9149815789474,672.4249605263158,678.4369782894737],"iqr":13.52199671052631,"batch_size":152,"runs":3}},{"workload":"ask_round_trip","load_scale":"round_trips=500,step_budget=8","timing_us":{"name":"actor_ask_roundtrip","sum":362.9804164108619,"min":115.8357262101535,"max":126.91311641086186,"mean":120.99347213695397,"median":120.23157378984654,"variance":31.112510233181197,"std_dev":5.577858929121567,"std_dev_pct":4.610049476725423,"median_abs_dev":6.517283621652901,"median_abs_dev_pct":5.4206090931193325,"quartiles":[118.03365000000002,120.23157378984654,123.5723451003542],"iqr":5.538695100354175,"batch_size":847,"runs":3}},{"workload":"router_dispatch","load_scale":"strategy=round_robin,workers=8,msgs=2000","timing_us":{"name":"actor_router_round_robin","sum":499.3407141608391,"min":166.25874335664335,"max":166.76629772727273,"mean":166.44690472027972,"median":166.31567307692308,"variance":0.07731916794980986,"std_dev":0.2780632445142829,"std_dev_pct":0.16705822495262293,"median_abs_dev":0.08440400328672157,"median_abs_dev_pct":0.050749277999604804,"quartiles":[166.2872082167832,166.31567307692308,166.5409854020979],"iqr":0.2537771853147035,"batch_size":572,"runs":3}},{"workload":"supervision_restart","load_scale":"workers=8,tasks=400,fault_at=17","timing_us":{"name":"actor_supervision_restart","sum":461.97656414523453,"min":152.72879364599092,"max":156.2359928895613,"mean":153.99218804841152,"median":153.0117776096823,"variance":3.796015104802035,"std_dev":1.948336496810044,"std_dev_pct":1.2652177500053008,"median_abs_dev":0.41955202456883833,"median_abs_dev_pct":0.27419590251351333,"quartiles":[152.8702856278366,153.0117776096823,154.6238852496218],"iqr":1.7535996217851846,"batch_size":661,"runs":3}}]}
 ACTOR-BENCH REGRESSION GUARD (timing unit: microseconds)
 schema=moonbit-pathfinding.actor-bench.v1 machine_id=b81dace926e09bd26ac488c2f775cc82b419067b1d7e335441fe134b85713027 backend=wasm-gc
 columns: workload | baseline_us | measured_us | tolerance_pct | allowed_us | delta_pct | verdict
-high_frequency_send | 1500 | 346 | 50% | 2250 | -77% | OK
+high_frequency_send | 1500 | 347 | 50% | 2250 | -77% | OK
 massive_actor_scheduling | 4000 | 657 | 50% | 6000 | -84% | OK
-ask_round_trip | 900 | 112 | 50% | 1350 | -88% | OK
-router_dispatch | 1800 | 164 | 50% | 2700 | -91% | OK
-supervision_restart | 1200 | 151 | 50% | 1800 | -87% | OK
+ask_round_trip | 900 | 110 | 50% | 1350 | -88% | OK
+router_dispatch | 1800 | 168 | 50% | 2700 | -91% | OK
+supervision_restart | 1200 | 153 | 50% | 1800 | -87% | OK
 status: PASS
 ts=1 level=ERROR
-Total: 724 uncovered line(s) in 176 file(s)
+Total: 721 uncovered line(s) in 175 file(s)
 
 98 uncovered line(s) in bench_rust/moon_side/main.mbt:
 
@@ -12384,56 +12384,6 @@ Total: 724 uncovered line(s) in 176 file(s)
 294	}
    	…
 
-2 uncovered line(s) in src/lsp_server/incremental_sync.mbt:
-
-40	pub fn apply_incremental(
-41	  doc : String,
-42	  change : ContentChange,
-43	  encoding : PositionEncoding,
-44	) -> Result[String, @lsp_binding.RpcError] {
-45	  match change.range {
-46	    // Full：整个文档替换为 change.text。
-47	    None => Ok(change.text)
-48	    // Incremental：仅替换受影响范围。
-49	    Some(r) => {
-50	      // 一次性把文档物化为码位序列（O(N)）。
-51	      let cps = to_codepoints(doc)
-52	      // 起点 / 终点换算（复用 apply_changes 的同一换算，保证一致）。
-53	      let si = match position_to_cp_index(cps, r.start, encoding) {
-54	        Some(s) => s
-55	        None =>
-56	          return Err(	<-- UNCOVERED
-57	            @lsp_binding.RpcError::new(
-58	              @lsp_binding.invalid_params_code,
-59	              "content change range.start out of bounds at line \{r.start.line}, character \{r.start.character}",
-60	            ),
-61	          )
-62	      }
-63	      let ei = match position_to_cp_index(cps, r.end, encoding) {
-64	        Some(e) => e
-65	        None =>
-66	          return Err(
-67	            @lsp_binding.RpcError::new(
-68	              @lsp_binding.invalid_params_code,
-69	              "content change range.end out of bounds at line \{r.end.line}, character \{r.end.character}",
-70	            ),
-71	          )
-72	      }
-73	      if si > ei {
-74	        return Err(	<-- UNCOVERED
-75	          @lsp_binding.RpcError::new(
-76	            @lsp_binding.invalid_params_code,
-77	            "content change range.start (line \{r.start.line}, character \{r.start.character}) is after range.end (line \{r.end.line}, character \{r.end.character})",
-78	          ),
-79	        )
-80	      }
-81	      // 切片拼接 prefix ++ text ++ suffix（两次单点 `+`，非循环拼接）：O(N)。
-82	      Ok(rebuild(cps, 0, si) + change.text + rebuild(cps, ei, cps.length()))
-83	    }
-84	  }
-85	}
-  	…
-
 2 uncovered line(s) in src/lsp_server/jsonrpc_frame.mbt:
 
 295	fn ascii_case_insensitive_eq(a : String, b : String) -> Bool {
@@ -12504,35 +12454,7 @@ Total: 724 uncovered line(s) in 176 file(s)
 414	}
    	…
 
-2 uncovered line(s) in src/lsp_server/position_encoding.mbt:
-
-192	pub fn offset_to_position(
-193	  text : String,
-194	  offset : Int,
-195	  enc : PositionEncoding,
-196	) -> Position? {
-197	  if offset < 0 {
-198	    return None
-199	  }
-200	  let lines = to_lines(text)
-201	  let mut start = 0
-202	  let mut line = 0
-203	  while line < lines.length() {
-204	    let lu = line_units(lines[line], enc)
-205	    // 本行的合法位置占据 offset 区间 [start, start + lu]（行尾含）。
-206	    if offset <= start + lu {
-207	      let character = offset - start
-208	      match char_to_index(lines[line], enc, character) {
-209	        None => return None // 落在多码元字符中间	<-- UNCOVERED
-210	        Some(_) => return Some({ line, character })
-211	      }
-212	    }
-213	    start = start + lu + 1 // +1 跳过该行 '\n'
-214	    line = line + 1
-215	  }
-216	  None // offset 超出文本总码元数
-217	}
-   	…
+1 uncovered line(s) in src/lsp_server/position_encoding.mbt:
 
 223	pub fn convert_position(
 224	  text : String,
@@ -16060,4 +15982,4 @@ Total: 724 uncovered line(s) in 176 file(s)
 268	}
    	…
 
-Total: 724 uncovered line(s) in 176 file(s)
+Total: 721 uncovered line(s) in 175 file(s)

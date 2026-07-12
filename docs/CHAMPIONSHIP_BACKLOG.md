@@ -866,6 +866,15 @@
         typed_unpack 三处 interpret Err 传播臂为不可达防御（wire 类别
         由声明类型推导，构造子恒匹配）。src/ 未覆盖 293→291 行，
         3291→3294 三后端全绿。2026-07-12。
+  - [x] G-B4+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第八十四批 余支覆盖收口（lsp_server）：apply_incremental
+        起点越界/终点越界/起点晚于终点三重 invalid_params 拒绝；
+        offset_to_position 代理对中间 offset 拒绝；convert_position
+        代理对中间字符位拒绝。另判定 convert_position 的 index_to_char
+        内层 None（同行码位索引在目标编码下恒可计量）、captures_all/
+        replace/replace_all 的 group(0) 缺失臂（匹配成功则组 0 恒存
+        在）为不可达防御，保留不造假态。src/ 未覆盖 291→288 行，
+        3294→3299 三后端全绿。2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

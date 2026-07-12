@@ -1,0 +1,16 @@
+// Runnable example: mini_compiler_pipeline
+//
+// End-to-end mini-ML compiler pipeline: lex → parse → Hindley-Milner type
+// inference → optimize → bytecode VM (with peephole + TCO) cross-checked
+// against the tree-walking interpreter, plus JS / WAT code emission.
+//
+// Run with:
+//   moon run examples/mini_compiler_pipeline
+
+import {
+  "Suquster/moonbit-pathfinding/src/mini_compiler" @mc,
+}
+
+options(
+  "is-main": true,
+)

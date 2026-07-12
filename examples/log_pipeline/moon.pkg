@@ -1,0 +1,16 @@
+// Runnable example: log_pipeline
+//
+// Structured-logging pipeline with the `src/logging` direction: spans +
+// W3C trace propagation, JSON / logfmt formatting, redaction of sensitive
+// fields, env-filter thresholds, and level histograms.
+//
+// Run with:
+//   moon run examples/log_pipeline
+
+import {
+  "Suquster/moonbit-pathfinding/src/logging" @log,
+}
+
+options(
+  "is-main": true,
+)

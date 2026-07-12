@@ -1,0 +1,16 @@
+// Runnable example: regex_toolkit
+//
+// Real-world log scrubbing with the `src/regex_engine` direction:
+// pattern compilation, find_all / captures, replace_all redaction, split,
+// and the linear-time engine guarantee on a classic catastrophic pattern.
+//
+// Run with:
+//   moon run examples/regex_toolkit
+
+import {
+  "Suquster/moonbit-pathfinding/src/regex_engine" @re,
+}
+
+options(
+  "is-main": true,
+)

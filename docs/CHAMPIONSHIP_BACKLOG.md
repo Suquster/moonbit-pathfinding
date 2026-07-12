@@ -859,6 +859,13 @@
         建表失败（ncount 校验已保证总和）、TEApp 非闭包回退（类型
         检查保证）为不可达防御，保留不造假态。src/ 未覆盖 297→293
         行，3286→3291 三后端全绿。2026-07-12。
+  - [x] G-B4++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        INFRA 第八十三批 余支覆盖收口（serialization + mini_compiler）：
+        proto_type_to_legacy 的 PUInt64/PBool/PEnum 投影臂（富模式
+        to_legacy 构造性覆盖）；expr_span 的 ELetRec/ETuple 臂。另判定
+        typed_unpack 三处 interpret Err 传播臂为不可达防御（wire 类别
+        由声明类型推导，构造子恒匹配）。src/ 未覆盖 293→291 行，
+        3291→3294 三后端全绿。2026-07-12。
 - [x] G-C 广度闭包：端到端系统切片（2026-07-08 收官）
   - [x] G-C1 路网服务样例（边表解析→CH 路由→CLI→HdrHistogram 延迟指标→
         熔断器护航全链组装；随机链式路网 PBT）。commit 204cb9a，

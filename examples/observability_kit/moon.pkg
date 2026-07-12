@@ -1,0 +1,16 @@
+// Runnable example: observability_kit
+//
+// Metrics toolchain with the `src/infra_metrics` direction: HDR histogram
+// latency percentiles, mergeable DDSketch quantiles with bounded relative
+// error, and a span tracer with self/total time aggregation.
+//
+// Run with:
+//   moon run examples/observability_kit
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_metrics" @metrics,
+}
+
+options(
+  "is-main": true,
+)

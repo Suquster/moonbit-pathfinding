@@ -5,7 +5,7 @@
 <!-- Tier-1 6 badges (per tasks.md 10.1): License / CI / Version / mooncakes.io / Playground / Formally verified -->
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.2.0-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
 [![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](https://suquster.github.io/moonbit-pathfinding/)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
@@ -34,7 +34,7 @@
    CH → Hub Labels → PHAST) plus 20 infra directions, published on
    [mooncakes.io](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
    with a [live in-browser playground](https://suquster.github.io/moonbit-pathfinding/).
-2. **An engineering benchmark for the ecosystem** — 3331 tests across four
+2. **An engineering benchmark for the ecosystem** — 3339 tests across four
    backends (wasm-gc / native / js / wasm), executable proof predicates,
    executable README (`moon test README.mbt.md`), DST + differential PBT,
    zero-warning `--deny-warn` CI gates, and a published
@@ -197,6 +197,15 @@ stories instead of isolated snippets — pathfinding and INFRA directions alike:
 | Serialization studio | `moon run examples/serialization_studio` | serialization | .proto parse/validate, typed wire + JSON round-trips, canonical bytes, breaking-change detection, codegen |
 | DST explorer | `moon run examples/dst_explorer` | dst | Seeded deterministic replays, partition/crash fault injection, DPOR exploration, shrinking, linearizability checking |
 | Config & diff ops | `moon run examples/config_diff_ops` | infra_config + infra_diff | TOML/INI parsing, unified diffs, patch apply/revert, diff3 merge with conflicts, semver gates |
+| Hash integrity | `moon run examples/hash_integrity` | infra_hash | SHA-2/SHA-3/BLAKE2b digests (sha256 matches `sha256sum`), HMAC tamper detection, HKDF/PBKDF2 key derivation, streaming == one-shot, xxHash sharding |
+| Compress workbench | `moon run examples/compress_workbench` | infra_compress | DEFLATE/zlib/gzip/zstd/LZ4 ratio shoot-out, lossless round-trips, dictionary compression, corrupted-archive rejection |
+| Time scheduler | `moon run examples/time_scheduler` | infra_time + infra_timer | RFC 3339/2822 + strftime, civil arithmetic, POSIX TZ DST rules, duration round-trip, timer wheel, work-stealing scheduler with real steals |
+| Resilience gateway | `moon run examples/resilience_gateway` | infra_resilience | Capped backoff + retry, circuit-breaker state machine, token bucket vs sliding window, bulkhead, AIMD, hedged requests |
+| CLI devtool | `moon run examples/cli_devtool` | infra_cli | Subcommand parsing with defaults, typed validation with choices, typo suggestions, bundled shorts, generated help + bash completion |
+| Observability kit | `moon run examples/observability_kit` | infra_metrics | HDR histogram tail percentiles, mergeable DDSketch quantiles, span tracer with total vs self time |
+| Text editor core | `moon run examples/text_editor_core` | infra_text + infra_ds | Rope + piece-table edits converge, graphemes/display width, Myers diff, LRU eviction, bloom filter, roaring-bitmap intersection |
+| Parser playground | `moon run examples/parser_playground` | parser_combinator | Precedence-correct expression eval, JSON with rendered error positions, error recovery diagnostics, incremental chunked parsing |
+| PBT & fuzz lab | `moon run examples/pbt_fuzz_lab` | infra_pbt + infra_fuzz | Property checking, shrinking to boundary counterexample (500), distribution stats, round-trip laws, seeded graph fuzzing + structural shrinking |
 
 Verify all example outputs with checked markers:
 
@@ -208,6 +217,10 @@ Latest evidence:
 [`docs/examples/latest-examples-run.md`](./docs/examples/latest-examples-run.md)
 and
 [`docs/examples/latest-examples-run.json`](./docs/examples/latest-examples-run.json).
+
+Hands-on tutorials for every direction (key APIs + minimal snippets + the
+demo that exercises them): [`docs/tutorials/README.md`](./docs/tutorials/README.md)
+(中文版: [`docs/zh/tutorials.md`](./docs/zh/tutorials.md)).
 
 ---
 

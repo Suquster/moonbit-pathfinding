@@ -1,0 +1,17 @@
+// Runnable example: compress_workbench
+//
+// Compression workbench with the `src/infra_compress` direction:
+// DEFLATE / zlib / gzip / zstd / LZ4 round-trips with ratios, dictionary
+// compression, and corrupted-input rejection.
+//
+// Run with:
+//   moon run examples/compress_workbench
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_compress" @compress,
+  "Suquster/moonbit-pathfinding/src/infra_codec" @codec,
+}
+
+options(
+  "is-main": true,
+)

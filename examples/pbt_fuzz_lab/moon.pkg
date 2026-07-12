@@ -1,0 +1,18 @@
+// Runnable example: pbt_fuzz_lab
+//
+// Property-based testing + fuzzing toolchain with the `src/infra_pbt` and
+// `src/infra_fuzz` directions: generators, properties with shrinking
+// counterexamples, distribution stats, encode/decode round-trip laws, and
+// random graph generation with structural shrinking.
+//
+// Run with:
+//   moon run examples/pbt_fuzz_lab
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_pbt" @pbt,
+  "Suquster/moonbit-pathfinding/src/infra_fuzz" @fuzz,
+}
+
+options(
+  "is-main": true,
+)

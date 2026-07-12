@@ -1,0 +1,16 @@
+// Runnable example: cli_devtool
+//
+// CLI argument-parsing toolchain with the `src/infra_cli` direction:
+// subcommands, flags/values with defaults, typed validation, typo
+// suggestions via Damerau-Levenshtein, help text, and shell completions.
+//
+// Run with:
+//   moon run examples/cli_devtool
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_cli" @cli,
+}
+
+options(
+  "is-main": true,
+)

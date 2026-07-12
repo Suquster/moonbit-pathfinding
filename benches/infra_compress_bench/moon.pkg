@@ -1,0 +1,12 @@
+// Package: benches/infra_compress_bench
+//
+// 压缩方向基准：DEFLATE / zstd(entropy) / LZ4 在重复性日志负载上的
+// 压缩 + 解压 round-trip 吞吐与压缩率对比。
+//
+// 运行命令（native 前置 `export LIBRARY_PATH=/usr/lib64:/usr/lib`）：
+//   moon bench -p benches/infra_compress_bench --target native
+import {
+  "moonbitlang/core/bench",
+  "Suquster/moonbit-pathfinding/src/infra_compress" @compress,
+  "Suquster/moonbit-pathfinding/src/infra_codec" @codec,
+}

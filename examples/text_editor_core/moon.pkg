@@ -1,0 +1,18 @@
+// Runnable example: text_editor_core
+//
+// Text + data-structure toolchain with the `src/infra_text` and
+// `src/infra_ds` directions: rope editing with line/column mapping,
+// piece-table edits, grapheme clusters and display width, Myers character
+// diff, plus LRU cache, bloom filter, and roaring bitmap indexes.
+//
+// Run with:
+//   moon run examples/text_editor_core
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_text" @text,
+  "Suquster/moonbit-pathfinding/src/infra_ds" @ds,
+}
+
+options(
+  "is-main": true,
+)

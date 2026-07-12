@@ -4,7 +4,7 @@
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
 [![CI](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml/badge.svg)](https://github.com/Suquster/moonbit-pathfinding/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.2.0-blue)](./CHANGELOG.md)
 [![mooncakes.io](https://img.shields.io/badge/mooncakes.io-Suquster%2Fmoonbit--pathfinding-orange)](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)
 [![Playground](https://img.shields.io/badge/Playground-live-brightgreen)](https://suquster.github.io/moonbit-pathfinding/)
 [![Executable contracts](https://img.shields.io/badge/proof_predicates-runtime_checked-yellow)](#formal-verification)
@@ -24,7 +24,7 @@
    （BFS → A\* → JPS → ALT → CH → Hub Labels → PHAST）+ 20 个 INFRA 方向，
    已发布 [mooncakes.io](https://mooncakes.io/docs/Suquster/moonbit-pathfinding)，
    并提供[打开即玩的浏览器 playground](https://suquster.github.io/moonbit-pathfinding/)。
-2. **生态工程标杆** — 3331 个测试跨四后端（wasm-gc / native / js / wasm）、
+2. **生态工程标杆** — 3339 个测试跨四后端（wasm-gc / native / js / wasm）、
    可执行 proof predicates、可执行 README（`moon test README.mbt.md`）、
    DST + 差分 PBT、零警告 `--deny-warn` CI 门禁，以及已发布的
    [对标 Rust `pathfinding` crate 正面对比](./benches/results/latest-rust-comparison.md)
@@ -138,6 +138,15 @@ path = [0, 1, 2, 3]
 | 序列化工作台 | `moon run examples/serialization_studio` | serialization | .proto 解析校验、类型化二进制/JSON 往返、规范字节、破坏性变更检测、代码生成 |
 | DST 探索器 | `moon run examples/dst_explorer` | dst | 种子确定性重放、分区/崩溃注错、DPOR 探索、缩小最小复现、线性一致性检查 |
 | 配置与差分运维 | `moon run examples/config_diff_ops` | infra_config + infra_diff | TOML/INI 解析、统一 diff、补丁应用/回退、diff3 三方合并冲突、semver 门禁 |
+| 哈希完整性 | `moon run examples/hash_integrity` | infra_hash | SHA-2/SHA-3/BLAKE2b 摘要（sha256 与 `sha256sum` 一致）、HMAC 防篡改、HKDF/PBKDF2 派生、流式 == 一次性、xxHash 分片 |
+| 压缩工作台 | `moon run examples/compress_workbench` | infra_compress | DEFLATE/zlib/gzip/zstd/LZ4 压缩率对比、无损往返、字典压缩、损坏归档拒绝 |
+| 时间调度器 | `moon run examples/time_scheduler` | infra_time + infra_timer | RFC 3339/2822 + strftime、公历运算、POSIX TZ 夏令时、时长往返、时间轮、工作窃取调度（真实 steal 计数） |
+| 韧性网关 | `moon run examples/resilience_gateway` | infra_resilience | 封顶退避重试、熔断器状态机、令牌桶 vs 滑动窗口、隔板、AIMD、对冲请求 |
+| CLI 开发工具 | `moon run examples/cli_devtool` | infra_cli | 子命令解析与默认值、带 choices 的类型化校验、拼写建议、短参展开、生成 help + bash 补全 |
+| 观测套件 | `moon run examples/observability_kit` | infra_metrics | HDR 直方图尾部分位数、可合并 DDSketch 分位数、span 追踪 total vs self 时间 |
+| 文本编辑器内核 | `moon run examples/text_editor_core` | infra_text + infra_ds | Rope 与 piece table 编辑收敛、字素/显示宽度、Myers 差分、LRU 淘汰、布隆过滤器、roaring 位图求交 |
+| 解析器演练场 | `moon run examples/parser_playground` | parser_combinator | 优先级正确的表达式求值、JSON 精确错误位置渲染、错误恢复诊断、增量分块解析 |
+| PBT 与 fuzz 实验室 | `moon run examples/pbt_fuzz_lab` | infra_pbt + infra_fuzz | 属性检查、缩小到边界反例（500）、分布统计、往返律、种子化图 fuzz 与结构缩小 |
 
 一键验证示例输出 marker：
 
@@ -149,6 +158,10 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts\examples_guard.ps1
 [`docs/examples/latest-examples-run.md`](./docs/examples/latest-examples-run.md)
 与
 [`docs/examples/latest-examples-run.json`](./docs/examples/latest-examples-run.json)。
+
+各方向上手教程（关键 API + 最小片段 + 对应 demo）：
+[`docs/zh/tutorials.md`](./docs/zh/tutorials.md)（英文完整版
+[`docs/tutorials/README.md`](./docs/tutorials/README.md)）。
 
 ---
 

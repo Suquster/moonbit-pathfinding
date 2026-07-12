@@ -1,0 +1,16 @@
+// Runnable example: parser_playground
+//
+// Parser-combinator toolchain with the `src/parser_combinator` direction:
+// arithmetic expression parsing and evaluation, JSON parsing with error
+// rendering, error recovery, and incremental (streaming) parsing.
+//
+// Run with:
+//   moon run examples/parser_playground
+
+import {
+  "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
+}
+
+options(
+  "is-main": true,
+)

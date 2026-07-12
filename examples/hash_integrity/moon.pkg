@@ -1,0 +1,16 @@
+// Runnable example: hash_integrity
+//
+// Hashing / MAC / KDF toolchain with the `src/infra_hash` direction:
+// FIPS digests (SHA-2 / SHA-3 / BLAKE2b / MD5 / SHA-1), HMAC, HKDF,
+// PBKDF2, streaming hashers, and fast non-crypto hashes for tables.
+//
+// Run with:
+//   moon run examples/hash_integrity
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_hash" @hash,
+}
+
+options(
+  "is-main": true,
+)

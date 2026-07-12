@@ -32,6 +32,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 无。
 
+## [0.2.0] - 2026-07-12
+
+### Added — INFRA flagship demos, tutorials & performance evidence（INFRA 旗舰 demo、教程与性能证据）
+
+- feat(examples): second demo batch — `actor_worker_pool` (supervised
+  restart / routing / backpressure), `build_pipeline` (wave scheduling /
+  incremental rebuild / auto-bisect), `serialization_studio` (typed wire +
+  JSON round-trips / breaking-change detection), `dst_explorer`
+  (deterministic replay / DPOR / linearizability), `config_diff_ops`
+  (TOML/INI + diff3 + semver)（第二批 5 个 INFRA 端到端 demo）
+- feat(examples): third demo batch — `hash_integrity`（SHA-2/3、BLAKE2b、
+  HMAC 防篡改、HKDF/PBKDF2、流式 == 一次性、xxHash 分片）、
+  `compress_workbench`（DEFLATE/zlib/gzip/zstd/LZ4 压缩率对比、字典压缩、
+  损坏归档拒绝）、`time_scheduler`（RFC 3339/2822、POSIX TZ 夏令时、
+  时间轮、工作窃取调度）、`resilience_gateway`（退避重试、熔断器、
+  令牌桶/滑动窗口、隔板、AIMD、对冲请求）、`cli_devtool`（类型化校验、
+  拼写建议、help/补全生成）、`observability_kit`（HDR 直方图、DDSketch、
+  span 追踪）、`text_editor_core`（rope/piece table、Myers diff、
+  LRU/布隆/roaring）、`parser_playground`（表达式求值、JSON 错误恢复、
+  增量解析）、`pbt_fuzz_lab`（属性缩小、往返律、种子化图 fuzz）——
+  20 directions now ship runnable end-to-end demos
+- feat(bench): `benches/infra_hash_bench` (crypto digests vs fast hashes,
+  streaming == one-shot smoke) and `benches/infra_compress_bench`
+  (deflate/zstd/lz4 round-trip throughput, lossless smoke); native results
+  archived in `benches/results/infra-hash-compress-native-2026-07-12.md`
+  （新增哈希/压缩原生基准与结果归档）
+- docs(tutorials): hands-on handbook for every direction —
+  `docs/tutorials/README.md` (EN) and `docs/zh/tutorials.md` (中文)，
+  key APIs + runnable snippets + demo mapping
+- docs(readme): bilingual demo overview tables now list all 20 runnable
+  example workflows（README 中英 demo 总览表补齐 20 条）
+
 ## [0.1.0] - 2026-07-12
 
 ### Added — Real OSM Playground & ecosystem（真实 OSM Playground 与生态）
@@ -246,5 +278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project adopts the "successor function" API philosophy from Rust's
   `pathfinding` crate, with independent algorithm implementations.
 
-[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/Suquster/moonbit-pathfinding/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/Suquster/moonbit-pathfinding/releases/tag/v0.0.1

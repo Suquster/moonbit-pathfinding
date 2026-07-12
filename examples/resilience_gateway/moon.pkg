@@ -1,0 +1,17 @@
+// Runnable example: resilience_gateway
+//
+// Resilience toolchain with the `src/infra_resilience` direction:
+// exponential backoff with jitter, retry budgets, circuit breakers,
+// token-bucket and sliding-window rate limiting, bulkhead isolation,
+// AIMD adaptive concurrency, and hedged requests.
+//
+// Run with:
+//   moon run examples/resilience_gateway
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_resilience" @res,
+}
+
+options(
+  "is-main": true,
+)

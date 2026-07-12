@@ -138,11 +138,14 @@ then import `"Suquster/moonbit-pathfinding/src/directed"` in your
   perfect-maze generator + A\* solver CLI.
 
 The repository also treats its INFRA directions as first-class citizens,
-not side quests: each ships a runnable end-to-end workflow under
-`examples/` (`moon run examples/actor_worker_pool`, `build_pipeline`,
-`serialization_studio`, `dst_explorer`, `config_diff_ops`,
-`mini_compiler_pipeline`, `regex_toolkit`, `log_pipeline`), backed by the
-same test/bench/acceptance gates as the pathfinding core.
+not side quests: all 20 directions ship runnable end-to-end workflows under
+`examples/` — from `actor_worker_pool`, `build_pipeline`,
+`serialization_studio`, `dst_explorer` and `config_diff_ops` to
+`hash_integrity`, `compress_workbench`, `time_scheduler`,
+`resilience_gateway`, `cli_devtool`, `observability_kit`,
+`text_editor_core`, `parser_playground` and `pbt_fuzz_lab` — backed by the
+same test/bench/acceptance gates as the pathfinding core, with per-direction
+tutorials in `docs/tutorials/README.md`.
 
 ## Takeaways for MoonBit library authors
 

@@ -1,0 +1,18 @@
+// Runnable example: time_scheduler
+//
+// Date/time + timer toolchain with the `src/infra_time` and
+// `src/infra_timer` directions: RFC 3339 / ISO 8601 parsing and
+// formatting, civil-calendar arithmetic, POSIX TZ DST rules, ISO 8601
+// durations, a hierarchical timer wheel, and a work-stealing scheduler.
+//
+// Run with:
+//   moon run examples/time_scheduler
+
+import {
+  "Suquster/moonbit-pathfinding/src/infra_time" @time,
+  "Suquster/moonbit-pathfinding/src/infra_timer" @timer,
+}
+
+options(
+  "is-main": true,
+)

@@ -12,6 +12,8 @@ pub fn completion_zsh(Command) -> String
 
 pub fn dl_distance(String, String) -> Int
 
+pub fn dl_distance_bounded(String, String, Int) -> Int
+
 pub fn expand_bundled_shorts(Array[String], Array[ArgSpec]) -> Array[String]
 
 pub fn flag_spec(String, String, String) -> ArgSpec

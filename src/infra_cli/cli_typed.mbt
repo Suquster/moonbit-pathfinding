@@ -388,50 +388,83 @@ pub fn ParsedArgs::flag_tristate(self : ParsedArgs, name : String) -> Bool? {
 ///|
 /// Damerau–Levenshtein 编辑距离（含相邻换位；clap/git 建议用同族度量）。
 pub fn dl_distance(a : String, b : String) -> Int {
+  let cap = if a.length() > b.length() { a.length() } else { b.length() }
+  dl_distance_bounded(a, b, cap)
+}
+
+///|
+/// 带上界的 Damerau–Levenshtein：距离 ≤ `limit` 时返回精确值，
+/// 否则返回 `limit + 1`。Ukkonen 对角带（只计算 |i-j| ≤ limit 的单元）
+/// + 三行滚动（O(m) 内存）+ 行最小值提前退出，did-you-mean 扫描的
+/// 典型路径从 O(n·m) 降到 O(limit·min(n,m))。
+pub fn dl_distance_bounded(a : String, b : String, limit : Int) -> Int {
   let n = a.length()
   let m = b.length()
+  let len_gap = if n > m { n - m } else { m - n }
+  if limit < 0 || len_gap > limit {
+    return limit + 1
+  }
   if n == 0 {
     return m
   }
   if m == 0 {
     return n
   }
-  // (n+1)×(m+1) DP 表。
-  let dp : Array[Array[Int]] = []
-  for i in 0..<(n + 1) {
-    let row : Array[Int] = Array::make(m + 1, 0)
-    row[0] = i
-    dp.push(row)
-  }
+  let inf = limit + 1
+  let mut prev2 : Array[Int] = Array::make(m + 1, inf)
+  let mut prev : Array[Int] = Array::make(m + 1, inf)
+  let mut cur : Array[Int] = Array::make(m + 1, inf)
   for j in 0..<(m + 1) {
-    dp[0][j] = j
+    prev[j] = if j <= limit { j } else { inf }
   }
   for i in 1..<(n + 1) {
-    for j in 1..<(m + 1) {
-      let cost = if a.get_char(i - 1).unwrap() == b.get_char(j - 1).unwrap() {
-        0
-      } else {
-        1
+    let jlo = if i - limit > 1 { i - limit } else { 1 }
+    let jhi = if i + limit < m { i + limit } else { m }
+    for j in 0..<(m + 1) {
+      cur[j] = inf
+    }
+    if jlo == 1 && i <= limit {
+      cur[0] = i
+    }
+    let ai = a.get_char(i - 1).unwrap()
+    let mut row_min = inf
+    for j in jlo..<(jhi + 1) {
+      let bj = b.get_char(j - 1).unwrap()
+      let cost = if ai == bj { 0 } else { 1 }
+      let mut best = prev[j] + 1 // 删除
+      if cur[j - 1] + 1 < best {
+        best = cur[j - 1] + 1 // 插入
       }
-      let mut best = dp[i - 1][j] + 1 // 删除
-      if dp[i][j - 1] + 1 < best {
-        best = dp[i][j - 1] + 1 // 插入
-      }
-      if dp[i - 1][j - 1] + cost < best {
-        best = dp[i - 1][j - 1] + cost // 替换
+      if prev[j - 1] + cost < best {
+        best = prev[j - 1] + cost // 替换
       }
       if i > 1 &&
         j > 1 &&
-        a.get_char(i - 1).unwrap() == b.get_char(j - 2).unwrap() &&
-        a.get_char(i - 2).unwrap() == b.get_char(j - 1).unwrap() {
-        if dp[i - 2][j - 2] + 1 < best {
-          best = dp[i - 2][j - 2] + 1 // 相邻换位
+        ai == b.get_char(j - 2).unwrap() &&
+        a.get_char(i - 2).unwrap() == bj {
+        if prev2[j - 2] + 1 < best {
+          best = prev2[j - 2] + 1 // 相邻换位
         }
       }
-      dp[i][j] = best
+      let clamped = if best > inf { inf } else { best }
+      cur[j] = clamped
+      if clamped < row_min {
+        row_min = clamped
+      }
     }
+    if row_min >= inf {
+      return inf
+    }
+    let rotate = prev2
+    prev2 = prev
+    prev = cur
+    cur = rotate
   }
-  dp[n][m]
+  if prev[m] > limit {
+    inf
+  } else {
+    prev[m]
+  }
 }
 
 ///|
@@ -445,7 +478,14 @@ pub fn suggest_option(
   let mut best : String? = None
   let mut best_d = max_distance + 1
   for c in candidates {
-    let d = dl_distance(unknown, c)
+    let limit = match best {
+      Some(_) => best_d
+      None => best_d - 1
+    }
+    let d = dl_distance_bounded(unknown, c, limit)
+    if d > limit {
+      continue
+    }
     if d < best_d {
       best_d = d
       best = Some(c)

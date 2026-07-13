@@ -186,9 +186,16 @@ pub fn diff_patience(old : Array[String], new : Array[String]) -> Array[DiffOp] 
 
 ///|
 /// histogram 递归主体：选旧侧出现次数最少（≤64）的公共行作分割锚。
+/// 行已在入口处 intern 为整数 id（`old_ids`/`new_ids`），直方图用
+/// 数组计数代替字符串哈希；频次并列时取最靠近新侧区间中点的锚，
+/// 使递归两侧规模均衡（避免退化成 O(n²) 的链式切分）。
 fn histogram_rec(
   old : Array[String],
   new : Array[String],
+  old_ids : Array[Int],
+  new_ids : Array[Int],
+  counts : Array[Int],
+  first_idx : Array[Int],
   ol : Int,
   oh : Int,
   nl : Int,
@@ -219,41 +226,58 @@ fn histogram_rec(
       out.push(Delete(old[i]))
     }
   } else {
-    // 旧侧行频直方图。
-    let freq : Map[String, Int] = {}
+    // 旧侧行频直方图（数组计数，同时记录首次出现下标）。
     for i in lo_o..<hi_o {
-      freq[old[i]] = freq.get(old[i]).unwrap_or(0) + 1
+      let id = old_ids[i]
+      if counts[id] == 0 {
+        first_idx[id] = i
+      }
+      counts[id] = counts[id] + 1
     }
-    // 新侧扫描：选旧侧频次最低（且 ≤64，JGit MAX_CHAIN_LENGTH）的公共行。
+    // 新侧扫描：选旧侧频次最低（且 ≤64，JGit MAX_CHAIN_LENGTH）的公共行；
+    // 频次并列时取最靠近区间中点的锚，使两侧递归规模均衡。
+    let mid = (lo_n + hi_n) / 2
     let mut best_count = 65
     let mut best_old = -1
     let mut best_new = -1
-    for j in lo_n..<nh {
-      if j >= hi_n {
-        break
+    let mut best_gap = 0
+    for j in lo_n..<hi_n {
+      let c = counts[new_ids[j]]
+      if c > 0 && c < 65 {
+        let gap = if j > mid { j - mid } else { mid - j }
+        if c < best_count || (c == best_count && gap < best_gap) {
+          best_count = c
+          best_old = first_idx[new_ids[j]]
+          best_new = j
+          best_gap = gap
+        }
       }
-      match freq.get(new[j]) {
-        Some(c) =>
-          if c < best_count {
-            // 定位旧侧首个匹配位置。
-            for i in lo_o..<hi_o {
-              if old[i] == new[j] {
-                best_count = c
-                best_old = i
-                best_new = j
-                break
-              }
-            }
-          }
-        None => ()
-      }
+    }
+    // 回收本层计数（只清触碰过的 id，保持每层 O(区间长度)）。
+    for i in lo_o..<hi_o {
+      counts[old_ids[i]] = 0
     }
     if best_old < 0 {
       diff_fallback(old, new, lo_o, hi_o, lo_n, hi_n, out)
     } else {
-      histogram_rec(old, new, lo_o, best_old, lo_n, best_new, out)
+      histogram_rec(
+        old, new, old_ids, new_ids, counts, first_idx, lo_o, best_old, lo_n, best_new,
+        out,
+      )
       out.push(Keep(old[best_old]))
-      histogram_rec(old, new, best_old + 1, hi_o, best_new + 1, hi_n, out)
+      histogram_rec(
+        old,
+        new,
+        old_ids,
+        new_ids,
+        counts,
+        first_idx,
+        best_old + 1,
+        hi_o,
+        best_new + 1,
+        hi_n,
+        out,
+      )
     }
   }
   for k in 0..<tail {
@@ -269,7 +293,45 @@ pub fn diff_histogram(
   old : Array[String],
   new : Array[String],
 ) -> Array[DiffOp] {
+  // 行 intern：字符串只哈希一次，递归内层全部走整数 id 数组。
+  let table : Map[String, Int] = {}
+  let old_ids : Array[Int] = Array::make(old.length(), 0)
+  for i in 0..<old.length() {
+    match table.get(old[i]) {
+      Some(id) => old_ids[i] = id
+      None => {
+        let id = table.size()
+        table[old[i]] = id
+        old_ids[i] = id
+      }
+    }
+  }
+  let new_ids : Array[Int] = Array::make(new.length(), 0)
+  for j in 0..<new.length() {
+    match table.get(new[j]) {
+      Some(id) => new_ids[j] = id
+      None => {
+        let id = table.size()
+        table[new[j]] = id
+        new_ids[j] = id
+      }
+    }
+  }
+  let counts : Array[Int] = Array::make(table.size(), 0)
+  let first_idx : Array[Int] = Array::make(table.size(), -1)
   let out : Array[DiffOp] = []
-  histogram_rec(old, new, 0, old.length(), 0, new.length(), out)
+  histogram_rec(
+    old,
+    new,
+    old_ids,
+    new_ids,
+    counts,
+    first_idx,
+    0,
+    old.length(),
+    0,
+    new.length(),
+    out,
+  )
   out
 }

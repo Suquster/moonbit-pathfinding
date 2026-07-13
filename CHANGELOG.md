@@ -51,6 +51,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/examples/latest-examples-run.md` / `.json`
   （20 个 demo 输出快照守卫接入验收门禁）
 
+### Performance
+
+- perf(infra_diff): `diff_histogram` — line interning + array histogram +
+  first-occurrence tracking + balanced anchor tie-break; 1024-line diff
+  2.91 ms → 211 µs (**13.8×**), scaling now near-linear
+  （histogram diff 提速 13.8×，扩展性接近线性）
+- perf(infra_cli): new `dl_distance_bounded` (Ukkonen band + rolling rows +
+  early exit) powering `suggest_option`; 512-candidate scan 2.19 ms → 520 µs
+  (**4.2×**); also fixes an off-by-one acceptance at `max_distance + 1`
+  （did-you-mean 提速 4.2×，并修复边界接受缺陷）
+- perf(infra_time): `format_iso8601` / `format_iso_date` write digits
+  directly into one StringBuilder; 140.85 µs → 44.98 µs per 256 formats
+  (**3.1×**); before/after evidence in
+  `benches/results/perf-optimizations-native-2026-07-12.md`
+  （ISO 8601 格式化提速 3.1×，前后对照已归档）
+
 ### Fixed
 
 - fix(release): write mooncakes credentials without UTF-8 BOM in the release

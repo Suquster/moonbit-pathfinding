@@ -171,34 +171,58 @@ pub fn DateTime::diff_seconds(self : DateTime, other : DateTime) -> Int64 {
 }
 
 ///|
-/// 固定宽度十进制（左补零）。
-fn pad(n : Int, width : Int) -> String {
-  let s = n.to_string()
-  let sb = StringBuilder::new()
-  for _ in 0..<(width - s.length()) {
-    sb.write_char('0')
+/// 固定宽度十进制直接写入 builder（左补零，无中间字符串分配）；
+/// 负数或超宽时退化为普通十进制输出。
+fn write_padded(sb : StringBuilder, n : Int, width : Int) -> Unit {
+  let mut div = 1
+  for _ in 1..<width {
+    div = div * 10
   }
-  sb.write_string(s)
-  sb.to_string()
+  if n < 0 || n >= div * 10 {
+    sb.write_string(n.to_string())
+    return
+  }
+  let mut d = div
+  while d > 0 {
+    sb.write_char((48 + n / d % 10).unsafe_to_char())
+    d = d / 10
+  }
 }
 
 ///|
 /// 格式化为 ISO-8601 / RFC 3339（UTC，`YYYY-MM-DDTHH:MM:SS[.mmm]Z`；
 /// 毫秒为 0 时省略小数部分）。
 pub fn format_iso8601(dt : DateTime) -> String {
-  let base = "\{pad(dt.year, 4)}-\{pad(dt.month, 2)}-\{pad(dt.day, 2)}" +
-    "T\{pad(dt.hour, 2)}:\{pad(dt.minute, 2)}:\{pad(dt.second, 2)}"
+  let sb = StringBuilder::new()
+  write_padded(sb, dt.year, 4)
+  sb.write_char('-')
+  write_padded(sb, dt.month, 2)
+  sb.write_char('-')
+  write_padded(sb, dt.day, 2)
+  sb.write_char('T')
+  write_padded(sb, dt.hour, 2)
+  sb.write_char(':')
+  write_padded(sb, dt.minute, 2)
+  sb.write_char(':')
+  write_padded(sb, dt.second, 2)
   if dt.millis > 0 {
-    base + ".\{pad(dt.millis, 3)}Z"
-  } else {
-    base + "Z"
+    sb.write_char('.')
+    write_padded(sb, dt.millis, 3)
   }
+  sb.write_char('Z')
+  sb.to_string()
 }
 
 ///|
 /// 仅日期格式（`YYYY-MM-DD`）。
 pub fn format_iso_date(dt : DateTime) -> String {
-  "\{pad(dt.year, 4)}-\{pad(dt.month, 2)}-\{pad(dt.day, 2)}"
+  let sb = StringBuilder::new()
+  write_padded(sb, dt.year, 4)
+  sb.write_char('-')
+  write_padded(sb, dt.month, 2)
+  sb.write_char('-')
+  write_padded(sb, dt.day, 2)
+  sb.to_string()
 }
 
 ///|

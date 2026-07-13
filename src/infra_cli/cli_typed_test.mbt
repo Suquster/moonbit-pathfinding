@@ -162,6 +162,28 @@ test "dl distance with transposition" {
 }
 
 ///|
+/// 带上界的 DL 距离：≤ limit 精确、> limit 返回 limit+1，与全量一致。
+test "dl distance bounded agrees with exact within limit" {
+  assert_true(dl_distance_bounded("kitten", "sitting", 3) == 3)
+  assert_true(dl_distance_bounded("kitten", "sitting", 2) == 3) // limit+1
+  assert_true(dl_distance_bounded("acb", "abc", 1) == 1) // 相邻换位
+  assert_true(dl_distance_bounded("", "abc", 5) == 3)
+  assert_true(dl_distance_bounded("abc", "", 2) == 3) // 长度差短路
+  assert_true(dl_distance_bounded("same", "same", 0) == 0)
+  assert_true(dl_distance_bounded("a", "b", -1) == 0) // limit<0 → limit+1
+  for pair in [("verbose", "verbos"), ("color", "colour"), ("abc", "xyz")] {
+    let exact = dl_distance(pair.0, pair.1)
+    assert_true(dl_distance_bounded(pair.0, pair.1, 10) == exact)
+  }
+}
+
+///|
+/// 距离恰为 max_distance+1 的唯一候选不得被建议（契约 ≤ max_distance）。
+test "suggest option rejects distance just above max" {
+  assert_true(suggest_option("abcdef", ["xbcdyz"]) is None)
+}
+
+///|
 /// did-you-mean：距离 ≤2 才建议、并列取字典序最小。
 test "suggest option did you mean" {
   let cands = ["verbose", "version", "output", "color"]

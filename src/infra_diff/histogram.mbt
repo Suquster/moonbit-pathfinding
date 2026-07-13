@@ -300,7 +300,7 @@ pub fn diff_histogram(
     match table.get(old[i]) {
       Some(id) => old_ids[i] = id
       None => {
-        let id = table.size()
+        let id = table.length()
         table[old[i]] = id
         old_ids[i] = id
       }
@@ -311,14 +311,14 @@ pub fn diff_histogram(
     match table.get(new[j]) {
       Some(id) => new_ids[j] = id
       None => {
-        let id = table.size()
+        let id = table.length()
         table[new[j]] = id
         new_ids[j] = id
       }
     }
   }
-  let counts : Array[Int] = Array::make(table.size(), 0)
-  let first_idx : Array[Int] = Array::make(table.size(), -1)
+  let counts : Array[Int] = Array::make(table.length(), 0)
+  let first_idx : Array[Int] = Array::make(table.length(), -1)
   let out : Array[DiffOp] = []
   histogram_rec(
     old,

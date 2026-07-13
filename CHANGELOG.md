@@ -67,6 +67,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `benches/results/perf-optimizations-native-2026-07-12.md`
   （ISO 8601 格式化提速 3.1×，前后对照已归档）
 
+- perf(infra_config): `ini_parse` rewritten as single-pass index scanning
+  (no line splitting / char arrays); 64-section parse 258.72 µs → 30.57 µs
+  (**8.5×**)（INI 解析提速 8.5×）
+- perf(infra_time): `parse_iso8601` uses direct charcode indexing, 3.7×;
+  `strftime` / `format_rfc2822` use fixed-width direct writes
+  （ISO 8601 解析提速 3.7×）
+- perf(infra_cli): zero-allocation spec matching (`tail_eq`), single-pass
+  `split_eq`, builder-direct help padding; `parse_512` 2.8×, `help_text` 1.3×
+  （CLI 解析提速 2.8×）
+- perf(infra_hash): Keccak-f[1600] ρ+π in-place lane chasing
+  (XKCP/tiny_sha3 form), zero per-round allocation; SHA3-256 **1.5×**
+  （SHA-3 提速 1.5×）
+
 ### Fixed
 
 - fix(release): write mooncakes credentials without UTF-8 BOM in the release

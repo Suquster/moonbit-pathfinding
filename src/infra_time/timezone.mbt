@@ -303,34 +303,28 @@ pub fn format_rfc2822(dt : DateTime, offset_minutes : Int) -> String {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
     "Dec",
   ]
-  let pad2 = fn(v : Int) -> String {
-    if v < 10 {
-      "0" + v.to_string()
-    } else {
-      v.to_string()
-    }
-  }
   let abs_off = if offset_minutes < 0 {
     -offset_minutes
   } else {
     offset_minutes
   }
-  let sign = if offset_minutes < 0 { "-" } else { "+" }
-  wd_names[dt.weekday()] +
-  ", " +
-  pad2(dt.day) +
-  " " +
-  mon_names[dt.month - 1] +
-  " " +
-  dt.year.to_string() +
-  " " +
-  pad2(dt.hour) +
-  ":" +
-  pad2(dt.minute) +
-  ":" +
-  pad2(dt.second) +
-  " " +
-  sign +
-  pad2(abs_off / 60) +
-  pad2(abs_off % 60)
+  let sb = StringBuilder::new()
+  sb.write_string(wd_names[dt.weekday()])
+  sb.write_string(", ")
+  write_padded(sb, dt.day, 2)
+  sb.write_char(' ')
+  sb.write_string(mon_names[dt.month - 1])
+  sb.write_char(' ')
+  sb.write_string(dt.year.to_string())
+  sb.write_char(' ')
+  write_padded(sb, dt.hour, 2)
+  sb.write_char(':')
+  write_padded(sb, dt.minute, 2)
+  sb.write_char(':')
+  write_padded(sb, dt.second, 2)
+  sb.write_char(' ')
+  sb.write_char(if offset_minutes < 0 { '-' } else { '+' })
+  write_padded(sb, abs_off / 60, 2)
+  write_padded(sb, abs_off % 60, 2)
+  sb.to_string()
 }

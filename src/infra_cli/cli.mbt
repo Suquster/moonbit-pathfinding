@@ -100,19 +100,31 @@ pub fn value_spec(
 }
 
 ///|
+/// token 从 `off` 起的尾部是否等于 `name`（零分配比较）。
+fn tail_eq(token : String, off : Int, name : String) -> Bool {
+  if token.length() - off != name.length() {
+    return false
+  }
+  for i in 0..<name.length() {
+    if token.unsafe_charcode_at(off + i) != name.unsafe_charcode_at(i) {
+      return false
+    }
+  }
+  true
+}
+
+///|
 /// 在规格表中查找（长名或短名）。
 fn find_spec(specs : Array[ArgSpec], token : String) -> ArgSpec? {
   if token.has_prefix("--") {
-    let name = strip_prefix(token, 2)
     for s in specs {
-      if s.name == name {
+      if tail_eq(token, 2, s.name) {
         return Some(s)
       }
     }
   } else if token.has_prefix("-") && token.length() > 1 {
-    let short = strip_prefix(token, 1)
     for s in specs {
-      if s.short != "" && s.short == short {
+      if s.short != "" && tail_eq(token, 1, s.short) {
         return Some(s)
       }
     }
@@ -121,45 +133,15 @@ fn find_spec(specs : Array[ArgSpec], token : String) -> ArgSpec? {
 }
 
 ///|
-/// 去掉前 n 个字符。
-fn strip_prefix(s : String, n : Int) -> String {
-  let sb = StringBuilder::new()
-  let mut i = 0
-  for c in s.iter() {
-    if i >= n {
-      sb.write_char(c)
-    }
-    i = i + 1
-  }
-  sb.to_string()
-}
-
-///|
 /// 找 '=' 分割 `--name=value`；无 '=' 返回 None。
 fn split_eq(token : String) -> (String, String)? {
-  let mut idx = -1
-  let mut i = 0
-  for c in token.iter() {
-    if c == '=' && idx < 0 && i >= 2 {
-      idx = i
+  let n = token.length()
+  for i in 2..<n {
+    if token.unsafe_charcode_at(i) == 61 { // '='
+      return Some((token[0:i].to_string(), token[i + 1:n].to_string()))
     }
-    i = i + 1
   }
-  if idx < 0 {
-    return None
-  }
-  let left = StringBuilder::new()
-  let right = StringBuilder::new()
-  let mut j = 0
-  for c in token.iter() {
-    if j < idx {
-      left.write_char(c)
-    } else if j > idx {
-      right.write_char(c)
-    }
-    j = j + 1
-  }
-  Some((left.to_string(), right.to_string()))
+  None
 }
 
 ///|
@@ -307,25 +289,38 @@ pub fn help_text(cmd : Command) -> String {
       }
     }
     for s in cmd.specs {
-      let mut left = "    "
+      let mut left_len = 4
+      sb.write_string("    ")
       if s.short != "" {
-        left = left + "-" + s.short + ", "
+        sb.write_char('-')
+        sb.write_string(s.short)
+        sb.write_string(", ")
+        left_len = left_len + 3 + s.short.length()
       } else {
-        left = left + "    "
+        sb.write_string("    ")
+        left_len = left_len + 4
       }
-      left = left + "--" + s.name
+      sb.write_string("--")
+      sb.write_string(s.name)
+      left_len = left_len + 2 + s.name.length()
       if s.kind == Value {
-        left = left + " <VALUE>"
+        sb.write_string(" <VALUE>")
+        left_len = left_len + 8
       }
-      while left.length() < width + 20 {
-        left = left + " "
+      while left_len < width + 20 {
+        sb.write_char(' ')
+        left_len = left_len + 1
       }
-      sb.write_string(left + s.help)
+      sb.write_string(s.help)
       match s.default {
-        Some(d) => sb.write_string(" [default: " + d + "]")
+        Some(d) => {
+          sb.write_string(" [default: ")
+          sb.write_string(d)
+          sb.write_char(']')
+        }
         None => ()
       }
-      sb.write_string("\n")
+      sb.write_char('\n')
     }
   }
   if cmd.subcommands.length() > 0 {

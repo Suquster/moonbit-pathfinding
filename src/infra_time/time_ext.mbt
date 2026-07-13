@@ -416,13 +416,6 @@ pub fn parse_duration(text : String) -> Duration? {
 /// `%e` 无前导零日、`%%` 字面 `%`；未知指示符原样保留。
 pub fn strftime(dt : DateTime, pattern : String) -> String {
   let sb = StringBuilder::new()
-  let pad2 = fn(v : Int) -> String {
-    if v < 10 {
-      "0" + v.to_string()
-    } else {
-      v.to_string()
-    }
-  }
   let wd_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   let mon_names = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
@@ -438,33 +431,13 @@ pub fn strftime(dt : DateTime, pattern : String) -> String {
     }
     let d = pattern.get_char(i + 1).unwrap()
     match d {
-      'Y' => {
-        let y = dt.year
-        if y < 10 {
-          sb.write_string("000" + y.to_string())
-        } else if y < 100 {
-          sb.write_string("00" + y.to_string())
-        } else if y < 1000 {
-          sb.write_string("0" + y.to_string())
-        } else {
-          sb.write_string(y.to_string())
-        }
-      }
-      'm' => sb.write_string(pad2(dt.month))
-      'd' => sb.write_string(pad2(dt.day))
-      'H' => sb.write_string(pad2(dt.hour))
-      'M' => sb.write_string(pad2(dt.minute))
-      'S' => sb.write_string(pad2(dt.second))
-      'j' => {
-        let doy = dt.day_of_year()
-        if doy < 10 {
-          sb.write_string("00" + doy.to_string())
-        } else if doy < 100 {
-          sb.write_string("0" + doy.to_string())
-        } else {
-          sb.write_string(doy.to_string())
-        }
-      }
+      'Y' => write_padded(sb, dt.year, 4)
+      'm' => write_padded(sb, dt.month, 2)
+      'd' => write_padded(sb, dt.day, 2)
+      'H' => write_padded(sb, dt.hour, 2)
+      'M' => write_padded(sb, dt.minute, 2)
+      'S' => write_padded(sb, dt.second, 2)
+      'j' => write_padded(sb, dt.day_of_year(), 3)
       'a' => {
         // weekday(): 0=Sunday..6=Saturday（time.mbt 语义）→ 转 ISO 下标。
         let wd = dt.weekday()
@@ -472,15 +445,13 @@ pub fn strftime(dt : DateTime, pattern : String) -> String {
         sb.write_string(wd_names[iso])
       }
       'b' => sb.write_string(mon_names[dt.month - 1])
-      'e' =>
-        sb.write_string(
-          if dt.day < 10 {
-            " " + dt.day.to_string()
-          } else {
-            dt.day.to_string()
-          },
-        )
-      '%' => sb.write_string("%")
+      'e' => {
+        if dt.day < 10 {
+          sb.write_char(' ')
+        }
+        sb.write_string(dt.day.to_string())
+      }
+      '%' => sb.write_char('%')
       _ => {
         sb.write_char('%')
         sb.write_char(d)

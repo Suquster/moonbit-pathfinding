@@ -24,10 +24,19 @@ let keccak_rc : Array[UInt64] = [
 ]
 
 ///|
-/// ρ 步各 lane 的循环左移位数（FIPS 202 表 2，按 x + 5y 索引）。
-let keccak_rho : Array[Int] = [
-  0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18,
-  2, 61, 56, 14,
+/// ρ+π 就地 lane 追逐的旋转位数（FIPS 202 表 2，按 π 轨道序排列，
+/// 即 XKCP/tiny_sha3 的 rotc 表）。
+let keccak_rotc : Array[Int] = [
+  1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43, 62, 18, 39,
+  61, 20, 44,
+]
+
+///|
+/// ρ+π 就地 lane 追逐的目标下标序列（π 轨道：从 lane 1 出发遍历
+/// 全部 24 个非原点 lane，XKCP/tiny_sha3 的 piln 表）。
+let keccak_piln : Array[Int] = [
+  10, 7, 11, 17, 18, 3, 5, 16, 8, 21, 24, 4, 15, 23, 19, 13, 12, 2, 20, 14, 22, 9,
+  6, 1,
 ]
 
 ///|
@@ -51,27 +60,34 @@ fn keccak_f(st : Array[UInt64]) -> Unit {
     }
     for x in 0..<5 {
       let t = bc[(x + 4) % 5] ^ rotl64(bc[(x + 1) % 5], 1)
-      for y in 0..<5 {
-        st[x + 5 * y] = st[x + 5 * y] ^ t
-      }
+      st[x] = st[x] ^ t
+      st[x + 5] = st[x + 5] ^ t
+      st[x + 10] = st[x + 10] ^ t
+      st[x + 15] = st[x + 15] ^ t
+      st[x + 20] = st[x + 20] ^ t
     }
-    // ρ + π：lane 旋转与位置换（合并实施，FIPS 202 §3.2.2–3.2.3）。
-    let tmp : Array[UInt64] = Array::make(25, 0UL)
-    for x in 0..<5 {
-      for y in 0..<5 {
-        let idx = x + 5 * y
-        // π: (x, y) → (y, 2x+3y mod 5)。
-        let nx = y
-        let ny = (2 * x + 3 * y) % 5
-        tmp[nx + 5 * ny] = rotl64(st[idx], keccak_rho[idx])
-      }
+    // ρ + π：从 lane 1 出发沿 π 轨道就地追逐（零临时状态分配，
+    // FIPS 202 §3.2.2–3.2.3，XKCP/tiny_sha3 实施形态）。
+    let mut t = st[1]
+    for i in 0..<24 {
+      let j = keccak_piln[i]
+      let hold = st[j]
+      st[j] = rotl64(t, keccak_rotc[i])
+      t = hold
     }
-    // χ：行内非线性。
+    // χ：行内非线性（逐行缓存到 bc，避免整块 25-lane 临时数组）。
     for y in 0..<5 {
-      for x in 0..<5 {
-        st[x + 5 * y] = tmp[x + 5 * y] ^
-          (tmp[(x + 1) % 5 + 5 * y].lnot() & tmp[(x + 2) % 5 + 5 * y])
-      }
+      let base = 5 * y
+      bc[0] = st[base]
+      bc[1] = st[base + 1]
+      bc[2] = st[base + 2]
+      bc[3] = st[base + 3]
+      bc[4] = st[base + 4]
+      st[base] = bc[0] ^ (bc[1].lnot() & bc[2])
+      st[base + 1] = bc[1] ^ (bc[2].lnot() & bc[3])
+      st[base + 2] = bc[2] ^ (bc[3].lnot() & bc[4])
+      st[base + 3] = bc[3] ^ (bc[4].lnot() & bc[0])
+      st[base + 4] = bc[4] ^ (bc[0].lnot() & bc[1])
     }
     // ι：轮常量注入。
     st[0] = st[0] ^ keccak_rc[round]

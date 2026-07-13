@@ -56,6 +56,62 @@ patience/Myers 同一量级，符合 git/JGit 的实践定位。
 |---|---:|---:|---:|
 | format_iso8601_256 | 140.85 µs | 44.98 µs | 3.1× |
 
+## 第二轮：INI 解析 / ISO 8601 解析 / CLI 解析与 help / strftime / SHA-3
+
+### 4. `ini_parse`：单趟下标扫描（零中间分配）
+
+改动（`src/infra_config/ini.mbt`）：不再切行、不再为每行建 `Array[Char]`
+与多次 trim 建串；改为对原字符串按 charcode 单趟扫描（`shrink_ws` 只收缩
+下标区间），仅在产出键/值/节名时各分配一次字符串。
+
+| bench | 优化前 | 优化后 | 加速 |
+|---|---:|---:|---:|
+| ini_parse_16_sections | 66.76 µs | 7.15 µs | 9.3× |
+| ini_parse_64_sections | 258.72 µs | 30.57 µs | 8.5× |
+
+### 5. `parse_iso8601`：直接 charcode 索引
+
+改动（`src/infra_time/time.mbt`）：删除入口处 `text.iter().to_array()`
+的整串字符数组分配，`parse_digits` 与所有定界符判断改用
+`unsafe_charcode_at` 下标访问。
+
+| bench | 优化前 | 优化后 | 加速 |
+|---|---:|---:|---:|
+| parse_iso8601_256 | 49.19 µs | 13.32 µs | 3.7× |
+
+### 6. CLI 解析与 help 生成
+
+改动（`src/infra_cli/cli.mbt`）：
+
+- `find_spec` 用零分配的尾部比较（`tail_eq`）替代 `strip_prefix` 建串；
+- `split_eq` 单趟找 `=` 后用视图切片，替代双 StringBuilder 重建；
+- `help_text` 对齐填充由字符串反复拼接（O(宽度²)）改为直写 builder。
+
+| bench | 优化前 | 优化后 | 加速 |
+|---|---:|---:|---:|
+| parse_512 | 608.32 µs | 219.99 µs | 2.8× |
+| help_text_512 | 587.30 µs | 449.64 µs | 1.3× |
+
+### 7. `strftime` / `format_rfc2822`：定宽直写
+
+改动（`src/infra_time/time_ext.mbt` / `timezone.mbt`）：各指示符与
+RFC 2822 各分量改用 `write_padded` 直写，去掉 pad2 闭包与逐段拼接。
+
+| bench | 优化前 | 优化后 | 加速 |
+|---|---:|---:|---:|
+| strftime_256 | 82.58 µs | 74.05 µs | 1.1× |
+
+### 8. Keccak-f[1600]：就地 ρ+π 轨道追逐
+
+改动（`src/infra_hash/sha3.mbt`）：ρ+π 由每轮分配 25-lane 临时数组改为
+沿 π 轨道就地 lane 追逐（XKCP/tiny_sha3 形态，rotc/piln 表）；θ 列异或
+与 χ 行内非线性完全展开，每轮零堆分配。
+
+| bench | 优化前 | 优化后 | 加速 |
+|---|---:|---:|---:|
+| sha3_256_1024 | 23.10 µs | 15.79 µs | 1.5× |
+| sha3_256_16384 | 348.40 µs | 237.08 µs | 1.5× |
+
 ## 正确性守卫
 
 - `moon test`（含 infra_diff/infra_cli/infra_time 全部单测与

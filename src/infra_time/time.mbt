@@ -227,13 +227,13 @@ pub fn format_iso_date(dt : DateTime) -> String {
 
 ///|
 /// 解析固定宽度十进制；返回 (值, 下一位置)，非数字返回 None。
-fn parse_digits(chars : Array[Char], pos : Int, width : Int) -> (Int, Int)? {
-  if pos + width > chars.length() {
+fn parse_digits(text : String, pos : Int, width : Int) -> (Int, Int)? {
+  if pos + width > text.length() {
     return None
   }
   let mut acc = 0
   for i in 0..<width {
-    let cp = chars[pos + i].to_int()
+    let cp = text.unsafe_charcode_at(pos + i)
     if cp < 48 || cp > 57 {
       return None
     }
@@ -247,23 +247,22 @@ fn parse_digits(chars : Array[Char], pos : Int, width : Int) -> (Int, Int)? {
 /// `YYYY-MM-DD[T ]HH:MM:SS[.mmm][Z|±HH:MM]`。
 /// 带偏移的输入归一化为 UTC；字段越界 / 畸形返回 None。
 pub fn parse_iso8601(text : String) -> DateTime? {
-  let chars = text.iter().to_array()
-  let n = chars.length()
-  let (year, p1) = match parse_digits(chars, 0, 4) {
+  let n = text.length()
+  let (year, p1) = match parse_digits(text, 0, 4) {
     Some(r) => r
     None => return None
   }
-  if p1 >= n || chars[p1] != '-' {
+  if p1 >= n || text.unsafe_charcode_at(p1) != 45 {
     return None
   }
-  let (month, p2) = match parse_digits(chars, p1 + 1, 2) {
+  let (month, p2) = match parse_digits(text, p1 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p2 >= n || chars[p2] != '-' {
+  if p2 >= n || text.unsafe_charcode_at(p2) != 45 {
     return None
   }
-  let (day, p3) = match parse_digits(chars, p2 + 1, 2) {
+  let (day, p3) = match parse_digits(text, p2 + 1, 2) {
     Some(r) => r
     None => return None
   }
@@ -279,38 +278,40 @@ pub fn parse_iso8601(text : String) -> DateTime? {
   if p3 == n {
     return if date_only.is_valid() { Some(date_only) } else { None }
   }
-  if chars[p3] != 'T' && chars[p3] != ' ' {
+  if text.unsafe_charcode_at(p3) != 84 && text.unsafe_charcode_at(p3) != 32 {
     return None
   }
-  let (hour, p4) = match parse_digits(chars, p3 + 1, 2) {
+  let (hour, p4) = match parse_digits(text, p3 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p4 >= n || chars[p4] != ':' {
+  if p4 >= n || text.unsafe_charcode_at(p4) != 58 {
     return None
   }
-  let (minute, p5) = match parse_digits(chars, p4 + 1, 2) {
+  let (minute, p5) = match parse_digits(text, p4 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p5 >= n || chars[p5] != ':' {
+  if p5 >= n || text.unsafe_charcode_at(p5) != 58 {
     return None
   }
-  let (second, p6) = match parse_digits(chars, p5 + 1, 2) {
+  let (second, p6) = match parse_digits(text, p5 + 1, 2) {
     Some(r) => r
     None => return None
   }
   let mut millis = 0
   let mut pos = p6
-  if pos < n && chars[pos] == '.' {
-    let (ms, p7) = match parse_digits(chars, pos + 1, 3) {
+  if pos < n && text.unsafe_charcode_at(pos) == 46 {
+    let (ms, p7) = match parse_digits(text, pos + 1, 3) {
       Some(r) => r
       None => return None
     }
     millis = ms
     pos = p7
     // 吞掉更高精度的小数位（微秒/纳秒截断为毫秒）。
-    while pos < n && chars[pos].to_int() >= 48 && chars[pos].to_int() <= 57 {
+    while pos < n &&
+          text.unsafe_charcode_at(pos) >= 48 &&
+          text.unsafe_charcode_at(pos) <= 57 {
       pos = pos + 1
     }
   }
@@ -321,24 +322,24 @@ pub fn parse_iso8601(text : String) -> DateTime? {
   if pos == n {
     return Some(dt) // 无时区标记：按 UTC 解释
   }
-  if chars[pos] == 'Z' {
+  if text.unsafe_charcode_at(pos) == 90 {
     return if pos + 1 == n { Some(dt) } else { None }
   }
-  let sign = if chars[pos] == '+' {
+  let sign = if text.unsafe_charcode_at(pos) == 43 {
     1L
-  } else if chars[pos] == '-' {
+  } else if text.unsafe_charcode_at(pos) == 45 {
     -1L
   } else {
     return None
   }
-  let (oh, p8) = match parse_digits(chars, pos + 1, 2) {
+  let (oh, p8) = match parse_digits(text, pos + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p8 >= n || chars[p8] != ':' {
+  if p8 >= n || text.unsafe_charcode_at(p8) != 58 {
     return None
   }
-  let (om, p9) = match parse_digits(chars, p8 + 1, 2) {
+  let (om, p9) = match parse_digits(text, p8 + 1, 2) {
     Some(r) => r
     None => return None
   }

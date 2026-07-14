@@ -106,7 +106,7 @@ fn tail_eq(token : String, off : Int, name : String) -> Bool {
     return false
   }
   for i in 0..<name.length() {
-    if token.unsafe_charcode_at(off + i) != name.unsafe_charcode_at(i) {
+    if token.unsafe_get(off + i).to_int() != name.unsafe_get(i).to_int() {
       return false
     }
   }
@@ -137,8 +137,8 @@ fn find_spec(specs : Array[ArgSpec], token : String) -> ArgSpec? {
 fn split_eq(token : String) -> (String, String)? {
   let n = token.length()
   for i in 2..<n {
-    if token.unsafe_charcode_at(i) == 61 { // '='
-      return Some((token[0:i].to_string(), token[i + 1:n].to_string()))
+    if token.unsafe_get(i).to_int() == 61 { // '='
+      return Some((token[0:i].to_owned(), token[i + 1:n].to_owned()))
     }
   }
   None

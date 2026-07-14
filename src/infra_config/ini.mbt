@@ -17,7 +17,7 @@ fn shrink_ws(text : String, lo : Int, hi : Int) -> (Int, Int) {
   let mut l = lo
   let mut h = hi
   while l < h {
-    let c = text.unsafe_charcode_at(l)
+    let c = text.unsafe_get(l).to_int()
     if c == 32 || c == 9 {
       l = l + 1
     } else {
@@ -25,7 +25,7 @@ fn shrink_ws(text : String, lo : Int, hi : Int) -> (Int, Int) {
     }
   }
   while h > l {
-    let c = text.unsafe_charcode_at(h - 1)
+    let c = text.unsafe_get(h - 1).to_int()
     if c == 32 || c == 9 {
       h = h - 1
     } else {
@@ -47,11 +47,11 @@ pub fn ini_parse(text : String) -> Array[(String, Array[(String, String)])]? {
   while pos <= n {
     // 行边界：[pos, eol)，兼容 \n 与 \r\n。
     let mut eol = pos
-    while eol < n && text.unsafe_charcode_at(eol) != 10 {
+    while eol < n && text.unsafe_get(eol).to_int() != 10 {
       eol = eol + 1
     }
     let mut hi0 = eol
-    if hi0 > pos && text.unsafe_charcode_at(hi0 - 1) == 13 {
+    if hi0 > pos && text.unsafe_get(hi0 - 1).to_int() == 13 {
       hi0 = hi0 - 1
     }
     let (lo, hi) = shrink_ws(text, pos, hi0)
@@ -59,19 +59,19 @@ pub fn ini_parse(text : String) -> Array[(String, Array[(String, String)])]? {
     if lo >= hi {
       continue
     }
-    let head = text.unsafe_charcode_at(lo)
+    let head = text.unsafe_get(lo).to_int()
     if head == 59 || head == 35 { // ';' '#'
       continue
     }
     if head == 91 { // '['
-      if text.unsafe_charcode_at(hi - 1) != 93 { // ']'
+      if text.unsafe_get(hi - 1).to_int() != 93 { // ']'
         return None
       }
       if started || current.length() > 0 {
         sections.push((current_name, current))
       }
       let (nl, nh) = shrink_ws(text, lo + 1, hi - 1)
-      current_name = text[nl:nh].to_string()
+      current_name = text[nl:nh].to_owned()
       current = []
       started = true
       continue
@@ -79,7 +79,7 @@ pub fn ini_parse(text : String) -> Array[(String, Array[(String, String)])]? {
     // key = value 或 key: value（取首个分隔符）。
     let mut sep = -1
     for i in lo..<hi {
-      let c = text.unsafe_charcode_at(i)
+      let c = text.unsafe_get(i).to_int()
       if c == 61 || c == 58 { // '=' ':'
         sep = i
         break
@@ -92,18 +92,18 @@ pub fn ini_parse(text : String) -> Array[(String, Array[(String, String)])]? {
     if kl >= kh {
       return None
     }
-    let key = text[kl:kh].to_string()
+    let key = text[kl:kh].to_owned()
     let (vl0, vh0) = shrink_ws(text, sep + 1, hi)
     // 剥去成对双引号。
     let mut vl = vl0
     let mut vh = vh0
     if vh - vl >= 2 &&
-      text.unsafe_charcode_at(vl) == 34 &&
-      text.unsafe_charcode_at(vh - 1) == 34 {
+      text.unsafe_get(vl).to_int() == 34 &&
+      text.unsafe_get(vh - 1).to_int() == 34 {
       vl = vl + 1
       vh = vh - 1
     }
-    let value = text[vl:vh].to_string()
+    let value = text[vl:vh].to_owned()
     // last-wins。
     let mut replaced = false
     for i in 0..<current.length() {

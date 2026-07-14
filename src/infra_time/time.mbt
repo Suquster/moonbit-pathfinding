@@ -233,7 +233,7 @@ fn parse_digits(text : String, pos : Int, width : Int) -> (Int, Int)? {
   }
   let mut acc = 0
   for i in 0..<width {
-    let cp = text.unsafe_charcode_at(pos + i)
+    let cp = text.unsafe_get(pos + i).to_int()
     if cp < 48 || cp > 57 {
       return None
     }
@@ -252,14 +252,14 @@ pub fn parse_iso8601(text : String) -> DateTime? {
     Some(r) => r
     None => return None
   }
-  if p1 >= n || text.unsafe_charcode_at(p1) != 45 {
+  if p1 >= n || text.unsafe_get(p1).to_int() != 45 {
     return None
   }
   let (month, p2) = match parse_digits(text, p1 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p2 >= n || text.unsafe_charcode_at(p2) != 45 {
+  if p2 >= n || text.unsafe_get(p2).to_int() != 45 {
     return None
   }
   let (day, p3) = match parse_digits(text, p2 + 1, 2) {
@@ -278,21 +278,21 @@ pub fn parse_iso8601(text : String) -> DateTime? {
   if p3 == n {
     return if date_only.is_valid() { Some(date_only) } else { None }
   }
-  if text.unsafe_charcode_at(p3) != 84 && text.unsafe_charcode_at(p3) != 32 {
+  if text.unsafe_get(p3).to_int() != 84 && text.unsafe_get(p3).to_int() != 32 {
     return None
   }
   let (hour, p4) = match parse_digits(text, p3 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p4 >= n || text.unsafe_charcode_at(p4) != 58 {
+  if p4 >= n || text.unsafe_get(p4).to_int() != 58 {
     return None
   }
   let (minute, p5) = match parse_digits(text, p4 + 1, 2) {
     Some(r) => r
     None => return None
   }
-  if p5 >= n || text.unsafe_charcode_at(p5) != 58 {
+  if p5 >= n || text.unsafe_get(p5).to_int() != 58 {
     return None
   }
   let (second, p6) = match parse_digits(text, p5 + 1, 2) {
@@ -301,7 +301,7 @@ pub fn parse_iso8601(text : String) -> DateTime? {
   }
   let mut millis = 0
   let mut pos = p6
-  if pos < n && text.unsafe_charcode_at(pos) == 46 {
+  if pos < n && text.unsafe_get(pos).to_int() == 46 {
     let (ms, p7) = match parse_digits(text, pos + 1, 3) {
       Some(r) => r
       None => return None
@@ -310,8 +310,8 @@ pub fn parse_iso8601(text : String) -> DateTime? {
     pos = p7
     // 吞掉更高精度的小数位（微秒/纳秒截断为毫秒）。
     while pos < n &&
-          text.unsafe_charcode_at(pos) >= 48 &&
-          text.unsafe_charcode_at(pos) <= 57 {
+          text.unsafe_get(pos).to_int() >= 48 &&
+          text.unsafe_get(pos).to_int() <= 57 {
       pos = pos + 1
     }
   }
@@ -322,12 +322,12 @@ pub fn parse_iso8601(text : String) -> DateTime? {
   if pos == n {
     return Some(dt) // 无时区标记：按 UTC 解释
   }
-  if text.unsafe_charcode_at(pos) == 90 {
+  if text.unsafe_get(pos).to_int() == 90 {
     return if pos + 1 == n { Some(dt) } else { None }
   }
-  let sign = if text.unsafe_charcode_at(pos) == 43 {
+  let sign = if text.unsafe_get(pos).to_int() == 43 {
     1L
-  } else if text.unsafe_charcode_at(pos) == 45 {
+  } else if text.unsafe_get(pos).to_int() == 45 {
     -1L
   } else {
     return None
@@ -336,7 +336,7 @@ pub fn parse_iso8601(text : String) -> DateTime? {
     Some(r) => r
     None => return None
   }
-  if p8 >= n || text.unsafe_charcode_at(p8) != 58 {
+  if p8 >= n || text.unsafe_get(p8).to_int() != 58 {
     return None
   }
   let (om, p9) = match parse_digits(text, p8 + 1, 2) {

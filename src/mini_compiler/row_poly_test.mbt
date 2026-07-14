@@ -9,7 +9,7 @@ test "T1.3 row: open records absorb missing fields via row variables" {
   let b = RTy::RRecord(Row::RExtend("y", RTy::RBool, Row::RowVar(1)))
   assert_true(unify_rty(s, fresh, a, b) is Ok(_))
   // 合一后二者规范化相等。
-  assert_eq(normalize_rty(s, a), normalize_rty(s, b))
+  assert_true(normalize_rty(s, a) == normalize_rty(s, b))
 }
 
 ///|
@@ -65,11 +65,10 @@ test "T1.3 row: row-polymorphic function typing (field access)" {
     Row::RExtend("x", RTy::RInt, Row::RExtend("y", RTy::RBool, Row::REmpty)),
   )
   assert_true(unify_rty(s, fresh, selector_arg, record) is Ok(_))
-  assert_eq(apply_rty(s, alpha), RTy::RInt)
+  assert_true(apply_rty(s, alpha) == RTy::RInt)
   // ρ 吸收了余下字段 y。
-  assert_eq(
-    apply_row(s, Row::RowVar(1)),
-    Row::RExtend("y", RTy::RBool, Row::REmpty),
+  assert_true(
+    apply_row(s, Row::RowVar(1)) == Row::RExtend("y", RTy::RBool, Row::REmpty),
   )
 }
 

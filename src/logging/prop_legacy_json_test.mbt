@@ -49,6 +49,6 @@ test "legacy scalar format_json is byte-identical to 0.1.0 (witness)" {
 ///|
 /// 空字段标量事件的字节级见证（边界）。
 test "legacy empty-fields format_json byte-identical (witness)" {
-  let e = Event::new(0L, Level::Info, {})
+  let e = Event::new(0L, Level::Info, Map([]))
   @test.assert_eq(format_json(e), "{\"ts\":0,\"level\":\"INFO\",\"fields\":{}}")
 }

@@ -13,7 +13,7 @@
 /// 独立重算期望阈值并断言 allows 与之一致；并断言 field_filter 与谓词一致。
 fn ft_consistency(rng : @infra_pbt.Rng) -> Bool {
   let targets = ["http", "db", "cache", "auth"]
-  let directives : Map[String, Level] = {}
+  let directives : Map[String, Level] = Map([])
   for t in targets {
     if rng.next_bool() {
       directives[t] = sh_level(rng)

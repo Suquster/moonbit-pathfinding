@@ -44,7 +44,7 @@ pub struct AskBroker[R] {
 ///|
 /// 创建一个空 ask 注册表（id 分配从 1 起）。
 pub fn[R] AskBroker::new() -> AskBroker[R] {
-  { next: 0, pending: {}, consumed: {} }
+  { next: 0, pending: Map([]), consumed: Map([]) }
 }
 
 ///|

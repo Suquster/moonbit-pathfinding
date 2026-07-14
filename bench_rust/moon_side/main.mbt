@@ -337,7 +337,7 @@ fn stats_to_json(s : Stats) -> String {
 /// 从 `@env.args()` 解析 `--key value`；返回查找函数。
 fn parse_args() -> Map[String, String] {
   let raw = @env.args()
-  let map : Map[String, String] = {}
+  let map : Map[String, String] = Map([])
   let mut i = 0
   while i < raw.length() {
     let a = raw[i]

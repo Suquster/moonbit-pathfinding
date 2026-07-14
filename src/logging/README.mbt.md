@@ -313,8 +313,14 @@ test "README · 过滤与路由" {
   let errors = Sink::new("errors", Formatter::Json, route=fn(e) {
     e.level.rank() >= Level::Error.rank()
   })
-  @test.assert_eq(route([errors], Event::new(0L, Level::Error, {})).length(), 1)
-  @test.assert_eq(route([errors], Event::new(0L, Level::Info, {})).length(), 0)
+  @test.assert_eq(
+    route([errors], Event::new(0L, Level::Error, Map([]))).length(),
+    1,
+  )
+  @test.assert_eq(
+    route([errors], Event::new(0L, Level::Info, Map([]))).length(),
+    0,
+  )
 }
 ```
 

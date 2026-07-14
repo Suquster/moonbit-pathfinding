@@ -81,7 +81,7 @@ test "format_pretty scalar golden equals pre-refactor output" {
 /// parse_string（含转义还原）与 parse_num（数值文本累加）。
 test "format_json then parse_json_log roundtrips after refactor" {
   let events = [
-    Event::new(0L, Level::Trace, {}),
+    Event::new(0L, Level::Trace, Map([])),
     Event::new(123L, Level::Info, { "s": VStr("hello world"), "i": VInt(-7) }),
     Event::new(456L, Level::Warn, {
       "esc": VStr("tab\tnl\nquote\"back\\slash"),

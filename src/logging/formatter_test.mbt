@@ -46,8 +46,8 @@ test "dispatch respects per-sink route predicate" {
   })
   let all_sink = Sink::new("all", Formatter::Json)
   let sinks = [warn_only, all_sink]
-  dispatch(sinks, Event::new(1L, Level::Info, {})) // Info: 仅 all 接收
-  dispatch(sinks, Event::new(2L, Level::Error, {})) // Error: 两者均接收
+  dispatch(sinks, Event::new(1L, Level::Info, Map([]))) // Info: 仅 all 接收
+  dispatch(sinks, Event::new(2L, Level::Error, Map([]))) // Error: 两者均接收
   @test.assert_eq(warn_only.buffer.length(), 1) // 仅 Error
   @test.assert_eq(all_sink.buffer.length(), 2) // Info + Error
 }
@@ -61,12 +61,12 @@ test "route returns matching sink names and empty on no match" {
   let b = Sink::new("b", Formatter::Logfmt) // 恒真
   let sinks = [a, b]
   // Error 事件匹配 a 与 b。
-  let matched = route(sinks, Event::new(1L, Level::Error, {}))
+  let matched = route(sinks, Event::new(1L, Level::Error, Map([])))
   @test.assert_eq(matched.length(), 2)
   @test.assert_eq(matched[0], "a")
   @test.assert_eq(matched[1], "b")
   // Info 事件仅匹配 b（恒真）。
-  let matched2 = route(sinks, Event::new(2L, Level::Info, {}))
+  let matched2 = route(sinks, Event::new(2L, Level::Info, Map([])))
   @test.assert_eq(matched2.length(), 1)
   @test.assert_eq(matched2[0], "b")
 }

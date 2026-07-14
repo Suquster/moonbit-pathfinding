@@ -136,7 +136,7 @@ fn prop_ls_span_tree(rng : @infra_pbt.Rng) -> Bool {
       return false
     }
     // 激活 span 内事件标注最内层 span 与当前 trace。
-    log(Level::Info, {})
+    log(Level::Info, Map([]))
     let ev = captured_events()
     let last = ev[ev.length() - 1]
     match last.fields.get("span") {
@@ -202,7 +202,7 @@ fn prop_ls_trace_propagation(rng : @infra_pbt.Rng) -> Bool {
       good = false
     }
     // 激活子 span 内事件标注子 span 与父 trace。
-    log(Level::Info, {})
+    log(Level::Info, Map([]))
     let ev = captured_events()
     let last = ev[ev.length() - 1]
     match last.fields.get("trace") {
@@ -278,7 +278,7 @@ test "nested spans form a tree and annotate events (witness)" {
     None => fail("子 span 应挂接根 span")
   }
   // 激活（最内层 child）span 内事件标注该 span 与 trace。
-  log(Level::Info, {})
+  log(Level::Info, Map([]))
   let events = captured_events()
   let last = events[events.length() - 1]
   match last.fields.get("span") {

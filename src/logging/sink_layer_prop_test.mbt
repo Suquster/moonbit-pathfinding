@@ -70,7 +70,7 @@ test "Feature: production-hardening, Property 2: callback sink delivers exactly 
       // 回调副作用观测点：收集所有被下发的事件。
       let hits : Array[Event] = []
       let sink = SinkHandle::callback(fn(e) { hits.push(e) }, level=sl)
-      let ev = Event::new(0L, el, {})
+      let ev = Event::new(0L, el, Map([]))
       sink.emit(ev)
       if el.rank() >= sl.rank() {
         // AC2：级别通过 → 恰好一次，且内容一致（Event derive Eq）。
@@ -114,7 +114,7 @@ test "Feature: production-hardening, Property 2: buffered sink holds below thres
       let mut i = 0
       while i < levels.length() {
         // ts=i 保证唯一且与到达顺序一致。
-        let ev = Event::new(i.to_int64(), levels[i], {})
+        let ev = Event::new(i.to_int64(), levels[i], Map([]))
         buf.emit(ev)
         let emitted = i + 1
         // AC3：未满 K 条不下发；每满 K 条批量下发。
@@ -181,7 +181,7 @@ test "Feature: production-hardening, Property 2: below-level records are never d
       let mut i = 0
       while i < levels.length() {
         let lv = levels[i]
-        let ev = Event::new(i.to_int64(), lv, {})
+        let ev = Event::new(i.to_int64(), lv, Map([]))
         sink.emit(ev)
         if lv.rank() >= sl.rank() {
           expected.push(lv)

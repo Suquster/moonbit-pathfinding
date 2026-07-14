@@ -11,6 +11,4 @@ import {
   "Suquster/moonbit-pathfinding/src/infra_hash" @hash,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

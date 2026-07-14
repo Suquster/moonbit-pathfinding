@@ -149,7 +149,7 @@ fn gen_rt_event() -> @infra_pbt.Gen[Event] {
     let ts = rng.next_range(-1_000_000_000, 1_000_000_000).to_int64()
     let level = gen_rt_level(rng)
     let nfields = rng.next_range(0, 5)
-    let fields : Map[String, Value] = {}
+    let fields : Map[String, Value] = Map([])
     for i in 0..<nfields {
       fields["k\{i}"] = gen_rt_value(rng)
     }
@@ -199,7 +199,7 @@ fn rt_decode_event(b : Bytes) -> Event? {
 test "round-trip holds on representative events" {
   let samples : Array[Event] = [
     // 空字段事件。
-    Event::new(0L, Level::Info, {}),
+    Event::new(0L, Level::Info, Map([])),
     // 四类字段取值各一。
     Event::new(123L, Level::Warn, {
       "msg": VStr("hello world"),

@@ -200,7 +200,7 @@ fn sg_random_message_for(
     Some(m) => m
     None => return TypedMessage::new()
   }
-  let fields : Map[Int, TypedValue] = {}
+  let fields : Map[Int, TypedValue] = Map([])
   for f in pmsg.fields {
     if rng.next_bool() {
       let v : TypedValue = match f.label {

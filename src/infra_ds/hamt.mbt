@@ -75,7 +75,7 @@ fn popcount_u(x : UInt) -> Int {
 pub fn[K : Eq + Hash, V] HamtMap::get(self : HamtMap[K, V], key : K) -> V? {
   match self.root {
     None => None
-    Some(node) => node_get(node, key, key.hash().reinterpret_as_uint(), 0)
+    Some(node) => node_get(node, key, Hash::hash(key).reinterpret_as_uint(), 0)
   }
 }
 
@@ -163,7 +163,7 @@ pub fn[K : Eq + Hash, V] HamtMap::insert(
   key : K,
   value : V,
 ) -> HamtMap[K, V] {
-  let hash = key.hash().reinterpret_as_uint()
+  let hash = Hash::hash(key).reinterpret_as_uint()
   match self.root {
     None => { root: Some(Leaf(hash, key, value)), size: 1 }
     Some(node) => {
@@ -276,7 +276,7 @@ pub fn[K : Eq + Hash, V] HamtMap::remove(
       let new_root = node_remove(
         node,
         key,
-        key.hash().reinterpret_as_uint(),
+        Hash::hash(key).reinterpret_as_uint(),
         0,
         removed,
       )

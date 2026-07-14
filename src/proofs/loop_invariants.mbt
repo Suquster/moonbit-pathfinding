@@ -40,7 +40,7 @@ pub fn[W : @core.Weight] dijkstra_pop_monotonic(dists : Array[W]) -> Bool {
   let mut i = 0
   while i < dists.length() - 1 {
     // dists[i] > dists[i + 1] 即违反单调非降。
-    if dists[i].compare(dists[i + 1]) > 0 {
+    if Compare::compare(dists[i], dists[i + 1]) > 0 {
       return false
     }
     i += 1

@@ -11,6 +11,4 @@ import {
   "Suquster/moonbit-pathfinding/src/unweighted" @uw,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

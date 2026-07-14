@@ -13,6 +13,4 @@ import {
   "Suquster/moonbit-pathfinding/src/infra_fuzz" @fuzz,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

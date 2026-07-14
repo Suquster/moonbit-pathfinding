@@ -13,6 +13,4 @@ import {
   "Suquster/moonbit-pathfinding/src/infra_timer" @timer,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

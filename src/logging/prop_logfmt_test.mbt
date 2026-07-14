@@ -30,7 +30,7 @@ test "logfmt round-trips representative scalar events (witness)" {
       "ratio": VFloat(0.5),
     }),
     Event::new(-3L, Level::Error, { "raw": VStr("a\"b\\c\nd\te=f g") }),
-    Event::new(0L, Level::Trace, {}),
+    Event::new(0L, Level::Trace, Map([])),
   ]
   for e in samples {
     match parse_logfmt(format_logfmt(e)) {

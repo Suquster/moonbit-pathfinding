@@ -32,7 +32,7 @@ fn rd_completeness(rng : @infra_pbt.Rng) -> Bool {
   }
   let pred = fn(k : String, _v : Value) -> Bool { k == "email" }
   let policy = RedactionPolicy::by_names(sensitive).with_predicate(pred)
-  let fields : Map[String, Value] = {}
+  let fields : Map[String, Value] = Map([])
   for nm in names {
     if rng.next_bool() {
       fields[nm] = sh_value(rng, 2) // 可能为嵌套 VMap/VList

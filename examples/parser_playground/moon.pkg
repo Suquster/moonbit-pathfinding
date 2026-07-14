@@ -11,6 +11,4 @@ import {
   "Suquster/moonbit-pathfinding/src/parser_combinator" @pc,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

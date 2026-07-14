@@ -124,7 +124,7 @@ pub fn[K : Eq + Hash, V] LruCache::create(capacity : Int) -> LruCache[K, V] {
   }
   {
     capacity: cap,
-    index: {},
+    index: Map([]),
     keys: Array::make(cap, None),
     values: Array::make(cap, None),
     prev: Array::make(cap, -1),

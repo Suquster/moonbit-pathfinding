@@ -66,7 +66,7 @@ fn unique_common_anchors(
   nh : Int,
 ) -> Array[(Int, Int)] {
   // 行 → (旧侧计数, 旧侧下标, 新侧计数, 新侧下标)。
-  let counts : Map[String, (Int, Int, Int, Int)] = {}
+  let counts : Map[String, (Int, Int, Int, Int)] = Map([])
   for i in ol..<oh {
     let line = old[i]
     match counts.get(line) {
@@ -294,7 +294,7 @@ pub fn diff_histogram(
   new : Array[String],
 ) -> Array[DiffOp] {
   // 行 intern：字符串只哈希一次，递归内层全部走整数 id 数组。
-  let table : Map[String, Int] = {}
+  let table : Map[String, Int] = Map([])
   let old_ids : Array[Int] = Array::make(old.length(), 0)
   for i in 0..<old.length() {
     match table.get(old[i]) {

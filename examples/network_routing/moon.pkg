@@ -17,6 +17,4 @@ import {
   "Suquster/moonbit-pathfinding/src/directed" @dir,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

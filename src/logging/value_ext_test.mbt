@@ -30,7 +30,7 @@ test "value depth of scalars is zero" {
 ///|
 /// 空嵌套取值深度为 1；单层嵌套标量为 1。
 test "value depth of empty and single-level nesting is one" {
-  let empty_map : Map[String, Value] = {}
+  let empty_map : Map[String, Value] = Map([])
   @test.assert_eq(Value::VMap(empty_map).depth(), 1)
   let empty_list : Array[Value] = []
   @test.assert_eq(Value::VList(empty_list).depth(), 1)

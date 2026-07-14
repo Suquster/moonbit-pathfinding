@@ -88,8 +88,8 @@ test "log discards events below configured threshold" {
 /// 默认阈值 Trace（reset 后）：所有级别均被记录，并带单调递增时间戳。
 test "log records all levels at default threshold with monotonic timestamps" {
   reset_logger()
-  log(Level::Trace, {})
-  log(Level::Error, {})
+  log(Level::Trace, Map([]))
+  log(Level::Error, Map([]))
   let events = captured_events()
   @test.assert_eq(events.length(), 2)
   assert_true(events[0].ts < events[1].ts)

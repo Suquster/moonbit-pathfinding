@@ -53,9 +53,9 @@ pub struct ActorSystem[S, M] {
 pub fn[S, M] ActorSystem::new() -> ActorSystem[S, M] {
   {
     cells: [],
-    supervisors: {},
-    parents: {},
-    children: {},
+    supervisors: Map([]),
+    parents: Map([]),
+    children: Map([]),
     watches: WatchRegistry::new(),
     trace: [],
     clock: 0,

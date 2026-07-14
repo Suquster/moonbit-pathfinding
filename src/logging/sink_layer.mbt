@@ -179,7 +179,7 @@ pub fn SinkHandle::flush(self : SinkHandle) -> Unit {
 ///|
 /// 构造一条用于测试的最小事件（空字段）。
 fn smoke_event(level : Level) -> Event {
-  Event::new(0L, level, {})
+  Event::new(0L, level, Map([]))
 }
 
 ///|

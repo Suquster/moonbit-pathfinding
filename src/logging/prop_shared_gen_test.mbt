@@ -88,7 +88,7 @@ fn sh_value(rng : @infra_pbt.Rng, budget : Int) -> Value {
   match rng.next_below(6) {
     0 => {
       let cnt = rng.next_range(0, 3)
-      let m : Map[String, Value] = {}
+      let m : Map[String, Value] = Map([])
       for i in 0..<cnt {
         m["m\{i}"] = sh_value(rng, budget - 1)
       }
@@ -113,7 +113,7 @@ fn sh_scalar_event() -> @infra_pbt.Gen[Event] {
     let ts = rng.next_range(-1_000_000_000, 1_000_000_000).to_int64()
     let level = sh_level(rng)
     let nf = rng.next_range(0, 4)
-    let fields : Map[String, Value] = {}
+    let fields : Map[String, Value] = Map([])
     for i in 0..<nf {
       fields["k\{i}"] = sh_scalar_value(rng)
     }
@@ -128,7 +128,7 @@ fn sh_nested_event() -> @infra_pbt.Gen[Event] {
     let ts = rng.next_range(-1_000_000_000, 1_000_000_000).to_int64()
     let level = sh_level(rng)
     let nf = rng.next_range(0, 4)
-    let fields : Map[String, Value] = {}
+    let fields : Map[String, Value] = Map([])
     for i in 0..<nf {
       fields["k\{i}"] = sh_value(rng, 3)
     }

@@ -44,7 +44,7 @@ pub(all) struct TypedMessage {
 ///|
 /// 构造空类型化消息。
 pub fn TypedMessage::new() -> TypedMessage {
-  { fields: {}, unknown: [] }
+  { fields: Map([]), unknown: [] }
 }
 
 ///|
@@ -709,7 +709,7 @@ pub fn decode_typed(
     Ok(m) => m
     Err(e) => return Err(e)
   }
-  let fields : Map[Int, TypedValue] = {}
+  let fields : Map[Int, TypedValue] = Map([])
   let unknown : Array[FieldEntry] = []
   for entry in wire.fields {
     match typed_lookup_field(pmsg, entry.number) {

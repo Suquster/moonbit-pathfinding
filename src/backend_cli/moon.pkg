@@ -2,6 +2,4 @@ import {
   "Suquster/moonbit-pathfinding/src/mini_compiler" @mc,
 }
 
-options(
-  is_main: true,
-)
+pkgtype(kind: "executable")

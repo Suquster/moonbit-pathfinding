@@ -3,6 +3,4 @@ import {
   "Suquster/moonbit-pathfinding/src/release_aggregate",
 }
 
-options(
-  is_main: true,
-)
+pkgtype(kind: "executable")

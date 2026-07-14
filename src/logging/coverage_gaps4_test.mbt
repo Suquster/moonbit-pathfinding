@@ -18,9 +18,9 @@ test "SinkHandle::console：级别过滤、直写与无缓冲 flush" {
     level=@logging.Level::Warn,
   )
   // 低于阈值：不写出。
-  sink.emit(@logging.Event::new(0L, @logging.Level::Debug, {}))
+  sink.emit(@logging.Event::new(0L, @logging.Level::Debug, Map([])))
   // 达到阈值：渲染并写标准输出（控制台 sink 的直写路径）。
-  sink.emit(@logging.Event::new(1L, @logging.Level::Error, {}))
+  sink.emit(@logging.Event::new(1L, @logging.Level::Error, Map([])))
   // 控制台无缓冲，flush 为空操作。
   sink.flush()
 }

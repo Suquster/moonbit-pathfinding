@@ -11,7 +11,7 @@
 fn p11_corr_id_unique(rng : @infra_pbt.Rng) -> Bool {
   let broker : AskBroker[Int] = AskBroker::new()
   let n = rng.next_range(0, 50)
-  let seen : Map[Int, Bool] = {}
+  let seen : Map[Int, Bool] = Map([])
   let mut prev = 0
   for _i in 0..<n {
     let id = broker.allocate()

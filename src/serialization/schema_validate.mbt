@@ -109,7 +109,7 @@ pub fn validate_schema(
 
   // 逐消息校验字段号 / 引用 / reserved。
   for m in schema.messages {
-    let seen : Map[Int, Bool] = {}
+    let seen : Map[Int, Bool] = Map([])
     // 常规字段（含 oneof 成员）。
     for f in m.fields {
       if !field_number_valid(f.number) {

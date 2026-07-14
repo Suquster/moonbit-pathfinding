@@ -547,7 +547,7 @@ fn decode_json_message(
   }
   match j {
     @parser_combinator.JObject(members) => {
-      let fields : Map[Int, TypedValue] = {}
+      let fields : Map[Int, TypedValue] = Map([])
       for f in pmsg.fields {
         let camel = snake_to_camel(f.name)
         match json_find_member(members, camel, f.name) {

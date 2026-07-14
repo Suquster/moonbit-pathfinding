@@ -47,7 +47,7 @@ test "nested json round-trip on representative nested events (witness)" {
     }),
     // 空嵌套容器。
     Event::new(0L, Level::Debug, {
-      "empty_map": VMap({}),
+      "empty_map": VMap(Map([])),
       "empty_list": VList([]),
     }),
   ]

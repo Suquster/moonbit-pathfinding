@@ -44,7 +44,7 @@ test "parse_env_filter accepts empty spec with default fallback" {
     Ok(f) => {
       // 任意 target 走兜底 Trace：所有级别均保留。
       assert_true(f.threshold_for("anything") == Level::Trace)
-      assert_true(f.allows(Event::new(0L, Level::Trace, {})))
+      assert_true(f.allows(Event::new(0L, Level::Trace, Map([]))))
     }
     Err(_) => fail("空 spec 应合法")
   }
@@ -70,9 +70,12 @@ test "route delivers to matching sinks and none on no match" {
   })
   let sinks = [errors]
   // Info 无匹配 → 空。
-  @test.assert_eq(route(sinks, Event::new(0L, Level::Info, {})).length(), 0)
+  @test.assert_eq(
+    route(sinks, Event::new(0L, Level::Info, Map([]))).length(),
+    0,
+  )
   // Error 匹配 → [errors]。
-  let m = route(sinks, Event::new(0L, Level::Error, {}))
+  let m = route(sinks, Event::new(0L, Level::Error, Map([])))
   @test.assert_eq(m.length(), 1)
   @test.assert_eq(m[0], "errors")
 }

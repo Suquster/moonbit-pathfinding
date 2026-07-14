@@ -55,7 +55,7 @@ fn cc_shuffled_metadata(rng : @infra_pbt.Rng) -> Array[AlgoMeta] {
 ///|
 /// 判断元数据数组中的算法名是否两两互异（无重复）。
 fn cc_names_all_distinct(metas : Array[AlgoMeta]) -> Bool {
-  let seen : Map[String, Bool] = {}
+  let seen : Map[String, Bool] = Map([])
   for i = 0; i < metas.length(); i = i + 1 {
     let name = metas[i].name
     if seen.get(name) is Some(_) {

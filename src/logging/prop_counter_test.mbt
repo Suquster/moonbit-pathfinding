@@ -14,7 +14,7 @@ fn ct_events() -> @infra_pbt.Gen[Array[Event]] {
     let n = rng.next_range(0, 30)
     let out : Array[Event] = []
     for i in 0..<n {
-      out.push(Event::new(i.to_int64(), sh_level(rng), {}))
+      out.push(Event::new(i.to_int64(), sh_level(rng), Map([])))
     }
     out
   })
@@ -47,10 +47,10 @@ test "Feature: logging, Property 13: counter-conservation (holds_for_all)" {
 /// 具体见证：按级别计数与 level_count 取值。
 test "count_by_level conserves total (witness)" {
   let events = [
-    Event::new(0L, Level::Info, {}),
-    Event::new(1L, Level::Info, {}),
-    Event::new(2L, Level::Error, {}),
-    Event::new(3L, Level::Trace, {}),
+    Event::new(0L, Level::Info, Map([])),
+    Event::new(1L, Level::Info, Map([])),
+    Event::new(2L, Level::Error, Map([])),
+    Event::new(3L, Level::Trace, Map([])),
   ]
   let counts = count_by_level(events)
   @test.assert_eq(level_count(counts, Level::Info), 2)
